@@ -1,1 +1,295 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Go Musafir — Ludhiana Cab & Bike Rides</title>
+  <style>
+    :root {
+      --teal: #0D4F4F;
+      --teal-dark: #083636;
+      --amber: #E07A22;
+      --amber-hover: #c76614;
+      --bg: #F4F7F7;
+      --card: #FFFFFF;
+      --text: #142222;
+      --muted: #5A6B6B;
+      --border: #DCE5E5;
+      --success: #16794C;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    header {
+      background: linear-gradient(135deg, var(--teal), var(--teal-dark));
+      color: #fff;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-badge {
+      background: var(--amber);
+      color: #fff;
+      font-weight: 800;
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      letter-spacing: 0.5px;
+    }
+
+    .brand h1 { font-size: 19px; font-weight: 700; }
+    .brand p { font-size: 11px; color: #CBE2E2; }
+
+    .user-pill {
+      background: rgba(255,255,255,0.14);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .container {
+      max-width: 540px;
+      margin: 0 auto;
+      padding: 18px 14px 48px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 18px;
+      margin-bottom: 16px;
+      box-shadow: 0 4px 16px rgba(13,79,79,0.06);
+    }
+
+    .card h2 {
+      font-size: 17px;
+      color: var(--teal);
+      margin-bottom: 6px;
+    }
+
+    .card .sub {
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--teal);
+      margin: 10px 0 5px;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 12px 13px;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      font-size: 14px;
+      background: #FAFDFD;
+      color: var(--text);
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--teal);
+    }
+
+    .ride-types {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    .ride-option {
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      cursor: pointer;
+      text-align: center;
+      background: #FAFDFD;
+      transition: 0.15s;
+    }
+
+    .ride-option.active {
+      border-color: var(--amber);
+      background: #FFF7F0;
+    }
+
+    .ride-option .title { font-weight: 700; font-size: 14px; color: var(--teal); }
+    .ride-option .fare { font-size: 12px; color: var(--amber); font-weight: 700; margin-top: 3px; }
+
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 11px;
+      padding: 13px 16px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 14px;
+      transition: 0.15s;
+    }
+
+    .btn-amber {
+      background: var(--amber);
+      color: #fff;
+    }
+
+    .btn-amber:hover { background: var(--amber-hover); }
+
+    .btn-teal {
+      background: var(--teal);
+      color: #fff;
+    }
+
+    .btn-outline {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 6px 10px;
+      font-size: 12px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .status-msg {
+      margin-top: 10px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--success);
+      min-height: 18px;
+    }
+
+    .ride-item {
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 12px;
+      margin-top: 10px;
+      background: #FCFDFD;
+    }
+
+    .ride-top {
+      display: flex;
+      justify-content: space-between;
+      font-weight: 700;
+      font-size: 14px;
+      color: var(--teal);
+    }
+
+    .ride-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    #recaptcha-container { margin-top: 10px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <div class="brand-badge">LUDHIANA</div>
+      <div>
+        <h1>Go Musafir</h1>
+        <p>Bike & Cab Rides • Safe & Fast</p>
+      </div>
+    </div>
+    <div id="user-pill" class="user-pill">
+      <span id="user-phone-label"></span>
+      <button id="logout-btn" class="btn-outline" style="color:#fff;border-color:rgba(255,255,255,0.35);">Logout</button>
+    </div>
+  </header>
+
+  <main class="container">
+    <!-- Auth Card -->
+    <section id="auth-section" class="card">
+      <h2>Login with Mobile Number</h2>
+      <p class="sub">Enter your Indian mobile number (+91) to verify OTP and book rides in Ludhiana.</p>
+
+      <div id="phone-step">
+        <label for="phone-input">Mobile Number</label>
+        <input id="phone-input" type="tel" placeholder="+91 98XXXXXXXX" value="+91" />
+        <div id="recaptcha-container"></div>
+        <button id="send-otp-btn" class="btn btn-amber">Send OTP</button>
+      </div>
+
+      <div id="otp-step" class="hidden">
+        <label for="otp-input">Enter 6-Digit OTP</label>
+        <input id="otp-input" type="text" maxlength="6" placeholder="123456" />
+        <button id="verify-otp-btn" class="btn btn-teal">Verify & Continue</button>
+      </div>
+
+      <div id="auth-status" class="status-msg"></div>
+    </section>
+
+    <!-- Booking Card -->
+    <section id="booking-section" class="card hidden">
+      <h2>Book a Ride in Ludhiana</h2>
+      <p class="sub">Select Bike or Cab, enter pickup & drop location, and confirm.</p>
+
+      <label>Choose Ride Type</label>
+      <div class="ride-types">
+        <div class="ride-option active" data-type="Bike" data-fare="₹29 onwards">
+          <div class="title">Musafir Bike</div>
+          <div class="fare">₹29 onwards</div>
+        </div>
+        <div class="ride-option" data-type="Cab" data-fare="₹79 onwards">
+          <div class="title">Musafir Cab</div>
+          <div class="fare">₹79 onwards</div>
+        </div>
+      </div>
+
+      <label for="pickup-input">Pickup Point (Ludhiana)</label>
+      <input id="pickup-input" type="text" placeholder="e.g., Ferozepur Road / Clock Tower / Threeke" />
+
+      <label for="drop-input">Drop Point (Ludhiana)</label>
+      <input id="drop-input" type="text" placeholder="e.g., Railway Station / Sarabha Nagar / Bus Stand" />
+
+      <button id="book-ride-btn" class="btn btn-amber">Confirm Ride Booking</button>
+      <div id="booking-status" class="status-msg"></div>
+    </section>
+
+    <!-- Live Rides Card -->
+    <section id="rides-section" class="card hidden">
+      <h2>Your Live & Recent Rides</h2>
+      <p class="sub">Synced directly with Cloud Firestore.</p>
+      <div id="rides-list"></div>
+    </section>
+  </main>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
+    import {
+      getAuth,
+      RecaptchaVerifier,
+      signInWithPhoneNumber,
+      onAuthStateChanged,
+      signOut
+    } from "
