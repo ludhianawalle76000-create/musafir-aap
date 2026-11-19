@@ -387,4 +387,83 @@
       }
 
       bookingStatus.style.color = "#0D4F4F";
-      bookingStatus
+      bookingStatus.textContent = "Booking your ride...";
+
+      try {
+        await addDoc(collection(db, "rides"), {
+          userId: user.uid,
+          phone: user.phoneNumber || "",
+          city: "Ludhiana",
+          rideType: selectedRideType,
+          estimatedFare: selectedFare,
+          pickup,
+          drop,
+          status: "Searching Driver",
+          createdAt: serverTimestamp()
+        });
+
+        document.getElementById("pickup-input").value = "";
+        document.getElementById("drop-input").value = "";
+        bookingStatus.style.color = "#16794C";
+        bookingStatus.textContent = `${selectedRideType} ride booked in Ludhiana!`;
+      } catch (err) {
+        bookingStatus.style.color = "#B91C1C";
+        bookingStatus.textContent = err.message || "Could not book ride.";
+      }
+    });
+
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+      if (unsubscribeRides) unsubscribeRides();
+      await signOut(auth);
+      otpStep.classList.add("hidden");
+      phoneStep.classList.remove("hidden");
+      authStatus.textContent = "";
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        authSection.classList.add("hidden");
+        bookingSection.classList.remove("hidden");
+        ridesSection.classList.remove("hidden");
+        userPill.style.display = "flex";
+        userPhoneLabel.textContent = user.phoneNumber || "Logged In";
+
+        const q = query(
+          collection(db, "rides"),
+          where("userId", "==", user.uid),
+          orderBy("createdAt", "desc")
+        );
+
+        if (unsubscribeRides) unsubscribeRides();
+        unsubscribeRides = onSnapshot(q, (snapshot) => {
+          if (snapshot.empty) {
+            ridesList.innerHTML = `<p class="sub">No rides booked yet. Book your first Ludhiana ride above.</p>`;
+            return;
+          }
+
+          ridesList.innerHTML = snapshot.docs
+            .map((doc) => {
+              const r = doc.data();
+              return `
+                <div class="ride-item">
+                  <div class="ride-top">
+                    <span>${r.rideType} • ${r.estimatedFare}</span>
+                    <span>${r.status}</span>
+                  </div>
+                  <div class="ride-meta"><strong>Pickup:</strong> ${r.pickup} → <strong>Drop:</strong> ${r.drop}</div>
+                </div>
+              `;
+            })
+            .join("");
+        });
+      } else {
+        authSection.classList.remove("hidden");
+        bookingSection.classList.add("hidden");
+        ridesSection.classList.add("hidden");
+        userPill.style.display = "none";
+        ridesList.innerHTML = "";
+      }
+    });
+  </script>
+</body>
+</html>
