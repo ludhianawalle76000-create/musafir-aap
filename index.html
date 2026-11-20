@@ -37,9 +37,9 @@
     .fare-box { margin-top: 12px; padding: 12px; border-radius: 10px; background: #eaf4f4; border: 1px solid #c7dfdf; }
     .fare-top { display: flex; justify-content: space-between; align-items: center; }
     .fare-amt { font-size: 18px; font-weight: 800; color: #083636; }
-    .split { display: flex; justify-content: space-between; font-size: 11px; color: #4c5e5e; margin-top: 8px; padding-top: 6px; border-top: 1px dashed #c0d6d6; }
     .ride-card { border: 1px solid #dce5e5; border-radius: 10px; padding: 10px; margin-top: 8px; background: #fcfdfd; font-size: 12px; }
     .ride-hd { display: flex; justify-content: space-between; font-weight: 700; color: #0d4f4f; margin-bottom: 3px; }
+    .bill-box { margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: #f2f8f8; border: 1px solid #cde0e0; font-size: 11px; color: #142222; }
     .hide { display: none; }
   </style>
 </head>
@@ -126,12 +126,8 @@
 
       <div class="fare-box">
         <div class="fare-top">
-          <span id="fare-detail" style="font-size:12px;font-weight:700;color:#0d4f4f;">Bike • 10 km</span>
+          <span id="fare-detail" style="font-size:12px;font-weight:700;color:#0d4f4f;">Total Fare • Bike • 10 km</span>
           <span id="fare-total" class="fare-amt">₹74</span>
-        </div>
-        <div class="split">
-          <span id="drv-share">Driver Payout: ₹52</span>
-          <span id="plt-fee">Platform Maintenance: ₹22</span>
         </div>
       </div>
 
@@ -140,7 +136,10 @@
     </div>
 
     <div id="rides-card" class="card hide">
-      <h2>Your Rides</h2>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h2 style="margin-bottom:0;">Your Rides</h2>
+        <button type="button" class="small-btn" onclick="drawRides()">Refresh</button>
+      </div>
       <div id="rides-list"></div>
     </div>
   </div>
@@ -249,13 +248,9 @@
       var effRate = curR * 1.05 * nMult;
       var effMin = Math.round(curM * 1.05 * nMult);
       var total = Math.max(effMin, Math.round(km * effRate));
-      var drv = Math.round(total * 0.70);
-      var maint = total - drv;
 
-      document.getElementById("fare-detail").textContent = curV + " • " + km + " km × ₹" + effRate.toFixed(2) + " (Min ₹" + effMin + ")";
+      document.getElementById("fare-detail").textContent = "Total Fare • " + curV + " • " + km + " km";
       document.getElementById("fare-total").textContent = "₹" + total;
-      document.getElementById("drv-share").textContent = "Driver Payout: ₹" + drv;
-      document.getElementById("plt-fee").textContent = "Platform Maintenance: ₹" + maint;
     }
 
     function bookRide() {
@@ -269,16 +264,12 @@
       loadSharedRides();
       var nMult = nightOn ? 1.5 : 1.0;
       var total = Math.max(Math.round(curM * 1.05 * nMult), Math.round(km * curR * 1.05 * nMult));
-      var drv = Math.round(total * 0.70);
-      var maint = total - drv;
 
       rides.unshift({
         id: "GM" + Math.floor(100 + Math.random() * 900),
         v: curV,
         km: km,
         total: total,
-        drv: drv,
-        maint: maint,
         night: nightOn,
         pickup: pickup,
         drop: drop,
@@ -287,7 +278,7 @@
       saveSharedRides();
       document.getElementById("pickup-inp").value = "";
       document.getElementById("drop-inp").value = "";
-      document.getElementById("book-msg").textContent = curV + " booked • Fare ₹" + total + " • Driver Payout ₹" + drv;
+      document.getElementById("book-msg").textContent = curV + " booked • Total Fare ₹" + total;
       drawRides();
     }
 
@@ -301,10 +292,21 @@
       var out = "";
       for (var i = 0; i < rides.length; i++) {
         var r = rides[i];
+        var st = r.status || "Searching Driver";
+        var billHtml = "";
+        if (st === "Completed") {
+          billHtml = "<div class='bill-box'>" +
+            "<strong>Detailed Bill</strong><br>" +
+            "Ride ID: " + (r.id || "") + " • " + r.v + "<br>" +
+            "Route: " + r.pickup + " → " + r.drop + " (" + r.km + " km)<br>" +
+            (r.night ? "Timing: Night Fare<br>" : "Timing: Day Fare<br>") +
+            "<strong>Total Fare Paid: ₹" + r.total + "</strong>" +
+            "</div>";
+        }
         out += "<div class='ride-card'>" +
-          "<div class='ride-hd'><span>" + r.v + " • ₹" + r.total + " (" + r.km + " km)</span><span>" + (r.status || "Searching Driver") + "</span></div>" +
-          "<div>" + r.pickup + " → " + r.drop + "</div>" +
-          "<div style='color:#5a6b6b;margin-top:2px;'>" + (r.night ? "Night Fare • " : "") + "Driver Payout: ₹" + r.drv + " • Maintenance: ₹" + r.maint + "</div>" +
+          "<div class='ride-hd'><span>" + r.v + " • Total Fare ₹" + r.total + "</span><span>" + st + "</span></div>" +
+          "<div>" + r.pickup + " → " + r.drop + " (" + r.km + " km)</div>" +
+          billHtml +
           "</div>";
       }
       box.innerHTML = out;
