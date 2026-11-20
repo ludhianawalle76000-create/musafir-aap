@@ -172,6 +172,38 @@
     .ride-option .rate { font-size: 11px; color: var(--amber); font-weight: 700; margin-top: 3px; }
     .ride-option .min-fare { font-size: 10px; color: var(--muted); margin-top: 2px; }
 
+    .night-bar {
+      margin-top: 10px;
+      padding: 9px 12px;
+      border-radius: 10px;
+      background: #F4F7F7;
+      border: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+    }
+
+    .night-bar.active-night {
+      background: #FFF4E8;
+      border-color: var(--amber);
+      color: #8A3E00;
+      font-weight: 600;
+    }
+
+    .mini-toggle {
+      background: #fff;
+      border: 1px solid var(--border);
+      color: var(--teal);
+      padding: 5px 9px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
     .fare-preview {
       margin-top: 12px;
       background: #EDF6F6;
@@ -278,285 +310,8 @@
 
     <section id="booking-card" class="card hidden">
       <h2 id="greeting-text">Book a Ride in Ludhiana</h2>
-      <p class="sub">Uber-baseline + 5% smart fare • 15% Platform Fee • 85% Driver Share</p>
+      <p class="sub">15% Platform Fee • 85% Driver Share • +50% Fare (10 PM – 6 AM)</p>
 
       <label>Choose Ride Type</label>
       <div class="ride-types">
-        <div class="ride-option active" data-type="Bike" data-base-rate="7" data-base-min="25">
-          <div class="title">Musafir Bike</div>
-          <div class="rate">₹7.35 / km</div>
-          <div class="min-fare">Min ₹26 (+5%)</div>
-        </div>
-        <div class="ride-option" data-type="E-Rickshaw" data-base-rate="11" data-base-min="35">
-          <div class="title">E-Rickshaw</div>
-          <div class="rate">₹11.55 / km</div>
-          <div class="min-fare">Min ₹37 (+5%)</div>
-        </div>
-        <div class="ride-option" data-type="Cab" data-base-rate="16" data-base-min="70">
-          <div class="title">Musafir Cab</div>
-          <div class="rate">₹16.80 / km</div>
-          <div class="min-fare">Min ₹74 (+5%)</div>
-        </div>
-      </div>
-
-      <label for="pickup-input">Pickup Point (Ludhiana)</label>
-      <input id="pickup-input" type="text" placeholder="e.g., Ferozepur Road / Threeke" />
-
-      <label for="drop-input">Drop Point (Ludhiana)</label>
-      <input id="drop-input" type="text" placeholder="e.g., Railway Station / Clock Tower" />
-
-      <label for="distance-input">Estimated Distance (in km)</label>
-      <input id="distance-input" type="number" step="0.5" min="1" value="3" placeholder="e.g., 5" />
-
-      <div class="fare-preview">
-        <div class="fare-main">
-          <div>
-            <div class="label" id="fare-formula">Bike • 3 km × ₹7.35/km (Min ₹26)</div>
-            <div class="hint" style="margin-top:2px;">Includes +5% over Uber-like baseline rate</div>
-          </div>
-          <div class="amount" id="calculated-fare">₹26</div>
-        </div>
-        <div class="split-row">
-          <span id="driver-share-text">Driver Share (85%): ₹22</span>
-          <span id="platform-fee-text">Platform Fee (15%): ₹4</span>
-        </div>
-      </div>
-
-      <button type="button" class="btn btn-amber" id="btn-confirm-booking">Confirm Ride Booking</button>
-      <div id="booking-status" class="status-msg"></div>
-    </section>
-
-    <section id="rides-card" class="card hidden">
-      <h2>Your Rides</h2>
-      <div id="rides-container"></div>
-    </section>
-  </main>
-
-  <script>
-    (function () {
-      const SURCHARGE = 1.05;
-      const PLATFORM_FEE_RATE = 0.15;
-      let selectedType = "Bike";
-      let selectedRate = Number((7 * SURCHARGE).toFixed(2));
-      let selectedMin = Math.round(25 * SURCHARGE);
-      let sessionPhone = "";
-      let ridesList = [];
-
-      try {
-        sessionPhone = localStorage.getItem("musafir_session_phone") || "";
-        ridesList = JSON.parse(localStorage.getItem("musafir_rides_v5") || "[]");
-      } catch (_) {}
-
-      function setStatus(id, msg, ok) {
-        const el = document.getElementById(id);
-        if (!el) return;
-        el.style.color = ok ? "#16794C" : "#B91C1C";
-        el.textContent = msg;
-      }
-
-      function calculateFare() {
-        const km = parseFloat(document.getElementById("distance-input").value) || 0;
-        return Math.max(selectedMin, Math.round(km * selectedRate));
-      }
-
-      function getFareSplit(totalFare) {
-        const platformFee = Math.round(totalFare * PLATFORM_FEE_RATE);
-        const driverShare = totalFare - platformFee;
-        return { platformFee: platformFee, driverShare: driverShare };
-      }
-
-      function updateFareUI() {
-        const km = parseFloat(document.getElementById("distance-input").value) || 0;
-        const total = calculateFare();
-        const split = getFareSplit(total);
-        document.getElementById("fare-formula").textContent =
-          selectedType + " • " + km + " km × ₹" + selectedRate.toFixed(2) + "/km (Min ₹" + selectedMin + ")";
-        document.getElementById("calculated-fare").textContent = "₹" + total;
-        document.getElementById("driver-share-text").textContent = "Driver Share (85%): ₹" + split.driverShare;
-        document.getElementById("platform-fee-text").textContent = "Platform Fee (15%): ₹" + split.platformFee;
-      }
-
-      function renderRides() {
-        const box = document.getElementById("rides-container");
-        const mine = ridesList.filter(function (r) { return r.phone === sessionPhone; });
-        if (!mine.length) {
-          box.innerHTML = '<p class="sub" style="margin-bottom:0;">No rides yet. Book your first ride above.</p>';
-          return;
-        }
-        box.innerHTML = mine.map(function (r) {
-          return (
-            '<div class="ride-item">' +
-              '<div class="ride-top"><span>' + r.type + ' • ' + r.fare + ' (' + r.km + ' km)</span><span>' + r.status + '</span></div>' +
-              '<div class="ride-meta"><strong>Pickup:</strong> ' + r.pickup + ' → <strong>Drop:</strong> ' + r.drop + '</div>' +
-              '<div class="ride-meta">Driver (85%): ₹' + r.driverShare + ' • Platform Fee (15%): ₹' + r.platformFee + '</div>' +
-            '</div>'
-          );
-        }).join("");
-      }
-
-      function openDashboard() {
-        document.getElementById("login-card").classList.add("hidden");
-        document.getElementById("header-actions").style.display = "flex";
-        document.getElementById("booking-card").classList.remove("hidden");
-        document.getElementById("rides-card").classList.remove("hidden");
-
-        let prof = null;
-        try {
-          prof = JSON.parse(localStorage.getItem("musafir_profile_" + sessionPhone) || "null");
-        } catch (_) {}
-
-        if (prof && prof.firstName) {
-          document.getElementById("greeting-text").textContent = "Hi " + prof.firstName + ", Book a Ride";
-          document.getElementById("prof-first").value = prof.firstName || "";
-          document.getElementById("prof-last").value = prof.lastName || "";
-          document.getElementById("prof-user").value = prof.username || "";
-        } else {
-          document.getElementById("greeting-text").textContent = "Book a Ride (" + sessionPhone + ")";
-        }
-
-        updateFareUI();
-        renderRides();
-      }
-
-      document.getElementById("btn-send-otp").addEventListener("click", function () {
-        const raw = document.getElementById("mobile-input").value.trim().replace(/\s+/g, "");
-        const phone = raw.startsWith("+") ? raw : "+91" + raw;
-        if (phone.length < 12) {
-          setStatus("login-status", "Please enter a valid 10-digit mobile number.", false);
-          return;
-        }
-        sessionPhone = phone;
-        document.getElementById("phone-box").classList.add("hidden");
-        document.getElementById("otp-box").classList.remove("hidden");
-        setStatus("login-status", "OTP sent to " + phone, true);
-      });
-
-      document.getElementById("btn-verify-otp").addEventListener("click", function () {
-        const otp = document.getElementById("otp-input").value.trim();
-        if (!otp || otp.length < 4) {
-          setStatus("login-status", "Please enter the OTP.", false);
-          return;
-        }
-        try {
-          localStorage.setItem("musafir_session_phone", sessionPhone);
-        } catch (_) {}
-        openDashboard();
-      });
-
-      document.getElementById("btn-toggle-profile").addEventListener("click", function () {
-        document.getElementById("profile-card").classList.toggle("hidden");
-        setStatus("profile-status", "", true);
-      });
-
-      document.getElementById("btn-close-profile").addEventListener("click", function () {
-        document.getElementById("profile-card").classList.add("hidden");
-      });
-
-      document.getElementById("btn-save-profile").addEventListener("click", function () {
-        const firstName = document.getElementById("prof-first").value.trim();
-        const lastName = document.getElementById("prof-last").value.trim();
-        const username = document.getElementById("prof-user").value.trim();
-        const pass = document.getElementById("prof-pass").value;
-
-        if (!firstName || !lastName) {
-          setStatus("profile-status", "Please enter First Name and Last Name.", false);
-          return;
-        }
-        if (pass && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/.test(pass)) {
-          setStatus("profile-status", "Password mein 1 small letter, 1 capital letter, 1 number aur 6+ characters hone chahiye.", false);
-          return;
-        }
-
-        try {
-          localStorage.setItem(
-            "musafir_profile_" + sessionPhone,
-            JSON.stringify({ firstName: firstName, lastName: lastName, username: username, passwordSet: Boolean(pass) })
-          );
-        } catch (_) {}
-
-        document.getElementById("prof-pass").value = "";
-        document.getElementById("greeting-text").textContent = "Hi " + firstName + ", Book a Ride";
-        setStatus("profile-status", "Profile saved successfully!", true);
-      });
-
-      document.querySelectorAll(".ride-option").forEach(function (card) {
-        card.addEventListener("click", function () {
-          document.querySelectorAll(".ride-option").forEach(function (item) {
-            item.classList.remove("active");
-          });
-          card.classList.add("active");
-          selectedType = card.getAttribute("data-type");
-          selectedRate = Number((Number(card.getAttribute("data-base-rate")) * SURCHARGE).toFixed(2));
-          selectedMin = Math.round(Number(card.getAttribute("data-base-min")) * SURCHARGE);
-          updateFareUI();
-        });
-      });
-
-      document.getElementById("distance-input").addEventListener("input", updateFareUI);
-
-      document.getElementById("btn-confirm-booking").addEventListener("click", function () {
-        const pickup = document.getElementById("pickup-input").value.trim();
-        const drop = document.getElementById("drop-input").value.trim();
-        const km = parseFloat(document.getElementById("distance-input").value) || 0;
-
-        if (!pickup || !drop) {
-          setStatus("booking-status", "Please enter both pickup and drop locations.", false);
-          return;
-        }
-        if (km <= 0) {
-          setStatus("booking-status", "Please enter valid distance in km.", false);
-          return;
-        }
-
-        const totalFare = calculateFare();
-        const split = getFareSplit(totalFare);
-
-        ridesList.unshift({
-          phone: sessionPhone,
-          type: selectedType,
-          km: km,
-          rate: selectedRate,
-          fare: "₹" + totalFare,
-          driverShare: split.driverShare,
-          platformFee: split.platformFee,
-          pickup: pickup,
-          drop: drop,
-          status: "Searching Driver"
-        });
-
-        try {
-          localStorage.setItem("musafir_rides_v5", JSON.stringify(ridesList));
-        } catch (_) {}
-
-        document.getElementById("pickup-input").value = "";
-        document.getElementById("drop-input").value = "";
-        setStatus(
-          "booking-status",
-          selectedType + " ride booked (₹" + totalFare + " • Driver ₹" + split.driverShare + " • Fee ₹" + split.platformFee + ")!",
-          true
-        );
-        renderRides();
-      });
-
-      document.getElementById("btn-logout").addEventListener("click", function () {
-        try {
-          localStorage.removeItem("musafir_session_phone");
-        } catch (_) {}
-        sessionPhone = "";
-        document.getElementById("header-actions").style.display = "none";
-        document.getElementById("profile-card").classList.add("hidden");
-        document.getElementById("booking-card").classList.add("hidden");
-        document.getElementById("rides-card").classList.add("hidden");
-        document.getElementById("otp-box").classList.add("hidden");
-        document.getElementById("phone-box").classList.remove("hidden");
-        document.getElementById("login-card").classList.remove("hidden");
-        setStatus("login-status", "", true);
-      });
-
-      if (sessionPhone) {
-        openDashboard();
-      }
-    })();
-  </script>
-</body>
-</html>
+        <div class
