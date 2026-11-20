@@ -16,6 +16,7 @@
       --muted: #5A6B6B;
       --border: #DCE5E5;
       --success: #16794C;
+      --danger: #B91C1C;
     }
 
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
@@ -100,6 +101,37 @@
     input:focus {
       outline: none;
       border-color: var(--teal);
+    }
+
+    .captcha-box {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      background: #EDF4F4;
+      border: 1.5px dashed var(--teal);
+      border-radius: 10px;
+      padding: 10px 12px;
+      margin-top: 6px;
+    }
+
+    .captcha-code {
+      font-size: 18px;
+      font-weight: 800;
+      letter-spacing: 3px;
+      color: var(--teal-dark);
+      user-select: none;
+    }
+
+    .refresh-captcha {
+      background: #fff;
+      border: 1px solid var(--border);
+      color: var(--teal);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
     }
 
     .ride-types {
@@ -192,7 +224,7 @@
       margin-top: 4px;
     }
 
-    #recaptcha-container { margin-top: 12px; min-height: 78px; }
+    #recaptcha-container { margin-top: 10px; }
     .hidden { display: none; }
   </style>
 </head>
@@ -206,31 +238,59 @@
     </div>
     <div id="user-pill" class="user-pill">
       <span id="user-phone-label"></span>
-      <button id="logout-btn" class="btn-outline" style="color:#fff;border-color:rgba(255,255,255,0.35);">Logout</button>
+      <button id="logout-btn" type="button" class="btn-outline" style="color:#fff;border-color:rgba(255,255,255,0.35);">Logout</button>
     </div>
   </header>
 
   <main class="container">
+    <!-- Auth + Captcha Card -->
     <section id="auth-section" class="card">
-      <h2>Login with Mobile Number</h2>
-      <p class="sub">Enter your Indian mobile number (+91) to verify OTP and book rides in Ludhiana.</p>
+      <h2>Login & Captcha Verification</h2>
+      <p class="sub">Enter your mobile number (+91), type the captcha code shown below, and send OTP.</p>
 
       <div id="phone-step">
         <label for="phone-input">Mobile Number</label>
         <input id="phone-input" type="tel" placeholder="+91 98XXXXXXXX" value="+91" />
+
+        <label for="captcha-input">Captcha Code</label>
+        <div class="captcha-box">
+          <span id="captcha-display" class="captcha-code">----</span>
+          <button id="refresh-captcha-btn" type="button" class="refresh-captcha">New Code</button>
+        </div>
+        <input id="captcha-input" type="text" maxlength="6" placeholder="Enter captcha code above" />
+
         <div id="recaptcha-container"></div>
-        <button id="send-otp-btn" type="button" class="btn btn-amber">Send OTP</button>
+        <button id="send-otp-btn" type="button" class="btn btn-amber">Verify Captcha & Send OTP</button>
       </div>
 
       <div id="otp-step" class="hidden">
         <label for="otp-input">Enter 6-Digit OTP</label>
         <input id="otp-input" type="text" maxlength="6" placeholder="123456" />
-        <button id="verify-otp-btn" type="button" class="btn btn-teal">Verify & Continue</button>
+        <button id="verify-otp-btn" type="button" class="btn btn-teal">Verify OTP</button>
       </div>
 
       <div id="auth-status" class="status-msg"></div>
     </section>
 
+    <!-- Customer Account & New Password Card -->
+    <section id="account-section" class="card hidden">
+      <h2>Customer Profile & Set New Password</h2>
+      <p class="sub">Create or update your customer account details and set a new password.</p>
+
+      <label for="customer-name-input">Customer Full Name</label>
+      <input id="customer-name-input" type="text" placeholder="e.g., Harvinder Singh" />
+
+      <label for="new-password-input">Set New Password (min. 6 characters)</label>
+      <input id="new-password-input" type="password" placeholder="Enter new password" />
+
+      <label for="confirm-password-input">Confirm New Password</label>
+      <input id="confirm-password-input" type="password" placeholder="Re-enter new password" />
+
+      <button id="save-profile-btn" type="button" class="btn btn-teal">Save Account & New Password</button>
+      <div id="account-status" class="status-msg"></div>
+    </section>
+
+    <!-- Booking Card -->
     <section id="booking-section" class="card hidden">
       <h2>Book a Ride in Ludhiana</h2>
       <p class="sub">Select Bike or Cab, enter pickup & drop location, and confirm.</p>
@@ -257,6 +317,7 @@
       <div id="booking-status" class="status-msg"></div>
     </section>
 
+    <!-- Live Rides Card -->
     <section id="rides-section" class="card hidden">
       <h2>Your Live & Recent Rides</h2>
       <p class="sub">Synced directly with Cloud Firestore.</p>
@@ -269,7 +330,7 @@
       const el = document.getElementById("auth-status");
       if (el) {
         el.style.color = "#B91C1C";
-        el.textContent = "Page error: " + (e.message || "Script failed to load");
+        el.textContent = "Error: " + (e.message || "Script error");
       }
     });
   </script>
@@ -287,6 +348,9 @@
       getFirestore,
       collection,
       addDoc,
+      doc,
+      setDoc,
+      getDoc,
       query,
       where,
       orderBy,
@@ -308,46 +372,65 @@
     const auth = getAuth(app);
     const db = getFirestore(app);
 
+    let currentCaptcha = "";
     let confirmationResult = null;
     let selectedRideType = "Bike";
     let selectedFare = "₹29 onwards";
     let unsubscribeRides = null;
 
     const authSection = document.getElementById("auth-section");
+    const accountSection = document.getElementById("account-section");
     const bookingSection = document.getElementById("booking-section");
     const ridesSection = document.getElementById("rides-section");
     const phoneStep = document.getElementById("phone-step");
     const otpStep = document.getElementById("otp-step");
     const authStatus = document.getElementById("auth-status");
+    const accountStatus = document.getElementById("account-status");
     const bookingStatus = document.getElementById("booking-status");
     const ridesList = document.getElementById("rides-list");
     const userPill = document.getElementById("user-pill");
     const userPhoneLabel = document.getElementById("user-phone-label");
+    const captchaDisplay = document.getElementById("captcha-display");
+    const captchaInput = document.getElementById("captcha-input");
 
-    async function initRecaptcha() {
-      try {
-        if (!window.recaptchaVerifier) {
-          window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
-            size: "normal"
-          });
-          await window.recaptchaVerifier.render();
-        }
-      } catch (err) {
-        authStatus.style.color = "#B91C1C";
-        authStatus.textContent = "reCAPTCHA error: " + (err.message || err);
+    function generateCaptcha() {
+      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
+      let code = "";
+      for (let i = 0; i < 5; i++) {
+        code += chars[Math.floor(Math.random() * chars.length)];
+      }
+      currentCaptcha = code;
+      captchaDisplay.textContent = currentCaptcha;
+      captchaInput.value = "";
+    }
+
+    generateCaptcha();
+    document.getElementById("refresh-captcha-btn").addEventListener("click", generateCaptcha);
+
+    function ensureRecaptcha() {
+      if (!window.recaptchaVerifier) {
+        window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+          size: "invisible"
+        });
       }
     }
 
-    initRecaptcha();
-
     document.getElementById("send-otp-btn").addEventListener("click", async () => {
+      const enteredCaptcha = captchaInput.value.trim().toUpperCase();
+      if (!enteredCaptcha || enteredCaptcha !== currentCaptcha) {
+        authStatus.style.color = "#B91C1C";
+        authStatus.textContent = "Captcha code galat hai. Sahi code daalein ya New Code dabayein.";
+        return;
+      }
+
       const rawPhone = document.getElementById("phone-input").value.trim().replace(/\s+/g, "");
       const phone = rawPhone.startsWith("+") ? rawPhone : `+91${rawPhone}`;
+
       authStatus.style.color = "#0D4F4F";
-      authStatus.textContent = "Sending OTP...";
+      authStatus.textContent = "Captcha verified! Sending OTP...";
 
       try {
-        await initRecaptcha();
+        ensureRecaptcha();
         confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
         phoneStep.classList.add("hidden");
         otpStep.classList.remove("hidden");
@@ -356,6 +439,7 @@
       } catch (err) {
         authStatus.style.color = "#B91C1C";
         authStatus.textContent = err.message || "Failed to send OTP.";
+        generateCaptcha();
       }
     });
 
@@ -368,10 +452,57 @@
       try {
         await confirmationResult.confirm(code);
         authStatus.style.color = "#16794C";
-        authStatus.textContent = "Verified! Welcome to Go Musafir.";
+        authStatus.textContent = "Verified! Ab aap apna account aur new password set kar sakte hain.";
       } catch (err) {
         authStatus.style.color = "#B91C1C";
         authStatus.textContent = err.message || "Invalid OTP.";
+      }
+    });
+
+    document.getElementById("save-profile-btn").addEventListener("click", async () => {
+      const user = auth.currentUser;
+      if (!user) return;
+
+      const name = document.getElementById("customer-name-input").value.trim();
+      const pass = document.getElementById("new-password-input").value;
+      const confirmPass = document.getElementById("confirm-password-input").value;
+
+      if (!name) {
+        accountStatus.style.color = "#B91C1C";
+        accountStatus.textContent = "Please enter customer full name.";
+        return;
+      }
+      if (pass.length < 6) {
+        accountStatus.style.color = "#B91C1C";
+        accountStatus.textContent = "Password kam se kam 6 characters ka hona chahiye.";
+        return;
+      }
+      if (pass !== confirmPass) {
+        accountStatus.style.color = "#B91C1C";
+        accountStatus.textContent = "Both passwords match nahi kar rahe.";
+        return;
+      }
+
+      accountStatus.style.color = "#0D4F4F";
+      accountStatus.textContent = "Saving customer account & password...";
+
+      try {
+        await setDoc(doc(db, "customers", user.uid), {
+          uid: user.uid,
+          phone: user.phoneNumber || "",
+          fullName: name,
+          passwordSet: true,
+          passwordKey: pass,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+
+        document.getElementById("new-password-input").value = "";
+        document.getElementById("confirm-password-input").value = "";
+        accountStatus.style.color = "#16794C";
+        accountStatus.textContent = "Customer account aur new password save ho gaya!";
+      } catch (err) {
+        accountStatus.style.color = "#B91C1C";
+        accountStatus.textContent = err.message || "Could not save profile.";
       }
     });
 
@@ -427,16 +558,25 @@
       await signOut(auth);
       otpStep.classList.add("hidden");
       phoneStep.classList.remove("hidden");
+      generateCaptcha();
       authStatus.textContent = "";
     });
 
-    onAuthStateChanged(auth, (user) => {
+    onAuthStateChanged(auth, async (user) => {
       if (user) {
         authSection.classList.add("hidden");
+        accountSection.classList.remove("hidden");
         bookingSection.classList.remove("hidden");
         ridesSection.classList.remove("hidden");
         userPill.style.display = "flex";
         userPhoneLabel.textContent = user.phoneNumber || "Logged In";
+
+        try {
+          const snap = await getDoc(doc(db, "customers", user.uid));
+          if (snap.exists() && snap.data().fullName) {
+            document.getElementById("customer-name-input").value = snap.data().fullName;
+          }
+        } catch (_) {}
 
         const q = query(
           collection(db, "rides"),
@@ -452,5 +592,29 @@
           }
 
           ridesList.innerHTML = snapshot.docs
-            .map((doc) => {
-              const r = doc.data();
+            .map((docSnap) => {
+              const r = docSnap.data();
+              return `
+                <div class="ride-item">
+                  <div class="ride-top">
+                    <span>${r.rideType} • ${r.estimatedFare}</span>
+                    <span>${r.status}</span>
+                  </div>
+                  <div class="ride-meta"><strong>Pickup:</strong> ${r.pickup} → <strong>Drop:</strong> ${r.drop}</div>
+                </div>
+              `;
+            })
+            .join("");
+        });
+      } else {
+        authSection.classList.remove("hidden");
+        accountSection.classList.add("hidden");
+        bookingSection.classList.add("hidden");
+        ridesSection.classList.add("hidden");
+        userPill.style.display = "none";
+        ridesList.innerHTML = "";
+      }
+    });
+  </script>
+</body>
+</html>
