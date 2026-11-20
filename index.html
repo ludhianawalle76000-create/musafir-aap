@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Go Musafir — Cab & Bike Rides</title>
+  <title>Go Musafir — Create Account</title>
   <style>
     :root {
       --teal: #0D4F4F;
@@ -37,39 +37,39 @@
       position: sticky;
       top: 0;
       z-index: 20;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.12);
     }
 
     .brand h1 { font-size: 19px; font-weight: 700; }
     .brand p { font-size: 11px; color: #CBE2E2; }
 
-    .user-pill {
-      background: rgba(255,255,255,0.14);
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 12px;
-      display: none;
-      align-items: center;
-      gap: 8px;
-    }
-
     .container {
-      max-width: 540px;
+      max-width: 500px;
       margin: 0 auto;
-      padding: 18px 14px 48px;
+      padding: 20px 14px 48px;
     }
 
     .card {
       background: var(--card);
       border: 1px solid var(--border);
       border-radius: 16px;
-      padding: 18px;
+      padding: 20px;
       margin-bottom: 16px;
       box-shadow: 0 4px 16px rgba(13,79,79,0.06);
     }
 
+    .step-tag {
+      display: inline-block;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--teal);
+      background: #E6F2F2;
+      padding: 4px 10px;
+      border-radius: 999px;
+      margin-bottom: 8px;
+    }
+
     .card h2 {
-      font-size: 17px;
+      font-size: 18px;
       color: var(--teal);
       margin-bottom: 6px;
     }
@@ -109,46 +109,32 @@
       margin-top: 4px;
     }
 
-    .captcha-box {
+    .btn-row {
       display: flex;
-      align-items: center;
-      justify-content: space-between;
       gap: 10px;
-      background: #EDF4F4;
-      border: 1.5px dashed var(--teal);
-      border-radius: 10px;
-      padding: 10px 12px;
-      margin-top: 6px;
+      margin-top: 16px;
     }
 
-    .captcha-code {
-      font-size: 18px;
-      font-weight: 800;
-      letter-spacing: 3px;
-      color: var(--teal-dark);
-      user-select: none;
-    }
-
-    .refresh-captcha {
-      background: #fff;
-      border: 1px solid var(--border);
-      color: var(--teal);
-      padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 12px;
+    .btn {
+      width: 100%;
+      border: none;
+      border-radius: 11px;
+      padding: 13px 16px;
+      font-size: 14px;
       font-weight: 700;
       cursor: pointer;
     }
 
-    .badge-2fa {
-      display: inline-block;
-      background: #E6F4EE;
-      color: var(--success);
-      font-size: 11px;
-      font-weight: 700;
-      padding: 4px 10px;
-      border-radius: 999px;
-      margin-bottom: 10px;
+    .btn-amber { background: var(--amber); color: #fff; }
+    .btn-amber:hover { background: var(--amber-hover); }
+    .btn-teal { background: var(--teal); color: #fff; }
+    .btn-back { background: #E9EFEF; color: var(--text); width: auto; padding: 13px 16px; }
+
+    .status-msg {
+      margin-top: 12px;
+      font-size: 13px;
+      font-weight: 600;
+      min-height: 18px;
     }
 
     .ride-types {
@@ -165,7 +151,6 @@
       cursor: pointer;
       text-align: center;
       background: #FAFDFD;
-      transition: 0.15s;
     }
 
     .ride-option.active {
@@ -175,49 +160,6 @@
 
     .ride-option .title { font-weight: 700; font-size: 14px; color: var(--teal); }
     .ride-option .fare { font-size: 12px; color: var(--amber); font-weight: 700; margin-top: 3px; }
-
-    .btn {
-      width: 100%;
-      border: none;
-      border-radius: 11px;
-      padding: 13px 16px;
-      font-size: 15px;
-      font-weight: 700;
-      cursor: pointer;
-      margin-top: 14px;
-      transition: 0.15s;
-    }
-
-    .btn-amber {
-      background: var(--amber);
-      color: #fff;
-    }
-
-    .btn-amber:hover { background: var(--amber-hover); }
-
-    .btn-teal {
-      background: var(--teal);
-      color: #fff;
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 6px 10px;
-      font-size: 12px;
-      border-radius: 8px;
-      cursor: pointer;
-    }
-
-    .status-msg {
-      margin-top: 10px;
-      font-size: 13px;
-      font-weight: 600;
-      color: var(--success);
-      min-height: 18px;
-      word-break: break-word;
-    }
 
     .ride-item {
       border: 1px solid var(--border);
@@ -235,13 +177,7 @@
       color: var(--teal);
     }
 
-    .ride-meta {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    #recaptcha-container { margin-top: 10px; }
+    .ride-meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
     .hidden { display: none; }
   </style>
 </head>
@@ -253,164 +189,233 @@
         <p>Bike & Cab Rides • Safe & Fast</p>
       </div>
     </div>
-    <div id="user-pill" class="user-pill">
-      <span id="user-phone-label"></span>
-      <button id="logout-btn" type="button" class="btn-outline" onclick="logoutApp()" style="color:#fff;border-color:rgba(255,255,255,0.35);">Logout</button>
-    </div>
   </header>
 
   <main class="container">
-    <!-- Step 1: Create Account + Password + 2-Step Security PIN -->
-    <section id="account-section" class="card">
-      <span class="badge-2fa">2-Step Verification Enabled</span>
-      <h2>Create Account & Set Password</h2>
-      <p class="sub">Set your strong password and 4-digit 2-Step Verification PIN to protect your account.</p>
+    <!-- Step 1: First Name, Last Name & Username -->
+    <section id="step-1" class="card">
+      <span class="step-tag">Step 1 of 3</span>
+      <h2>Create your Go Musafir Account</h2>
+      <p class="sub">Enter your first name, last name, and username.</p>
 
-      <label for="customer-name-input">Customer Full Name</label>
-      <input id="customer-name-input" type="text" placeholder="e.g., Harvinder Singh" />
+      <label for="first-name">First Name</label>
+      <input id="first-name" type="text" placeholder="e.g., Harvinder" />
 
-      <label for="account-phone-input">Mobile Number</label>
-      <input id="account-phone-input" type="tel" placeholder="+91 98XXXXXXXX" value="+91" />
+      <label for="last-name">Last Name</label>
+      <input id="last-name" type="text" placeholder="e.g., Singh" />
 
-      <label for="set-password-input">Set Password</label>
-      <input id="set-password-input" type="password" placeholder="e.g., Musafir1" />
+      <label for="username">Username</label>
+      <input id="username" type="text" placeholder="e.g., harvinder.musafir" />
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-teal" onclick="goToStep2()">Next</button>
+      </div>
+      <div id="status-1" class="status-msg"></div>
+    </section>
+
+    <!-- Step 2: Phone Number & OTP Verification -->
+    <section id="step-2" class="card hidden">
+      <span class="step-tag">Step 2 of 3</span>
+      <h2>Verify Phone Number</h2>
+      <p class="sub">Enter your mobile number to verify OTP.</p>
+
+      <label for="phone-num">Phone Number</label>
+      <input id="phone-num" type="tel" value="+91" placeholder="+91 98XXXXXXXX" />
+
+      <div id="otp-box" class="hidden">
+        <label for="otp-code">Enter OTP</label>
+        <input id="otp-code" type="text" maxlength="6" placeholder="123456" />
+        <div class="hint">Test OTP ke liye koi bhi 6-digit code (jaise 123456) daal sakte hain.</div>
+      </div>
+
+      <div class="btn-row">
+        <button type="button" class="btn btn-back" onclick="showStep('step-1')">Back</button>
+        <button id="send-otp-action" type="button" class="btn btn-amber" onclick="sendOtpFlow()">Send OTP</button>
+        <button id="verify-otp-action" type="button" class="btn btn-teal hidden" onclick="verifyOtpFlow()">Verify & Next</button>
+      </div>
+      <div id="status-2" class="status-msg"></div>
+    </section>
+
+    <!-- Step 3: Set Password & Confirm Password -->
+    <section id="step-3" class="card hidden">
+      <span class="step-tag">Step 3 of 3</span>
+      <h2>Create a Strong Password</h2>
+      <p class="sub">Create a password with small letter, capital letter, and number.</p>
+
+      <label for="new-pass">Set Password</label>
+      <input id="new-pass" type="password" placeholder="e.g., Musafir1" />
       <div class="hint">Must include: 1 small letter (a-z), 1 capital letter (A-Z), and 1 number (0-9).</div>
 
-      <label for="confirm-password-input">Confirm Password</label>
-      <input id="confirm-password-input" type="password" placeholder="Re-enter password" />
+      <label for="conf-pass">Confirm Password</label>
+      <input id="conf-pass" type="password" placeholder="Re-enter password" />
 
-      <label for="two-step-pin-input">Set 4-Digit 2-Step Security PIN</label>
-      <input id="two-step-pin-input" type="password" inputmode="numeric" maxlength="4" placeholder="e.g., 2580" />
-      <div class="hint">Yeh 4-digit PIN har login par Step-2 verification mein poocha jayega.</div>
-
-      <button id="create-account-btn" type="button" class="btn btn-teal" onclick="handleCreateAccount()">Create Account & Enable 2-Step</button>
-      <div id="account-status" class="status-msg"></div>
+      <div class="btn-row">
+        <button type="button" class="btn btn-back" onclick="showStep('step-2')">Back</button>
+        <button type="button" class="btn btn-teal" onclick="completeAccountFlow()">Save & Finish</button>
+      </div>
+      <div id="status-3" class="status-msg"></div>
     </section>
 
-    <!-- Step 2: Login with Password + Captcha + OTP -->
-    <section id="auth-section" class="card">
-      <h2>Step 1 Login: Password, Captcha & OTP</h2>
-      <p class="sub">Enter mobile number, password, and captcha code to request OTP.</p>
-
-      <div id="phone-step">
-        <label for="phone-input">Mobile Number</label>
-        <input id="phone-input" type="tel" placeholder="+91 98XXXXXXXX" value="+91" />
-
-        <label for="login-password-input">Account Password</label>
-        <input id="login-password-input" type="password" placeholder="Enter your password" />
-
-        <label for="captcha-input">Captcha Code</label>
-        <div class="captcha-box">
-          <span id="captcha-display" class="captcha-code">----</span>
-          <button id="refresh-captcha-btn" type="button" class="refresh-captcha" onclick="generateCaptcha()">New Code</button>
-        </div>
-        <input id="captcha-input" type="text" maxlength="6" placeholder="Enter captcha code above" />
-
-        <div id="recaptcha-container"></div>
-        <button id="send-otp-btn" type="button" class="btn btn-amber" onclick="handleSendOtp()">Verify Password, Captcha & Send OTP</button>
-      </div>
-
-      <div id="otp-step" class="hidden">
-        <label for="otp-input">Enter 6-Digit OTP</label>
-        <input id="otp-input" type="text" maxlength="6" placeholder="123456" />
-        <button id="verify-otp-btn" type="button" class="btn btn-teal" onclick="handleVerifyOtp()">Verify OTP & Go to Step 2</button>
-      </div>
-
-      <div id="auth-status" class="status-msg"></div>
-    </section>
-
-    <!-- Step 3: 2-Step Verification Gate -->
-    <section id="two-step-section" class="card hidden">
-      <span class="badge-2fa">Step 2 of 2 • Security Check</span>
-      <h2>2-Step Verification</h2>
-      <p class="sub">OTP verified! Ab ride booking unlock karne ke liye apna <strong>4-Digit Security PIN</strong> (ya neeche dikh raha 2-Step Security Code) enter karein.</p>
-
-      <div class="captcha-box">
-        <div>
-          <div class="hint" style="margin:0;">Backup 2-Step Security Code</div>
-          <span id="backup-2fa-code" class="captcha-code">----</span>
-        </div>
-        <button id="refresh-2fa-btn" type="button" class="refresh-captcha" onclick="generateBackup2FA()">New 2FA Code</button>
-      </div>
-
-      <label for="verify-2fa-input">Enter 4-Digit Security PIN or 2FA Code</label>
-      <input id="verify-2fa-input" type="password" maxlength="6" placeholder="Enter your 4-digit PIN or code above" />
-
-      <button id="verify-2fa-btn" type="button" class="btn btn-teal" onclick="handleVerify2FA()">Complete 2-Step Verification</button>
-      <div id="two-step-status" class="status-msg"></div>
-    </section>
-
-    <!-- Booking Card -->
-    <section id="booking-section" class="card hidden">
-      <h2>Book a Ride in Ludhiana</h2>
-      <p class="sub">2-Step Verified! Select Bike or Cab, enter pickup & drop location, and confirm.</p>
+    <!-- Ready App Screen -->
+    <section id="app-home" class="card hidden">
+      <span class="step-tag">Account Ready</span>
+      <h2 id="welcome-heading">Welcome to Go Musafir</h2>
+      <p id="account-summary" class="sub"></p>
 
       <label>Choose Ride Type</label>
       <div class="ride-types">
-        <div class="ride-option active" data-type="Bike" data-fare="₹29 onwards" onclick="selectRide(this)">
+        <div class="ride-option active" data-type="Bike" data-fare="₹29 onwards" onclick="pickRide(this)">
           <div class="title">Musafir Bike</div>
           <div class="fare">₹29 onwards</div>
         </div>
-        <div class="ride-option" data-type="Cab" data-fare="₹79 onwards" onclick="selectRide(this)">
+        <div class="ride-option" data-type="Cab" data-fare="₹79 onwards" onclick="pickRide(this)">
           <div class="title">Musafir Cab</div>
           <div class="fare">₹79 onwards</div>
         </div>
       </div>
 
-      <label for="pickup-input">Pickup Point (Ludhiana)</label>
-      <input id="pickup-input" type="text" placeholder="e.g., Ferozepur Road / Clock Tower / Threeke" />
+      <label for="pickup">Pickup Point (Ludhiana)</label>
+      <input id="pickup" type="text" placeholder="e.g., Ferozepur Road / Threeke" />
 
-      <label for="drop-input">Drop Point (Ludhiana)</label>
-      <input id="drop-input" type="text" placeholder="e.g., Railway Station / Sarabha Nagar / Bus Stand" />
+      <label for="drop">Drop Point (Ludhiana)</label>
+      <input id="drop" type="text" placeholder="e.g., Railway Station / Clock Tower" />
 
-      <button id="book-ride-btn" type="button" class="btn btn-amber" onclick="handleBookRide()">Confirm Ride Booking</button>
-      <div id="booking-status" class="status-msg"></div>
-    </section>
-
-    <!-- Live Rides Card -->
-    <section id="rides-section" class="card hidden">
-      <h2>Your Live & Recent Rides</h2>
-      <p class="sub">Synced directly with Cloud Firestore.</p>
-      <div id="rides-list"></div>
+      <button type="button" class="btn btn-amber" onclick="bookMyRide()">Confirm Ride Booking</button>
+      <div id="ride-status" class="status-msg"></div>
+      <div id="rides-container"></div>
     </section>
   </main>
 
   <script>
-    let currentCaptcha = "";
-    let currentBackup2FA = "";
-    let savedPin = "";
-    let twoStepPassed = false;
-    let selectedRideType = "Bike";
+    let selectedType = "Bike";
     let selectedFare = "₹29 onwards";
-    let localRides = JSON.parse(localStorage.getItem("musafir_local_rides") || "[]");
+    let userAccount = JSON.parse(localStorage.getItem("go_musafir_user") || "null");
+    let ridesData = JSON.parse(localStorage.getItem("go_musafir_rides") || "[]");
 
-    function normalizePhone(raw) {
-      const cleaned = (raw || "").trim().replace(/\s+/g, "");
-      return cleaned.startsWith("+") ? cleaned : `+91${cleaned}`;
+    function showStep(stepId) {
+      ["step-1", "step-2", "step-3", "app-home"].forEach((id) => {
+        document.getElementById(id).classList.add("hidden");
+      });
+      document.getElementById(stepId).classList.remove("hidden");
     }
 
-    function isStrongPassword(pass) {
-      return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/.test(pass || "");
+    function setMsg(id, text, ok) {
+      const el = document.getElementById(id);
+      el.style.color = ok ? "#16794C" : "#B91C1C";
+      el.textContent = text;
     }
 
-    function generateCaptcha() {
-      const chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-      let code = "";
-      for (let i = 0; i < 5; i++) {
-        code += chars[Math.floor(Math.random() * chars.length)];
+    function goToStep2() {
+      const fn = document.getElementById("first-name").value.trim();
+      const ln = document.getElementById("last-name").value.trim();
+      const un = document.getElementById("username").value.trim();
+
+      if (!fn || !ln || !un) {
+        setMsg("status-1", "Please fill First Name, Last Name, and Username.", false);
+        return;
       }
-      currentCaptcha = code;
-      const el = document.getElementById("captcha-display");
-      const inp = document.getElementById("captcha-input");
-      if (el) el.textContent = currentCaptcha;
-      if (inp) inp.value = "";
+      setMsg("status-1", "", true);
+      showStep("step-2");
     }
 
-    function generateBackup2FA() {
-      currentBackup2FA = String(Math.floor(100000 + Math.random() * 900000));
-      const el = document.getElementById("backup-2fa-code");
-      if (el) el.textContent = currentBackup2FA;
+    function sendOtpFlow() {
+      const raw = document.getElementById("phone-num").value.trim().replace(/\s+/g, "");
+      const phone = raw.startsWith("+") ? raw : "+91" + raw;
+      if (phone.length < 12) {
+        setMsg("status-2", "Please enter a valid 10-digit mobile number.", false);
+        return;
+      }
+      document.getElementById("otp-box").classList.remove("hidden");
+      document.getElementById("send-otp-action").classList.add("hidden");
+      document.getElementById("verify-otp-action").classList.remove("hidden");
+      setMsg("status-2", "OTP sent to " + phone + " (Test OTP: 123456).", true);
     }
 
-    generateCaptcha();
-    generateBackup2FA();
+    function verifyOtpFlow() {
+      const otp = document.getElementById("otp-code").value.trim();
+      if (!otp || otp.length < 4) {
+        setMsg("status-2", "Please enter the OTP.", false);
+        return;
+      }
+      setMsg("status-2", "", true);
+      showStep("step-3");
+    }
+
+    function completeAccountFlow() {
+      const pass = document.getElementById("new-pass").value;
+      const conf = document.getElementById("conf-pass").value;
+
+      if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/.test(pass)) {
+        setMsg("status-3", "Password mein 1 small letter, 1 capital letter, 1 number aur 6+ characters hone chahiye.", false);
+        return;
+      }
+      if (pass !== conf) {
+        setMsg("status-3", "Password aur Confirm Password match nahi kar rahe.", false);
+        return;
+      }
+
+      const fn = document.getElementById("first-name").value.trim();
+      const ln = document.getElementById("last-name").value.trim();
+      const un = document.getElementById("username").value.trim();
+      const raw = document.getElementById("phone-num").value.trim().replace(/\s+/g, "");
+      const phone = raw.startsWith("+") ? raw : "+91" + raw;
+
+      userAccount = { firstName: fn, lastName: ln, username: un, phone, passwordSet: true };
+      localStorage.setItem("go_musafir_user", JSON.stringify(userAccount));
+      openAppHome();
+    }
+
+    function openAppHome() {
+      if (!userAccount) return;
+      document.getElementById("welcome-heading").textContent = "Welcome, " + userAccount.firstName + " " + userAccount.lastName;
+      document.getElementById("account-summary").textContent = "@" + userAccount.username + " • " + userAccount.phone;
+      renderRides();
+      showStep("app-home");
+    }
+
+    function pickRide(el) {
+      document.querySelectorAll(".ride-option").forEach((item) => item.classList.remove("active"));
+      el.classList.add("active");
+      selectedType = el.dataset.type;
+      selectedFare = el.dataset.fare;
+    }
+
+    function bookMyRide() {
+      const pickup = document.getElementById("pickup").value.trim();
+      const drop = document.getElementById("drop").value.trim();
+      if (!pickup || !drop) {
+        setMsg("ride-status", "Please enter pickup and drop location.", false);
+        return;
+      }
+      ridesData.unshift({ type: selectedType, fare: selectedFare, pickup, drop, status: "Searching Driver" });
+      localStorage.setItem("go_musafir_rides", JSON.stringify(ridesData));
+      document.getElementById("pickup").value = "";
+      document.getElementById("drop").value = "";
+      setMsg("ride-status", selectedType + " ride booked in Ludhiana!", true);
+      renderRides();
+    }
+
+    function renderRides() {
+      const box = document.getElementById("rides-container");
+      if (!ridesData.length) {
+        box.innerHTML = "";
+        return;
+      }
+      box.innerHTML = ridesData
+        .map(
+          (r) => `
+          <div class="ride-item">
+            <div class="ride-top"><span>${r.type} • ${r.fare}</span><span>${r.status}</span></div>
+            <div class="ride-meta"><strong>Pickup:</strong> ${r.pickup} → <strong>Drop:</strong> ${r.drop}</div>
+          </div>
+        `
+        )
+        .join("");
+    }
+
+    if (userAccount) {
+      openAppHome();
+    }
+  </script>
+</body>
+</html>
