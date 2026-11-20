@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Go Musafir — Driver & Verification</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
+    body { background: #f4f7f7; color: #142222; padding-bottom: 40px; }
+    header { background: #0d4f4f; color: #fff; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
+    header h1 { font-size: 18px; }
+    header p { font-size: 11px; color: #cde5e5; }
+    .hdr-link { background: rgba(255,255,255,0.18); color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,0.35); padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; }
+    .wrap { max-width: 520px; margin: 16px auto; padding: 0 12px; }
+    .card { background: #fff; border: 1px solid #dce5e5; border-radius: 14px; padding: 18px; margin-bottom: 14px; }
+    h2 { font-size: 17px; color: #0d4f4f; margin-bottom: 6px; }
+    .sub { font-size: 12px; color: #5a6b6b; margin-bottom: 12px; }
+    label { display: block; font-size: 12px; font-weight: 700; color: #0d4f4f; margin: 10px 0 4px; }
+    input, select { width: 100%; padding: 11px 12px; border: 1.5px solid #cfdcdc; border-radius: 10px; font-size: 14px; background: #fff; }
+    .btn { width: 100%; border: none; border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 12px; }
+    .btn-amber { background: #e07a22; color: #fff; }
+    .btn-teal { background: #0d4f4f; color: #fff; }
+    .btn-green { background: #16794c; color: #fff; }
+    .msg { margin-top: 10px; font-size: 12px; font-weight: 700; min-height: 16px; color: #16794c; }
+    .badge-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+    .badge { padding: 5px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .pending { background: #fff3e6; color: #9a4500; border: 1px solid #e07a22; }
+    .verified { background: #e6f6ee; color: #16794c; border: 1px solid #16794c; }
+    .ride-box { border: 1px solid #dce5e5; border-radius: 10px; padding: 12px; margin-top: 10px; background: #fcfdfd; font-size: 12px; }
+    .ride-top { display: flex; justify-content: space-between; font-weight: 700; color: #0d4f4f; margin-bottom: 4px; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .hide { display: none; }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Go Musafir Driver</h1>
+      <p>Ludhiana Partner & Document Verification</p>
+    </div>
+    <a class="hdr-link" href="index.html">Passenger App</a>
+  </header>
+
+  <div class="wrap">
+    <div id="drv-login" class="card">
+      <h2>Driver Login</h2>
+      <p class="sub">Enter mobile number and verify with OTP 123456.</p>
+      <div id="d-phone-step">
+        <label for="d-phone">Driver Mobile Number</label>
+        <input id="d-phone" type="tel" value="+919876543210" />
+        <button type="button" class="btn btn-amber" onclick="dSendOtp()">Send OTP</button>
+      </div>
+      <div id="d-otp-step" class="hide">
+        <label for="d-otp">Enter OTP</label>
+        <input id="d-otp" type="text" maxlength="6" value="123456" />
+        <button type="button" class="btn btn-teal" onclick="dVerifyOtp()">Verify & Continue</button>
+      </div>
+      <div id="d-login-msg" class="msg"></div>
+    </div>
+
+    <div id="drv-panel" class="card hide">
+      <div class="badge-row">
+        <h2 id="d-title" style="margin-bottom:0;">Driver Profile</h2>
+        <span id="doc-badge" class="badge pending">Pending Verification</span>
+      </div>
+      <p class="sub">Complete vehicle & document details. Verified drivers get 85% ride share.</p>
+
+      <label for="d-name">Driver Full Name</label>
+      <input id="d-name" type="text" placeholder="e.g., Gurpreet Singh" />
+
+      <label for="d-vehicle">Vehicle Type</label>
+      <select id="d-vehicle">
+        <option value="Bike">Musafir Bike (85% share)</option>
+        <option value="E-Rickshaw">E-Rickshaw (85% share)</option>
+        <option value="Cab">Musafir Cab (85% share)</option>
+      </select>
+
+      <label for="d-vno">Vehicle Number (Ludhiana / Punjab)</label>
+      <input id="d-vno" type="text" placeholder="e.g., PB10XX1234" />
+
+      <label for="d-dl">Driving Licence Number</label>
+      <input id="d-dl" type="text" placeholder="e.g., PB10-20160012345" />
+
+      <label for="d-id">Aadhaar / ID & RC Reference</label>
+      <input id="d-id" type="text" placeholder="e.g., ID last 4 digits / RC status" />
+
+      <button type="button" class="btn btn-teal" onclick="saveDriverDocs()">Submit Documents for Verification</button>
+      <button type="button" class="btn btn-green" onclick="approveDriverDocs()">Admin Check: Mark Verified</button>
+      <div id="d-doc-msg" class="msg"></div>
+    </div>
+
+    <div id="drv-rides" class="card hide">
+      <div class="badge-row">
+        <h2 style="margin-bottom:0;">Duty & Available Rides</h2>
+        <button type="button" class="hdr-link" style="color:#0d4f4f;border-color:#0d4f4f;background:#eaf4f4;cursor:pointer;" id="duty-btn" onclick="toggleDuty()">Status: Offline</button>
+      </div>
+      <p class="sub">Go Online after document verification to accept rides.</p>
+      <div id="d-rides-list"></div>
+    </div>
+  </div>
+
+  <script>
+    var dPhone = "";
+    var isVerified = false;
+    var isOnline = false;
+    var sampleRides = [
+      { id: "GM101", v: "Cab", km: 10, total: 168, drv: 143, fee: 25, pickup: "Threeke", drop: "Clock Tower", status: "Available" },
+      { id: "GM102", v: "Bike", km: 5, total: 37, drv: 31, fee: 6, pickup: "Ferozepur Road", drop: "Bus Stand", status: "Available" }
+    ];
+
+    function dSendOtp() {
+      dPhone = document.getElementById("d-phone").value.trim() || "+919876
