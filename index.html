@@ -10,6 +10,8 @@
     header { background: #0d4f4f; color: #fff; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
     header h1 { font-size: 18px; }
     header p { font-size: 11px; color: #cde5e5; }
+    .hdr-right { display: flex; align-items: center; gap: 8px; }
+    .hdr-link { background: rgba(255,255,255,0.18); color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,0.35); padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; }
     .hdr-btns { display: none; gap: 8px; }
     .hdr-btn { background: rgba(255,255,255,0.18); color: #fff; border: 1px solid rgba(255,255,255,0.35); padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
     .wrap { max-width: 500px; margin: 16px auto; padding: 0 12px; }
@@ -47,9 +49,12 @@
       <h1>Go Musafir</h1>
       <p>Ludhiana Bike, E-Rickshaw & Cab</p>
     </div>
-    <div id="hdr-btns" class="hdr-btns">
-      <button type="button" class="hdr-btn" onclick="toggleProfile()">Profile</button>
-      <button type="button" class="hdr-btn" onclick="logout()">Logout</button>
+    <div class="hdr-right">
+      <a class="hdr-link" href="driver.html">Driver App</a>
+      <div id="hdr-btns" class="hdr-btns">
+        <button type="button" class="hdr-btn" onclick="toggleProfile()">Profile</button>
+        <button type="button" class="hdr-btn" onclick="logout()">Logout</button>
+      </div>
     </div>
   </header>
 
@@ -84,7 +89,7 @@
 
     <div id="book-card" class="card hide">
       <h2 id="book-title">Book a Ride</h2>
-      <p class="sub">+5% Uber baseline • 15% Platform Fee • 85% Driver Share</p>
+      <p class="sub">Ludhiana local rides • Night fare active 10 PM – 6 AM</p>
 
       <label>Select Ride</label>
       <div class="grid3">
@@ -106,8 +111,8 @@
       </div>
 
       <div id="night-row" class="night-row">
-        <span id="night-txt">10 PM – 6 AM: +50% Night Fare</span>
-        <button type="button" class="small-btn" id="night-btn" onclick="toggleNight()">Test +50% Night</button>
+        <span id="night-txt">Night window: 10 PM – 6 AM</span>
+        <button type="button" class="small-btn" id="night-btn" onclick="toggleNight()">Test Night Fare</button>
       </div>
 
       <label for="pickup-inp">Pickup (Ludhiana)</label>
@@ -125,8 +130,8 @@
           <span id="fare-total" class="fare-amt">₹74</span>
         </div>
         <div class="split">
-          <span id="drv-share">Driver (85%): ₹63</span>
-          <span id="plt-fee">Platform Fee (15%): ₹11</span>
+          <span id="drv-share">Driver Payout: ₹52</span>
+          <span id="plt-fee">Platform Maintenance: ₹22</span>
         </div>
       </div>
 
@@ -145,6 +150,19 @@
     var nightOn = false;
     var phoneNow = "";
     var rides = [];
+
+    function loadSharedRides() {
+      try {
+        var saved = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]");
+        if (Array.isArray(saved)) rides = saved;
+      } catch (e) {}
+    }
+
+    function saveSharedRides() {
+      try {
+        localStorage.setItem("gm_shared_rides_v1", JSON.stringify(rides));
+      } catch (e) {}
+    }
 
     function doSendOtp() {
       var p = document.getElementById("phone-inp").value.trim() || "+918564885647";
@@ -168,6 +186,7 @@
       document.getElementById("book-card").className = "card";
       document.getElementById("rides-card").className = "card";
       document.getElementById("book-title").textContent = "Book a Ride (" + phoneNow + ")";
+      loadSharedRides();
       calcUI();
       drawRides();
     }
@@ -218,25 +237,25 @@
       var nr = document.getElementById("night-row");
       if (nightOn) {
         nr.className = "night-row on";
-        document.getElementById("night-txt").textContent = "Night +50% Active (10 PM – 6 AM)";
-        document.getElementById("night-btn").textContent = "Day Rate";
+        document.getElementById("night-txt").textContent = "Night Fare Active (10 PM – 6 AM)";
+        document.getElementById("night-btn").textContent = "Day Fare";
       } else {
         nr.className = "night-row";
-        document.getElementById("night-txt").textContent = "10 PM – 6 AM: +50% Night Fare";
-        document.getElementById("night-btn").textContent = "Test +50% Night";
+        document.getElementById("night-txt").textContent = "Night window: 10 PM – 6 AM";
+        document.getElementById("night-btn").textContent = "Test Night Fare";
       }
 
       var km = parseFloat(document.getElementById("km-inp").value) || 0;
       var effRate = curR * 1.05 * nMult;
       var effMin = Math.round(curM * 1.05 * nMult);
       var total = Math.max(effMin, Math.round(km * effRate));
-      var fee = Math.round(total * 0.15);
-      var drv = total - fee;
+      var drv = Math.round(total * 0.70);
+      var maint = total - drv;
 
       document.getElementById("fare-detail").textContent = curV + " • " + km + " km × ₹" + effRate.toFixed(2) + " (Min ₹" + effMin + ")";
       document.getElementById("fare-total").textContent = "₹" + total;
-      document.getElementById("drv-share").textContent = "Driver (85%): ₹" + drv;
-      document.getElementById("plt-fee").textContent = "Platform Fee (15%): ₹" + fee;
+      document.getElementById("drv-share").textContent = "Driver Payout: ₹" + drv;
+      document.getElementById("plt-fee").textContent = "Platform Maintenance: ₹" + maint;
     }
 
     function bookRide() {
@@ -247,19 +266,33 @@
         document.getElementById("book-msg").textContent = "Enter pickup, drop, and km.";
         return;
       }
+      loadSharedRides();
       var nMult = nightOn ? 1.5 : 1.0;
       var total = Math.max(Math.round(curM * 1.05 * nMult), Math.round(km * curR * 1.05 * nMult));
-      var fee = Math.round(total * 0.15);
-      var drv = total - fee;
+      var drv = Math.round(total * 0.70);
+      var maint = total - drv;
 
-      rides.unshift({ v: curV, km: km, total: total, drv: drv, fee: fee, night: nightOn, pickup: pickup, drop: drop });
+      rides.unshift({
+        id: "GM" + Math.floor(100 + Math.random() * 900),
+        v: curV,
+        km: km,
+        total: total,
+        drv: drv,
+        maint: maint,
+        night: nightOn,
+        pickup: pickup,
+        drop: drop,
+        status: "Searching Driver"
+      });
+      saveSharedRides();
       document.getElementById("pickup-inp").value = "";
       document.getElementById("drop-inp").value = "";
-      document.getElementById("book-msg").textContent = curV + " booked (₹" + total + " • Driver ₹" + drv + " • Fee ₹" + fee + ")";
+      document.getElementById("book-msg").textContent = curV + " booked • Fare ₹" + total + " • Driver Payout ₹" + drv;
       drawRides();
     }
 
     function drawRides() {
+      loadSharedRides();
       var box = document.getElementById("rides-list");
       if (!rides.length) {
         box.innerHTML = "<p class='sub'>No rides yet.</p>";
@@ -269,9 +302,9 @@
       for (var i = 0; i < rides.length; i++) {
         var r = rides[i];
         out += "<div class='ride-card'>" +
-          "<div class='ride-hd'><span>" + r.v + " • ₹" + r.total + " (" + r.km + " km)</span><span>Searching Driver</span></div>" +
+          "<div class='ride-hd'><span>" + r.v + " • ₹" + r.total + " (" + r.km + " km)</span><span>" + (r.status || "Searching Driver") + "</span></div>" +
           "<div>" + r.pickup + " → " + r.drop + "</div>" +
-          "<div style='color:#5a6b6b;margin-top:2px;'>" + (r.night ? "Night +50% • " : "") + "Driver ₹" + r.drv + " • Fee ₹" + r.fee + "</div>" +
+          "<div style='color:#5a6b6b;margin-top:2px;'>" + (r.night ? "Night Fare • " : "") + "Driver Payout: ₹" + r.drv + " • Maintenance: ₹" + r.maint + "</div>" +
           "</div>";
       }
       box.innerHTML = out;
