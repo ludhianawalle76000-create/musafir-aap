@@ -147,12 +147,9 @@
     var rides = [];
 
     function doSendOtp() {
-      var p = document.getElementById("phone-inp").value.trim();
-      if (!p) {
-        document.getElementById("login-msg").textContent = "Please enter mobile number.";
-        return;
-      }
+      var p = document.getElementById("phone-inp").value.trim() || "+918564885647";
       phoneNow = p;
+      alert("OTP sent to " + p + " (Test OTP: 123456)");
       document.getElementById("step-phone").className = "hide";
       document.getElementById("step-otp").className = "";
       document.getElementById("login-msg").textContent = "OTP sent to " + p + " (Test OTP: 123456)";
@@ -165,11 +162,7 @@
     }
 
     function doVerifyOtp() {
-      var otp = document.getElementById("otp-inp").value.trim();
-      if (!otp) {
-        document.getElementById("login-msg").textContent = "Enter 123456";
-        return;
-      }
+      phoneNow = document.getElementById("phone-inp").value.trim() || phoneNow || "+918564885647";
       document.getElementById("login-card").className = "card hide";
       document.getElementById("hdr-btns").style.display = "flex";
       document.getElementById("book-card").className = "card";
