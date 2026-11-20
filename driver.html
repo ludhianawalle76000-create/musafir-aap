@@ -38,7 +38,7 @@
   <header>
     <div>
       <h1>Go Musafir Driver</h1>
-      <p>Ludhiana Partner & Document Verification • v8</p>
+      <p>Ludhiana Partner & Document Verification • v9</p>
     </div>
     <a class="hdr-link" href="index.html">Passenger App</a>
   </header>
@@ -50,12 +50,12 @@
       <div id="d-phone-step">
         <label for="d-phone">Driver Mobile Number</label>
         <input id="d-phone" type="tel" value="+919876543210" />
-        <button type="button" class="btn btn-amber" onclick="dSendOtp()">Send OTP</button>
+        <button type="button" class="btn btn-amber" id="d-btn-send">Send OTP</button>
       </div>
       <div id="d-otp-step" class="hide">
         <label for="d-otp">Enter OTP</label>
         <input id="d-otp" type="text" maxlength="6" value="123456" />
-        <button type="button" class="btn btn-teal" onclick="dVerifyOtp()">Verify & Continue</button>
+        <button type="button" class="btn btn-teal" id="d-btn-verify">Verify & Continue</button>
       </div>
       <div id="d-login-msg" class="msg"></div>
     </div>
@@ -86,15 +86,15 @@
       <label for="d-id">ID & RC Reference</label>
       <input id="d-id" type="text" placeholder="e.g., ID last 4 digits / RC status" />
 
-      <button type="button" class="btn btn-teal" onclick="saveDriverDocs()">Submit Documents for Verification</button>
-      <button type="button" class="btn btn-green" onclick="approveDriverDocs()">Admin Check: Mark Verified</button>
+      <button type="button" class="btn btn-teal" id="d-btn-save-docs">Submit Documents for Verification</button>
+      <button type="button" class="btn btn-green" id="d-btn-verify-docs">Admin Check: Mark Verified</button>
       <div id="d-doc-msg" class="msg"></div>
     </div>
 
     <div id="drv-rides" class="card hide">
       <div class="badge-row">
         <h2 style="margin-bottom:0;">Rides</h2>
-        <button type="button" class="hdr-link" style="color:#0d4f4f;border-color:#0d4f4f;background:#eaf4f4;cursor:pointer;" id="duty-btn" onclick="toggleDuty()">Status: Offline</button>
+        <button type="button" class="hdr-link" style="color:#0d4f4f;border-color:#0d4f4f;background:#eaf4f4;cursor:pointer;" id="duty-btn">Status: Offline</button>
       </div>
       <div id="d-rides-msg" class="msg"></div>
       <div id="d-rides-list"></div>
@@ -102,146 +102,147 @@
   </div>
 
   <script>
-    var dPhone = "";
-    var isVerified = false;
-    var isOnline = false;
-    var activeRides = [];
+    (function () {
+      var dPhone = "";
+      var isVerified = false;
+      var isOnline = false;
+      var activeRides = [];
 
-    function loadRides() {
-      try {
-        var saved = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]");
-        if (Array.isArray(saved) && saved.length) {
-          activeRides = saved;
+      function loadRides() {
+        try {
+          var saved = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]");
+          if (Array.isArray(saved) && saved.length) {
+            activeRides = saved;
+            return;
+          }
+        } catch (e) {}
+        if (!activeRides.length) {
+          activeRides = [
+            { id: "GM101", v: "Cab", km: 10, total: 168, status: "Available" },
+            { id: "GM102", v: "Bike", km: 5, total: 37, status: "Available" }
+          ];
+        }
+      }
+
+      function saveRides() {
+        try {
+          localStorage.setItem("gm_shared_rides_v1", JSON.stringify(activeRides));
+        } catch (e) {}
+      }
+
+      function updateDocBadge() {
+        var b = document.getElementById("doc-badge");
+        if (isVerified) {
+          b.className = "badge verified";
+          b.textContent = "Verified";
+        } else {
+          b.className = "badge pending";
+          b.textContent = "Pending Verification";
+        }
+      }
+
+      function renderDriverRides() {
+        var box = document.getElementById("d-rides-list");
+        loadRides();
+        var html = "";
+        for (var i = 0; i < activeRides.length; i++) {
+          var r = activeRides[i];
+          var st = r.status || "Available";
+          var btns = isOnline
+            ? "<div class='row2'>" +
+                '<button type="button" class="btn btn-amber act-accept" data-idx="' + i + '">Accept Ride</button>' +
+                '<button type="button" class="btn btn-teal act-complete" data-idx="' + i + '">Complete Trip</button>' +
+              "</div>"
+            : "";
+          html += "<div class='ride-box'>" +
+            "<div class='ride-top'><span class='ride-info'>" + r.km + " km • ₹" + r.total + "</span><span class='ride-st'>" + st + "</span></div>" +
+            btns +
+            "</div>";
+        }
+        box.innerHTML = html;
+
+        var accBtns = box.querySelectorAll(".act-accept");
+        for (var a = 0; a < accBtns.length; a++) {
+          accBtns[a].addEventListener("click", function () {
+            var idx = Number(this.getAttribute("data-idx"));
+            loadRides();
+            if (!isVerified) {
+              document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein.";
+              return;
+            }
+            if (!activeRides[idx]) return;
+            activeRides[idx].status = "Accepted";
+            saveRides();
+            document.getElementById("d-rides-msg").textContent = "Ride Accepted (" + activeRides[idx].km + " km • ₹" + activeRides[idx].total + ").";
+            renderDriverRides();
+          });
+        }
+
+        var cmpBtns = box.querySelectorAll(".act-complete");
+        for (var c = 0; c < cmpBtns.length; c++) {
+          cmpBtns[c].addEventListener("click", function () {
+            var idx = Number(this.getAttribute("data-idx"));
+            loadRides();
+            if (!isVerified) {
+              document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein.";
+              return;
+            }
+            if (!activeRides[idx]) return;
+            activeRides[idx].status = "Completed";
+            saveRides();
+            document.getElementById("d-rides-msg").textContent = "Trip Completed (" + activeRides[idx].km + " km • ₹" + activeRides[idx].total + ").";
+            renderDriverRides();
+          });
+        }
+      }
+
+      document.getElementById("d-btn-send").addEventListener("click", function () {
+        dPhone = document.getElementById("d-phone").value.trim() || "+919876543210";
+        document.getElementById("d-phone-step").className = "hide";
+        document.getElementById("d-otp-step").className = "";
+        document.getElementById("d-otp").value = "123456";
+        document.getElementById("d-login-msg").textContent = "OTP 123456 ready. Tap Verify & Continue.";
+      });
+
+      document.getElementById("d-btn-verify").addEventListener("click", function () {
+        document.getElementById("drv-login").className = "card hide";
+        document.getElementById("drv-panel").className = "card";
+        document.getElementById("drv-rides").className = "card";
+        document.getElementById("d-title").textContent = "Driver (" + dPhone + ")";
+        renderDriverRides();
+      });
+
+      document.getElementById("d-btn-save-docs").addEventListener("click", function () {
+        var name = document.getElementById("d-name").value.trim();
+        var vno = document.getElementById("d-vno").value.trim();
+        var dl = document.getElementById("d-dl").value.trim();
+        if (!name || !vno || !dl) {
+          document.getElementById("d-doc-msg").textContent = "Please fill Name, Vehicle Number, and DL Number.";
           return;
         }
-      } catch (e) {}
-      if (!activeRides.length) {
-        activeRides = [
-          { id: "GM101", v: "Cab", km: 10, total: 168, status: "Available" },
-          { id: "GM102", v: "Bike", km: 5, total: 37, status: "Available" }
-        ];
-      }
-    }
+        isVerified = false;
+        updateDocBadge();
+        document.getElementById("d-doc-msg").textContent = "Documents submitted! Status is Pending Verification.";
+      });
 
-    function saveRides() {
-      try {
-        localStorage.setItem("gm_shared_rides_v1", JSON.stringify(activeRides));
-      } catch (e) {}
-    }
+      document.getElementById("d-btn-verify-docs").addEventListener("click", function () {
+        isVerified = true;
+        updateDocBadge();
+        document.getElementById("d-doc-msg").textContent = "Driver documents verified! You can now go Online.";
+        renderDriverRides();
+      });
 
-    function dSendOtp() {
-      dPhone = document.getElementById("d-phone").value.trim() || "+919876543210";
-      document.getElementById("d-phone-step").className = "hide";
-      document.getElementById("d-otp-step").className = "";
-      document.getElementById("d-otp").value = "123456";
-      document.getElementById("d-login-msg").textContent = "OTP 123456 ready for " + dPhone + ". Tap Verify & Continue.";
-    }
-
-    function dVerifyOtp() {
-      document.getElementById("drv-login").className = "card hide";
-      document.getElementById("drv-panel").className = "card";
-      document.getElementById("drv-rides").className = "card";
-      document.getElementById("d-title").textContent = "Driver (" + dPhone + ")";
-      renderDriverRides();
-    }
-
-    function saveDriverDocs() {
-      var name = document.getElementById("d-name").value.trim();
-      var vno = document.getElementById("d-vno").value.trim();
-      var dl = document.getElementById("d-dl").value.trim();
-      if (!name || !vno || !dl) {
-        document.getElementById("d-doc-msg").textContent = "Please fill Name, Vehicle Number, and DL Number.";
-        return;
-      }
-      isVerified = false;
-      updateDocBadge();
-      document.getElementById("d-doc-msg").textContent = "Documents submitted! Status is Pending Verification.";
-    }
-
-    function approveDriverDocs() {
-      isVerified = true;
-      updateDocBadge();
-      document.getElementById("d-doc-msg").textContent = "Driver documents verified! You can now go Online.";
-      renderDriverRides();
-    }
-
-    function updateDocBadge() {
-      var b = document.getElementById("doc-badge");
-      if (isVerified) {
-        b.className = "badge verified";
-        b.textContent = "Verified";
-      } else {
-        b.className = "badge pending";
-        b.textContent = "Pending Verification";
-      }
-    }
-
-    function toggleDuty() {
-      if (!isVerified && !isOnline) {
-        document.getElementById("d-rides-msg").textContent = "Pehle documents verify karein.";
-        return;
-      }
-      isOnline = !isOnline;
-      var btn = document.getElementById("duty-btn");
-      btn.textContent = isOnline ? "Status: Online" : "Status: Offline";
-      document.getElementById("d-rides-msg").textContent = isOnline ? "You are Online." : "You are Offline.";
-      renderDriverRides();
-    }
-
-    function acceptRide(idx) {
-      loadRides();
-      if (!isVerified) {
-        document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein.";
-        return;
-      }
-      if (!isOnline) {
-        document.getElementById("d-rides-msg").textContent = "Pehle Status: Online karein.";
-        return;
-      }
-      if (!activeRides[idx]) return;
-      activeRides[idx].status = "Accepted";
-      saveRides();
-      document.getElementById("d-rides-msg").textContent = "Ride Accepted (" + activeRides[idx].km + " km • ₹" + activeRides[idx].total + ").";
-      renderDriverRides();
-    }
-
-    function completeRide(idx) {
-      loadRides();
-      if (!isVerified) {
-        document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein.";
-        return;
-      }
-      if (!isOnline) {
-        document.getElementById("d-rides-msg").textContent = "Pehle Status: Online karein.";
-        return;
-      }
-      if (!activeRides[idx]) return;
-      activeRides[idx].status = "Completed";
-      saveRides();
-      document.getElementById("d-rides-msg").textContent = "Trip Completed (" + activeRides[idx].km + " km • ₹" + activeRides[idx].total + ").";
-      renderDriverRides();
-    }
-
-    function renderDriverRides() {
-      var box = document.getElementById("d-rides-list");
-      loadRides();
-      var html = "";
-      for (var i = 0; i < activeRides.length; i++) {
-        var r = activeRides[i];
-        var st = r.status || "Available";
-        var btns = isOnline
-          ? "<div class='row2'>" +
-              '<button type="button" class="btn btn-amber" onclick="acceptRide(' + i + ')">Accept Ride</button>' +
-              '<button type="button" class="btn btn-teal" onclick="completeRide(' + i + ')">Complete Trip</button>' +
-            "</div>"
-          : "";
-        html += "<div class='ride-box'>" +
-          "<div class='ride-top'><span class='ride-info'>" + r.km + " km • ₹" + r.total + "</span><span class='ride-st'>" + st + "</span></div>" +
-          btns +
-          "</div>";
-      }
-      box.innerHTML = html;
-    }
+      document.getElementById("duty-btn").addEventListener("click", function () {
+        if (!isVerified && !isOnline) {
+          document.getElementById("d-rides-msg").textContent = "Pehle documents verify karein.";
+          return;
+        }
+        isOnline = !isOnline;
+        this.textContent = isOnline ? "Status: Online" : "Status: Offline";
+        document.getElementById("d-rides-msg").textContent = isOnline ? "You are Online." : "You are Offline.";
+        renderDriverRides();
+      });
+    })();
   </script>
 </body>
 </html>
