@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Go Musafir — Create Account</title>
+  <title>Go Musafir — Bike, E-Rickshaw & Cab Rides</title>
   <style>
     :root {
       --teal: #0D4F4F;
@@ -30,22 +30,40 @@
     header {
       background: linear-gradient(135deg, var(--teal), var(--teal-dark));
       color: #fff;
-      padding: 16px 20px;
+      padding: 15px 18px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       position: sticky;
       top: 0;
       z-index: 20;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.12);
     }
 
     .brand h1 { font-size: 19px; font-weight: 700; }
     .brand p { font-size: 11px; color: #CBE2E2; }
 
+    .header-actions {
+      display: none;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .profile-btn {
+      background: rgba(255,255,255,0.16);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #fff;
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
     .container {
       max-width: 520px;
       margin: 0 auto;
-      padding: 20px 14px 48px;
+      padding: 18px 14px 48px;
     }
 
     .card {
@@ -55,17 +73,6 @@
       padding: 20px;
       margin-bottom: 16px;
       box-shadow: 0 4px 16px rgba(13,79,79,0.06);
-    }
-
-    .step-tag {
-      display: inline-block;
-      font-size: 11px;
-      font-weight: 700;
-      color: var(--teal);
-      background: #E6F2F2;
-      padding: 4px 10px;
-      border-radius: 999px;
-      margin-bottom: 8px;
     }
 
     .card h2 {
@@ -109,32 +116,28 @@
       margin-top: 4px;
     }
 
-    .btn-row {
-      display: flex;
-      gap: 10px;
-      margin-top: 16px;
-    }
-
     .btn {
       width: 100%;
       border: none;
       border-radius: 11px;
       padding: 13px 16px;
-      font-size: 14px;
+      font-size: 15px;
       font-weight: 700;
       cursor: pointer;
+      margin-top: 14px;
     }
 
     .btn-amber { background: var(--amber); color: #fff; }
     .btn-amber:hover { background: var(--amber-hover); }
     .btn-teal { background: var(--teal); color: #fff; }
-    .btn-back { background: #E9EFEF; color: var(--text); width: auto; padding: 13px 16px; }
+    .btn-light { background: #E9EFEF; color: var(--text); }
 
     .status-msg {
-      margin-top: 12px;
+      margin-top: 10px;
       font-size: 13px;
       font-weight: 600;
       min-height: 18px;
+      word-break: break-word;
     }
 
     .ride-types {
@@ -159,7 +162,22 @@
     }
 
     .ride-option .title { font-weight: 700; font-size: 13px; color: var(--teal); }
-    .ride-option .fare { font-size: 11px; color: var(--amber); font-weight: 700; margin-top: 3px; }
+    .ride-option .rate { font-size: 11px; color: var(--amber); font-weight: 700; margin-top: 3px; }
+    .ride-option .min-fare { font-size: 10px; color: var(--muted); margin-top: 2px; }
+
+    .fare-preview {
+      margin-top: 12px;
+      background: #EDF6F6;
+      border: 1px solid #C8E0E0;
+      border-radius: 11px;
+      padding: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .fare-preview .label { font-size: 12px; color: var(--teal); font-weight: 600; }
+    .fare-preview .amount { font-size: 18px; color: var(--teal-dark); font-weight: 800; }
 
     .ride-item {
       border: 1px solid var(--border);
@@ -189,223 +207,262 @@
         <p>Bike, E-Rickshaw & Cab Rides • Safe & Fast</p>
       </div>
     </div>
+    <div id="header-actions" class="header-actions">
+      <button type="button" class="profile-btn" onclick="toggleProfile()">👤 Profile</button>
+      <button type="button" class="profile-btn" onclick="logoutUser()">Logout</button>
+    </div>
   </header>
 
   <main class="container">
-    <section id="step-1" class="card">
-      <span class="step-tag">Step 1 of 3</span>
-      <h2>Create your Go Musafir Account</h2>
-      <p class="sub">Enter your first name, last name, and username.</p>
+    <!-- Uber-Style Login Screen -->
+    <section id="login-card" class="card">
+      <h2>Enter your mobile number</h2>
+      <p class="sub">We will verify your number with a quick OTP.</p>
 
-      <label for="first-name">First Name</label>
-      <input id="first-name" type="text" placeholder="e.g., Harvinder" />
-
-      <label for="last-name">Last Name</label>
-      <input id="last-name" type="text" placeholder="e.g., Singh" />
-
-      <label for="username">Username</label>
-      <input id="username" type="text" placeholder="e.g., harvinder.musafir" />
-
-      <div class="btn-row">
-        <button type="button" class="btn btn-teal" onclick="goToStep2()">Next</button>
+      <div id="phone-box">
+        <label for="mobile-input">Mobile Number</label>
+        <input id="mobile-input" type="tel" value="+91" placeholder="+91 98XXXXXXXX" />
+        <button type="button" class="btn btn-amber" onclick="requestOtp()">Send OTP</button>
       </div>
-      <div id="status-1" class="status-msg"></div>
-    </section>
-
-    <section id="step-2" class="card hidden">
-      <span class="step-tag">Step 2 of 3</span>
-      <h2>Verify Phone Number</h2>
-      <p class="sub">Enter your mobile number to verify OTP.</p>
-
-      <label for="phone-num">Phone Number</label>
-      <input id="phone-num" type="tel" value="+91" placeholder="+91 98XXXXXXXX" />
 
       <div id="otp-box" class="hidden">
-        <label for="otp-code">Enter OTP</label>
-        <input id="otp-code" type="text" maxlength="6" placeholder="123456" />
-        <div class="hint">Test OTP ke liye koi bhi 6-digit code (jaise 123456) daal sakte hain.</div>
+        <label for="otp-input">Enter 6-Digit OTP</label>
+        <input id="otp-input" type="text" maxlength="6" placeholder="123456" />
+        <div class="hint">Test OTP ke liye apna 6-digit code (jaise 123456) daalein.</div>
+        <button type="button" class="btn btn-teal" onclick="confirmOtp()">Verify & Continue</button>
       </div>
 
-      <div class="btn-row">
-        <button type="button" class="btn btn-back" onclick="showStep('step-1')">Back</button>
-        <button id="send-otp-action" type="button" class="btn btn-amber" onclick="sendOtpFlow()">Send OTP</button>
-        <button id="verify-otp-action" type="button" class="btn btn-teal hidden" onclick="verifyOtpFlow()">Verify & Next</button>
-      </div>
-      <div id="status-2" class="status-msg"></div>
+      <div id="login-status" class="status-msg"></div>
     </section>
 
-    <section id="step-3" class="card hidden">
-      <span class="step-tag">Step 3 of 3</span>
-      <h2>Create a Strong Password</h2>
-      <p class="sub">Create a password with small letter, capital letter, and number.</p>
+    <!-- Profile Edit Drawer -->
+    <section id="profile-card" class="card hidden">
+      <h2>Edit Your Profile</h2>
+      <p class="sub">Complete your name, username, and account password.</p>
 
-      <label for="new-pass">Set Password</label>
-      <input id="new-pass" type="password" placeholder="e.g., Musafir1" />
-      <div class="hint">Must include: 1 small letter (a-z), 1 capital letter (A-Z), and 1 number (0-9).</div>
+      <label for="prof-first">First Name</label>
+      <input id="prof-first" type="text" placeholder="e.g., Harvinder" />
 
-      <label for="conf-pass">Confirm Password</label>
-      <input id="conf-pass" type="password" placeholder="Re-enter password" />
+      <label for="prof-last">Last Name</label>
+      <input id="prof-last" type="text" placeholder="e.g., Singh" />
 
-      <div class="btn-row">
-        <button type="button" class="btn btn-back" onclick="showStep('step-2')">Back</button>
-        <button type="button" class="btn btn-teal" onclick="completeAccountFlow()">Save & Finish</button>
-      </div>
-      <div id="status-3" class="status-msg"></div>
+      <label for="prof-user">Username</label>
+      <input id="prof-user" type="text" placeholder="e.g., harvinder.musafir" />
+
+      <label for="prof-pass">Set / Change Password</label>
+      <input id="prof-pass" type="password" placeholder="e.g., Musafir1" />
+      <div class="hint">Include 1 small letter (a-z), 1 capital letter (A-Z), and 1 number (0-9).</div>
+
+      <button type="button" class="btn btn-teal" onclick="saveProfile()">Save Profile</button>
+      <button type="button" class="btn btn-light" onclick="toggleProfile()">Close</button>
+      <div id="profile-status" class="status-msg"></div>
     </section>
 
-    <section id="app-home" class="card hidden">
-      <span class="step-tag">Account Ready</span>
-      <h2 id="welcome-heading">Welcome to Go Musafir</h2>
-      <p id="account-summary" class="sub"></p>
+    <!-- Ride Booking Screen -->
+    <section id="booking-card" class="card hidden">
+      <h2 id="greeting-text">Book a Ride in Ludhiana</h2>
+      <p class="sub">Choose Bike, E-Rickshaw or Cab and enter distance in km.</p>
 
       <label>Choose Ride Type</label>
       <div class="ride-types">
-        <div class="ride-option active" data-type="Bike" data-fare="₹29 onwards" onclick="pickRide(this)">
+        <div class="ride-option active" data-type="Bike" data-rate="13" data-min="40" onclick="selectRideType(this)">
           <div class="title">Musafir Bike</div>
-          <div class="fare">₹29 onwards</div>
+          <div class="rate">₹13 / km</div>
+          <div class="min-fare">Min ₹40</div>
         </div>
-        <div class="ride-option" data-type="E-Rickshaw" data-fare="₹19 onwards" onclick="pickRide(this)">
+        <div class="ride-option" data-type="E-Rickshaw" data-rate="18" data-min="65" onclick="selectRideType(this)">
           <div class="title">E-Rickshaw</div>
-          <div class="fare">₹19 onwards</div>
+          <div class="rate">₹18 / km</div>
+          <div class="min-fare">Min ₹65</div>
         </div>
-        <div class="ride-option" data-type="Cab" data-fare="₹79 onwards" onclick="pickRide(this)">
+        <div class="ride-option" data-type="Cab" data-rate="25" data-min="100" onclick="selectRideType(this)">
           <div class="title">Musafir Cab</div>
-          <div class="fare">₹79 onwards</div>
+          <div class="rate">₹25 / km</div>
+          <div class="min-fare">Min ₹100</div>
         </div>
       </div>
 
-      <label for="pickup">Pickup Point (Ludhiana)</label>
-      <input id="pickup" type="text" placeholder="e.g., Ferozepur Road / Threeke" />
+      <label for="pickup-input">Pickup Point (Ludhiana)</label>
+      <input id="pickup-input" type="text" placeholder="e.g., Ferozepur Road / Threeke" />
 
-      <label for="drop">Drop Point (Ludhiana)</label>
-      <input id="drop" type="text" placeholder="e.g., Railway Station / Clock Tower" />
+      <label for="drop-input">Drop Point (Ludhiana)</label>
+      <input id="drop-input" type="text" placeholder="e.g., Railway Station / Clock Tower" />
 
-      <button type="button" class="btn btn-amber" onclick="bookMyRide()">Confirm Ride Booking</button>
-      <div id="ride-status" class="status-msg"></div>
+      <label for="distance-input">Estimated Distance (in km)</label>
+      <input id="distance-input" type="number" step="0.5" min="1" value="3" oninput="updateFarePreview()" placeholder="e.g., 5" />
+
+      <div class="fare-preview">
+        <div>
+          <div class="label" id="fare-formula">Bike • ₹13/km (Min Base Fare ₹40)</div>
+          <div class="hint" style="margin-top:2px;">Automatic minimum fare protection applied</div>
+        </div>
+        <div class="amount" id="calculated-fare">₹40</div>
+      </div>
+
+      <button type="button" class="btn btn-amber" onclick="confirmBooking()">Confirm Ride Booking</button>
+      <div id="booking-status" class="status-msg"></div>
+    </section>
+
+    <!-- Recent Rides -->
+    <section id="rides-card" class="card hidden">
+      <h2>Your Rides</h2>
       <div id="rides-container"></div>
     </section>
   </main>
 
   <script>
     let selectedType = "Bike";
-    let selectedFare = "₹29 onwards";
-    let userAccount = JSON.parse(localStorage.getItem("go_musafir_user") || "null");
-    let ridesData = JSON.parse(localStorage.getItem("go_musafir_rides") || "[]");
+    let selectedRate = 13;
+    let selectedMin = 40;
+    let sessionPhone = localStorage.getItem("musafir_session_phone") || "";
+    let ridesList = JSON.parse(localStorage.getItem("musafir_rides_v3") || "[]");
 
-    function showStep(stepId) {
-      ["step-1", "step-2", "step-3", "app-home"].forEach((id) => {
-        document.getElementById(id).classList.add("hidden");
-      });
-      document.getElementById(stepId).classList.remove("hidden");
-    }
-
-    function setMsg(id, text, ok) {
+    function setStatus(id, msg, isOk) {
       const el = document.getElementById(id);
-      el.style.color = ok ? "#16794C" : "#B91C1C";
-      el.textContent = text;
+      el.style.color = isOk ? "#16794C" : "#B91C1C";
+      el.textContent = msg;
     }
 
-    function goToStep2() {
-      const fn = document.getElementById("first-name").value.trim();
-      const ln = document.getElementById("last-name").value.trim();
-      const un = document.getElementById("username").value.trim();
-
-      if (!fn || !ln || !un) {
-        setMsg("status-1", "Please fill First Name, Last Name, and Username.", false);
-        return;
-      }
-      setMsg("status-1", "", true);
-      showStep("step-2");
+    function calculateTotalFare() {
+      const km = parseFloat(document.getElementById("distance-input").value) || 0;
+      const rawAmount = Math.round(km * selectedRate);
+      return Math.max(selectedMin, rawAmount);
     }
 
-    function sendOtpFlow() {
-      const raw = document.getElementById("phone-num").value.trim().replace(/\s+/g, "");
+    function updateFarePreview() {
+      const km = parseFloat(document.getElementById("distance-input").value) || 0;
+      const total = calculateTotalFare();
+      document.getElementById("fare-formula").textContent =
+        `${selectedType} • ${km} km × ₹${selectedRate}/km (Min ₹${selectedMin})`;
+      document.getElementById("calculated-fare").textContent = `₹${total}`;
+    }
+
+    function requestOtp() {
+      const raw = document.getElementById("mobile-input").value.trim().replace(/\s+/g, "");
       const phone = raw.startsWith("+") ? raw : "+91" + raw;
       if (phone.length < 12) {
-        setMsg("status-2", "Please enter a valid 10-digit mobile number.", false);
+        setStatus("login-status", "Please enter a valid 10-digit mobile number.", false);
         return;
       }
+      sessionPhone = phone;
+      document.getElementById("phone-box").classList.add("hidden");
       document.getElementById("otp-box").classList.remove("hidden");
-      document.getElementById("send-otp-action").classList.add("hidden");
-      document.getElementById("verify-otp-action").classList.remove("hidden");
-      setMsg("status-2", "OTP sent to " + phone + " (Test OTP: 123456).", true);
+      setStatus("login-status", "OTP sent to " + phone, true);
     }
 
-    function verifyOtpFlow() {
-      const otp = document.getElementById("otp-code").value.trim();
-      if (!otp || otp.length < 4) {
-        setMsg("status-2", "Please enter the OTP.", false);
+    function confirmOtp() {
+      const code = document.getElementById("otp-input").value.trim();
+      if (!code || code.length < 4) {
+        setStatus("login-status", "Please enter the OTP.", false);
         return;
       }
-      setMsg("status-2", "", true);
-      showStep("step-3");
+      localStorage.setItem("musafir_session_phone", sessionPhone);
+      openDashboard();
     }
 
-    function completeAccountFlow() {
-      const pass = document.getElementById("new-pass").value;
-      const conf = document.getElementById("conf-pass").value;
+    function openDashboard() {
+      document.getElementById("login-card").classList.add("hidden");
+      document.getElementById("header-actions").style.display = "flex";
+      document.getElementById("booking-card").classList.remove("hidden");
+      document.getElementById("rides-card").classList.remove("hidden");
 
-      if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/.test(pass)) {
-        setMsg("status-3", "Password mein 1 small letter, 1 capital letter, 1 number aur 6+ characters hone chahiye.", false);
-        return;
+      const prof = JSON.parse(localStorage.getItem("musafir_profile_" + sessionPhone) || "null");
+      const legacy = JSON.parse(localStorage.getItem("go_musafir_user") || "null");
+      const activeProf = prof || (legacy && legacy.phone === sessionPhone ? legacy : null);
+
+      if (activeProf && activeProf.firstName) {
+        document.getElementById("greeting-text").textContent = "Hi " + activeProf.firstName + ", Book a Ride";
+        document.getElementById("prof-first").value = activeProf.firstName || "";
+        document.getElementById("prof-last").value = activeProf.lastName || "";
+        document.getElementById("prof-user").value = activeProf.username || "";
+      } else {
+        document.getElementById("greeting-text").textContent = "Book a Ride (" + sessionPhone + ")";
       }
-      if (pass !== conf) {
-        setMsg("status-3", "Password aur Confirm Password match nahi kar rahe.", false);
-        return;
-      }
-
-      const fn = document.getElementById("first-name").value.trim();
-      const ln = document.getElementById("last-name").value.trim();
-      const un = document.getElementById("username").value.trim();
-      const raw = document.getElementById("phone-num").value.trim().replace(/\s+/g, "");
-      const phone = raw.startsWith("+") ? raw : "+91" + raw;
-
-      userAccount = { firstName: fn, lastName: ln, username: un, phone, passwordSet: true };
-      localStorage.setItem("go_musafir_user", JSON.stringify(userAccount));
-      openAppHome();
-    }
-
-    function openAppHome() {
-      if (!userAccount) return;
-      document.getElementById("welcome-heading").textContent = "Welcome, " + userAccount.firstName + " " + userAccount.lastName;
-      document.getElementById("account-summary").textContent = "@" + userAccount.username + " • " + userAccount.phone;
+      updateFarePreview();
       renderRides();
-      showStep("app-home");
     }
 
-    function pickRide(el) {
+    function toggleProfile() {
+      const card = document.getElementById("profile-card");
+      card.classList.toggle("hidden");
+      setStatus("profile-status", "", true);
+    }
+
+    function saveProfile() {
+      const firstName = document.getElementById("prof-first").value.trim();
+      const lastName = document.getElementById("prof-last").value.trim();
+      const username = document.getElementById("prof-user").value.trim();
+      const pass = document.getElementById("prof-pass").value;
+
+      if (!firstName || !lastName) {
+        setStatus("profile-status", "Please enter First Name and Last Name.", false);
+        return;
+      }
+      if (pass && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/.test(pass)) {
+        setStatus("profile-status", "Password mein 1 small letter, 1 capital letter, 1 number aur 6+ characters hone chahiye.", false);
+        return;
+      }
+
+      const data = { firstName, lastName, username, passwordSet: Boolean(pass) };
+      localStorage.setItem("musafir_profile_" + sessionPhone, JSON.stringify(data));
+      document.getElementById("prof-pass").value = "";
+      document.getElementById("greeting-text").textContent = "Hi " + firstName + ", Book a Ride";
+      setStatus("profile-status", "Profile saved successfully!", true);
+    }
+
+    function selectRideType(el) {
       document.querySelectorAll(".ride-option").forEach((item) => item.classList.remove("active"));
       el.classList.add("active");
       selectedType = el.dataset.type;
-      selectedFare = el.dataset.fare;
+      selectedRate = Number(el.dataset.rate);
+      selectedMin = Number(el.dataset.min);
+      updateFarePreview();
     }
 
-    function bookMyRide() {
-      const pickup = document.getElementById("pickup").value.trim();
-      const drop = document.getElementById("drop").value.trim();
+    function confirmBooking() {
+      const pickup = document.getElementById("pickup-input").value.trim();
+      const drop = document.getElementById("drop-input").value.trim();
+      const km = parseFloat(document.getElementById("distance-input").value) || 0;
+
       if (!pickup || !drop) {
-        setMsg("ride-status", "Please enter both pickup and drop location.", false);
+        setStatus("booking-status", "Please enter both pickup and drop locations.", false);
         return;
       }
-      ridesData.unshift({ type: selectedType, fare: selectedFare, pickup, drop, status: "Searching Driver" });
-      localStorage.setItem("go_musafir_rides", JSON.stringify(ridesData));
-      document.getElementById("pickup").value = "";
-      document.getElementById("drop").value = "";
-      setMsg("ride-status", selectedType + " ride booked in Ludhiana!", true);
+      if (km <= 0) {
+        setStatus("booking-status", "Please enter valid distance in km.", false);
+        return;
+      }
+
+      const totalFare = calculateTotalFare();
+      ridesList.unshift({
+        phone: sessionPhone,
+        type: selectedType,
+        km,
+        rate: selectedRate,
+        fare: `₹${totalFare}`,
+        pickup,
+        drop,
+        status: "Searching Driver"
+      });
+      localStorage.setItem("musafir_rides_v3", JSON.stringify(ridesList));
+      document.getElementById("pickup-input").value = "";
+      document.getElementById("drop-input").value = "";
+      setStatus("booking-status", `${selectedType} ride booked (₹${totalFare} for ${km} km)!`, true);
       renderRides();
     }
 
     function renderRides() {
       const box = document.getElementById("rides-container");
-      if (!ridesData.length) {
-        box.innerHTML = "";
+      const myRides = ridesList.filter((r) => r.phone === sessionPhone);
+      if (!myRides.length) {
+        box.innerHTML = `<p class="sub" style="margin-bottom:0;">No rides yet. Book your first ride above.</p>`;
         return;
       }
-      box.innerHTML = ridesData
+      box.innerHTML = myRides
         .map(
           (r) => `
           <div class="ride-item">
-            <div class="ride-top"><span>${r.type} • ${r.fare}</span><span>${r.status}</span></div>
+            <div class="ride-top"><span>${r.type} • ${r.fare} (${r.km} km)</span><span>${r.status}</span></div>
             <div class="ride-meta"><strong>Pickup:</strong> ${r.pickup} → <strong>Drop:</strong> ${r.drop}</div>
           </div>
         `
@@ -413,8 +470,28 @@
         .join("");
     }
 
-    if (userAccount) {
-      openAppHome();
+    function logoutUser() {
+      localStorage.removeItem("musafir_session_phone");
+      sessionPhone = "";
+      document.getElementById("header-actions").style.display = "none";
+      document.getElementById("profile-card").classList.add("hidden");
+      document.getElementById("booking-card").classList.add("hidden");
+      document.getElementById("rides-card").classList.add("hidden");
+      document.getElementById("otp-box").classList.add("hidden");
+      document.getElementById("phone-box").classList.remove("hidden");
+      document.getElementById("login-card").classList.remove("hidden");
+      setStatus("login-status", "", true);
+    }
+
+    if (sessionPhone) {
+      openDashboard();
+    } else {
+      const legacy = JSON.parse(localStorage.getItem("go_musafir_user") || "null");
+      if (legacy && legacy.phone) {
+        sessionPhone = legacy.phone;
+        localStorage.setItem("musafir_session_phone", sessionPhone);
+        openDashboard();
+      }
     }
   </script>
 </body>
