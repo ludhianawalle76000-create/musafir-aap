@@ -39,12 +39,6 @@
       box-shadow: 0 2px 10px rgba(0,0,0,0.12);
     }
 
-    .brand {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
     .brand h1 { font-size: 19px; font-weight: 700; }
     .brand p { font-size: 11px; color: #CBE2E2; }
 
@@ -93,7 +87,7 @@
       margin: 10px 0 5px;
     }
 
-    input, select {
+    input {
       width: 100%;
       padding: 12px 13px;
       border: 1.5px solid var(--border);
@@ -103,7 +97,7 @@
       color: var(--text);
     }
 
-    input:focus, select:focus {
+    input:focus {
       outline: none;
       border-color: var(--teal);
     }
@@ -173,6 +167,7 @@
       font-weight: 600;
       color: var(--success);
       min-height: 18px;
+      word-break: break-word;
     }
 
     .ride-item {
@@ -197,7 +192,7 @@
       margin-top: 4px;
     }
 
-    #recaptcha-container { margin-top: 10px; }
+    #recaptcha-container { margin-top: 12px; min-height: 78px; }
     .hidden { display: none; }
   </style>
 </head>
@@ -216,7 +211,6 @@
   </header>
 
   <main class="container">
-    <!-- Auth Card -->
     <section id="auth-section" class="card">
       <h2>Login with Mobile Number</h2>
       <p class="sub">Enter your Indian mobile number (+91) to verify OTP and book rides in Ludhiana.</p>
@@ -225,19 +219,18 @@
         <label for="phone-input">Mobile Number</label>
         <input id="phone-input" type="tel" placeholder="+91 98XXXXXXXX" value="+91" />
         <div id="recaptcha-container"></div>
-        <button id="send-otp-btn" class="btn btn-amber">Send OTP</button>
+        <button id="send-otp-btn" type="button" class="btn btn-amber">Send OTP</button>
       </div>
 
       <div id="otp-step" class="hidden">
         <label for="otp-input">Enter 6-Digit OTP</label>
         <input id="otp-input" type="text" maxlength="6" placeholder="123456" />
-        <button id="verify-otp-btn" class="btn btn-teal">Verify & Continue</button>
+        <button id="verify-otp-btn" type="button" class="btn btn-teal">Verify & Continue</button>
       </div>
 
       <div id="auth-status" class="status-msg"></div>
     </section>
 
-    <!-- Booking Card -->
     <section id="booking-section" class="card hidden">
       <h2>Book a Ride in Ludhiana</h2>
       <p class="sub">Select Bike or Cab, enter pickup & drop location, and confirm.</p>
@@ -260,17 +253,26 @@
       <label for="drop-input">Drop Point (Ludhiana)</label>
       <input id="drop-input" type="text" placeholder="e.g., Railway Station / Sarabha Nagar / Bus Stand" />
 
-      <button id="book-ride-btn" class="btn btn-amber">Confirm Ride Booking</button>
+      <button id="book-ride-btn" type="button" class="btn btn-amber">Confirm Ride Booking</button>
       <div id="booking-status" class="status-msg"></div>
     </section>
 
-    <!-- Live Rides Card -->
     <section id="rides-section" class="card hidden">
       <h2>Your Live & Recent Rides</h2>
       <p class="sub">Synced directly with Cloud Firestore.</p>
       <div id="rides-list"></div>
     </section>
   </main>
+
+  <script>
+    window.addEventListener("error", function (e) {
+      const el = document.getElementById("auth-status");
+      if (el) {
+        el.style.color = "#B91C1C";
+        el.textContent = "Page error: " + (e.message || "Script failed to load");
+      }
+    });
+  </script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
@@ -317,4 +319,138 @@
     const phoneStep = document.getElementById("phone-step");
     const otpStep = document.getElementById("otp-step");
     const authStatus = document.getElementById("auth-status");
-    const bookingStatus = document.getElementById
+    const bookingStatus = document.getElementById("booking-status");
+    const ridesList = document.getElementById("rides-list");
+    const userPill = document.getElementById("user-pill");
+    const userPhoneLabel = document.getElementById("user-phone-label");
+
+    async function initRecaptcha() {
+      try {
+        if (!window.recaptchaVerifier) {
+          window.recaptchaVerifier = new RecaptchaVerifier(auth, "recaptcha-container", {
+            size: "normal"
+          });
+          await window.recaptchaVerifier.render();
+        }
+      } catch (err) {
+        authStatus.style.color = "#B91C1C";
+        authStatus.textContent = "reCAPTCHA error: " + (err.message || err);
+      }
+    }
+
+    initRecaptcha();
+
+    document.getElementById("send-otp-btn").addEventListener("click", async () => {
+      const rawPhone = document.getElementById("phone-input").value.trim().replace(/\s+/g, "");
+      const phone = rawPhone.startsWith("+") ? rawPhone : `+91${rawPhone}`;
+      authStatus.style.color = "#0D4F4F";
+      authStatus.textContent = "Sending OTP...";
+
+      try {
+        await initRecaptcha();
+        confirmationResult = await signInWithPhoneNumber(auth, phone, window.recaptchaVerifier);
+        phoneStep.classList.add("hidden");
+        otpStep.classList.remove("hidden");
+        authStatus.style.color = "#16794C";
+        authStatus.textContent = `OTP sent to ${phone}`;
+      } catch (err) {
+        authStatus.style.color = "#B91C1C";
+        authStatus.textContent = err.message || "Failed to send OTP.";
+      }
+    });
+
+    document.getElementById("verify-otp-btn").addEventListener("click", async () => {
+      const code = document.getElementById("otp-input").value.trim();
+      if (!confirmationResult || !code) return;
+      authStatus.style.color = "#0D4F4F";
+      authStatus.textContent = "Verifying OTP...";
+
+      try {
+        await confirmationResult.confirm(code);
+        authStatus.style.color = "#16794C";
+        authStatus.textContent = "Verified! Welcome to Go Musafir.";
+      } catch (err) {
+        authStatus.style.color = "#B91C1C";
+        authStatus.textContent = err.message || "Invalid OTP.";
+      }
+    });
+
+    document.querySelectorAll(".ride-option").forEach((el) => {
+      el.addEventListener("click", () => {
+        document.querySelectorAll(".ride-option").forEach((item) => item.classList.remove("active"));
+        el.classList.add("active");
+        selectedRideType = el.dataset.type;
+        selectedFare = el.dataset.fare;
+      });
+    });
+
+    document.getElementById("book-ride-btn").addEventListener("click", async () => {
+      const user = auth.currentUser;
+      const pickup = document.getElementById("pickup-input").value.trim();
+      const drop = document.getElementById("drop-input").value.trim();
+
+      if (!user) return;
+      if (!pickup || !drop) {
+        bookingStatus.style.color = "#B91C1C";
+        bookingStatus.textContent = "Please enter both pickup and drop locations.";
+        return;
+      }
+
+      bookingStatus.style.color = "#0D4F4F";
+      bookingStatus.textContent = "Booking your ride...";
+
+      try {
+        await addDoc(collection(db, "rides"), {
+          userId: user.uid,
+          phone: user.phoneNumber || "",
+          city: "Ludhiana",
+          rideType: selectedRideType,
+          estimatedFare: selectedFare,
+          pickup,
+          drop,
+          status: "Searching Driver",
+          createdAt: serverTimestamp()
+        });
+
+        document.getElementById("pickup-input").value = "";
+        document.getElementById("drop-input").value = "";
+        bookingStatus.style.color = "#16794C";
+        bookingStatus.textContent = `${selectedRideType} ride booked in Ludhiana!`;
+      } catch (err) {
+        bookingStatus.style.color = "#B91C1C";
+        bookingStatus.textContent = err.message || "Could not book ride.";
+      }
+    });
+
+    document.getElementById("logout-btn").addEventListener("click", async () => {
+      if (unsubscribeRides) unsubscribeRides();
+      await signOut(auth);
+      otpStep.classList.add("hidden");
+      phoneStep.classList.remove("hidden");
+      authStatus.textContent = "";
+    });
+
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        authSection.classList.add("hidden");
+        bookingSection.classList.remove("hidden");
+        ridesSection.classList.remove("hidden");
+        userPill.style.display = "flex";
+        userPhoneLabel.textContent = user.phoneNumber || "Logged In";
+
+        const q = query(
+          collection(db, "rides"),
+          where("userId", "==", user.uid),
+          orderBy("createdAt", "desc")
+        );
+
+        if (unsubscribeRides) unsubscribeRides();
+        unsubscribeRides = onSnapshot(q, (snapshot) => {
+          if (snapshot.empty) {
+            ridesList.innerHTML = `<p class="sub">No rides booked yet. Book your first Ludhiana ride above.</p>`;
+            return;
+          }
+
+          ridesList.innerHTML = snapshot.docs
+            .map((doc) => {
+              const r = doc.data();
