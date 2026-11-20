@@ -63,16 +63,16 @@
         <h2 id="d-title" style="margin-bottom:0;">Driver Profile</h2>
         <span id="doc-badge" class="badge pending">Pending Verification</span>
       </div>
-      <p class="sub">Complete vehicle & document details. Verified drivers get 85% ride share.</p>
+      <p class="sub">Complete vehicle & document details before going Online.</p>
 
       <label for="d-name">Driver Full Name</label>
       <input id="d-name" type="text" placeholder="e.g., Gurpreet Singh" />
 
       <label for="d-vehicle">Vehicle Type</label>
       <select id="d-vehicle">
-        <option value="Bike">Musafir Bike (85% share)</option>
-        <option value="E-Rickshaw">E-Rickshaw (85% share)</option>
-        <option value="Cab">Musafir Cab (85% share)</option>
+        <option value="Bike">Musafir Bike</option>
+        <option value="E-Rickshaw">E-Rickshaw</option>
+        <option value="Cab">Musafir Cab</option>
       </select>
 
       <label for="d-vno">Vehicle Number (Ludhiana / Punjab)</label>
@@ -103,10 +103,27 @@
     var dPhone = "";
     var isVerified = false;
     var isOnline = false;
-    var sampleRides = [
-      { id: "GM101", v: "Cab", km: 10, total: 168, drv: 143, fee: 25, pickup: "Threeke", drop: "Clock Tower", status: "Available" },
-      { id: "GM102", v: "Bike", km: 5, total: 37, drv: 31, fee: 6, pickup: "Ferozepur Road", drop: "Bus Stand", status: "Available" }
-    ];
+    var activeRides = [];
+
+    function loadRides() {
+      try {
+        var saved = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]");
+        if (Array.isArray(saved) && saved.length) {
+          activeRides = saved;
+          return;
+        }
+      } catch (e) {}
+      activeRides = [
+        { id: "GM101", v: "Cab", km: 10, total: 168, drv: 118, maint: 50, pickup: "Threeke", drop: "Clock Tower", status: "Available" },
+        { id: "GM102", v: "Bike", km: 5, total: 37, drv: 26, maint: 11, pickup: "Ferozepur Road", drop: "Bus Stand", status: "Available" }
+      ];
+    }
+
+    function saveRides() {
+      try {
+        localStorage.setItem("gm_shared_rides_v1", JSON.stringify(activeRides));
+      } catch (e) {}
+    }
 
     function dSendOtp() {
       dPhone = document.getElementById("d-phone").value.trim() || "+919876543210";
@@ -175,12 +192,14 @@
         alert("Pehle Status: Online karein.");
         return;
       }
-      sampleRides[idx].status = "Accepted (En Route)";
+      activeRides[idx].status = "Accepted (En Route)";
+      saveRides();
       renderDriverRides();
     }
 
     function completeRide(idx) {
-      sampleRides[idx].status = "Completed";
+      activeRides[idx].status = "Completed";
+      saveRides();
       renderDriverRides();
     }
 
@@ -190,13 +209,16 @@
         box.innerHTML = "<p class='sub'>You are currently Offline. Toggle Online to see rides.</p>";
         return;
       }
+      loadRides();
       var html = "";
-      for (var i = 0; i < sampleRides.length; i++) {
-        var r = sampleRides[i];
+      for (var i = 0; i < activeRides.length; i++) {
+        var r = activeRides[i];
+        var drvAmt = Math.round(r.total * 0.70);
+        var maintAmt = r.total - drvAmt;
         html += "<div class='ride-box'>" +
-          "<div class='ride-top'><span>" + r.id + " • " + r.v + " • Total ₹" + r.total + "</span><span>" + r.status + "</span></div>" +
+          "<div class='ride-top'><span>" + (r.id || ("GM" + (i + 101))) + " • " + r.v + " • Total ₹" + r.total + "</span><span>" + (r.status || "Available") + "</span></div>" +
           "<div><strong>" + r.pickup + " → " + r.drop + "</strong> (" + r.km + " km)</div>" +
-          "<div style='color:#16794c;font-weight:700;margin-top:3px;'>Your Earning (85%): ₹" + r.drv + " • Platform Fee (15%): ₹" + r.fee + "</div>" +
+          "<div style='color:#16794c;font-weight:700;margin-top:3px;'>Driver Payout: ₹" + drvAmt + " • Platform Maintenance: ₹" + maintAmt + "</div>" +
           "<div class='row2'>" +
             '<button type="button" class="btn btn-amber" onclick="acceptRide(' + i + ')">Accept Ride</button>' +
             '<button type="button" class="btn btn-teal" onclick="completeRide(' + i + ')">Complete Trip</button>' +
