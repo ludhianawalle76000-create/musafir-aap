@@ -19,7 +19,12 @@
       --danger: #B91C1C;
     }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif; }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+    }
 
     body {
       background: var(--bg);
@@ -37,7 +42,7 @@
       position: sticky;
       top: 0;
       z-index: 20;
-      box-shadow: 0 2px 10px rgba(0,0,0,0.12);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
     }
 
     .brand h1 { font-size: 19px; font-weight: 700; }
@@ -50,8 +55,8 @@
     }
 
     .profile-btn {
-      background: rgba(255,255,255,0.16);
-      border: 1px solid rgba(255,255,255,0.3);
+      background: rgba(255, 255, 255, 0.16);
+      border: 1px solid rgba(255, 255, 255, 0.35);
       color: #fff;
       padding: 7px 12px;
       border-radius: 999px;
@@ -72,7 +77,7 @@
       border-radius: 16px;
       padding: 20px;
       margin-bottom: 16px;
-      box-shadow: 0 4px 16px rgba(13,79,79,0.06);
+      box-shadow: 0 4px 16px rgba(13, 79, 79, 0.06);
     }
 
     .card h2 {
@@ -96,6 +101,7 @@
     }
 
     input {
+      display: block;
       width: 100%;
       padding: 12px 13px;
       border: 1.5px solid var(--border);
@@ -117,6 +123,7 @@
     }
 
     .btn {
+      display: block;
       width: 100%;
       border: none;
       border-radius: 11px;
@@ -171,6 +178,9 @@
       border: 1px solid #C8E0E0;
       border-radius: 11px;
       padding: 12px;
+    }
+
+    .fare-main {
       display: flex;
       justify-content: space-between;
       align-items: center;
@@ -178,6 +188,16 @@
 
     .fare-preview .label { font-size: 12px; color: var(--teal); font-weight: 600; }
     .fare-preview .amount { font-size: 18px; color: var(--teal-dark); font-weight: 800; }
+
+    .split-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--muted);
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px dashed #C8E0E0;
+    }
 
     .ride-item {
       border: 1px solid var(--border);
@@ -196,7 +216,7 @@
     }
 
     .ride-meta { font-size: 12px; color: var(--muted); margin-top: 4px; }
-    .hidden { display: none; }
+    .hidden { display: none !important; }
   </style>
 </head>
 <body>
@@ -208,17 +228,335 @@
       </div>
     </div>
     <div id="header-actions" class="header-actions">
-      <button type="button" class="profile-btn" onclick="toggleProfile()">👤 Profile</button>
-      <button type="button" class="profile-btn" onclick="logoutUser()">Logout</button>
+      <button type="button" class="profile-btn" id="btn-toggle-profile">👤 Profile</button>
+      <button type="button" class="profile-btn" id="btn-logout">Logout</button>
     </div>
   </header>
 
   <main class="container">
-    <!-- Uber-Style Login Screen -->
     <section id="login-card" class="card">
       <h2>Enter your mobile number</h2>
       <p class="sub">We will verify your number with a quick OTP.</p>
 
       <div id="phone-box">
         <label for="mobile-input">Mobile Number</label>
-        <input id="
+        <input id="mobile-input" type="tel" value="+91" placeholder="+91 98XXXXXXXX" />
+        <button type="button" class="btn btn-amber" id="btn-send-otp">Send OTP</button>
+      </div>
+
+      <div id="otp-box" class="hidden">
+        <label for="otp-input">Enter 6-Digit OTP</label>
+        <input id="otp-input" type="text" maxlength="6" placeholder="123456" />
+        <div class="hint">Test OTP ke liye koi bhi 6-digit code (jaise 123456) daalein.</div>
+        <button type="button" class="btn btn-teal" id="btn-verify-otp">Verify & Continue</button>
+      </div>
+
+      <div id="login-status" class="status-msg"></div>
+    </section>
+
+    <section id="profile-card" class="card hidden">
+      <h2>Edit Your Profile</h2>
+      <p class="sub">Complete your name, username, and account password.</p>
+
+      <label for="prof-first">First Name</label>
+      <input id="prof-first" type="text" placeholder="e.g., Harvinder" />
+
+      <label for="prof-last">Last Name</label>
+      <input id="prof-last" type="text" placeholder="e.g., Singh" />
+
+      <label for="prof-user">Username</label>
+      <input id="prof-user" type="text" placeholder="e.g., harvinder.musafir" />
+
+      <label for="prof-pass">Set / Change Password</label>
+      <input id="prof-pass" type="password" placeholder="e.g., Musafir1" />
+      <div class="hint">Include 1 small letter (a-z), 1 capital letter (A-Z), and 1 number (0-9).</div>
+
+      <button type="button" class="btn btn-teal" id="btn-save-profile">Save Profile</button>
+      <button type="button" class="btn btn-light" id="btn-close-profile">Close</button>
+      <div id="profile-status" class="status-msg"></div>
+    </section>
+
+    <section id="booking-card" class="card hidden">
+      <h2 id="greeting-text">Book a Ride in Ludhiana</h2>
+      <p class="sub">Uber-baseline + 5% smart fare • 15% Platform Fee • 85% Driver Share</p>
+
+      <label>Choose Ride Type</label>
+      <div class="ride-types">
+        <div class="ride-option active" data-type="Bike" data-base-rate="7" data-base-min="25">
+          <div class="title">Musafir Bike</div>
+          <div class="rate">₹7.35 / km</div>
+          <div class="min-fare">Min ₹26 (+5%)</div>
+        </div>
+        <div class="ride-option" data-type="E-Rickshaw" data-base-rate="11" data-base-min="35">
+          <div class="title">E-Rickshaw</div>
+          <div class="rate">₹11.55 / km</div>
+          <div class="min-fare">Min ₹37 (+5%)</div>
+        </div>
+        <div class="ride-option" data-type="Cab" data-base-rate="16" data-base-min="70">
+          <div class="title">Musafir Cab</div>
+          <div class="rate">₹16.80 / km</div>
+          <div class="min-fare">Min ₹74 (+5%)</div>
+        </div>
+      </div>
+
+      <label for="pickup-input">Pickup Point (Ludhiana)</label>
+      <input id="pickup-input" type="text" placeholder="e.g., Ferozepur Road / Threeke" />
+
+      <label for="drop-input">Drop Point (Ludhiana)</label>
+      <input id="drop-input" type="text" placeholder="e.g., Railway Station / Clock Tower" />
+
+      <label for="distance-input">Estimated Distance (in km)</label>
+      <input id="distance-input" type="number" step="0.5" min="1" value="3" placeholder="e.g., 5" />
+
+      <div class="fare-preview">
+        <div class="fare-main">
+          <div>
+            <div class="label" id="fare-formula">Bike • 3 km × ₹7.35/km (Min ₹26)</div>
+            <div class="hint" style="margin-top:2px;">Includes +5% over Uber-like baseline rate</div>
+          </div>
+          <div class="amount" id="calculated-fare">₹26</div>
+        </div>
+        <div class="split-row">
+          <span id="driver-share-text">Driver Share (85%): ₹22</span>
+          <span id="platform-fee-text">Platform Fee (15%): ₹4</span>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-amber" id="btn-confirm-booking">Confirm Ride Booking</button>
+      <div id="booking-status" class="status-msg"></div>
+    </section>
+
+    <section id="rides-card" class="card hidden">
+      <h2>Your Rides</h2>
+      <div id="rides-container"></div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const SURCHARGE = 1.05;
+      const PLATFORM_FEE_RATE = 0.15;
+      let selectedType = "Bike";
+      let selectedRate = Number((7 * SURCHARGE).toFixed(2));
+      let selectedMin = Math.round(25 * SURCHARGE);
+      let sessionPhone = "";
+      let ridesList = [];
+
+      try {
+        sessionPhone = localStorage.getItem("musafir_session_phone") || "";
+        ridesList = JSON.parse(localStorage.getItem("musafir_rides_v5") || "[]");
+      } catch (_) {}
+
+      function setStatus(id, msg, ok) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.style.color = ok ? "#16794C" : "#B91C1C";
+        el.textContent = msg;
+      }
+
+      function calculateFare() {
+        const km = parseFloat(document.getElementById("distance-input").value) || 0;
+        return Math.max(selectedMin, Math.round(km * selectedRate));
+      }
+
+      function getFareSplit(totalFare) {
+        const platformFee = Math.round(totalFare * PLATFORM_FEE_RATE);
+        const driverShare = totalFare - platformFee;
+        return { platformFee: platformFee, driverShare: driverShare };
+      }
+
+      function updateFareUI() {
+        const km = parseFloat(document.getElementById("distance-input").value) || 0;
+        const total = calculateFare();
+        const split = getFareSplit(total);
+        document.getElementById("fare-formula").textContent =
+          selectedType + " • " + km + " km × ₹" + selectedRate.toFixed(2) + "/km (Min ₹" + selectedMin + ")";
+        document.getElementById("calculated-fare").textContent = "₹" + total;
+        document.getElementById("driver-share-text").textContent = "Driver Share (85%): ₹" + split.driverShare;
+        document.getElementById("platform-fee-text").textContent = "Platform Fee (15%): ₹" + split.platformFee;
+      }
+
+      function renderRides() {
+        const box = document.getElementById("rides-container");
+        const mine = ridesList.filter(function (r) { return r.phone === sessionPhone; });
+        if (!mine.length) {
+          box.innerHTML = '<p class="sub" style="margin-bottom:0;">No rides yet. Book your first ride above.</p>';
+          return;
+        }
+        box.innerHTML = mine.map(function (r) {
+          return (
+            '<div class="ride-item">' +
+              '<div class="ride-top"><span>' + r.type + ' • ' + r.fare + ' (' + r.km + ' km)</span><span>' + r.status + '</span></div>' +
+              '<div class="ride-meta"><strong>Pickup:</strong> ' + r.pickup + ' → <strong>Drop:</strong> ' + r.drop + '</div>' +
+              '<div class="ride-meta">Driver (85%): ₹' + r.driverShare + ' • Platform Fee (15%): ₹' + r.platformFee + '</div>' +
+            '</div>'
+          );
+        }).join("");
+      }
+
+      function openDashboard() {
+        document.getElementById("login-card").classList.add("hidden");
+        document.getElementById("header-actions").style.display = "flex";
+        document.getElementById("booking-card").classList.remove("hidden");
+        document.getElementById("rides-card").classList.remove("hidden");
+
+        let prof = null;
+        try {
+          prof = JSON.parse(localStorage.getItem("musafir_profile_" + sessionPhone) || "null");
+        } catch (_) {}
+
+        if (prof && prof.firstName) {
+          document.getElementById("greeting-text").textContent = "Hi " + prof.firstName + ", Book a Ride";
+          document.getElementById("prof-first").value = prof.firstName || "";
+          document.getElementById("prof-last").value = prof.lastName || "";
+          document.getElementById("prof-user").value = prof.username || "";
+        } else {
+          document.getElementById("greeting-text").textContent = "Book a Ride (" + sessionPhone + ")";
+        }
+
+        updateFareUI();
+        renderRides();
+      }
+
+      document.getElementById("btn-send-otp").addEventListener("click", function () {
+        const raw = document.getElementById("mobile-input").value.trim().replace(/\s+/g, "");
+        const phone = raw.startsWith("+") ? raw : "+91" + raw;
+        if (phone.length < 12) {
+          setStatus("login-status", "Please enter a valid 10-digit mobile number.", false);
+          return;
+        }
+        sessionPhone = phone;
+        document.getElementById("phone-box").classList.add("hidden");
+        document.getElementById("otp-box").classList.remove("hidden");
+        setStatus("login-status", "OTP sent to " + phone, true);
+      });
+
+      document.getElementById("btn-verify-otp").addEventListener("click", function () {
+        const otp = document.getElementById("otp-input").value.trim();
+        if (!otp || otp.length < 4) {
+          setStatus("login-status", "Please enter the OTP.", false);
+          return;
+        }
+        try {
+          localStorage.setItem("musafir_session_phone", sessionPhone);
+        } catch (_) {}
+        openDashboard();
+      });
+
+      document.getElementById("btn-toggle-profile").addEventListener("click", function () {
+        document.getElementById("profile-card").classList.toggle("hidden");
+        setStatus("profile-status", "", true);
+      });
+
+      document.getElementById("btn-close-profile").addEventListener("click", function () {
+        document.getElementById("profile-card").classList.add("hidden");
+      });
+
+      document.getElementById("btn-save-profile").addEventListener("click", function () {
+        const firstName = document.getElementById("prof-first").value.trim();
+        const lastName = document.getElementById("prof-last").value.trim();
+        const username = document.getElementById("prof-user").value.trim();
+        const pass = document.getElementById("prof-pass").value;
+
+        if (!firstName || !lastName) {
+          setStatus("profile-status", "Please enter First Name and Last Name.", false);
+          return;
+        }
+        if (pass && !/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/.test(pass)) {
+          setStatus("profile-status", "Password mein 1 small letter, 1 capital letter, 1 number aur 6+ characters hone chahiye.", false);
+          return;
+        }
+
+        try {
+          localStorage.setItem(
+            "musafir_profile_" + sessionPhone,
+            JSON.stringify({ firstName: firstName, lastName: lastName, username: username, passwordSet: Boolean(pass) })
+          );
+        } catch (_) {}
+
+        document.getElementById("prof-pass").value = "";
+        document.getElementById("greeting-text").textContent = "Hi " + firstName + ", Book a Ride";
+        setStatus("profile-status", "Profile saved successfully!", true);
+      });
+
+      document.querySelectorAll(".ride-option").forEach(function (card) {
+        card.addEventListener("click", function () {
+          document.querySelectorAll(".ride-option").forEach(function (item) {
+            item.classList.remove("active");
+          });
+          card.classList.add("active");
+          selectedType = card.getAttribute("data-type");
+          selectedRate = Number((Number(card.getAttribute("data-base-rate")) * SURCHARGE).toFixed(2));
+          selectedMin = Math.round(Number(card.getAttribute("data-base-min")) * SURCHARGE);
+          updateFareUI();
+        });
+      });
+
+      document.getElementById("distance-input").addEventListener("input", updateFareUI);
+
+      document.getElementById("btn-confirm-booking").addEventListener("click", function () {
+        const pickup = document.getElementById("pickup-input").value.trim();
+        const drop = document.getElementById("drop-input").value.trim();
+        const km = parseFloat(document.getElementById("distance-input").value) || 0;
+
+        if (!pickup || !drop) {
+          setStatus("booking-status", "Please enter both pickup and drop locations.", false);
+          return;
+        }
+        if (km <= 0) {
+          setStatus("booking-status", "Please enter valid distance in km.", false);
+          return;
+        }
+
+        const totalFare = calculateFare();
+        const split = getFareSplit(totalFare);
+
+        ridesList.unshift({
+          phone: sessionPhone,
+          type: selectedType,
+          km: km,
+          rate: selectedRate,
+          fare: "₹" + totalFare,
+          driverShare: split.driverShare,
+          platformFee: split.platformFee,
+          pickup: pickup,
+          drop: drop,
+          status: "Searching Driver"
+        });
+
+        try {
+          localStorage.setItem("musafir_rides_v5", JSON.stringify(ridesList));
+        } catch (_) {}
+
+        document.getElementById("pickup-input").value = "";
+        document.getElementById("drop-input").value = "";
+        setStatus(
+          "booking-status",
+          selectedType + " ride booked (₹" + totalFare + " • Driver ₹" + split.driverShare + " • Fee ₹" + split.platformFee + ")!",
+          true
+        );
+        renderRides();
+      });
+
+      document.getElementById("btn-logout").addEventListener("click", function () {
+        try {
+          localStorage.removeItem("musafir_session_phone");
+        } catch (_) {}
+        sessionPhone = "";
+        document.getElementById("header-actions").style.display = "none";
+        document.getElementById("profile-card").classList.add("hidden");
+        document.getElementById("booking-card").classList.add("hidden");
+        document.getElementById("rides-card").classList.add("hidden");
+        document.getElementById("otp-box").classList.add("hidden");
+        document.getElementById("phone-box").classList.remove("hidden");
+        document.getElementById("login-card").classList.remove("hidden");
+        setStatus("login-status", "", true);
+      });
+
+      if (sessionPhone) {
+        openDashboard();
+      }
+    })();
+  </script>
+</body>
+</html>
