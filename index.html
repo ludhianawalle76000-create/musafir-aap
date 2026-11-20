@@ -22,7 +22,7 @@
     .btn-amber { background: #e07a22; color: #fff; }
     .btn-teal { background: #0d4f4f; color: #fff; }
     .btn-gray { background: #e8efef; color: #142222; }
-    .msg { margin-top: 10px; font-size: 12px; font-weight: 700; min-height: 16px; }
+    .msg { margin-top: 10px; font-size: 12px; font-weight: 700; min-height: 16px; color: #16794c; }
     .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 6px; }
     .v-card { border: 1.5px solid #dce5e5; border-radius: 10px; padding: 10px 6px; text-align: center; cursor: pointer; background: #fafdfd; }
     .v-card.active { border-color: #e07a22; background: #fff6ed; }
@@ -38,7 +38,7 @@
     .split { display: flex; justify-content: space-between; font-size: 11px; color: #4c5e5e; margin-top: 8px; padding-top: 6px; border-top: 1px dashed #c0d6d6; }
     .ride-card { border: 1px solid #dce5e5; border-radius: 10px; padding: 10px; margin-top: 8px; background: #fcfdfd; font-size: 12px; }
     .ride-hd { display: flex; justify-content: space-between; font-weight: 700; color: #0d4f4f; margin-bottom: 3px; }
-    .hide { display: none !important; }
+    .hide { display: none; }
   </style>
 </head>
 <body>
@@ -59,14 +59,14 @@
       <p class="sub">Enter mobile number, send OTP, and verify with 123456.</p>
       <div id="step-phone">
         <label for="phone-inp">Mobile Number</label>
-        <input id="phone-inp" type="tel" value="+919779176000" />
-        <button type="button" class="btn btn-amber" onclick="sendOtp()">Send OTP</button>
+        <input id="phone-inp" type="tel" value="+918564885647" />
+        <button type="button" class="btn btn-amber" onclick="doSendOtp()">Send OTP</button>
       </div>
       <div id="step-otp" class="hide">
         <label for="otp-inp">Enter 6-Digit OTP</label>
         <input id="otp-inp" type="text" maxlength="6" value="123456" />
-        <button type="button" class="btn btn-teal" onclick="verifyOtp()">Verify OTP (123456)</button>
-        <button type="button" class="btn btn-gray" onclick="backToPhone()">Change Number</button>
+        <button type="button" class="btn btn-teal" onclick="doVerifyOtp()">Verify OTP (123456)</button>
+        <button type="button" class="btn btn-gray" onclick="doBackPhone()">Change Number</button>
       </div>
       <div id="login-msg" class="msg"></div>
     </div>
@@ -121,12 +121,12 @@
 
       <div class="fare-box">
         <div class="fare-top">
-          <span id="fare-detail" style="font-size:12px;font-weight:700;color:#0d4f4f;">Cab • 10 km</span>
-          <span id="fare-total" class="fare-amt">₹168</span>
+          <span id="fare-detail" style="font-size:12px;font-weight:700;color:#0d4f4f;">Bike • 10 km</span>
+          <span id="fare-total" class="fare-amt">₹74</span>
         </div>
         <div class="split">
-          <span id="drv-share">Driver (85%): ₹143</span>
-          <span id="plt-fee">Platform Fee (15%): ₹25</span>
+          <span id="drv-share">Driver (85%): ₹63</span>
+          <span id="plt-fee">Platform Fee (15%): ₹11</span>
         </div>
       </div>
 
@@ -141,104 +141,60 @@
   </div>
 
   <script>
-    var BASE_MULT = 1.05;
-    var NIGHT_MULT = 1.50;
-    var FEE_RATE = 0.15;
     var curV = "Bike", curR = 7, curM = 25;
-    var nightOverride = null;
-    var activePhone = "";
+    var nightOn = false;
+    var phoneNow = "";
     var rides = [];
 
-    function isNight() {
-      if (nightOverride !== null) return nightOverride;
-      var h = new Date().getHours();
-      return h >= 22 || h < 6;
-    }
-
-    function rateNow(base) {
-      return Number((base * BASE_MULT * (isNight() ? NIGHT_MULT : 1)).toFixed(2));
-    }
-
-    function minNow(base) {
-      return Math.round(base * BASE_MULT * (isNight() ? NIGHT_MULT : 1));
-    }
-
-    function setMsg(id, txt, ok) {
-      var el = document.getElementById(id);
-      el.style.color = ok ? "#16794c" : "#b91c1c";
-      el.textContent = txt;
-    }
-
-    function sendOtp() {
-      var raw = document.getElementById("phone-inp").value.replace(/\D/g, "");
-      var ten = raw.length > 10 && raw.indexOf("91") === 0 ? raw.slice(2) : raw;
-      if (ten.length !== 10) {
-        setMsg("login-msg", "Enter valid 10-digit mobile number.", false);
+    function doSendOtp() {
+      var p = document.getElementById("phone-inp").value.trim();
+      if (!p) {
+        document.getElementById("login-msg").textContent = "Please enter mobile number.";
         return;
       }
-      activePhone = "+91" + ten;
-      document.getElementById("phone-inp").value = activePhone;
-      document.getElementById("step-phone").classList.add("hide");
-      document.getElementById("step-otp").classList.remove("hide");
-      setMsg("login-msg", "OTP sent to " + activePhone + " (Test OTP: 123456)", true);
+      phoneNow = p;
+      document.getElementById("step-phone").className = "hide";
+      document.getElementById("step-otp").className = "";
+      document.getElementById("login-msg").textContent = "OTP sent to " + p + " (Test OTP: 123456)";
     }
 
-    function backToPhone() {
-      document.getElementById("step-otp").classList.add("hide");
-      document.getElementById("step-phone").classList.remove("hide");
-      setMsg("login-msg", "", true);
+    function doBackPhone() {
+      document.getElementById("step-otp").className = "hide";
+      document.getElementById("step-phone").className = "";
+      document.getElementById("login-msg").textContent = "";
     }
 
-    function verifyOtp() {
-      var code = document.getElementById("otp-inp").value.trim();
-      if (!code) {
-        setMsg("login-msg", "Enter OTP (123456).", false);
+    function doVerifyOtp() {
+      var otp = document.getElementById("otp-inp").value.trim();
+      if (!otp) {
+        document.getElementById("login-msg").textContent = "Enter 123456";
         return;
       }
-      try { localStorage.setItem("gm_phone", activePhone); } catch (e) {}
-      showHome();
-    }
-
-    function showHome() {
-      document.getElementById("login-card").classList.add("hide");
+      document.getElementById("login-card").className = "card hide";
       document.getElementById("hdr-btns").style.display = "flex";
-      document.getElementById("book-card").classList.remove("hide");
-      document.getElementById("rides-card").classList.remove("hide");
-      try {
-        var p = JSON.parse(localStorage.getItem("gm_prof_" + activePhone) || "null");
-        if (p && p.name) {
-          document.getElementById("book-title").textContent = "Hi " + p.name + ", Book a Ride";
-          document.getElementById("p-name").value = p.name;
-          document.getElementById("p-user").value = p.user || "";
-        } else {
-          document.getElementById("book-title").textContent = "Book a Ride (" + activePhone + ")";
-        }
-        rides = JSON.parse(localStorage.getItem("gm_rides") || "[]");
-      } catch (e) {}
+      document.getElementById("book-card").className = "card";
+      document.getElementById("rides-card").className = "card";
+      document.getElementById("book-title").textContent = "Book a Ride (" + phoneNow + ")";
       calcUI();
       drawRides();
     }
 
     function toggleProfile() {
-      document.getElementById("profile-card").classList.toggle("hide");
+      var pc = document.getElementById("profile-card");
+      pc.className = pc.className.indexOf("hide") > -1 ? "card" : "card hide";
     }
 
     function saveProfile() {
-      var name = document.getElementById("p-name").value.trim();
-      var user = document.getElementById("p-user").value.trim();
-      if (!name) {
-        setMsg("profile-msg", "Please enter your name.", false);
-        return;
-      }
-      try { localStorage.setItem("gm_prof_" + activePhone, JSON.stringify({ name: name, user: user })); } catch (e) {}
-      document.getElementById("book-title").textContent = "Hi " + name + ", Book a Ride";
-      setMsg("profile-msg", "Profile saved!", true);
+      var n = document.getElementById("p-name").value.trim();
+      if (!n) return;
+      document.getElementById("book-title").textContent = "Hi " + n + ", Book a Ride";
+      document.getElementById("profile-msg").textContent = "Profile saved!";
     }
 
     function pickVehicle(el) {
-      var all = document.querySelectorAll(".v-card");
-      for (var i = 0; i < all.length; i++) all[i].classList.remove("active");
-      el.classList.add("active");
+      var cards = document.querySelectorAll(".v-card");
+      for (var i = 0; i < cards.length; i++) cards[i].className = "v-card";
+      el.className = "v-card active";
       curV = el.getAttribute("data-v");
       curR = Number(el.getAttribute("data-r"));
       curM = Number(el.getAttribute("data-m"));
@@ -246,36 +202,45 @@
     }
 
     function toggleNight() {
-      nightOverride = !isNight();
+      nightOn = !nightOn;
       calcUI();
     }
 
     function calcUI() {
-      var n = isNight();
-      document.getElementById("r-bike").textContent = "₹" + rateNow(7).toFixed(2) + "/km";
-      document.getElementById("m-bike").textContent = "Min ₹" + minNow(25);
-      document.getElementById("r-rick").textContent = "₹" + rateNow(11).toFixed(2) + "/km";
-      document.getElementById("m-rick").textContent = "Min ₹" + minNow(35);
-      document.getElementById("r-cab").textContent = "₹" + rateNow(16).toFixed(2) + "/km";
-      document.getElementById("m-cab").textContent = "Min ₹" + minNow(70);
+      var nMult = nightOn ? 1.5 : 1.0;
+      var rBike = (7 * 1.05 * nMult).toFixed(2);
+      var mBike = Math.round(25 * 1.05 * nMult);
+      var rRick = (11 * 1.05 * nMult).toFixed(2);
+      var mRick = Math.round(35 * 1.05 * nMult);
+      var rCab = (16 * 1.05 * nMult).toFixed(2);
+      var mCab = Math.round(70 * 1.05 * nMult);
+
+      document.getElementById("r-bike").textContent = "₹" + rBike + "/km";
+      document.getElementById("m-bike").textContent = "Min ₹" + mBike;
+      document.getElementById("r-rick").textContent = "₹" + rRick + "/km";
+      document.getElementById("m-rick").textContent = "Min ₹" + mRick;
+      document.getElementById("r-cab").textContent = "₹" + rCab + "/km";
+      document.getElementById("m-cab").textContent = "Min ₹" + mCab;
 
       var nr = document.getElementById("night-row");
-      if (n) {
-        nr.classList.add("on");
+      if (nightOn) {
+        nr.className = "night-row on";
         document.getElementById("night-txt").textContent = "Night +50% Active (10 PM – 6 AM)";
         document.getElementById("night-btn").textContent = "Day Rate";
       } else {
-        nr.classList.remove("on");
+        nr.className = "night-row";
         document.getElementById("night-txt").textContent = "10 PM – 6 AM: +50% Night Fare";
         document.getElementById("night-btn").textContent = "Test +50% Night";
       }
 
       var km = parseFloat(document.getElementById("km-inp").value) || 0;
-      var total = Math.max(minNow(curM), Math.round(km * rateNow(curR)));
-      var fee = Math.round(total * FEE_RATE);
+      var effRate = curR * 1.05 * nMult;
+      var effMin = Math.round(curM * 1.05 * nMult);
+      var total = Math.max(effMin, Math.round(km * effRate));
+      var fee = Math.round(total * 0.15);
       var drv = total - fee;
 
-      document.getElementById("fare-detail").textContent = curV + " • " + km + " km × ₹" + rateNow(curR).toFixed(2) + " (Min ₹" + minNow(curM) + ")";
+      document.getElementById("fare-detail").textContent = curV + " • " + km + " km × ₹" + effRate.toFixed(2) + " (Min ₹" + effMin + ")";
       document.getElementById("fare-total").textContent = "₹" + total;
       document.getElementById("drv-share").textContent = "Driver (85%): ₹" + drv;
       document.getElementById("plt-fee").textContent = "Platform Fee (15%): ₹" + fee;
@@ -286,42 +251,49 @@
       var drop = document.getElementById("drop-inp").value.trim();
       var km = parseFloat(document.getElementById("km-inp").value) || 0;
       if (!pickup || !drop || km <= 0) {
-        setMsg("book-msg", "Enter pickup, drop, and valid km.", false);
+        document.getElementById("book-msg").textContent = "Enter pickup, drop, and km.";
         return;
       }
-      var total = Math.max(minNow(curM), Math.round(km * rateNow(curR)));
-      var fee = Math.round(total * FEE_RATE);
+      var nMult = nightOn ? 1.5 : 1.0;
+      var total = Math.max(Math.round(curM * 1.05 * nMult), Math.round(km * curR * 1.05 * nMult));
+      var fee = Math.round(total * 0.15);
       var drv = total - fee;
 
-      rides.unshift({
-        phone: activePhone,
-        v: curV,
-        km: km,
-        total: total,
-        drv: drv,
-        fee: fee,
-        night: isNight(),
-        pickup: pickup,
-        drop: drop
-      });
-      try { localStorage.setItem("gm_rides", JSON.stringify(rides)); } catch (e) {}
+      rides.unshift({ v: curV, km: km, total: total, drv: drv, fee: fee, night: nightOn, pickup: pickup, drop: drop });
       document.getElementById("pickup-inp").value = "";
       document.getElementById("drop-inp").value = "";
-      setMsg("book-msg", curV + " booked (₹" + total + " • Driver ₹" + drv + " • Fee ₹" + fee + ")", true);
+      document.getElementById("book-msg").textContent = curV + " booked (₹" + total + " • Driver ₹" + drv + " • Fee ₹" + fee + ")";
       drawRides();
     }
 
     function drawRides() {
       var box = document.getElementById("rides-list");
-      var mine = rides.filter(function (x) { return x.phone === activePhone; });
-      if (!mine.length) {
+      if (!rides.length) {
         box.innerHTML = "<p class='sub'>No rides yet.</p>";
         return;
       }
-      var html = "";
-      for (var i = 0; i < mine.length; i++) {
-        var r = mine[i];
-        html += "<div class='ride-card'>" +
+      var out = "";
+      for (var i = 0; i < rides.length; i++) {
+        var r = rides[i];
+        out += "<div class='ride-card'>" +
           "<div class='ride-hd'><span>" + r.v + " • ₹" + r.total + " (" + r.km + " km)</span><span>Searching Driver</span></div>" +
           "<div>" + r.pickup + " → " + r.drop + "</div>" +
-          "<div style='color:#5a6b6b;margin-top:2px;'>
+          "<div style='color:#5a6b6b;margin-top:2px;'>" + (r.night ? "Night +50% • " : "") + "Driver ₹" + r.drv + " • Fee ₹" + r.fee + "</div>" +
+          "</div>";
+      }
+      box.innerHTML = out;
+    }
+
+    function logout() {
+      document.getElementById("hdr-btns").style.display = "none";
+      document.getElementById("profile-card").className = "card hide";
+      document.getElementById("book-card").className = "card hide";
+      document.getElementById("rides-card").className = "card hide";
+      document.getElementById("step-otp").className = "hide";
+      document.getElementById("step-phone").className = "";
+      document.getElementById("login-card").className = "card";
+      document.getElementById("login-msg").textContent = "";
+    }
+  </script>
+</body>
+</html>
