@@ -255,7 +255,7 @@
     </div>
     <div id="user-pill" class="user-pill">
       <span id="user-phone-label"></span>
-      <button id="logout-btn" type="button" class="btn-outline" style="color:#fff;border-color:rgba(255,255,255,0.35);">Logout</button>
+      <button id="logout-btn" type="button" class="btn-outline" onclick="logoutApp()" style="color:#fff;border-color:rgba(255,255,255,0.35);">Logout</button>
     </div>
   </header>
 
@@ -283,7 +283,7 @@
       <input id="two-step-pin-input" type="password" inputmode="numeric" maxlength="4" placeholder="e.g., 2580" />
       <div class="hint">Yeh 4-digit PIN har login par Step-2 verification mein poocha jayega.</div>
 
-      <button id="create-account-btn" type="button" class="btn btn-teal">Create Account & Enable 2-Step</button>
+      <button id="create-account-btn" type="button" class="btn btn-teal" onclick="handleCreateAccount()">Create Account & Enable 2-Step</button>
       <div id="account-status" class="status-msg"></div>
     </section>
 
@@ -302,18 +302,18 @@
         <label for="captcha-input">Captcha Code</label>
         <div class="captcha-box">
           <span id="captcha-display" class="captcha-code">----</span>
-          <button id="refresh-captcha-btn" type="button" class="refresh-captcha">New Code</button>
+          <button id="refresh-captcha-btn" type="button" class="refresh-captcha" onclick="generateCaptcha()">New Code</button>
         </div>
         <input id="captcha-input" type="text" maxlength="6" placeholder="Enter captcha code above" />
 
         <div id="recaptcha-container"></div>
-        <button id="send-otp-btn" type="button" class="btn btn-amber">Verify Password, Captcha & Send OTP</button>
+        <button id="send-otp-btn" type="button" class="btn btn-amber" onclick="handleSendOtp()">Verify Password, Captcha & Send OTP</button>
       </div>
 
       <div id="otp-step" class="hidden">
         <label for="otp-input">Enter 6-Digit OTP</label>
         <input id="otp-input" type="text" maxlength="6" placeholder="123456" />
-        <button id="verify-otp-btn" type="button" class="btn btn-teal">Verify OTP & Go to Step 2</button>
+        <button id="verify-otp-btn" type="button" class="btn btn-teal" onclick="handleVerifyOtp()">Verify OTP & Go to Step 2</button>
       </div>
 
       <div id="auth-status" class="status-msg"></div>
@@ -330,13 +330,13 @@
           <div class="hint" style="margin:0;">Backup 2-Step Security Code</div>
           <span id="backup-2fa-code" class="captcha-code">----</span>
         </div>
-        <button id="refresh-2fa-btn" type="button" class="refresh-captcha">New 2FA Code</button>
+        <button id="refresh-2fa-btn" type="button" class="refresh-captcha" onclick="generateBackup2FA()">New 2FA Code</button>
       </div>
 
       <label for="verify-2fa-input">Enter 4-Digit Security PIN or 2FA Code</label>
       <input id="verify-2fa-input" type="password" maxlength="6" placeholder="Enter your 4-digit PIN or code above" />
 
-      <button id="verify-2fa-btn" type="button" class="btn btn-teal">Complete 2-Step Verification</button>
+      <button id="verify-2fa-btn" type="button" class="btn btn-teal" onclick="handleVerify2FA()">Complete 2-Step Verification</button>
       <div id="two-step-status" class="status-msg"></div>
     </section>
 
@@ -347,11 +347,11 @@
 
       <label>Choose Ride Type</label>
       <div class="ride-types">
-        <div class="ride-option active" data-type="Bike" data-fare="₹29 onwards">
+        <div class="ride-option active" data-type="Bike" data-fare="₹29 onwards" onclick="selectRide(this)">
           <div class="title">Musafir Bike</div>
           <div class="fare">₹29 onwards</div>
         </div>
-        <div class="ride-option" data-type="Cab" data-fare="₹79 onwards">
+        <div class="ride-option" data-type="Cab" data-fare="₹79 onwards" onclick="selectRide(this)">
           <div class="title">Musafir Cab</div>
           <div class="fare">₹79 onwards</div>
         </div>
@@ -363,7 +363,7 @@
       <label for="drop-input">Drop Point (Ludhiana)</label>
       <input id="drop-input" type="text" placeholder="e.g., Railway Station / Sarabha Nagar / Bus Stand" />
 
-      <button id="book-ride-btn" type="button" class="btn btn-amber">Confirm Ride Booking</button>
+      <button id="book-ride-btn" type="button" class="btn btn-amber" onclick="handleBookRide()">Confirm Ride Booking</button>
       <div id="booking-status" class="status-msg"></div>
     </section>
 
@@ -376,86 +376,21 @@
   </main>
 
   <script>
-    window.addEventListener("error", function (e) {
-      const el = document.getElementById("auth-status");
-      if (el) {
-        el.style.color = "#B91C1C";
-        el.textContent = "Error: " + (e.message || "Script error");
-      }
-    });
-  </script>
-
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-app.js";
-    import {
-      getAuth,
-      RecaptchaVerifier,
-      signInWithPhoneNumber,
-      onAuthStateChanged,
-      signOut
-    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-auth.js";
-    import {
-      getFirestore,
-      collection,
-      addDoc,
-      doc,
-      setDoc,
-      getDoc,
-      query,
-      where,
-      orderBy,
-      onSnapshot,
-      serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/11.6.0/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyC0DP0tTxACa4fMAxbhr_fjDv0O-syZfws",
-      authDomain: "musafir-2016d.firebaseapp.com",
-      projectId: "musafir-2016d",
-      storageBucket: "musafir-2016d.firebasestorage.app",
-      messagingSenderId: "649368739510",
-      appId: "1:649368739510:web:6bfcfecd5d663d9430d017",
-      measurementId: "G-L1FZYEEYDV"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const auth = getAuth(app);
-    const db = getFirestore(app);
-
     let currentCaptcha = "";
     let currentBackup2FA = "";
     let savedPin = "";
     let twoStepPassed = false;
-    let confirmationResult = null;
     let selectedRideType = "Bike";
     let selectedFare = "₹29 onwards";
-    let unsubscribeRides = null;
-
-    const authSection = document.getElementById("auth-section");
-    const accountSection = document.getElementById("account-section");
-    const twoStepSection = document.getElementById("two-step-section");
-    const bookingSection = document.getElementById("booking-section");
-    const ridesSection = document.getElementById("rides-section");
-    const phoneStep = document.getElementById("phone-step");
-    const otpStep = document.getElementById("otp-step");
-    const authStatus = document.getElementById("auth-status");
-    const accountStatus = document.getElementById("account-status");
-    const twoStepStatus = document.getElementById("two-step-status");
-    const bookingStatus = document.getElementById("booking-status");
-    const ridesList = document.getElementById("rides-list");
-    const userPill = document.getElementById("user-pill");
-    const userPhoneLabel = document.getElementById("user-phone-label");
-    const captchaDisplay = document.getElementById("captcha-display");
-    const captchaInput = document.getElementById("captcha-input");
-    const backup2faDisplay = document.getElementById("backup-2fa-code");
+    let localRides = JSON.parse(localStorage.getItem("musafir_local_rides") || "[]");
 
     function normalizePhone(raw) {
-      const cleaned = raw.trim().replace(/\s+/g, "");
+      const cleaned = (raw || "").trim().replace(/\s+/g, "");
       return cleaned.startsWith("+") ? cleaned : `+91${cleaned}`;
     }
 
     function isStrongPassword(pass) {
-      return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/.test(pass);
+      return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{6,}$/.test(pass || "");
     }
 
     function generateCaptcha() {
@@ -465,16 +400,17 @@
         code += chars[Math.floor(Math.random() * chars.length)];
       }
       currentCaptcha = code;
-      captchaDisplay.textContent = currentCaptcha;
-      captchaInput.value = "";
+      const el = document.getElementById("captcha-display");
+      const inp = document.getElementById("captcha-input");
+      if (el) el.textContent = currentCaptcha;
+      if (inp) inp.value = "";
     }
 
     function generateBackup2FA() {
       currentBackup2FA = String(Math.floor(100000 + Math.random() * 900000));
-      backup2faDisplay.textContent = currentBackup2FA;
+      const el = document.getElementById("backup-2fa-code");
+      if (el) el.textContent = currentBackup2FA;
     }
 
     generateCaptcha();
     generateBackup2FA();
-
-    document.getElementById("
