@@ -81,7 +81,7 @@
       <label for="d-dl">Driving Licence Number</label>
       <input id="d-dl" type="text" placeholder="e.g., PB10-20160012345" />
 
-      <label for="d-id">Aadhaar / ID & RC Reference</label>
+      <label for="d-id">ID & RC Reference</label>
       <input id="d-id" type="text" placeholder="e.g., ID last 4 digits / RC status" />
 
       <button type="button" class="btn btn-teal" onclick="saveDriverDocs()">Submit Documents for Verification</button>
@@ -109,4 +109,102 @@
     ];
 
     function dSendOtp() {
-      dPhone = document.getElementById("d-phone").value.trim() || "+919876
+      dPhone = document.getElementById("d-phone").value.trim() || "+919876543210";
+      alert("Driver OTP sent to " + dPhone + " (Test OTP: 123456)");
+      document.getElementById("d-phone-step").className = "hide";
+      document.getElementById("d-otp-step").className = "";
+      document.getElementById("d-login-msg").textContent = "OTP sent to " + dPhone + " (123456)";
+    }
+
+    function dVerifyOtp() {
+      document.getElementById("drv-login").className = "card hide";
+      document.getElementById("drv-panel").className = "card";
+      document.getElementById("drv-rides").className = "card";
+      document.getElementById("d-title").textContent = "Driver (" + dPhone + ")";
+      renderDriverRides();
+    }
+
+    function saveDriverDocs() {
+      var name = document.getElementById("d-name").value.trim();
+      var vno = document.getElementById("d-vno").value.trim();
+      var dl = document.getElementById("d-dl").value.trim();
+      if (!name || !vno || !dl) {
+        document.getElementById("d-doc-msg").textContent = "Please fill Name, Vehicle Number, and DL Number.";
+        return;
+      }
+      isVerified = false;
+      updateDocBadge();
+      document.getElementById("d-doc-msg").textContent = "Documents submitted! Status is Pending Verification.";
+    }
+
+    function approveDriverDocs() {
+      isVerified = true;
+      updateDocBadge();
+      document.getElementById("d-doc-msg").textContent = "Driver documents verified! You can now go Online.";
+      renderDriverRides();
+    }
+
+    function updateDocBadge() {
+      var b = document.getElementById("doc-badge");
+      if (isVerified) {
+        b.className = "badge verified";
+        b.textContent = "Verified";
+      } else {
+        b.className = "badge pending";
+        b.textContent = "Pending Verification";
+      }
+    }
+
+    function toggleDuty() {
+      if (!isVerified && !isOnline) {
+        alert("Pehle documents verify karein (Pending Verification mein duty start nahi hogi).");
+        return;
+      }
+      isOnline = !isOnline;
+      var btn = document.getElementById("duty-btn");
+      btn.textContent = isOnline ? "Status: Online" : "Status: Offline";
+      renderDriverRides();
+    }
+
+    function acceptRide(idx) {
+      if (!isVerified) {
+        alert("Document verification pending hai.");
+        return;
+      }
+      if (!isOnline) {
+        alert("Pehle Status: Online karein.");
+        return;
+      }
+      sampleRides[idx].status = "Accepted (En Route)";
+      renderDriverRides();
+    }
+
+    function completeRide(idx) {
+      sampleRides[idx].status = "Completed";
+      renderDriverRides();
+    }
+
+    function renderDriverRides() {
+      var box = document.getElementById("d-rides-list");
+      if (!isOnline) {
+        box.innerHTML = "<p class='sub'>You are currently Offline. Toggle Online to see rides.</p>";
+        return;
+      }
+      var html = "";
+      for (var i = 0; i < sampleRides.length; i++) {
+        var r = sampleRides[i];
+        html += "<div class='ride-box'>" +
+          "<div class='ride-top'><span>" + r.id + " • " + r.v + " • Total ₹" + r.total + "</span><span>" + r.status + "</span></div>" +
+          "<div><strong>" + r.pickup + " → " + r.drop + "</strong> (" + r.km + " km)</div>" +
+          "<div style='color:#16794c;font-weight:700;margin-top:3px;'>Your Earning (85%): ₹" + r.drv + " • Platform Fee (15%): ₹" + r.fee + "</div>" +
+          "<div class='row2'>" +
+            '<button type="button" class="btn btn-amber" onclick="acceptRide(' + i + ')">Accept Ride</button>' +
+            '<button type="button" class="btn btn-teal" onclick="completeRide(' + i + ')">Complete Trip</button>' +
+          "</div>" +
+          "</div>";
+      }
+      box.innerHTML = html;
+    }
+  </script>
+</body>
+</html>
