@@ -37,6 +37,7 @@
     .fare-box { margin-top: 12px; padding: 12px; border-radius: 10px; background: #eaf4f4; border: 1px solid #c7dfdf; }
     .fare-top { display: flex; justify-content: space-between; align-items: center; }
     .fare-amt { font-size: 18px; font-weight: 800; color: #083636; }
+    .fare-sub { font-size: 11px; color: #4c5e5e; margin-top: 6px; }
     .ride-card { border: 1px solid #dce5e5; border-radius: 10px; padding: 10px; margin-top: 8px; background: #fcfdfd; font-size: 12px; }
     .ride-hd { display: flex; justify-content: space-between; font-weight: 700; color: #0d4f4f; margin-bottom: 3px; }
     .bill-box { margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: #f2f8f8; border: 1px solid #cde0e0; font-size: 11px; color: #142222; }
@@ -47,7 +48,7 @@
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Ludhiana Bike, E-Rickshaw & Cab</p>
+      <p>Ludhiana Bike, E-Rickshaw & Cab • v7</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -89,7 +90,7 @@
 
     <div id="book-card" class="card hide">
       <h2 id="book-title">Book a Ride</h2>
-      <p class="sub">Ludhiana local rides • Night fare active 10 PM – 6 AM</p>
+      <p class="sub">Ludhiana local rides • Night window 10 PM – 6 AM</p>
 
       <label>Select Ride</label>
       <div class="grid3">
@@ -126,9 +127,10 @@
 
       <div class="fare-box">
         <div class="fare-top">
-          <span id="fare-detail" style="font-size:12px;font-weight:700;color:#0d4f4f;">Total Fare • Bike • 10 km</span>
+          <span id="fare-detail" style="font-size:12px;font-weight:700;color:#0d4f4f;">Full Payment • Bike • 10 km</span>
           <span id="fare-total" class="fare-amt">₹74</span>
         </div>
+        <div class="fare-sub">Platform Charges</div>
       </div>
 
       <button type="button" class="btn btn-amber" onclick="bookRide()">Confirm Ride Booking</button>
@@ -196,132 +198,3 @@
     }
 
     function saveProfile() {
-      var n = document.getElementById("p-name").value.trim();
-      if (!n) return;
-      document.getElementById("book-title").textContent = "Hi " + n + ", Book a Ride";
-      document.getElementById("profile-msg").textContent = "Profile saved!";
-    }
-
-    function pickVehicle(el) {
-      var cards = document.querySelectorAll(".v-card");
-      for (var i = 0; i < cards.length; i++) cards[i].className = "v-card";
-      el.className = "v-card active";
-      curV = el.getAttribute("data-v");
-      curR = Number(el.getAttribute("data-r"));
-      curM = Number(el.getAttribute("data-m"));
-      calcUI();
-    }
-
-    function toggleNight() {
-      nightOn = !nightOn;
-      calcUI();
-    }
-
-    function calcUI() {
-      var nMult = nightOn ? 1.5 : 1.0;
-      var rBike = (7 * 1.05 * nMult).toFixed(2);
-      var mBike = Math.round(25 * 1.05 * nMult);
-      var rRick = (11 * 1.05 * nMult).toFixed(2);
-      var mRick = Math.round(35 * 1.05 * nMult);
-      var rCab = (16 * 1.05 * nMult).toFixed(2);
-      var mCab = Math.round(70 * 1.05 * nMult);
-
-      document.getElementById("r-bike").textContent = "₹" + rBike + "/km";
-      document.getElementById("m-bike").textContent = "Min ₹" + mBike;
-      document.getElementById("r-rick").textContent = "₹" + rRick + "/km";
-      document.getElementById("m-rick").textContent = "Min ₹" + mRick;
-      document.getElementById("r-cab").textContent = "₹" + rCab + "/km";
-      document.getElementById("m-cab").textContent = "Min ₹" + mCab;
-
-      var nr = document.getElementById("night-row");
-      if (nightOn) {
-        nr.className = "night-row on";
-        document.getElementById("night-txt").textContent = "Night Fare Active (10 PM – 6 AM)";
-        document.getElementById("night-btn").textContent = "Day Fare";
-      } else {
-        nr.className = "night-row";
-        document.getElementById("night-txt").textContent = "Night window: 10 PM – 6 AM";
-        document.getElementById("night-btn").textContent = "Test Night Fare";
-      }
-
-      var km = parseFloat(document.getElementById("km-inp").value) || 0;
-      var effRate = curR * 1.05 * nMult;
-      var effMin = Math.round(curM * 1.05 * nMult);
-      var total = Math.max(effMin, Math.round(km * effRate));
-
-      document.getElementById("fare-detail").textContent = "Total Fare • " + curV + " • " + km + " km";
-      document.getElementById("fare-total").textContent = "₹" + total;
-    }
-
-    function bookRide() {
-      var pickup = document.getElementById("pickup-inp").value.trim();
-      var drop = document.getElementById("drop-inp").value.trim();
-      var km = parseFloat(document.getElementById("km-inp").value) || 0;
-      if (!pickup || !drop || km <= 0) {
-        document.getElementById("book-msg").textContent = "Enter pickup, drop, and km.";
-        return;
-      }
-      loadSharedRides();
-      var nMult = nightOn ? 1.5 : 1.0;
-      var total = Math.max(Math.round(curM * 1.05 * nMult), Math.round(km * curR * 1.05 * nMult));
-
-      rides.unshift({
-        id: "GM" + Math.floor(100 + Math.random() * 900),
-        v: curV,
-        km: km,
-        total: total,
-        night: nightOn,
-        pickup: pickup,
-        drop: drop,
-        status: "Searching Driver"
-      });
-      saveSharedRides();
-      document.getElementById("pickup-inp").value = "";
-      document.getElementById("drop-inp").value = "";
-      document.getElementById("book-msg").textContent = curV + " booked • Total Fare ₹" + total;
-      drawRides();
-    }
-
-    function drawRides() {
-      loadSharedRides();
-      var box = document.getElementById("rides-list");
-      if (!rides.length) {
-        box.innerHTML = "<p class='sub'>No rides yet.</p>";
-        return;
-      }
-      var out = "";
-      for (var i = 0; i < rides.length; i++) {
-        var r = rides[i];
-        var st = r.status || "Searching Driver";
-        var billHtml = "";
-        if (st === "Completed") {
-          billHtml = "<div class='bill-box'>" +
-            "<strong>Detailed Bill</strong><br>" +
-            "Ride ID: " + (r.id || "") + " • " + r.v + "<br>" +
-            "Route: " + r.pickup + " → " + r.drop + " (" + r.km + " km)<br>" +
-            (r.night ? "Timing: Night Fare<br>" : "Timing: Day Fare<br>") +
-            "<strong>Total Fare Paid: ₹" + r.total + "</strong>" +
-            "</div>";
-        }
-        out += "<div class='ride-card'>" +
-          "<div class='ride-hd'><span>" + r.v + " • Total Fare ₹" + r.total + "</span><span>" + st + "</span></div>" +
-          "<div>" + r.pickup + " → " + r.drop + " (" + r.km + " km)</div>" +
-          billHtml +
-          "</div>";
-      }
-      box.innerHTML = out;
-    }
-
-    function logout() {
-      document.getElementById("hdr-btns").style.display = "none";
-      document.getElementById("profile-card").className = "card hide";
-      document.getElementById("book-card").className = "card hide";
-      document.getElementById("rides-card").className = "card hide";
-      document.getElementById("step-otp").className = "hide";
-      document.getElementById("step-phone").className = "";
-      document.getElementById("login-card").className = "card";
-      document.getElementById("login-msg").textContent = "";
-    }
-  </script>
-</body>
-</html>
