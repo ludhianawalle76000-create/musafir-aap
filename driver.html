@@ -26,8 +26,8 @@
     .badge { padding: 5px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
     .pending { background: #fff3e6; color: #9a4500; border: 1px solid #e07a22; }
     .verified { background: #e6f6ee; color: #16794c; border: 1px solid #16794c; }
-    .ride-box { border: 1px solid #dce5e5; border-radius: 10px; padding: 12px; margin-top: 10px; background: #fcfdfd; font-size: 12px; }
-    .ride-top { display: flex; justify-content: space-between; font-weight: 700; color: #0d4f4f; margin-bottom: 4px; }
+    .ride-box { border: 1px solid #dce5e5; border-radius: 10px; padding: 12px; margin-top: 10px; background: #fcfdfd; font-size: 13px; }
+    .ride-info { font-weight: 800; color: #0d4f4f; font-size: 15px; }
     .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .hide { display: none; }
   </style>
@@ -91,10 +91,9 @@
 
     <div id="drv-rides" class="card hide">
       <div class="badge-row">
-        <h2 style="margin-bottom:0;">Duty & Available Rides</h2>
+        <h2 style="margin-bottom:0;">Rides</h2>
         <button type="button" class="hdr-link" style="color:#0d4f4f;border-color:#0d4f4f;background:#eaf4f4;cursor:pointer;" id="duty-btn" onclick="toggleDuty()">Status: Offline</button>
       </div>
-      <p class="sub">Go Online after document verification to accept rides.</p>
       <div id="d-rides-list"></div>
     </div>
   </div>
@@ -114,8 +113,8 @@
         }
       } catch (e) {}
       activeRides = [
-        { id: "GM101", v: "Cab", km: 10, total: 168, drv: 118, maint: 50, pickup: "Threeke", drop: "Clock Tower", status: "Available" },
-        { id: "GM102", v: "Bike", km: 5, total: 37, drv: 26, maint: 11, pickup: "Ferozepur Road", drop: "Bus Stand", status: "Available" }
+        { id: "GM101", v: "Cab", km: 10, total: 168, status: "Available" },
+        { id: "GM102", v: "Bike", km: 5, total: 37, status: "Available" }
       ];
     }
 
@@ -192,7 +191,7 @@
         alert("Pehle Status: Online karein.");
         return;
       }
-      activeRides[idx].status = "Accepted (En Route)";
+      activeRides[idx].status = "Accepted";
       saveRides();
       renderDriverRides();
     }
@@ -205,24 +204,19 @@
 
     function renderDriverRides() {
       var box = document.getElementById("d-rides-list");
-      if (!isOnline) {
-        box.innerHTML = "<p class='sub'>You are currently Offline. Toggle Online to see rides.</p>";
-        return;
-      }
       loadRides();
       var html = "";
       for (var i = 0; i < activeRides.length; i++) {
         var r = activeRides[i];
-        var drvAmt = Math.round(r.total * 0.70);
-        var maintAmt = r.total - drvAmt;
+        var btns = isOnline
+          ? "<div class='row2'>" +
+              '<button type="button" class="btn btn-amber" onclick="acceptRide(' + i + ')">Accept Ride</button>' +
+              '<button type="button" class="btn btn-teal" onclick="completeRide(' + i + ')">Complete Trip</button>' +
+            "</div>"
+          : "";
         html += "<div class='ride-box'>" +
-          "<div class='ride-top'><span>" + (r.id || ("GM" + (i + 101))) + " • " + r.v + " • Total ₹" + r.total + "</span><span>" + (r.status || "Available") + "</span></div>" +
-          "<div><strong>" + r.pickup + " → " + r.drop + "</strong> (" + r.km + " km)</div>" +
-          "<div style='color:#16794c;font-weight:700;margin-top:3px;'>Driver Payout: ₹" + drvAmt + " • Platform Maintenance: ₹" + maintAmt + "</div>" +
-          "<div class='row2'>" +
-            '<button type="button" class="btn btn-amber" onclick="acceptRide(' + i + ')">Accept Ride</button>' +
-            '<button type="button" class="btn btn-teal" onclick="completeRide(' + i + ')">Complete Trip</button>' +
-          "</div>" +
+          "<div class='ride-info'>" + r.km + " km • ₹" + r.total + "</div>" +
+          btns +
           "</div>";
       }
       box.innerHTML = html;
@@ -230,3 +224,4 @@
   </script>
 </body>
 </html>
+
