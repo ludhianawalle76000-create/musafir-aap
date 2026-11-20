@@ -279,8 +279,9 @@
       <div id="otp-box" class="hidden">
         <label for="otp-input">Enter 6-Digit OTP</label>
         <input id="otp-input" type="text" maxlength="6" placeholder="123456" />
-        <div class="hint">Test OTP ke liye koi bhi 6-digit code (jaise 123456) daalein.</div>
+        <div class="hint">Test OTP ke liye <strong>123456</strong> (ya koi bhi 6-digit code) daalein.</div>
         <button type="button" class="btn btn-teal" id="btn-verify-otp">Verify & Continue</button>
+        <button type="button" class="btn btn-light" id="btn-change-number">Change Number</button>
       </div>
 
       <div id="login-status" class="status-msg"></div>
@@ -314,4 +315,143 @@
 
       <label>Choose Ride Type</label>
       <div class="ride-types">
-        <div class
+        <div class="ride-option active" data-type="Bike" data-base-rate="7" data-base-min="25">
+          <div class="title">Musafir Bike</div>
+          <div class="rate" id="rate-bike">₹7.35 / km</div>
+          <div class="min-fare" id="min-bike">Min ₹26 (+5%)</div>
+        </div>
+        <div class="ride-option" data-type="E-Rickshaw" data-base-rate="11" data-base-min="35">
+          <div class="title">E-Rickshaw</div>
+          <div class="rate" id="rate-erickshaw">₹11.55 / km</div>
+          <div class="min-fare" id="min-erickshaw">Min ₹37 (+5%)</div>
+        </div>
+        <div class="ride-option" data-type="Cab" data-base-rate="16" data-base-min="70">
+          <div class="title">Musafir Cab</div>
+          <div class="rate" id="rate-cab">₹16.80 / km</div>
+          <div class="min-fare" id="min-cab">Min ₹74 (+5%)</div>
+        </div>
+      </div>
+
+      <div id="night-bar" class="night-bar">
+        <span id="night-status-label">Day Rate Active (10 PM – 6 AM: +50%)</span>
+        <button type="button" class="mini-toggle" id="btn-toggle-night-sim">Test 10PM–6AM (+50%)</button>
+      </div>
+
+      <label for="pickup-input">Pickup Point (Ludhiana)</label>
+      <input id="pickup-input" type="text" placeholder="e.g., Ferozepur Road / Threeke" />
+
+      <label for="drop-input">Drop Point (Ludhiana)</label>
+      <input id="drop-input" type="text" placeholder="e.g., Railway Station / Clock Tower" />
+
+      <label for="distance-input">Estimated Distance (in km)</label>
+      <input id="distance-input" type="number" step="0.5" min="1" value="3" placeholder="e.g., 5" />
+
+      <div class="fare-preview">
+        <div class="fare-main">
+          <div>
+            <div class="label" id="fare-formula">Bike • 3 km × ₹7.35/km (Min ₹26)</div>
+            <div class="hint" style="margin-top:2px;" id="fare-note">Daytime rate (+5% over baseline)</div>
+          </div>
+          <div class="amount" id="calculated-fare">₹26</div>
+        </div>
+        <div class="split-row">
+          <span id="driver-share-text">Driver Share (85%): ₹22</span>
+          <span id="platform-fee-text">Platform Fee (15%): ₹4</span>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-amber" id="btn-confirm-booking">Confirm Ride Booking</button>
+      <div id="booking-status" class="status-msg"></div>
+    </section>
+
+    <section id="rides-card" class="card hidden">
+      <h2>Your Rides</h2>
+      <div id="rides-container"></div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      const SURCHARGE = 1.05;
+      const NIGHT_SURCHARGE = 1.50;
+      const PLATFORM_FEE_RATE = 0.15;
+
+      let selectedType = "Bike";
+      let selectedBaseRate = 7;
+      let selectedBaseMin = 25;
+      let forceNightSim = null;
+      let sessionPhone = "";
+      let ridesList = [];
+
+      try {
+        sessionPhone = localStorage.getItem("musafir_session_phone") || "";
+        ridesList = JSON.parse(localStorage.getItem("musafir_rides_v6") || "[]");
+      } catch (_) {}
+
+      function isNightWindowActive() {
+        if (forceNightSim === true) return true;
+        if (forceNightSim === false) return false;
+        const hr = new Date().getHours();
+        return hr >= 22 || hr < 6;
+      }
+
+      function getNightMultiplier() {
+        return isNightWindowActive() ? NIGHT_SURCHARGE : 1.0;
+      }
+
+      function getEffectiveRate(baseRate) {
+        return Number((baseRate * SURCHARGE * getNightMultiplier()).toFixed(2));
+      }
+
+      function getEffectiveMin(baseMin) {
+        return Math.round(baseMin * SURCHARGE * getNightMultiplier());
+      }
+
+      function setStatus(id, msg, ok) {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.style.color = ok ? "#16794C" : "#B91C1C";
+        el.textContent = msg;
+      }
+
+      function updateVehicleCardsUI() {
+        const nightActive = isNightWindowActive();
+        const bar = document.getElementById("night-bar");
+        const label = document.getElementById("night-status-label");
+        const btn = document.getElementById("btn-toggle-night-sim");
+
+        document.getElementById("rate-bike").textContent = "₹" + getEffectiveRate(7).toFixed(2) + " / km";
+        document.getElementById("min-bike").textContent = "Min ₹" + getEffectiveMin(25) + (nightActive ? " (Night +50%)" : " (+5%)");
+
+        document.getElementById("rate-erickshaw").textContent = "₹" + getEffectiveRate(11).toFixed(2) + " / km";
+        document.getElementById("min-erickshaw").textContent = "Min ₹" + getEffectiveMin(35) + (nightActive ? " (Night +50%)" : " (+5%)");
+
+        document.getElementById("rate-cab").textContent = "₹" + getEffectiveRate(16).toFixed(2) + " / km";
+        document.getElementById("min-cab").textContent = "Min ₹" + getEffectiveMin(70) + (nightActive ? " (Night +50%)" : " (+5%)");
+
+        if (nightActive) {
+          bar.classList.add("active-night");
+          label.textContent = (forceNightSim === true ? "[Test ON] " : "[Auto Clock] ") + "10 PM – 6 AM Night Fare (+50%) Active";
+          btn.textContent = "Switch to Day";
+        } else {
+          bar.classList.remove("active-night");
+          label.textContent = (forceNightSim === false ? "[Test Day] " : "[Auto Clock] ") + "Day Fare Active (10 PM–6 AM: +50%)";
+          btn.textContent = "Test 10PM–6AM (+50%)";
+        }
+      }
+
+      function calculateFare() {
+        const km = parseFloat(document.getElementById("distance-input").value) || 0;
+        const rate = getEffectiveRate(selectedBaseRate);
+        const minFare = getEffectiveMin(selectedBaseMin);
+        return Math.max(minFare, Math.round(km * rate));
+      }
+
+      function getFareSplit(totalFare) {
+        const platformFee = Math.round(totalFare * PLATFORM_FEE_RATE);
+        const driverShare = totalFare - platformFee;
+        return { platformFee: platformFee, driverShare: driverShare };
+      }
+
+      function updateFareUI() {
+        update
