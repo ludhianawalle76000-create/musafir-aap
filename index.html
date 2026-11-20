@@ -48,7 +48,7 @@
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Ludhiana Bike, E-Rickshaw & Cab • v7</p>
+      <p>Ludhiana Bike, E-Rickshaw & Cab • v8</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -62,7 +62,7 @@
   <div class="wrap">
     <div id="login-card" class="card">
       <h2>Login with Mobile Number</h2>
-      <p class="sub">Enter mobile number, send OTP, and verify with 123456.</p>
+      <p class="sub">Tap Send OTP, then verify with OTP 123456.</p>
       <div id="step-phone">
         <label for="phone-inp">Mobile Number</label>
         <input id="phone-inp" type="tel" value="+918564885647" />
@@ -168,10 +168,10 @@
     function doSendOtp() {
       var p = document.getElementById("phone-inp").value.trim() || "+918564885647";
       phoneNow = p;
-      alert("OTP sent to " + p + " (Test OTP: 123456)");
       document.getElementById("step-phone").className = "hide";
       document.getElementById("step-otp").className = "";
-      document.getElementById("login-msg").textContent = "OTP sent to " + p + " (Test OTP: 123456)";
+      document.getElementById("otp-inp").value = "123456";
+      document.getElementById("login-msg").textContent = "OTP 123456 ready for " + p + ". Tap Verify OTP.";
     }
 
     function doBackPhone() {
@@ -198,3 +198,134 @@
     }
 
     function saveProfile() {
+      var n = document.getElementById("p-name").value.trim();
+      if (!n) return;
+      document.getElementById("book-title").textContent = "Hi " + n + ", Book a Ride";
+      document.getElementById("profile-msg").textContent = "Profile saved!";
+    }
+
+    function pickVehicle(el) {
+      var cards = document.querySelectorAll(".v-card");
+      for (var i = 0; i < cards.length; i++) cards[i].className = "v-card";
+      el.className = "v-card active";
+      curV = el.getAttribute("data-v");
+      curR = Number(el.getAttribute("data-r"));
+      curM = Number(el.getAttribute("data-m"));
+      calcUI();
+    }
+
+    function toggleNight() {
+      nightOn = !nightOn;
+      calcUI();
+    }
+
+    function calcUI() {
+      var nMult = nightOn ? 1.5 : 1.0;
+      var rBike = (7 * 1.05 * nMult).toFixed(2);
+      var mBike = Math.round(25 * 1.05 * nMult);
+      var rRick = (11 * 1.05 * nMult).toFixed(2);
+      var mRick = Math.round(35 * 1.05 * nMult);
+      var rCab = (16 * 1.05 * nMult).toFixed(2);
+      var mCab = Math.round(70 * 1.05 * nMult);
+
+      document.getElementById("r-bike").textContent = "₹" + rBike + "/km";
+      document.getElementById("m-bike").textContent = "Min ₹" + mBike;
+      document.getElementById("r-rick").textContent = "₹" + rRick + "/km";
+      document.getElementById("m-rick").textContent = "Min ₹" + mRick;
+      document.getElementById("r-cab").textContent = "₹" + rCab + "/km";
+      document.getElementById("m-cab").textContent = "Min ₹" + mCab;
+
+      var nr = document.getElementById("night-row");
+      if (nightOn) {
+        nr.className = "night-row on";
+        document.getElementById("night-txt").textContent = "Night Fare Active (10 PM – 6 AM)";
+        document.getElementById("night-btn").textContent = "Day Fare";
+      } else {
+        nr.className = "night-row";
+        document.getElementById("night-txt").textContent = "Night window: 10 PM – 6 AM";
+        document.getElementById("night-btn").textContent = "Test Night Fare";
+      }
+
+      var km = parseFloat(document.getElementById("km-inp").value) || 0;
+      var effRate = curR * 1.05 * nMult;
+      var effMin = Math.round(curM * 1.05 * nMult);
+      var total = Math.max(effMin, Math.round(km * effRate));
+
+      document.getElementById("fare-detail").textContent = "Full Payment • " + curV + " • " + km + " km";
+      document.getElementById("fare-total").textContent = "₹" + total;
+    }
+
+    function bookRide() {
+      var pickup = document.getElementById("pickup-inp").value.trim();
+      var drop = document.getElementById("drop-inp").value.trim();
+      var km = parseFloat(document.getElementById("km-inp").value) || 0;
+      if (!pickup || !drop || km <= 0) {
+        document.getElementById("book-msg").textContent = "Enter pickup, drop, and km.";
+        return;
+      }
+      loadSharedRides();
+      var nMult = nightOn ? 1.5 : 1.0;
+      var total = Math.max(Math.round(curM * 1.05 * nMult), Math.round(km * curR * 1.05 * nMult));
+
+      rides.unshift({
+        id: "GM" + Math.floor(100 + Math.random() * 900),
+        v: curV,
+        km: km,
+        total: total,
+        night: nightOn,
+        pickup: pickup,
+        drop: drop,
+        status: "Searching Driver"
+      });
+      saveSharedRides();
+      document.getElementById("pickup-inp").value = "";
+      document.getElementById("drop-inp").value = "";
+      document.getElementById("book-msg").textContent = curV + " booked • Full Payment ₹" + total;
+      drawRides();
+    }
+
+    function drawRides() {
+      loadSharedRides();
+      var box = document.getElementById("rides-list");
+      if (!rides.length) {
+        box.innerHTML = "<p class='sub'>No rides yet.</p>";
+        return;
+      }
+      var out = "";
+      for (var i = 0; i < rides.length; i++) {
+        var r = rides[i];
+        var st = r.status || "Searching Driver";
+        var billHtml = "";
+        if (st === "Completed") {
+          billHtml = "<div class='bill-box'>" +
+            "<strong>Detailed Bill</strong><br>" +
+            "Ride ID: " + (r.id || "") + " • " + r.v + "<br>" +
+            "Route: " + r.pickup + " → " + r.drop + " (" + r.km + " km)<br>" +
+            (r.night ? "Timing: Night Fare<br>" : "Timing: Day Fare<br>") +
+            "Platform Charges<br>" +
+            "<strong>Full Payment: ₹" + r.total + "</strong>" +
+            "</div>";
+        }
+        out += "<div class='ride-card'>" +
+          "<div class='ride-hd'><span>" + r.v + " • ₹" + r.total + "</span><span>" + st + "</span></div>" +
+          "<div>" + r.pickup + " → " + r.drop + " (" + r.km + " km)</div>" +
+          "<div style='color:#5a6b6b;margin-top:2px;'>Platform Charges</div>" +
+          billHtml +
+          "</div>";
+      }
+      box.innerHTML = out;
+    }
+
+    function logout() {
+      document.getElementById("hdr-btns").style.display = "none";
+      document.getElementById("profile-card").className = "card hide";
+      document.getElementById("book-card").className = "card hide";
+      document.getElementById("rides-card").className = "card hide";
+      document.getElementById("step-otp").className = "hide";
+      document.getElementById("step-phone").className = "";
+      document.getElementById("login-card").className = "card";
+      document.getElementById("login-msg").textContent = "";
+    }
+  </script>
+</body>
+</html>
