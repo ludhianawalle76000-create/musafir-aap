@@ -17,8 +17,9 @@
     .sub { font-size: 12px; color: #5a6b6b; margin-bottom: 12px; }
     label { display: block; font-size: 12px; font-weight: 700; color: #0d4f4f; margin: 10px 0 4px; }
     input, select { width: 100%; padding: 11px 12px; border: 1.5px solid #cfdcdc; border-radius: 10px; font-size: 14px; background: #fff; }
-    .btn { width: 100%; border: none; border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 12px; }
+    .btn { width: 100%; border: none; border-radius: 10px; padding: 12px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 10px; }
     .btn-amber { background: #e07a22; color: #fff; }
+    .btn-blue { background: #1d5f8a; color: #fff; }
     .btn-teal { background: #0d4f4f; color: #fff; }
     .btn-green { background: #16794c; color: #fff; }
     .msg { margin-top: 10px; font-size: 12px; font-weight: 700; min-height: 16px; color: #16794c; }
@@ -27,7 +28,7 @@
     .pending { background: #fff3e6; color: #9a4500; border: 1px solid #e07a22; }
     .verified { background: #e6f6ee; color: #16794c; border: 1px solid #16794c; }
     .ride-box { border: 1px solid #dce5e5; border-radius: 10px; padding: 12px; margin-top: 10px; background: #fcfdfd; font-size: 13px; }
-    .ride-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .ride-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
     .ride-info { font-weight: 800; color: #0d4f4f; font-size: 15px; }
     .ride-st { font-size: 11px; font-weight: 700; color: #16794c; }
     .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -38,7 +39,7 @@
   <header>
     <div>
       <h1>Go Musafir Driver</h1>
-      <p>Ludhiana Partner & Document Verification • v9</p>
+      <p>Ludhiana Partner & Document Verification • v12</p>
     </div>
     <a class="hdr-link" href="index.html">Passenger App</a>
   </header>
@@ -111,17 +112,12 @@
       function loadRides() {
         try {
           var saved = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]");
-          if (Array.isArray(saved) && saved.length) {
+          if (Array.isArray(saved)) {
             activeRides = saved;
             return;
           }
         } catch (e) {}
-        if (!activeRides.length) {
-          activeRides = [
-            { id: "GM101", v: "Cab", km: 10, total: 168, status: "Available" },
-            { id: "GM102", v: "Bike", km: 5, total: 37, status: "Available" }
-          ];
-        }
+        activeRides = [];
       }
 
       function saveRides() {
@@ -144,6 +140,10 @@
       function renderDriverRides() {
         var box = document.getElementById("d-rides-list");
         loadRides();
+        if (!activeRides.length) {
+          box.innerHTML = "<p class='sub'>No rides available.</p>";
+          return;
+        }
         var html = "";
         for (var i = 0; i < activeRides.length; i++) {
           var r = activeRides[i];
@@ -151,8 +151,9 @@
           var btns = isOnline
             ? "<div class='row2'>" +
                 '<button type="button" class="btn btn-amber act-accept" data-idx="' + i + '">Accept Ride</button>' +
-                '<button type="button" class="btn btn-teal act-complete" data-idx="' + i + '">Complete Trip</button>' +
-              "</div>"
+                '<button type="button" class="btn btn-blue act-arrived" data-idx="' + i + '">Arrived at Customer Location</button>' +
+              "</div>" +
+              '<button type="button" class="btn btn-teal act-complete" data-idx="' + i + '">Complete Trip</button>'
             : "";
           html += "<div class='ride-box'>" +
             "<div class='ride-top'><span class='ride-info'>" + r.km + " km • ₹" + r.total + "</span><span class='ride-st'>" + st + "</span></div>" +
@@ -174,6 +175,23 @@
             activeRides[idx].status = "Accepted";
             saveRides();
             document.getElementById("d-rides-msg").textContent = "Ride Accepted (" + activeRides[idx].km + " km • ₹" + activeRides[idx].total + ").";
+            renderDriverRides();
+          });
+        }
+
+        var arrBtns = box.querySelectorAll(".act-arrived");
+        for (var ar = 0; ar < arrBtns.length; ar++) {
+          arrBtns[ar].addEventListener("click", function () {
+            var idx = Number(this.getAttribute("data-idx"));
+            loadRides();
+            if (!isVerified) {
+              document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein.";
+              return;
+            }
+            if (!activeRides[idx]) return;
+            activeRides[idx].status = "Arrived at Customer Location";
+            saveRides();
+            document.getElementById("d-rides-msg").textContent = "Arrived at Customer Location (" + activeRides[idx].km + " km • ₹" + activeRides[idx].total + ").";
             renderDriverRides();
           });
         }
