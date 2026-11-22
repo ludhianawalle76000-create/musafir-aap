@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Go Musafir — Driver & Verification</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
     body { background: #f4f7f7; color: #142222; padding-bottom: 40px; }
@@ -29,6 +31,10 @@
     .badge { padding: 5px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
     .pending { background: #fff3e6; color: #9a4500; border: 1px solid #e07a22; }
     .verified { background: #e6f6ee; color: #16794c; border: 1px solid #16794c; }
+    .wallet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+    .w-box { background: #eaf4f4; border: 1px solid #c7dfdf; border-radius: 10px; padding: 10px; }
+    .w-lbl { font-size: 10px; font-weight: 700; color: #4c5e5e; text-transform: uppercase; }
+    .w-val { font-size: 18px; font-weight: 900; color: #083636; margin-top: 2px; }
     .ride-box { border: 1px solid #dce5e5; border-radius: 10px; padding: 12px; margin-top: 10px; background: #fcfdfd; font-size: 13px; }
     .ride-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
     .ride-info { font-weight: 800; color: #0d4f4f; font-size: 15px; }
@@ -38,7 +44,10 @@
     .otp-inp { margin-top: 0 !important; padding: 9px 10px !important; font-size: 13px !important; }
     .otp-btn { margin-top: 0 !important; padding: 10px !important; }
     .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .small-btn { background: #fff; border: 1px solid #c5d3d3; color: #0d4f4f; padding: 5px 8px; border-radius: 7px; font-size: 11px; font-weight: 700; cursor: pointer; }
+    .small-btn { background: #fff; border: 1px solid #c5d3d3; color: #0d4f4f; padding: 6px 9px; border-radius: 7px; font-size: 11px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; }
+    .nav-wrap { margin-top: 10px; border-radius: 10px; overflow: hidden; border: 1px solid #bfd8d6; background: #eef7f7; }
+    .nav-map { height: 180px; width: 100%; }
+    .nav-bar { padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 11px; }
     .owner-box { margin-top: 14px; padding: 12px; border-radius: 10px; background: #f2f7f7; border: 1px solid #c9dbdb; }
     .owner-title { font-size: 12px; font-weight: 800; color: #0d4f4f; margin-bottom: 8px; }
     .log-item { font-size: 11px; padding: 7px 0; border-top: 1px dashed #c9dbdb; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
@@ -69,7 +78,7 @@
   <header>
     <div>
       <h1>Go Musafir Driver</h1>
-      <p>Ludhiana Partner & Verification • v21</p>
+      <p>Ludhiana Partner & Verification • v24</p>
     </div>
     <a class="hdr-link" href="index.html">Passenger App</a>
   </header>
@@ -120,6 +129,22 @@
       <button type="button" class="btn btn-teal" onclick="dSaveDocsNow()">Submit Documents for Verification</button>
       <button type="button" class="btn btn-green" onclick="dVerifyDocsNow()">Admin Check: Mark Verified</button>
       <div id="d-doc-msg" class="msg"></div>
+
+      <div class="owner-box">
+        <div class="owner-title">Driver Wallet • Weekly Payout & Owner Commission</div>
+        <div class="wallet-grid">
+          <div class="w-box">
+            <div class="w-lbl">Driver Weekly Wallet</div>
+            <div id="d-wallet-bal" class="w-val">₹0</div>
+          </div>
+          <div class="w-box">
+            <div class="w-lbl">Owner Commission</div>
+            <div id="owner-comm-bal" class="w-val">₹0</div>
+          </div>
+        </div>
+        <button type="button" class="btn btn-amber" onclick="settleWeeklyDriverPayout()">Mark Weekly Payout Paid</button>
+        <div id="payout-msg" class="msg"></div>
+      </div>
 
       <div class="owner-box">
         <div class="owner-title">Main Admin / App Owner Control & User Details</div>
@@ -181,21 +206,75 @@
     var isOnline = false;
     var activeRides = [];
     var ownerAccounts = [];
+    var driverWallet = 0;
+    var ownerCommission = 0;
     var currentDriverEndIdx = -1;
+    var dMaps = {};
+    var dNavTimers = {};
+
+    var PICKUP_COORDS = { lat: 30.8615, lng: 75.8150 };
+    var DROP_COORDS = { lat: 30.9120, lng: 75.8540 };
 
     function isAutoNightHour() {
       var hr = new Date().getHours();
       return (hr >= 22 || hr < 6);
     }
 
+    function isNightRide(rideObj) {
+      return (rideObj.isNight !== undefined) ? Boolean(rideObj.isNight) : isAutoNightHour();
+    }
+
     function driverRideFare(rideObj) {
       var baseTotal = Number(rideObj.total || 0);
-      var night = (rideObj.isNight !== undefined) ? Boolean(rideObj.isNight) : isAutoNightHour();
-      if (night) {
+      if (isNightRide(rideObj)) {
         var afterOwnerNight = Math.round(baseTotal * 0.60);
         return Math.round(afterOwnerNight * 1.25);
       }
       return Math.round(baseTotal * 0.85);
+    }
+
+    function ownerRideShare(rideObj) {
+      var baseTotal = Number(rideObj.total || 0);
+      return isNightRide(rideObj) ? Math.round(baseTotal * 0.40) : Math.round(baseTotal * 0.15);
+    }
+
+    function isOnlinePaymentMode(pm) {
+      return pm === "UPI" || pm === "Wallet" || pm === "Credit Card" || pm === "Debit Card";
+    }
+
+    function syncWalletsFromCompletedRides() {
+      var dBal = 0;
+      var oComm = 0;
+      for (var i = 0; i < activeRides.length; i++) {
+        var r = activeRides[i];
+        var isComp = String(r.status || "").toLowerCase().indexOf("complet") > -1;
+        if (!isComp) continue;
+        oComm += ownerRideShare(r);
+        var pm = r.payMode || "Cash";
+        if (isOnlinePaymentMode(pm) && !r.weeklySettled) {
+          dBal += driverRideFare(r);
+        }
+      }
+      driverWallet = dBal;
+      ownerCommission = oComm;
+      var dwEl = document.getElementById("d-wallet-bal");
+      var ocEl = document.getElementById("owner-comm-bal");
+      if (dwEl) dwEl.textContent = "₹" + driverWallet;
+      if (ocEl) ocEl.textContent = "₹" + ownerCommission;
+    }
+
+    function settleWeeklyDriverPayout() {
+      loadRides();
+      for (var i = 0; i < activeRides.length; i++) {
+        var r = activeRides[i];
+        var isComp = String(r.status || "").toLowerCase().indexOf("complet") > -1;
+        if (isComp && isOnlinePaymentMode(r.payMode || "Cash")) {
+          r.weeklySettled = true;
+        }
+      }
+      saveRides();
+      syncWalletsFromCompletedRides();
+      document.getElementById("payout-msg").textContent = "Weekly online payout settled.";
     }
 
     function loadRides() {
@@ -371,6 +450,94 @@
       renderDriverRides();
     }
 
+    function initDriverNavMap(idx, rideObj) {
+      var elId = "d-nav-map-" + idx;
+      var el = document.getElementById(elId);
+      if (!el || typeof L === "undefined") return;
+
+      if (dMaps[idx]) {
+        dMaps[idx].remove();
+        delete dMaps[idx];
+      }
+
+      var curLat = (typeof rideObj.riderLat === "number") ? rideObj.riderLat : PICKUP_COORDS.lat;
+      var curLng = (typeof rideObj.riderLng === "number") ? rideObj.riderLng : PICKUP_COORDS.lng;
+
+      var map = L.map(elId, { zoomControl: false }).setView([curLat, curLng], 13);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: "© OSM"
+      }).addTo(map);
+
+      L.polyline(
+        [[PICKUP_COORDS.lat, PICKUP_COORDS.lng], [DROP_COORDS.lat, DROP_COORDS.lng]],
+        { color: "#1d5f8a", weight: 4 }
+      ).addTo(map);
+
+      L.circleMarker([PICKUP_COORDS.lat, PICKUP_COORDS.lng], { radius: 6, color: "#16794c", fillOpacity: 0.9 }).addTo(map);
+      L.circleMarker([DROP_COORDS.lat, DROP_COORDS.lng], { radius: 6, color: "#b8292f", fillOpacity: 0.9 }).addTo(map);
+
+      var marker = L.circleMarker([curLat, curLng], {
+        radius: 9,
+        color: "#fff",
+        weight: 2,
+        fillColor: "#0d4f4f",
+        fillOpacity: 1
+      }).addTo(map);
+
+      dMaps[idx] = { map: map, marker: marker };
+    }
+
+    function startDriverNavigation(idx) {
+      loadRides();
+      var r = activeRides[idx];
+      if (!r) return;
+
+      var stEl = document.getElementById("d-nav-st-" + idx);
+      if (dNavTimers[idx]) {
+        clearInterval(dNavTimers[idx]);
+        delete dNavTimers[idx];
+      }
+
+      var targetLat = (r.status === "Ride Started") ? DROP_COORDS.lat : PICKUP_COORDS.lat;
+      var targetLng = (r.status === "Ride Started") ? DROP_COORDS.lng : PICKUP_COORDS.lng;
+      var startLat = (typeof r.riderLat === "number") ? r.riderLat : PICKUP_COORDS.lat;
+      var startLng = (typeof r.riderLng === "number") ? r.riderLng : PICKUP_COORDS.lng;
+
+      function pushPos(lat, lng, msg) {
+        r.riderLat = lat;
+        r.riderLng = lng;
+        saveRides();
+        if (dMaps[idx] && dMaps[idx].marker && dMaps[idx].map) {
+          dMaps[idx].marker.setLatLng([lat, lng]);
+          dMaps[idx].map.panTo([lat, lng]);
+        }
+        if (stEl) stEl.textContent = msg + " (" + lat.toFixed(4) + ", " + lng.toFixed(4) + ")";
+      }
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          function (pos) {
+            pushPos(pos.coords.latitude, pos.coords.longitude, "Navigating GPS");
+          },
+          function () {}
+        );
+      }
+
+      var step = 0;
+      dNavTimers[idx] = setInterval(function () {
+        step += 1;
+        var t = Math.min(1, step / 8);
+        var lat = startLat + (targetLat - startLat) * t;
+        var lng = startLng + (targetLng - startLng) * t;
+        pushPos(lat, lng, t >= 1 ? "Arrived at Target" : "Navigating Live");
+        if (t >= 1) {
+          clearInterval(dNavTimers[idx]);
+          delete dNavTimers[idx];
+        }
+      }, 650);
+    }
+
     function dAcceptRide(idx) {
       loadRides();
       if (!isVerified) {
@@ -398,6 +565,8 @@
       var r = activeRides[idx];
       if (!r) return;
       r.status = "Arrived at Customer Location";
+      r.riderLat = PICKUP_COORDS.lat;
+      r.riderLng = PICKUP_COORDS.lng;
       saveRides();
       document.getElementById("d-rides-msg").textContent = "Arrived at Customer Location (" + r.km + " km • ₹" + driverRideFare(r) + ").";
       renderDriverRides();
@@ -435,8 +604,9 @@
       var r = activeRides[idx];
       if (!r) return;
       currentDriverEndIdx = idx;
+      var pm = r.payMode || "Cash";
       document.getElementById("d-end-amt").textContent = "₹" + driverRideFare(r);
-      document.getElementById("d-end-km").textContent = (r.km || 0) + " km";
+      document.getElementById("d-end-km").textContent = (r.km || 0) + " km • " + pm;
       document.getElementById("d-feedback-inp").value = r.customerFeedback || "";
       highlightDriverStars(r.customerRating || 0);
       document.getElementById("d-block-btn").textContent = r.customerBlockedByDriver ? "Unblock Customer" : "Block Customer";
@@ -491,8 +661,11 @@
       var r = activeRides[idx];
       if (!r) return;
       r.status = "Completed";
+      r.riderLat = DROP_COORDS.lat;
+      r.riderLng = DROP_COORDS.lng;
       r.passengerRatedPromptSeen = false;
       saveRides();
+      syncWalletsFromCompletedRides();
       document.getElementById("d-rides-msg").textContent = "Trip Completed (" + r.km + " km • ₹" + driverRideFare(r) + ").";
       renderDriverRides();
       openDriverEndScreen(idx);
@@ -501,6 +674,7 @@
     function renderDriverRides() {
       var box = document.getElementById("d-rides-list");
       loadRides();
+      syncWalletsFromCompletedRides();
       if (!activeRides.length) {
         box.innerHTML = "<p class='sub'>No rides available.</p>";
         return;
@@ -509,6 +683,7 @@
       for (var i = 0; i < activeRides.length; i++) {
         var r = activeRides[i];
         var st = r.status || "Available";
+        var pm = r.payMode || "Cash";
         var dAmt = driverRideFare(r);
         var blkTag = r.customerBlockedByDriver
           ? "<div class='blk-pill'>Blocked by Driver</div>"
@@ -530,14 +705,30 @@
           ? "<div style='font-size:11px;color:#364a4a;margin-top:6px;'>Customer Feedback: " + r.customerFeedback + (r.customerRating ? " (" + r.customerRating + " ★)" : "") + "</div>"
           : (r.customerRating ? "<div style='font-size:11px;color:#364a4a;margin-top:6px;'>Customer Rating: " + r.customerRating + " ★</div>" : "");
 
+        var gmapsUrl = "https://www.google.com/maps/dir/?api=1&destination=" + DROP_COORDS.lat + "," + DROP_COORDS.lng;
+
         html += "<div class='ride-box'>" +
-          "<div class='ride-top'><span class='ride-info'>" + r.km + " km • ₹" + dAmt + "</span><span class='ride-st'>" + st + "</span></div>" +
+          "<div class='ride-top'><span class='ride-info'>" + r.km + " km • ₹" + dAmt + " • " + pm + "</span><span class='ride-st'>" + st + "</span></div>" +
           blkTag +
           fbNote +
           btns +
+          "<div class='nav-wrap'>" +
+            "<div id='d-nav-map-" + i + "' class='nav-map'></div>" +
+            "<div class='nav-bar'>" +
+              "<span id='d-nav-st-" + i + "'>Live Navigation Map</span>" +
+              "<div style='display:flex;gap:6px;'>" +
+                '<button type="button" class="small-btn" onclick="startDriverNavigation(' + i + ')">Navigate on Map</button>' +
+                '<a class="small-btn" target="_blank" rel="noopener" href="' + gmapsUrl + '">Google Maps</a>' +
+              "</div>" +
+            "</div>" +
+          "</div>" +
           "</div>";
       }
       box.innerHTML = html;
+
+      for (var m = 0; m < activeRides.length; m++) {
+        initDriverNavMap(m, activeRides[m] || {});
+      }
     }
   </script>
 </body>
