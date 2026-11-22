@@ -16,7 +16,8 @@
     h2 { font-size: 17px; color: #0d4f4f; margin-bottom: 6px; }
     .sub { font-size: 12px; color: #5a6b6b; margin-bottom: 12px; }
     label { display: block; font-size: 12px; font-weight: 700; color: #0d4f4f; margin: 10px 0 4px; }
-    input, select { width: 100%; padding: 11px 12px; border: 1.5px solid #cfdcdc; border-radius: 10px; font-size: 14px; background: #fff; }
+    input, select, textarea { width: 100%; padding: 11px 12px; border: 1.5px solid #cfdcdc; border-radius: 10px; font-size: 14px; background: #fff; font-family: system-ui, sans-serif; }
+    textarea { min-height: 62px; resize: vertical; }
     .btn { width: 100%; border: none; border-radius: 10px; padding: 12px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 10px; }
     .btn-amber { background: #e07a22; color: #fff; }
     .btn-blue { background: #1d5f8a; color: #fff; }
@@ -38,7 +39,9 @@
     .otp-btn { margin-top: 0 !important; padding: 10px !important; }
     .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .small-btn { background: #fff; border: 1px solid #c5d3d3; color: #0d4f4f; padding: 5px 8px; border-radius: 7px; font-size: 11px; font-weight: 700; cursor: pointer; }
-    .blk-bar { margin-top: 10px; padding: 10px; border-radius: 10px; background: #fff5f5; border: 1px solid #f0c2c4; font-size: 11px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .owner-box { margin-top: 14px; padding: 12px; border-radius: 10px; background: #f2f7f7; border: 1px solid #c9dbdb; }
+    .owner-title { font-size: 12px; font-weight: 800; color: #0d4f4f; margin-bottom: 8px; }
+    .log-item { font-size: 11px; padding: 7px 0; border-top: 1px dashed #c9dbdb; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
 
     .full-end { position: fixed; inset: 0; background: #0d4f4f; z-index: 999; display: none; flex-direction: column; justify-content: space-between; padding: 20px 18px; color: #fff; overflow-y: auto; }
     .full-end.show { display: flex; }
@@ -54,7 +57,7 @@
     .star-btn { border: 1.5px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.12); color: #fff; border-radius: 10px; padding: 10px 4px; font-size: 13px; font-weight: 800; cursor: pointer; }
     .star-btn.picked { background: #e07a22; border-color: #e07a22; color: #fff; }
     .fb-lbl { display: block; font-size: 11px; font-weight: 700; color: #e2f1f1; margin: 12px 0 5px; }
-    .fb-inp { width: 100%; padding: 9px 11px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.3); background: #fff; color: #142222; font-size: 13px; min-height: 62px; font-family: system-ui, sans-serif; }
+    .fb-inp { width: 100%; padding: 9px 11px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.3); background: #fff; color: #142222; font-size: 13px; min-height: 62px; }
     .rate-status { margin-top: 8px; font-size: 12px; font-weight: 700; color: #ffe7cf; min-height: 16px; text-align: center; }
     .end-actions { margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .end-done-btn { width: 100%; border: none; border-radius: 12px; padding: 13px; font-size: 14px; font-weight: 800; background: #e07a22; color: #fff; cursor: pointer; }
@@ -66,7 +69,7 @@
   <header>
     <div>
       <h1>Go Musafir Driver</h1>
-      <p>Ludhiana Partner & Document Verification • v19</p>
+      <p>Ludhiana Partner & Verification • v21</p>
     </div>
     <a class="hdr-link" href="index.html">Passenger App</a>
   </header>
@@ -117,6 +120,17 @@
       <button type="button" class="btn btn-teal" onclick="dSaveDocsNow()">Submit Documents for Verification</button>
       <button type="button" class="btn btn-green" onclick="dVerifyDocsNow()">Admin Check: Mark Verified</button>
       <div id="d-doc-msg" class="msg"></div>
+
+      <div class="owner-box">
+        <div class="owner-title">Main Admin / App Owner Control & User Details</div>
+        <label for="owner-target-id" style="margin-top:0;">Ride / User ID</label>
+        <input id="owner-target-id" type="text" placeholder="e.g., GM452" />
+        <div class="row2">
+          <button type="button" class="btn btn-amber" onclick="ownerToggleBlock('Customer')">Block/Unblock Customer</button>
+          <button type="button" class="btn btn-teal" onclick="ownerToggleBlock('Driver')">Block/Unblock Driver</button>
+        </div>
+        <div id="owner-accounts-box" style="margin-top:10px;"></div>
+      </div>
     </div>
 
     <div id="drv-rides" class="card hide">
@@ -125,7 +139,6 @@
         <button type="button" class="hdr-link" style="color:#0d4f4f;border-color:#0d4f4f;background:#eaf4f4;cursor:pointer;" id="duty-btn" onclick="dToggleDutyNow()">Status: Offline</button>
       </div>
       <div id="d-rides-msg" class="msg"></div>
-      <div id="d-blocked-box"></div>
       <div id="d-rides-list"></div>
     </div>
   </div>
@@ -151,14 +164,14 @@
         </div>
 
         <label class="fb-lbl" for="d-feedback-inp">Customer Behavior Feedback</label>
-        <textarea id="d-feedback-inp" class="fb-inp" placeholder="Write feedback about customer behavior, pickup, or trip..." oninput="saveCustomerFeedbackNow()"></textarea>
+        <textarea id="d-feedback-inp" class="fb-inp" placeholder="Write feedback about customer behavior or trip..." oninput="saveCustomerFeedbackNow()"></textarea>
 
         <div id="d-rate-msg" class="rate-status">Tap stars & add feedback</div>
       </div>
     </div>
 
     <div class="end-actions">
-      <button type="button" class="end-blk-btn" id="d-block-btn" onclick="blockCustomerFromEndScreen()">Block Customer</button>
+      <button type="button" class="end-blk-btn" id="d-block-btn" onclick="toggleBlockCustomerNow()">Block Customer</button>
       <button type="button" class="end-done-btn" onclick="closeDriverEndScreen()">Done</button>
     </div>
   </div>
@@ -167,8 +180,23 @@
     var isVerified = false;
     var isOnline = false;
     var activeRides = [];
-    var blockedCustomers = [];
+    var ownerAccounts = [];
     var currentDriverEndIdx = -1;
+
+    function isAutoNightHour() {
+      var hr = new Date().getHours();
+      return (hr >= 22 || hr < 6);
+    }
+
+    function driverRideFare(rideObj) {
+      var baseTotal = Number(rideObj.total || 0);
+      var night = (rideObj.isNight !== undefined) ? Boolean(rideObj.isNight) : isAutoNightHour();
+      if (night) {
+        var afterOwnerNight = Math.round(baseTotal * 0.60);
+        return Math.round(afterOwnerNight * 1.25);
+      }
+      return Math.round(baseTotal * 0.85);
+    }
 
     function loadRides() {
       try {
@@ -176,36 +204,126 @@
         activeRides = Array.isArray(saved) ? saved : [];
       } catch (e) { activeRides = []; }
       try {
-        var b = JSON.parse(localStorage.getItem("gm_blocked_customers_v1") || "[]");
-        blockedCustomers = Array.isArray(b) ? b : [];
-      } catch (e) { blockedCustomers = []; }
+        var acc = JSON.parse(localStorage.getItem("gm_owner_accounts_v1") || "[]");
+        ownerAccounts = Array.isArray(acc) ? acc : [];
+      } catch (e) { ownerAccounts = []; }
     }
 
     function saveRides() {
       try {
         localStorage.setItem("gm_shared_rides_v1", JSON.stringify(activeRides));
-        localStorage.setItem("gm_blocked_customers_v1", JSON.stringify(blockedCustomers));
+        localStorage.setItem("gm_owner_accounts_v1", JSON.stringify(ownerAccounts));
       } catch (e) {}
     }
 
-    function isCustomerBlocked(rideObj) {
-      if (!rideObj) return false;
-      if (rideObj.customerBlocked) return true;
-      return blockedCustomers.indexOf(rideObj.id) > -1;
+    function recordDriverOwnerLog() {
+      var phone = (document.getElementById("d-phone").value || "").trim() || "+919876543210";
+      var name = (document.getElementById("d-name").value || "").trim() || "Driver Partner";
+      var vType = (document.getElementById("d-vehicle").value || "").trim() || "Bike";
+      var vNo = (document.getElementById("d-vno").value || "").trim() || "-";
+      var dlNo = (document.getElementById("d-dl").value || "").trim() || "-";
+      var idRef = (document.getElementById("d-id").value || "").trim() || "-";
+
+      loadRides();
+      var found = false;
+      for (var i = 0; i < ownerAccounts.length; i++) {
+        if (ownerAccounts[i].type === "Driver" && ownerAccounts[i].phone === phone) {
+          ownerAccounts[i].name = name;
+          ownerAccounts[i].vehicle = vType;
+          ownerAccounts[i].vno = vNo;
+          ownerAccounts[i].dl = dlNo;
+          ownerAccounts[i].idRef = idRef;
+          ownerAccounts[i].verified = isVerified;
+          ownerAccounts[i].lastSeen = new Date().toLocaleString();
+          found = true;
+        }
+      }
+      if (!found) {
+        ownerAccounts.unshift({
+          type: "Driver",
+          name: name,
+          phone: phone,
+          vehicle: vType,
+          vno: vNo,
+          dl: dlNo,
+          idRef: idRef,
+          verified: isVerified,
+          blocked: false,
+          time: new Date().toLocaleString()
+        });
+      }
+      saveRides();
+      renderOwnerAccounts();
+    }
+
+    function ownerToggleBlock(role) {
+      loadRides();
+      var inp = document.getElementById("owner-target-id");
+      var targetId = inp ? inp.value.trim() : "";
+      if (!targetId && activeRides.length) targetId = activeRides[0].id || "";
+      if (!targetId) {
+        document.getElementById("d-doc-msg").textContent = "Enter Ride / User ID.";
+        return;
+      }
+      for (var i = 0; i < activeRides.length; i++) {
+        if (activeRides[i].id === targetId) {
+          activeRides[i].ownerBlockedRole = activeRides[i].ownerBlockedRole === role ? "" : role;
+        }
+      }
+      saveRides();
+      if (inp) inp.value = "";
+      document.getElementById("d-doc-msg").textContent = "Owner updated " + role + " block status for " + targetId + ".";
+      renderDriverRides();
+    }
+
+    function toggleAccountBlockOwner(idx) {
+      loadRides();
+      if (!ownerAccounts[idx]) return;
+      ownerAccounts[idx].blocked = !ownerAccounts[idx].blocked;
+      saveRides();
+      renderOwnerAccounts();
+    }
+
+    function renderOwnerAccounts() {
+      var box = document.getElementById("owner-accounts-box");
+      if (!box) return;
+      if (!ownerAccounts.length) {
+        box.innerHTML = "<div class='log-item'><span>No account logs yet.</span></div>";
+        return;
+      }
+      var html = "";
+      for (var i = 0; i < ownerAccounts.length; i++) {
+        var a = ownerAccounts[i];
+        var detail = a.type === "Driver"
+          ? a.name + " • " + a.phone + " • " + (a.vehicle || "") + " • " + (a.vno || "") + " • DL:" + (a.dl || "")
+          : a.name + " • " + a.phone;
+        var stLbl = a.blocked ? "Blocked" : "Active";
+        html += "<div class='log-item'>" +
+          "<span><strong>[" + a.type + "]</strong> " + detail + " (" + stLbl + ")</span>" +
+          '<button type="button" class="small-btn" onclick="toggleAccountBlockOwner(' + i + ')">' + (a.blocked ? "Unblock" : "Block") + '</button>' +
+          "</div>";
+      }
+      box.innerHTML = html;
     }
 
     function dSendOtpNow() {
-      document.getElementById("d-phone-step").className = "hide";
-      document.getElementById("d-otp-step").className = "";
-      document.getElementById("d-otp").value = "123456";
-      document.getElementById("d-login-msg").textContent = "OTP 123456 ready.";
+      var s1 = document.getElementById("d-phone-step");
+      var s2 = document.getElementById("d-otp-step");
+      var o = document.getElementById("d-otp");
+      var m = document.getElementById("d-login-msg");
+      if (s1) s1.className = "hide";
+      if (s2) s2.className = "";
+      if (o) o.value = "123456";
+      if (m) m.textContent = "OTP 123456 ready.";
     }
 
     function dVerifyOtpNow() {
+      recordDriverOwnerLog();
       document.getElementById("drv-login").className = "card hide";
       document.getElementById("drv-panel").className = "card";
       document.getElementById("drv-rides").className = "card";
       document.getElementById("d-title").textContent = "Driver Profile";
+      renderOwnerAccounts();
       renderDriverRides();
     }
 
@@ -219,12 +337,14 @@
       }
       isVerified = false;
       updateDocBadge();
+      recordDriverOwnerLog();
       document.getElementById("d-doc-msg").textContent = "Documents submitted! Status is Pending Verification.";
     }
 
     function dVerifyDocsNow() {
       isVerified = true;
       updateDocBadge();
+      recordDriverOwnerLog();
       document.getElementById("d-doc-msg").textContent = "Driver documents verified! You can now go Online.";
       renderDriverRides();
     }
@@ -257,14 +377,15 @@
         document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein.";
         return;
       }
-      if (!activeRides[idx]) return;
-      if (isCustomerBlocked(activeRides[idx])) {
-        document.getElementById("d-rides-msg").textContent = "Yeh customer blocked hai.";
+      var r = activeRides[idx];
+      if (!r) return;
+      if (r.customerBlockedByDriver || r.ownerBlockedRole) {
+        document.getElementById("d-rides-msg").textContent = "Ride blocked.";
         return;
       }
-      activeRides[idx].status = "Accepted";
+      r.status = "Accepted";
       saveRides();
-      document.getElementById("d-rides-msg").textContent = "Ride Accepted (" + activeRides[idx].km + " km • ₹" + activeRides[idx].total + ").";
+      document.getElementById("d-rides-msg").textContent = "Ride Accepted (" + r.km + " km • ₹" + driverRideFare(r) + ").";
       renderDriverRides();
     }
 
@@ -274,10 +395,11 @@
         document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein.";
         return;
       }
-      if (!activeRides[idx]) return;
-      activeRides[idx].status = "Arrived at Customer Location";
+      var r = activeRides[idx];
+      if (!r) return;
+      r.status = "Arrived at Customer Location";
       saveRides();
-      document.getElementById("d-rides-msg").textContent = "Arrived at Customer Location (" + activeRides[idx].km + " km • ₹" + activeRides[idx].total + ").";
+      document.getElementById("d-rides-msg").textContent = "Arrived at Customer Location (" + r.km + " km • ₹" + driverRideFare(r) + ").";
       renderDriverRides();
     }
 
@@ -294,7 +416,7 @@
       if (!r.rideOtp || enteredOtp === String(r.rideOtp)) {
         r.status = "Ride Started";
         saveRides();
-        document.getElementById("d-rides-msg").textContent = "Ride Started (" + r.km + " km • ₹" + r.total + ").";
+        document.getElementById("d-rides-msg").textContent = "Ride Started (" + r.km + " km • ₹" + driverRideFare(r) + ").";
         renderDriverRides();
       } else {
         document.getElementById("d-rides-msg").textContent = "Galat Customer OTP! Passenger app mein Ride OTP check karein.";
@@ -313,11 +435,11 @@
       var r = activeRides[idx];
       if (!r) return;
       currentDriverEndIdx = idx;
-      document.getElementById("d-end-amt").textContent = "₹" + (r.total || 0);
+      document.getElementById("d-end-amt").textContent = "₹" + driverRideFare(r);
       document.getElementById("d-end-km").textContent = (r.km || 0) + " km";
       document.getElementById("d-feedback-inp").value = r.customerFeedback || "";
       highlightDriverStars(r.customerRating || 0);
-      document.getElementById("d-block-btn").textContent = isCustomerBlocked(r) ? "Customer Blocked" : "Block Customer";
+      document.getElementById("d-block-btn").textContent = r.customerBlockedByDriver ? "Unblock Customer" : "Block Customer";
       document.getElementById("d-rate-msg").textContent = r.customerRating ? "Rated " + r.customerRating + " ★" : "Tap stars & add feedback";
       document.getElementById("d-end-screen").className = "full-end show";
     }
@@ -342,28 +464,15 @@
       document.getElementById("d-rate-msg").textContent = fb ? "Feedback saved" : "Tap stars & add feedback";
     }
 
-    function blockCustomerFromEndScreen() {
+    function toggleBlockCustomerNow() {
       loadRides();
       if (currentDriverEndIdx > -1 && activeRides[currentDriverEndIdx]) {
         var r = activeRides[currentDriverEndIdx];
-        r.customerBlocked = true;
-        if (r.id && blockedCustomers.indexOf(r.id) === -1) {
-          blockedCustomers.push(r.id);
-        }
+        r.customerBlockedByDriver = !r.customerBlockedByDriver;
         saveRides();
-        document.getElementById("d-block-btn").textContent = "Customer Blocked";
-        document.getElementById("d-rate-msg").textContent = "Customer blocked from app";
+        document.getElementById("d-block-btn").textContent = r.customerBlockedByDriver ? "Unblock Customer" : "Block Customer";
+        document.getElementById("d-rate-msg").textContent = r.customerBlockedByDriver ? "Customer blocked by driver" : "Customer unblocked";
       }
-    }
-
-    function unblockCustomerRide(rideId) {
-      loadRides();
-      blockedCustomers = blockedCustomers.filter(function (x) { return x !== rideId; });
-      for (var i = 0; i < activeRides.length; i++) {
-        if (activeRides[i].id === rideId) activeRides[i].customerBlocked = false;
-      }
-      saveRides();
-      renderDriverRides();
     }
 
     function closeDriverEndScreen() {
@@ -379,35 +488,19 @@
         document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein.";
         return;
       }
-      if (!activeRides[idx]) return;
-      activeRides[idx].status = "Completed";
-      activeRides[idx].passengerRatedPromptSeen = false;
+      var r = activeRides[idx];
+      if (!r) return;
+      r.status = "Completed";
+      r.passengerRatedPromptSeen = false;
       saveRides();
-      document.getElementById("d-rides-msg").textContent = "Trip Completed (" + activeRides[idx].km + " km • ₹" + activeRides[idx].total + ").";
+      document.getElementById("d-rides-msg").textContent = "Trip Completed (" + r.km + " km • ₹" + driverRideFare(r) + ").";
       renderDriverRides();
       openDriverEndScreen(idx);
     }
 
     function renderDriverRides() {
-      var blkBox = document.getElementById("d-blocked-box");
       var box = document.getElementById("d-rides-list");
       loadRides();
-
-      var blkList = activeRides.filter(function (item) { return isCustomerBlocked(item); });
-      if (blkList.length) {
-        var bHtml = "";
-        for (var b = 0; b < blkList.length; b++) {
-          var br = blkList[b];
-          bHtml += "<div class='blk-bar'>" +
-            "<span>Blocked Customer • " + (br.km || 0) + " km • ₹" + (br.total || 0) + "</span>" +
-            '<button type="button" class="small-btn" onclick="unblockCustomerRide(\'' + (br.id || "") + '\')">Unblock</button>' +
-            "</div>";
-        }
-        blkBox.innerHTML = bHtml;
-      } else {
-        blkBox.innerHTML = "";
-      }
-
       if (!activeRides.length) {
         box.innerHTML = "<p class='sub'>No rides available.</p>";
         return;
@@ -416,7 +509,11 @@
       for (var i = 0; i < activeRides.length; i++) {
         var r = activeRides[i];
         var st = r.status || "Available";
-        var blk = isCustomerBlocked(r);
+        var dAmt = driverRideFare(r);
+        var blkTag = r.customerBlockedByDriver
+          ? "<div class='blk-pill'>Blocked by Driver</div>"
+          : (r.ownerBlockedRole ? "<div class='blk-pill'>Blocked by Owner (" + r.ownerBlockedRole + ")</div>" : "");
+
         var btns = isOnline
           ? "<div class='row2'>" +
               '<button type="button" class="btn btn-amber" onclick="dAcceptRide(' + i + ')">Accept Ride</button>' +
@@ -434,8 +531,8 @@
           : (r.customerRating ? "<div style='font-size:11px;color:#364a4a;margin-top:6px;'>Customer Rating: " + r.customerRating + " ★</div>" : "");
 
         html += "<div class='ride-box'>" +
-          "<div class='ride-top'><span class='ride-info'>" + r.km + " km • ₹" + r.total + "</span><span class='ride-st'>" + st + "</span></div>" +
-          (blk ? "<div class='blk-pill'>Customer Blocked</div>" : "") +
+          "<div class='ride-top'><span class='ride-info'>" + r.km + " km • ₹" + dAmt + "</span><span class='ride-st'>" + st + "</span></div>" +
+          blkTag +
           fbNote +
           btns +
           "</div>";
