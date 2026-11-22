@@ -3,109 +3,112 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Go Musafir — Driver & Verification</title>
+  <title>Go Musafir — Partner & Admin</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
-    body { background: #f4f7f7; color: #142222; padding-bottom: 40px; }
-    header { background: #0d4f4f; color: #fff; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
-    header h1 { font-size: 18px; }
-    header p { font-size: 11px; color: #cde5e5; }
-    .hdr-link { background: rgba(255,255,255,0.18); color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,0.35); padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; }
-    .wrap { max-width: 520px; margin: 16px auto; padding: 0 12px; }
-    .card { background: #fff; border: 1px solid #dce5e5; border-radius: 14px; padding: 18px; margin-bottom: 14px; }
-    h2 { font-size: 17px; color: #0d4f4f; margin-bottom: 6px; }
-    .sub { font-size: 12px; color: #5a6b6b; margin-bottom: 12px; }
-    label { display: block; font-size: 12px; font-weight: 700; color: #0d4f4f; margin: 10px 0 4px; }
-    input, select, textarea { width: 100%; padding: 11px 12px; border: 1.5px solid #cfdcdc; border-radius: 10px; font-size: 14px; background: #fff; font-family: system-ui, sans-serif; }
-    textarea { min-height: 62px; resize: vertical; }
-    .btn { width: 100%; border: none; border-radius: 10px; padding: 12px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 10px; }
-    .btn-amber { background: #e07a22; color: #fff; }
-    .btn-blue { background: #1d5f8a; color: #fff; }
-    .btn-green-start { background: #198754; color: #fff; }
-    .btn-teal { background: #0d4f4f; color: #fff; }
-    .btn-green { background: #16794c; color: #fff; }
-    .msg { margin-top: 10px; font-size: 12px; font-weight: 700; min-height: 16px; color: #16794c; }
-    .badge-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
-    .badge { padding: 5px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
-    .pending { background: #fff3e6; color: #9a4500; border: 1px solid #e07a22; }
-    .verified { background: #e6f6ee; color: #16794c; border: 1px solid #16794c; }
-    .wallet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-    .w-box { background: #eaf4f4; border: 1px solid #c7dfdf; border-radius: 10px; padding: 10px; }
-    .w-lbl { font-size: 10px; font-weight: 700; color: #4c5e5e; text-transform: uppercase; }
-    .w-val { font-size: 18px; font-weight: 900; color: #083636; margin-top: 2px; }
-    .ride-box { border: 1px solid #dce5e5; border-radius: 10px; padding: 12px; margin-top: 10px; background: #fcfdfd; font-size: 13px; }
-    .ride-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .ride-info { font-weight: 800; color: #0d4f4f; font-size: 15px; }
-    .ride-st { font-size: 11px; font-weight: 700; color: #16794c; }
-    .blk-pill { display: inline-block; margin-top: 6px; padding: 3px 8px; border-radius: 6px; background: #fdecec; border: 1px solid #b8292f; color: #961b21; font-weight: 700; font-size: 11px; }
-    .otp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; align-items: center; }
-    .otp-inp { margin-top: 0 !important; padding: 9px 10px !important; font-size: 13px !important; }
-    .otp-btn { margin-top: 0 !important; padding: 10px !important; }
-    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .small-btn { background: #fff; border: 1px solid #c5d3d3; color: #0d4f4f; padding: 6px 9px; border-radius: 7px; font-size: 11px; font-weight: 700; cursor: pointer; text-decoration: none; display: inline-block; }
-    .nav-wrap { margin-top: 10px; border-radius: 10px; overflow: hidden; border: 1px solid #bfd8d6; background: #eef7f7; }
-    .nav-map { height: 180px; width: 100%; }
-    .nav-bar { padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 11px; }
-    .owner-box { margin-top: 14px; padding: 12px; border-radius: 10px; background: #f2f7f7; border: 1px solid #c9dbdb; }
-    .owner-title { font-size: 12px; font-weight: 800; color: #0d4f4f; margin-bottom: 8px; }
-    .log-item { font-size: 11px; padding: 7px 0; border-top: 1px dashed #c9dbdb; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    body { background: #eef1f6; color: #161829; padding-bottom: 48px; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
 
-    .full-end { position: fixed; inset: 0; background: #0d4f4f; z-index: 999; display: none; flex-direction: column; justify-content: space-between; padding: 20px 18px; color: #fff; overflow-y: auto; }
+    header { background: #18182b; color: #fff; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
+    header h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; }
+    header p { font-size: 11px; color: #9ea4c4; }
+    .hdr-link { background: #292a45; color: #fff; text-decoration: none; border: 1px solid #3f426b; padding: 7px 11px; border-radius: 10px; font-size: 12px; font-weight: 700; }
+
+    .wrap { max-width: 510px; margin: 14px auto; padding: 0 12px; }
+    .sheet { background: #fff; border-radius: 22px; padding: 18px; margin-bottom: 14px; box-shadow: 0 10px 28px rgba(24, 24, 43, 0.07); border: 1px solid #e3e7f0; }
+    h2 { font-size: 18px; font-weight: 800; color: #18182b; margin-bottom: 4px; letter-spacing: -0.3px; }
+    .sub { font-size: 12px; color: #676e8a; margin-bottom: 12px; }
+    label { display: block; font-size: 11px; font-weight: 800; color: #474d6b; text-transform: uppercase; letter-spacing: 0.4px; margin: 12px 0 5px; }
+    input, select, textarea { width: 100%; padding: 12px 13px; border: 1.5px solid #dce1ed; border-radius: 12px; font-size: 14px; background: #f9fafd; color: #161829; }
+    textarea { min-height: 62px; resize: vertical; }
+
+    .btn { width: 100%; border: none; border-radius: 14px; padding: 12px; font-size: 13px; font-weight: 800; cursor: pointer; margin-top: 10px; }
+    .btn-primary { background: #18182b; color: #fff; }
+    .btn-mint { background: #0fa968; color: #fff; }
+    .btn-coral { background: #ff5a36; color: #fff; }
+    .btn-indigo { background: #3b4cca; color: #fff; }
+    .msg { margin-top: 10px; font-size: 12px; font-weight: 700; min-height: 16px; color: #0fa968; }
+
+    .badge-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+    .badge { padding: 5px 10px; border-radius: 999px; font-size: 11px; font-weight: 800; }
+    .pending { background: #fff1eb; color: #b52d0f; border: 1px solid #ff5a36; }
+    .verified { background: #e1f7ed; color: #0b7a4b; border: 1px solid #0fa968; }
+
+    .wallet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
+    .w-box { background: #18182b; color: #fff; border-radius: 14px; padding: 12px; }
+    .w-lbl { font-size: 10px; font-weight: 700; color: #9ea4c4; text-transform: uppercase; }
+    .w-val { font-size: 20px; font-weight: 800; color: #4ef0a8; margin-top: 3px; }
+
+    .ride-box { border: 1.5px solid #e3e7f0; border-radius: 16px; padding: 13px; margin-top: 10px; background: #fcfdff; }
+    .ride-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .ride-info { font-weight: 800; color: #18182b; font-size: 15px; }
+    .ride-st { font-size: 11px; font-weight: 800; color: #0b7a4b; background: #e1f7ed; padding: 3px 9px; border-radius: 99px; }
+    .blk-pill { display: inline-block; margin-top: 6px; padding: 3px 8px; border-radius: 7px; background: #ffe8e8; color: #b81d24; font-weight: 800; font-size: 11px; }
+
+    .otp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; align-items: center; }
+    .otp-inp { margin-top: 0 !important; padding: 10px !important; font-size: 13px !important; }
+    .otp-btn { margin-top: 0 !important; padding: 11px !important; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .mini-btn { background: #fff; border: 1px solid #cfd6e6; color: #18182b; padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; text-decoration: none; display: inline-block; }
+
+    .nav-wrap { margin-top: 10px; border-radius: 12px; overflow: hidden; border: 1px solid #dce1ed; background: #f6f8fc; }
+    .nav-map { height: 175px; width: 100%; }
+    .nav-bar { padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 11px; font-weight: 700; }
+
+    .owner-box { margin-top: 14px; padding: 13px; border-radius: 16px; background: #f6f8fc; border: 1px solid #e1e6f2; }
+    .owner-title { font-size: 12px; font-weight: 800; color: #18182b; margin-bottom: 8px; }
+    .log-item { font-size: 11px; padding: 8px 0; border-top: 1px dashed #d5dbe8; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    .full-end { position: fixed; inset: 0; background: #18182b; z-index: 999; display: none; flex-direction: column; justify-content: space-between; padding: 22px 18px; color: #fff; overflow-y: auto; }
     .full-end.show { display: flex; }
-    .end-tag { display: inline-block; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.28); padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; }
-    .end-hero { margin-top: 14px; background: #fff; color: #142222; border-radius: 16px; padding: 16px; text-align: center; }
-    .end-lbl { font-size: 11px; font-weight: 700; color: #5a6b6b; text-transform: uppercase; }
-    .end-amt { font-size: 36px; font-weight: 900; color: #083636; margin: 4px 0; }
-    .end-plat { font-size: 12px; font-weight: 700; color: #e07a22; }
-    .end-km { margin-top: 8px; font-size: 13px; color: #0d4f4f; font-weight: 800; }
-    .rate-box { margin-top: 14px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); border-radius: 16px; padding: 14px; }
-    .rate-title { font-size: 14px; font-weight: 800; margin-bottom: 10px; text-align: center; }
-    .star-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
-    .star-btn { border: 1.5px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.12); color: #fff; border-radius: 10px; padding: 10px 4px; font-size: 13px; font-weight: 800; cursor: pointer; }
-    .star-btn.picked { background: #e07a22; border-color: #e07a22; color: #fff; }
-    .fb-lbl { display: block; font-size: 11px; font-weight: 700; color: #e2f1f1; margin: 12px 0 5px; }
-    .fb-inp { width: 100%; padding: 9px 11px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.3); background: #fff; color: #142222; font-size: 13px; min-height: 62px; }
-    .rate-status { margin-top: 8px; font-size: 12px; font-weight: 700; color: #ffe7cf; min-height: 16px; text-align: center; }
-    .end-actions { margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .end-done-btn { width: 100%; border: none; border-radius: 12px; padding: 13px; font-size: 14px; font-weight: 800; background: #e07a22; color: #fff; cursor: pointer; }
-    .end-blk-btn { width: 100%; border: 1.5px solid #ffb3b6; border-radius: 12px; padding: 13px; font-size: 14px; font-weight: 800; background: #9e1f26; color: #fff; cursor: pointer; }
+    .end-tag { display: inline-block; background: rgba(255,255,255,0.14); padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 800; }
+    .end-card { margin-top: 14px; background: #fff; color: #18182b; border-radius: 20px; padding: 18px; text-align: center; }
+    .end-amt { font-size: 38px; font-weight: 800; color: #0fa968; margin: 4px 0; }
+    .rate-panel { margin-top: 14px; background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.18); border-radius: 18px; padding: 14px; }
+    .star-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 10px; }
+    .star-btn { border: 1.5px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); color: #fff; border-radius: 10px; padding: 10px 4px; font-size: 13px; font-weight: 800; cursor: pointer; }
+    .star-btn.picked { background: #0fa968; border-color: #0fa968; }
+    .end-actions { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .hide { display: none; }
   </style>
 </head>
 <body>
   <header>
     <div>
-      <h1>Go Musafir Driver</h1>
-      <p>Ludhiana Partner & Verification • v24</p>
+      <h1>Go Musafir Partner</h1>
+      <p>Driver & Owner Console • v25</p>
     </div>
     <a class="hdr-link" href="index.html">Passenger App</a>
   </header>
 
   <div class="wrap">
-    <div id="drv-login" class="card">
-      <h2>Driver Login</h2>
-      <p class="sub">Tap Send OTP, then verify with OTP 123456.</p>
+    <div id="drv-login" class="sheet">
+      <h2>Partner Login</h2>
+      <p class="sub">Sign in with OTP to manage rides and owner controls.</p>
       <div id="d-phone-step">
         <label for="d-phone">Mobile Number</label>
         <input id="d-phone" type="tel" value="+919876543210" />
-        <button type="button" class="btn btn-amber" onclick="dSendOtpNow()">Send OTP</button>
+        <button type="button" class="btn btn-primary" onclick="dSendOtpNow()">Send OTP</button>
       </div>
       <div id="d-otp-step" class="hide">
         <label for="d-otp">Enter OTP</label>
-        <input id="d-otp" type="text" maxlength="6" value="123456" />
-        <button type="button" class="btn btn-teal" onclick="dVerifyOtpNow()">Verify & Continue</button>
+        <input id="d-otp" class="mono" type="text" maxlength="6" value="123456" />
+        <button type="button" class="btn btn-mint" onclick="dVerifyOtpNow()">Verify & Continue</button>
       </div>
       <div id="d-login-msg" class="msg"></div>
     </div>
 
-    <div id="drv-panel" class="card hide">
+    <div id="drv-panel" class="sheet hide">
       <div class="badge-row">
-        <h2 id="d-title" style="margin-bottom:0;">Driver Profile</h2>
+        <h2 id="d-title" style="margin-bottom:0;">Partner Profile</h2>
         <span id="doc-badge" class="badge pending">Pending Verification</span>
       </div>
-      <p class="sub">Complete vehicle & document details before going Online.</p>
+      <p class="sub">Submit vehicle & licence details before going Online.</p>
 
       <label for="d-name">Driver Full Name</label>
       <input id="d-name" type="text" placeholder="e.g., Gurpreet Singh" />
@@ -118,50 +121,50 @@
       </select>
 
       <label for="d-vno">Vehicle Number (Ludhiana / Punjab)</label>
-      <input id="d-vno" type="text" placeholder="e.g., PB10XX1234" />
+      <input id="d-vno" class="mono" type="text" placeholder="e.g., PB10XX1234" />
 
       <label for="d-dl">Driving Licence Number</label>
-      <input id="d-dl" type="text" placeholder="e.g., PB10-20160012345" />
+      <input id="d-dl" class="mono" type="text" placeholder="e.g., PB10-20160012345" />
 
       <label for="d-id">ID & RC Reference</label>
       <input id="d-id" type="text" placeholder="e.g., ID last 4 digits / RC status" />
 
-      <button type="button" class="btn btn-teal" onclick="dSaveDocsNow()">Submit Documents for Verification</button>
-      <button type="button" class="btn btn-green" onclick="dVerifyDocsNow()">Admin Check: Mark Verified</button>
+      <button type="button" class="btn btn-primary" onclick="dSaveDocsNow()">Submit Documents</button>
+      <button type="button" class="btn btn-mint" onclick="dVerifyDocsNow()">Admin Check: Mark Verified</button>
       <div id="d-doc-msg" class="msg"></div>
 
       <div class="owner-box">
-        <div class="owner-title">Driver Wallet • Weekly Payout & Owner Commission</div>
+        <div class="owner-title">Driver Weekly Wallet & Owner Commission</div>
         <div class="wallet-grid">
           <div class="w-box">
             <div class="w-lbl">Driver Weekly Wallet</div>
-            <div id="d-wallet-bal" class="w-val">₹0</div>
+            <div id="d-wallet-bal" class="w-val mono">₹0</div>
           </div>
           <div class="w-box">
             <div class="w-lbl">Owner Commission</div>
-            <div id="owner-comm-bal" class="w-val">₹0</div>
+            <div id="owner-comm-bal" class="w-val mono">₹0</div>
           </div>
         </div>
-        <button type="button" class="btn btn-amber" onclick="settleWeeklyDriverPayout()">Mark Weekly Payout Paid</button>
+        <button type="button" class="btn btn-coral" onclick="settleWeeklyDriverPayout()">Mark Weekly Payout Paid</button>
         <div id="payout-msg" class="msg"></div>
       </div>
 
       <div class="owner-box">
         <div class="owner-title">Main Admin / App Owner Control & User Details</div>
         <label for="owner-target-id" style="margin-top:0;">Ride / User ID</label>
-        <input id="owner-target-id" type="text" placeholder="e.g., GM452" />
+        <input id="owner-target-id" class="mono" type="text" placeholder="e.g., GM452" />
         <div class="row2">
-          <button type="button" class="btn btn-amber" onclick="ownerToggleBlock('Customer')">Block/Unblock Customer</button>
-          <button type="button" class="btn btn-teal" onclick="ownerToggleBlock('Driver')">Block/Unblock Driver</button>
+          <button type="button" class="btn btn-coral" onclick="ownerToggleBlock('Customer')">Block/Unblock Customer</button>
+          <button type="button" class="btn btn-primary" onclick="ownerToggleBlock('Driver')">Block/Unblock Driver</button>
         </div>
         <div id="owner-accounts-box" style="margin-top:10px;"></div>
       </div>
     </div>
 
-    <div id="drv-rides" class="card hide">
+    <div id="drv-rides" class="sheet hide">
       <div class="badge-row">
-        <h2 style="margin-bottom:0;">Rides</h2>
-        <button type="button" class="hdr-link" style="color:#0d4f4f;border-color:#0d4f4f;background:#eaf4f4;cursor:pointer;" id="duty-btn" onclick="dToggleDutyNow()">Status: Offline</button>
+        <h2 style="margin-bottom:0;">Live Ride Requests</h2>
+        <button type="button" class="mini-btn" id="duty-btn" onclick="dToggleDutyNow()">Status: Offline</button>
       </div>
       <div id="d-rides-msg" class="msg"></div>
       <div id="d-rides-list"></div>
@@ -171,15 +174,15 @@
   <div id="d-end-screen" class="full-end">
     <div>
       <span class="end-tag">GO MUSAFIR • TRIP COMPLETED</span>
-      <div class="end-hero">
-        <div class="end-lbl">Total Trip Amount</div>
-        <div id="d-end-amt" class="end-amt">₹0</div>
-        <div class="end-plat">Platform Charges</div>
-        <div id="d-end-km" class="end-km">0 km</div>
+      <div class="end-card">
+        <div style="font-size:11px;font-weight:800;color:#676e8a;text-transform:uppercase;">Total Trip Amount</div>
+        <div id="d-end-amt" class="end-amt mono">₹0</div>
+        <div style="font-size:12px;font-weight:800;color:#ff5a36;">Platform Charges</div>
+        <div id="d-end-km" class="mono" style="margin-top:8px;font-size:13px;color:#18182b;font-weight:800;">0 km</div>
       </div>
 
-      <div class="rate-box">
-        <div class="rate-title">Rate Customer & Behavior Feedback</div>
+      <div class="rate-panel">
+        <div style="font-size:14px;font-weight:800;text-align:center;">Rate Customer & Behavior Feedback</div>
         <div class="star-row">
           <button type="button" class="star-btn" onclick="setCustomerRating(1)">1 ★</button>
           <button type="button" class="star-btn" onclick="setCustomerRating(2)">2 ★</button>
@@ -188,16 +191,15 @@
           <button type="button" class="star-btn" onclick="setCustomerRating(5)">5 ★</button>
         </div>
 
-        <label class="fb-lbl" for="d-feedback-inp">Customer Behavior Feedback</label>
-        <textarea id="d-feedback-inp" class="fb-inp" placeholder="Write feedback about customer behavior or trip..." oninput="saveCustomerFeedbackNow()"></textarea>
-
-        <div id="d-rate-msg" class="rate-status">Tap stars & add feedback</div>
+        <label style="color:#cfd5ee;" for="d-feedback-inp">Customer Behavior Feedback</label>
+        <textarea id="d-feedback-inp" placeholder="Write feedback about customer behavior or trip..." oninput="saveCustomerFeedbackNow()"></textarea>
+        <div id="d-rate-msg" style="margin-top:8px;font-size:12px;font-weight:700;color:#4ef0a8;text-align:center;">Tap stars & add feedback</div>
       </div>
     </div>
 
     <div class="end-actions">
-      <button type="button" class="end-blk-btn" id="d-block-btn" onclick="toggleBlockCustomerNow()">Block Customer</button>
-      <button type="button" class="end-done-btn" onclick="closeDriverEndScreen()">Done</button>
+      <button type="button" class="btn btn-coral" style="margin-top:0;" id="d-block-btn" onclick="toggleBlockCustomerNow()">Block Customer</button>
+      <button type="button" class="btn btn-mint" style="margin-top:0;" onclick="closeDriverEndScreen()">Done</button>
     </div>
   </div>
 
@@ -243,17 +245,14 @@
     }
 
     function syncWalletsFromCompletedRides() {
-      var dBal = 0;
-      var oComm = 0;
+      var dBal = 0, oComm = 0;
       for (var i = 0; i < activeRides.length; i++) {
         var r = activeRides[i];
         var isComp = String(r.status || "").toLowerCase().indexOf("complet") > -1;
         if (!isComp) continue;
         oComm += ownerRideShare(r);
         var pm = r.payMode || "Cash";
-        if (isOnlinePaymentMode(pm) && !r.weeklySettled) {
-          dBal += driverRideFare(r);
-        }
+        if (isOnlinePaymentMode(pm) && !r.weeklySettled) dBal += driverRideFare(r);
       }
       driverWallet = dBal;
       ownerCommission = oComm;
@@ -268,9 +267,7 @@
       for (var i = 0; i < activeRides.length; i++) {
         var r = activeRides[i];
         var isComp = String(r.status || "").toLowerCase().indexOf("complet") > -1;
-        if (isComp && isOnlinePaymentMode(r.payMode || "Cash")) {
-          r.weeklySettled = true;
-        }
+        if (isComp && isOnlinePaymentMode(r.payMode || "Cash")) r.weeklySettled = true;
       }
       saveRides();
       syncWalletsFromCompletedRides();
@@ -319,16 +316,7 @@
       }
       if (!found) {
         ownerAccounts.unshift({
-          type: "Driver",
-          name: name,
-          phone: phone,
-          vehicle: vType,
-          vno: vNo,
-          dl: dlNo,
-          idRef: idRef,
-          verified: isVerified,
-          blocked: false,
-          time: new Date().toLocaleString()
+          type: "Driver", name: name, phone: phone, vehicle: vType, vno: vNo, dl: dlNo, idRef: idRef, verified: isVerified, blocked: false, time: new Date().toLocaleString()
         });
       }
       saveRides();
@@ -340,14 +328,9 @@
       var inp = document.getElementById("owner-target-id");
       var targetId = inp ? inp.value.trim() : "";
       if (!targetId && activeRides.length) targetId = activeRides[0].id || "";
-      if (!targetId) {
-        document.getElementById("d-doc-msg").textContent = "Enter Ride / User ID.";
-        return;
-      }
+      if (!targetId) { document.getElementById("d-doc-msg").textContent = "Enter Ride / User ID."; return; }
       for (var i = 0; i < activeRides.length; i++) {
-        if (activeRides[i].id === targetId) {
-          activeRides[i].ownerBlockedRole = activeRides[i].ownerBlockedRole === role ? "" : role;
-        }
+        if (activeRides[i].id === targetId) activeRides[i].ownerBlockedRole = activeRides[i].ownerBlockedRole === role ? "" : role;
       }
       saveRides();
       if (inp) inp.value = "";
@@ -366,10 +349,7 @@
     function renderOwnerAccounts() {
       var box = document.getElementById("owner-accounts-box");
       if (!box) return;
-      if (!ownerAccounts.length) {
-        box.innerHTML = "<div class='log-item'><span>No account logs yet.</span></div>";
-        return;
-      }
+      if (!ownerAccounts.length) { box.innerHTML = "<div class='log-item'><span>No account logs yet.</span></div>"; return; }
       var html = "";
       for (var i = 0; i < ownerAccounts.length; i++) {
         var a = ownerAccounts[i];
@@ -379,29 +359,24 @@
         var stLbl = a.blocked ? "Blocked" : "Active";
         html += "<div class='log-item'>" +
           "<span><strong>[" + a.type + "]</strong> " + detail + " (" + stLbl + ")</span>" +
-          '<button type="button" class="small-btn" onclick="toggleAccountBlockOwner(' + i + ')">' + (a.blocked ? "Unblock" : "Block") + '</button>' +
+          '<button type="button" class="mini-btn" onclick="toggleAccountBlockOwner(' + i + ')">' + (a.blocked ? "Unblock" : "Block") + '</button>' +
           "</div>";
       }
       box.innerHTML = html;
     }
 
     function dSendOtpNow() {
-      var s1 = document.getElementById("d-phone-step");
-      var s2 = document.getElementById("d-otp-step");
-      var o = document.getElementById("d-otp");
-      var m = document.getElementById("d-login-msg");
-      if (s1) s1.className = "hide";
-      if (s2) s2.className = "";
-      if (o) o.value = "123456";
-      if (m) m.textContent = "OTP 123456 ready.";
+      document.getElementById("d-phone-step").className = "hide";
+      document.getElementById("d-otp-step").className = "";
+      document.getElementById("d-otp").value = "123456";
+      document.getElementById("d-login-msg").textContent = "OTP 123456 ready.";
     }
 
     function dVerifyOtpNow() {
       recordDriverOwnerLog();
-      document.getElementById("drv-login").className = "card hide";
-      document.getElementById("drv-panel").className = "card";
-      document.getElementById("drv-rides").className = "card";
-      document.getElementById("d-title").textContent = "Driver Profile";
+      document.getElementById("drv-login").className = "sheet hide";
+      document.getElementById("drv-panel").className = "sheet";
+      document.getElementById("drv-rides").className = "sheet";
       renderOwnerAccounts();
       renderDriverRides();
     }
@@ -410,10 +385,7 @@
       var name = document.getElementById("d-name").value.trim();
       var vno = document.getElementById("d-vno").value.trim();
       var dl = document.getElementById("d-dl").value.trim();
-      if (!name || !vno || !dl) {
-        document.getElementById("d-doc-msg").textContent = "Please fill Name, Vehicle Number, and DL Number.";
-        return;
-      }
+      if (!name || !vno || !dl) { document.getElementById("d-doc-msg").textContent = "Please fill Name, Vehicle Number, and DL Number."; return; }
       isVerified = false;
       updateDocBadge();
       recordDriverOwnerLog();
@@ -430,20 +402,12 @@
 
     function updateDocBadge() {
       var b = document.getElementById("doc-badge");
-      if (isVerified) {
-        b.className = "badge verified";
-        b.textContent = "Verified";
-      } else {
-        b.className = "badge pending";
-        b.textContent = "Pending Verification";
-      }
+      if (isVerified) { b.className = "badge verified"; b.textContent = "Verified"; }
+      else { b.className = "badge pending"; b.textContent = "Pending Verification"; }
     }
 
     function dToggleDutyNow() {
-      if (!isVerified && !isOnline) {
-        document.getElementById("d-rides-msg").textContent = "Pehle documents verify karein.";
-        return;
-      }
+      if (!isVerified && !isOnline) { document.getElementById("d-rides-msg").textContent = "Pehle documents verify karein."; return; }
       isOnline = !isOnline;
       document.getElementById("duty-btn").textContent = isOnline ? "Status: Online" : "Status: Offline";
       document.getElementById("d-rides-msg").textContent = isOnline ? "You are Online." : "You are Offline.";
@@ -454,37 +418,17 @@
       var elId = "d-nav-map-" + idx;
       var el = document.getElementById(elId);
       if (!el || typeof L === "undefined") return;
-
-      if (dMaps[idx]) {
-        dMaps[idx].remove();
-        delete dMaps[idx];
-      }
+      if (dMaps[idx]) { dMaps[idx].remove(); delete dMaps[idx]; }
 
       var curLat = (typeof rideObj.riderLat === "number") ? rideObj.riderLat : PICKUP_COORDS.lat;
       var curLng = (typeof rideObj.riderLng === "number") ? rideObj.riderLng : PICKUP_COORDS.lng;
 
       var map = L.map(elId, { zoomControl: false }).setView([curLat, curLng], 13);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: "© OSM"
-      }).addTo(map);
-
-      L.polyline(
-        [[PICKUP_COORDS.lat, PICKUP_COORDS.lng], [DROP_COORDS.lat, DROP_COORDS.lng]],
-        { color: "#1d5f8a", weight: 4 }
-      ).addTo(map);
-
-      L.circleMarker([PICKUP_COORDS.lat, PICKUP_COORDS.lng], { radius: 6, color: "#16794c", fillOpacity: 0.9 }).addTo(map);
-      L.circleMarker([DROP_COORDS.lat, DROP_COORDS.lng], { radius: 6, color: "#b8292f", fillOpacity: 0.9 }).addTo(map);
-
-      var marker = L.circleMarker([curLat, curLng], {
-        radius: 9,
-        color: "#fff",
-        weight: 2,
-        fillColor: "#0d4f4f",
-        fillOpacity: 1
-      }).addTo(map);
-
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(map);
+      L.polyline([[PICKUP_COORDS.lat, PICKUP_COORDS.lng], [DROP_COORDS.lat, DROP_COORDS.lng]], { color: "#3b4cca", weight: 4 }).addTo(map);
+      L.circleMarker([PICKUP_COORDS.lat, PICKUP_COORDS.lng], { radius: 6, color: "#0fa968", fillOpacity: 1 }).addTo(map);
+      L.circleMarker([DROP_COORDS.lat, DROP_COORDS.lng], { radius: 6, color: "#ff5a36", fillOpacity: 1 }).addTo(map);
+      var marker = L.circleMarker([curLat, curLng], { radius: 9, color: "#fff", weight: 2, fillColor: "#18182b", fillOpacity: 1 }).addTo(map);
       dMaps[idx] = { map: map, marker: marker };
     }
 
@@ -492,12 +436,8 @@
       loadRides();
       var r = activeRides[idx];
       if (!r) return;
-
       var stEl = document.getElementById("d-nav-st-" + idx);
-      if (dNavTimers[idx]) {
-        clearInterval(dNavTimers[idx]);
-        delete dNavTimers[idx];
-      }
+      if (dNavTimers[idx]) { clearInterval(dNavTimers[idx]); delete dNavTimers[idx]; }
 
       var targetLat = (r.status === "Ride Started") ? DROP_COORDS.lat : PICKUP_COORDS.lat;
       var targetLng = (r.status === "Ride Started") ? DROP_COORDS.lng : PICKUP_COORDS.lng;
@@ -516,12 +456,9 @@
       }
 
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          function (pos) {
-            pushPos(pos.coords.latitude, pos.coords.longitude, "Navigating GPS");
-          },
-          function () {}
-        );
+        navigator.geolocation.getCurrentPosition(function (pos) {
+          pushPos(pos.coords.latitude, pos.coords.longitude, "Navigating GPS");
+        }, function () {});
       }
 
       var step = 0;
@@ -531,25 +468,16 @@
         var lat = startLat + (targetLat - startLat) * t;
         var lng = startLng + (targetLng - startLng) * t;
         pushPos(lat, lng, t >= 1 ? "Arrived at Target" : "Navigating Live");
-        if (t >= 1) {
-          clearInterval(dNavTimers[idx]);
-          delete dNavTimers[idx];
-        }
+        if (t >= 1) { clearInterval(dNavTimers[idx]); delete dNavTimers[idx]; }
       }, 650);
     }
 
     function dAcceptRide(idx) {
       loadRides();
-      if (!isVerified) {
-        document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein.";
-        return;
-      }
+      if (!isVerified) { document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein."; return; }
       var r = activeRides[idx];
       if (!r) return;
-      if (r.customerBlockedByDriver || r.ownerBlockedRole) {
-        document.getElementById("d-rides-msg").textContent = "Ride blocked.";
-        return;
-      }
+      if (r.customerBlockedByDriver || r.ownerBlockedRole) { document.getElementById("d-rides-msg").textContent = "Ride blocked."; return; }
       r.status = "Accepted";
       saveRides();
       document.getElementById("d-rides-msg").textContent = "Ride Accepted (" + r.km + " km • ₹" + driverRideFare(r) + ").";
@@ -558,10 +486,7 @@
 
     function dArrivedRide(idx) {
       loadRides();
-      if (!isVerified) {
-        document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein.";
-        return;
-      }
+      if (!isVerified) { document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein."; return; }
       var r = activeRides[idx];
       if (!r) return;
       r.status = "Arrived at Customer Location";
@@ -574,10 +499,7 @@
 
     function dStartRide(idx) {
       loadRides();
-      if (!isVerified) {
-        document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein.";
-        return;
-      }
+      if (!isVerified) { document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein."; return; }
       var r = activeRides[idx];
       if (!r) return;
       var inp = document.getElementById("d-otp-" + idx);
@@ -588,15 +510,13 @@
         document.getElementById("d-rides-msg").textContent = "Ride Started (" + r.km + " km • ₹" + driverRideFare(r) + ").";
         renderDriverRides();
       } else {
-        document.getElementById("d-rides-msg").textContent = "Galat Customer OTP! Passenger app mein Ride OTP check karein.";
+        document.getElementById("d-rides-msg").textContent = "Galat Customer OTP! Passenger app mein PIN check karein.";
       }
     }
 
     function highlightDriverStars(stars) {
       var btns = document.querySelectorAll("#d-end-screen .star-btn");
-      for (var i = 0; i < btns.length; i++) {
-        btns[i].className = (i + 1 <= stars) ? "star-btn picked" : "star-btn";
-      }
+      for (var i = 0; i < btns.length; i++) btns[i].className = (i + 1 <= stars) ? "star-btn picked" : "star-btn";
     }
 
     function openDriverEndScreen(idx) {
@@ -654,10 +574,7 @@
 
     function dCompleteRide(idx) {
       loadRides();
-      if (!isVerified) {
-        document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein.";
-        return;
-      }
+      if (!isVerified) { document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein."; return; }
       var r = activeRides[idx];
       if (!r) return;
       r.status = "Completed";
@@ -675,10 +592,7 @@
       var box = document.getElementById("d-rides-list");
       loadRides();
       syncWalletsFromCompletedRides();
-      if (!activeRides.length) {
-        box.innerHTML = "<p class='sub'>No rides available.</p>";
-        return;
-      }
+      if (!activeRides.length) { box.innerHTML = "<p class='sub'>No rides available.</p>"; return; }
       var html = "";
       for (var i = 0; i < activeRides.length; i++) {
         var r = activeRides[i];
@@ -691,24 +605,24 @@
 
         var btns = isOnline
           ? "<div class='row2'>" +
-              '<button type="button" class="btn btn-amber" onclick="dAcceptRide(' + i + ')">Accept Ride</button>' +
-              '<button type="button" class="btn btn-blue" onclick="dArrivedRide(' + i + ')">Arrived at Customer Location</button>' +
+              '<button type="button" class="btn btn-coral" onclick="dAcceptRide(' + i + ')">Accept Ride</button>' +
+              '<button type="button" class="btn btn-indigo" onclick="dArrivedRide(' + i + ')">Arrived at Pickup</button>' +
             "</div>" +
             "<div class='otp-row'>" +
-              '<input type="text" maxlength="4" id="d-otp-' + i + '" class="otp-inp" placeholder="Customer OTP" />' +
-              '<button type="button" class="btn btn-green-start otp-btn" onclick="dStartRide(' + i + ')">Start Ride</button>' +
+              '<input type="text" maxlength="4" id="d-otp-' + i + '" class="otp-inp mono" placeholder="4-Digit PIN" />' +
+              '<button type="button" class="btn btn-mint otp-btn" onclick="dStartRide(' + i + ')">Start Ride</button>' +
             "</div>" +
-            '<button type="button" class="btn btn-teal" onclick="dCompleteRide(' + i + ')">Complete Trip</button>'
+            '<button type="button" class="btn btn-primary" onclick="dCompleteRide(' + i + ')">Complete Trip</button>'
           : "";
 
         var fbNote = r.customerFeedback
-          ? "<div style='font-size:11px;color:#364a4a;margin-top:6px;'>Customer Feedback: " + r.customerFeedback + (r.customerRating ? " (" + r.customerRating + " ★)" : "") + "</div>"
-          : (r.customerRating ? "<div style='font-size:11px;color:#364a4a;margin-top:6px;'>Customer Rating: " + r.customerRating + " ★</div>" : "");
+          ? "<div style='font-size:11px;color:#474d6b;margin-top:6px;'>Customer Feedback: " + r.customerFeedback + (r.customerRating ? " (" + r.customerRating + " ★)" : "") + "</div>"
+          : (r.customerRating ? "<div style='font-size:11px;color:#474d6b;margin-top:6px;'>Customer Rating: " + r.customerRating + " ★</div>" : "");
 
         var gmapsUrl = "https://www.google.com/maps/dir/?api=1&destination=" + DROP_COORDS.lat + "," + DROP_COORDS.lng;
 
         html += "<div class='ride-box'>" +
-          "<div class='ride-top'><span class='ride-info'>" + r.km + " km • ₹" + dAmt + " • " + pm + "</span><span class='ride-st'>" + st + "</span></div>" +
+          "<div class='ride-top'><span class='ride-info'><span class='mono'>" + r.km + " km</span> • <span class='mono'>₹" + dAmt + "</span> • " + pm + "</span><span class='ride-st'>" + st + "</span></div>" +
           blkTag +
           fbNote +
           btns +
@@ -717,8 +631,8 @@
             "<div class='nav-bar'>" +
               "<span id='d-nav-st-" + i + "'>Live Navigation Map</span>" +
               "<div style='display:flex;gap:6px;'>" +
-                '<button type="button" class="small-btn" onclick="startDriverNavigation(' + i + ')">Navigate on Map</button>' +
-                '<a class="small-btn" target="_blank" rel="noopener" href="' + gmapsUrl + '">Google Maps</a>' +
+                '<button type="button" class="mini-btn" onclick="startDriverNavigation(' + i + ')">Navigate on Map</button>' +
+                '<a class="mini-btn" target="_blank" rel="noopener" href="' + gmapsUrl + '">Google Maps</a>' +
               "</div>" +
             "</div>" +
           "</div>" +
