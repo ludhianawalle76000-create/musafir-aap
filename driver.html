@@ -32,27 +32,33 @@
     .ride-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
     .ride-info { font-weight: 800; color: #0d4f4f; font-size: 15px; }
     .ride-st { font-size: 11px; font-weight: 700; color: #16794c; }
+    .blk-pill { display: inline-block; margin-top: 6px; padding: 3px 8px; border-radius: 6px; background: #fdecec; border: 1px solid #b8292f; color: #961b21; font-weight: 700; font-size: 11px; }
     .otp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; align-items: center; }
     .otp-inp { margin-top: 0 !important; padding: 9px 10px !important; font-size: 13px !important; }
     .otp-btn { margin-top: 0 !important; padding: 10px !important; }
     .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .small-btn { background: #fff; border: 1px solid #c5d3d3; color: #0d4f4f; padding: 5px 8px; border-radius: 7px; font-size: 11px; font-weight: 700; cursor: pointer; }
+    .blk-bar { margin-top: 10px; padding: 10px; border-radius: 10px; background: #fff5f5; border: 1px solid #f0c2c4; font-size: 11px; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-    /* Full-screen Driver Trip End + Customer Rating Screen */
-    .full-end { position: fixed; inset: 0; background: #0d4f4f; z-index: 999; display: none; flex-direction: column; justify-content: space-between; padding: 24px 18px; color: #fff; overflow-y: auto; }
+    .full-end { position: fixed; inset: 0; background: #0d4f4f; z-index: 999; display: none; flex-direction: column; justify-content: space-between; padding: 20px 18px; color: #fff; overflow-y: auto; }
     .full-end.show { display: flex; }
-    .end-tag { display: inline-block; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.28); padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.4px; }
-    .end-hero { margin-top: 24px; background: #fff; color: #142222; border-radius: 18px; padding: 22px 18px; text-align: center; }
-    .end-lbl { font-size: 12px; font-weight: 700; color: #5a6b6b; text-transform: uppercase; }
-    .end-amt { font-size: 42px; font-weight: 900; color: #083636; margin: 6px 0; }
+    .end-tag { display: inline-block; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.28); padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .end-hero { margin-top: 14px; background: #fff; color: #142222; border-radius: 16px; padding: 16px; text-align: center; }
+    .end-lbl { font-size: 11px; font-weight: 700; color: #5a6b6b; text-transform: uppercase; }
+    .end-amt { font-size: 36px; font-weight: 900; color: #083636; margin: 4px 0; }
     .end-plat { font-size: 12px; font-weight: 700; color: #e07a22; }
-    .end-km { margin-top: 10px; font-size: 14px; color: #0d4f4f; font-weight: 800; }
-    .rate-box { margin-top: 18px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); border-radius: 16px; padding: 18px; text-align: center; }
-    .rate-title { font-size: 15px; font-weight: 800; margin-bottom: 12px; }
-    .star-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
-    .star-btn { border: 1.5px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.12); color: #fff; border-radius: 10px; padding: 11px 4px; font-size: 14px; font-weight: 800; cursor: pointer; }
+    .end-km { margin-top: 8px; font-size: 13px; color: #0d4f4f; font-weight: 800; }
+    .rate-box { margin-top: 14px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); border-radius: 16px; padding: 14px; }
+    .rate-title { font-size: 14px; font-weight: 800; margin-bottom: 10px; text-align: center; }
+    .star-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+    .star-btn { border: 1.5px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.12); color: #fff; border-radius: 10px; padding: 10px 4px; font-size: 13px; font-weight: 800; cursor: pointer; }
     .star-btn.picked { background: #e07a22; border-color: #e07a22; color: #fff; }
-    .rate-status { margin-top: 10px; font-size: 12px; font-weight: 700; color: #ffe7cf; min-height: 16px; }
-    .end-done-btn { width: 100%; border: none; border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 800; background: #e07a22; color: #fff; cursor: pointer; margin-top: 16px; }
+    .fb-lbl { display: block; font-size: 11px; font-weight: 700; color: #e2f1f1; margin: 12px 0 5px; }
+    .fb-inp { width: 100%; padding: 9px 11px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.3); background: #fff; color: #142222; font-size: 13px; min-height: 62px; font-family: system-ui, sans-serif; }
+    .rate-status { margin-top: 8px; font-size: 12px; font-weight: 700; color: #ffe7cf; min-height: 16px; text-align: center; }
+    .end-actions { margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .end-done-btn { width: 100%; border: none; border-radius: 12px; padding: 13px; font-size: 14px; font-weight: 800; background: #e07a22; color: #fff; cursor: pointer; }
+    .end-blk-btn { width: 100%; border: 1.5px solid #ffb3b6; border-radius: 12px; padding: 13px; font-size: 14px; font-weight: 800; background: #9e1f26; color: #fff; cursor: pointer; }
     .hide { display: none; }
   </style>
 </head>
@@ -60,7 +66,7 @@
   <header>
     <div>
       <h1>Go Musafir Driver</h1>
-      <p>Ludhiana Partner & Document Verification • v17</p>
+      <p>Ludhiana Partner & Document Verification • v19</p>
     </div>
     <a class="hdr-link" href="index.html">Passenger App</a>
   </header>
@@ -119,11 +125,11 @@
         <button type="button" class="hdr-link" style="color:#0d4f4f;border-color:#0d4f4f;background:#eaf4f4;cursor:pointer;" id="duty-btn" onclick="dToggleDutyNow()">Status: Offline</button>
       </div>
       <div id="d-rides-msg" class="msg"></div>
+      <div id="d-blocked-box"></div>
       <div id="d-rides-list"></div>
     </div>
   </div>
 
-  <!-- Full-screen Driver Trip Completed + Customer Rating Screen -->
   <div id="d-end-screen" class="full-end">
     <div>
       <span class="end-tag">GO MUSAFIR • TRIP COMPLETED</span>
@@ -135,7 +141,7 @@
       </div>
 
       <div class="rate-box">
-        <div class="rate-title">Rate Customer</div>
+        <div class="rate-title">Rate Customer & Behavior Feedback</div>
         <div class="star-row">
           <button type="button" class="star-btn" onclick="setCustomerRating(1)">1 ★</button>
           <button type="button" class="star-btn" onclick="setCustomerRating(2)">2 ★</button>
@@ -143,41 +149,56 @@
           <button type="button" class="star-btn" onclick="setCustomerRating(4)">4 ★</button>
           <button type="button" class="star-btn" onclick="setCustomerRating(5)">5 ★</button>
         </div>
-        <div id="d-rate-msg" class="rate-status">Tap stars to rate customer</div>
+
+        <label class="fb-lbl" for="d-feedback-inp">Customer Behavior Feedback</label>
+        <textarea id="d-feedback-inp" class="fb-inp" placeholder="Write feedback about customer behavior, pickup, or trip..." oninput="saveCustomerFeedbackNow()"></textarea>
+
+        <div id="d-rate-msg" class="rate-status">Tap stars & add feedback</div>
       </div>
     </div>
 
-    <button type="button" class="end-done-btn" onclick="closeDriverEndScreen()">Done</button>
+    <div class="end-actions">
+      <button type="button" class="end-blk-btn" id="d-block-btn" onclick="blockCustomerFromEndScreen()">Block Customer</button>
+      <button type="button" class="end-done-btn" onclick="closeDriverEndScreen()">Done</button>
+    </div>
   </div>
 
   <script>
     var isVerified = false;
     var isOnline = false;
     var activeRides = [];
+    var blockedCustomers = [];
     var currentDriverEndIdx = -1;
 
     function loadRides() {
       try {
         var saved = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]");
-        if (Array.isArray(saved)) {
-          activeRides = saved;
-          return;
-        }
-      } catch (e) {}
-      activeRides = [];
+        activeRides = Array.isArray(saved) ? saved : [];
+      } catch (e) { activeRides = []; }
+      try {
+        var b = JSON.parse(localStorage.getItem("gm_blocked_customers_v1") || "[]");
+        blockedCustomers = Array.isArray(b) ? b : [];
+      } catch (e) { blockedCustomers = []; }
     }
 
     function saveRides() {
       try {
         localStorage.setItem("gm_shared_rides_v1", JSON.stringify(activeRides));
+        localStorage.setItem("gm_blocked_customers_v1", JSON.stringify(blockedCustomers));
       } catch (e) {}
+    }
+
+    function isCustomerBlocked(rideObj) {
+      if (!rideObj) return false;
+      if (rideObj.customerBlocked) return true;
+      return blockedCustomers.indexOf(rideObj.id) > -1;
     }
 
     function dSendOtpNow() {
       document.getElementById("d-phone-step").className = "hide";
       document.getElementById("d-otp-step").className = "";
       document.getElementById("d-otp").value = "123456";
-      document.getElementById("d-login-msg").textContent = "OTP 123456 ready. Tap Verify & Continue.";
+      document.getElementById("d-login-msg").textContent = "OTP 123456 ready.";
     }
 
     function dVerifyOtpNow() {
@@ -237,6 +258,10 @@
         return;
       }
       if (!activeRides[idx]) return;
+      if (isCustomerBlocked(activeRides[idx])) {
+        document.getElementById("d-rides-msg").textContent = "Yeh customer blocked hai.";
+        return;
+      }
       activeRides[idx].status = "Accepted";
       saveRides();
       document.getElementById("d-rides-msg").textContent = "Ride Accepted (" + activeRides[idx].km + " km • ₹" + activeRides[idx].total + ").";
@@ -284,15 +309,16 @@
     }
 
     function openDriverEndScreen(idx) {
+      loadRides();
       var r = activeRides[idx];
       if (!r) return;
       currentDriverEndIdx = idx;
       document.getElementById("d-end-amt").textContent = "₹" + (r.total || 0);
       document.getElementById("d-end-km").textContent = (r.km || 0) + " km";
+      document.getElementById("d-feedback-inp").value = r.customerFeedback || "";
       highlightDriverStars(r.customerRating || 0);
-      document.getElementById("d-rate-msg").textContent = r.customerRating
-        ? "You rated customer " + r.customerRating + " ★"
-        : "Tap stars to rate customer";
+      document.getElementById("d-block-btn").textContent = isCustomerBlocked(r) ? "Customer Blocked" : "Block Customer";
+      document.getElementById("d-rate-msg").textContent = r.customerRating ? "Rated " + r.customerRating + " ★" : "Tap stars & add feedback";
       document.getElementById("d-end-screen").className = "full-end show";
     }
 
@@ -303,10 +329,45 @@
         saveRides();
       }
       highlightDriverStars(stars);
-      document.getElementById("d-rate-msg").textContent = "Customer rated " + stars + " ★";
+      document.getElementById("d-rate-msg").textContent = "Rated " + stars + " ★";
+    }
+
+    function saveCustomerFeedbackNow() {
+      loadRides();
+      var fb = document.getElementById("d-feedback-inp").value.trim();
+      if (currentDriverEndIdx > -1 && activeRides[currentDriverEndIdx]) {
+        activeRides[currentDriverEndIdx].customerFeedback = fb;
+        saveRides();
+      }
+      document.getElementById("d-rate-msg").textContent = fb ? "Feedback saved" : "Tap stars & add feedback";
+    }
+
+    function blockCustomerFromEndScreen() {
+      loadRides();
+      if (currentDriverEndIdx > -1 && activeRides[currentDriverEndIdx]) {
+        var r = activeRides[currentDriverEndIdx];
+        r.customerBlocked = true;
+        if (r.id && blockedCustomers.indexOf(r.id) === -1) {
+          blockedCustomers.push(r.id);
+        }
+        saveRides();
+        document.getElementById("d-block-btn").textContent = "Customer Blocked";
+        document.getElementById("d-rate-msg").textContent = "Customer blocked from app";
+      }
+    }
+
+    function unblockCustomerRide(rideId) {
+      loadRides();
+      blockedCustomers = blockedCustomers.filter(function (x) { return x !== rideId; });
+      for (var i = 0; i < activeRides.length; i++) {
+        if (activeRides[i].id === rideId) activeRides[i].customerBlocked = false;
+      }
+      saveRides();
+      renderDriverRides();
     }
 
     function closeDriverEndScreen() {
+      saveCustomerFeedbackNow();
       document.getElementById("d-end-screen").className = "full-end";
       currentDriverEndIdx = -1;
       renderDriverRides();
@@ -328,8 +389,25 @@
     }
 
     function renderDriverRides() {
+      var blkBox = document.getElementById("d-blocked-box");
       var box = document.getElementById("d-rides-list");
       loadRides();
+
+      var blkList = activeRides.filter(function (item) { return isCustomerBlocked(item); });
+      if (blkList.length) {
+        var bHtml = "";
+        for (var b = 0; b < blkList.length; b++) {
+          var br = blkList[b];
+          bHtml += "<div class='blk-bar'>" +
+            "<span>Blocked Customer • " + (br.km || 0) + " km • ₹" + (br.total || 0) + "</span>" +
+            '<button type="button" class="small-btn" onclick="unblockCustomerRide(\'' + (br.id || "") + '\')">Unblock</button>' +
+            "</div>";
+        }
+        blkBox.innerHTML = bHtml;
+      } else {
+        blkBox.innerHTML = "";
+      }
+
       if (!activeRides.length) {
         box.innerHTML = "<p class='sub'>No rides available.</p>";
         return;
@@ -338,6 +416,7 @@
       for (var i = 0; i < activeRides.length; i++) {
         var r = activeRides[i];
         var st = r.status || "Available";
+        var blk = isCustomerBlocked(r);
         var btns = isOnline
           ? "<div class='row2'>" +
               '<button type="button" class="btn btn-amber" onclick="dAcceptRide(' + i + ')">Accept Ride</button>' +
@@ -349,8 +428,15 @@
             "</div>" +
             '<button type="button" class="btn btn-teal" onclick="dCompleteRide(' + i + ')">Complete Trip</button>'
           : "";
+
+        var fbNote = r.customerFeedback
+          ? "<div style='font-size:11px;color:#364a4a;margin-top:6px;'>Customer Feedback: " + r.customerFeedback + (r.customerRating ? " (" + r.customerRating + " ★)" : "") + "</div>"
+          : (r.customerRating ? "<div style='font-size:11px;color:#364a4a;margin-top:6px;'>Customer Rating: " + r.customerRating + " ★</div>" : "");
+
         html += "<div class='ride-box'>" +
           "<div class='ride-top'><span class='ride-info'>" + r.km + " km • ₹" + r.total + "</span><span class='ride-st'>" + st + "</span></div>" +
+          (blk ? "<div class='blk-pill'>Customer Blocked</div>" : "") +
+          fbNote +
           btns +
           "</div>";
       }
