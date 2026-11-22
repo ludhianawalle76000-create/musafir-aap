@@ -4,76 +4,113 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Go Musafir — Ludhiana Rides</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <style>
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
-    body { background: #f4f7f7; color: #142222; padding-bottom: 40px; }
-    header { background: #0d4f4f; color: #fff; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
-    header h1 { font-size: 18px; }
-    header p { font-size: 11px; color: #cde5e5; }
-    .hdr-right { display: flex; align-items: center; gap: 8px; }
-    .hdr-link { background: rgba(255,255,255,0.18); color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,0.35); padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; }
-    .hdr-btns { display: none; gap: 8px; }
-    .hdr-btn { background: rgba(255,255,255,0.18); color: #fff; border: 1px solid rgba(255,255,255,0.35); padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
-    .wrap { max-width: 500px; margin: 16px auto; padding: 0 12px; }
-    .card { background: #fff; border: 1px solid #dce5e5; border-radius: 14px; padding: 18px; margin-bottom: 14px; }
-    h2 { font-size: 17px; color: #0d4f4f; margin-bottom: 6px; }
-    .sub { font-size: 12px; color: #5a6b6b; margin-bottom: 12px; }
-    label { display: block; font-size: 12px; font-weight: 700; color: #0d4f4f; margin: 10px 0 4px; }
-    input, textarea { width: 100%; padding: 11px 12px; border: 1.5px solid #cfdcdc; border-radius: 10px; font-size: 14px; font-family: system-ui, sans-serif; }
-    textarea { min-height: 66px; resize: vertical; }
-    .btn { width: 100%; border: none; border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 12px; }
-    .btn-amber { background: #e07a22; color: #fff; }
-    .btn-teal { background: #0d4f4f; color: #fff; }
-    .btn-gray { background: #e8efef; color: #142222; }
-    .msg { margin-top: 10px; font-size: 12px; font-weight: 700; min-height: 16px; color: #16794c; }
-    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 6px; }
-    .grid2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; margin-top: 6px; }
-    .grid5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 6px; }
-    .v-card, .p-card { border: 1.5px solid #dce5e5; border-radius: 10px; padding: 10px 6px; text-align: center; cursor: pointer; background: #fafdfd; }
-    .v-card.active, .p-card.active { border-color: #e07a22; background: #fff6ed; }
-    .v-title, .p-title { font-size: 12px; font-weight: 700; color: #0d4f4f; }
-    .p-sub { font-size: 10px; color: #16794c; font-weight: 700; margin-top: 2px; }
-    .v-rate { font-size: 11px; font-weight: 700; color: #e07a22; margin-top: 2px; }
-    .v-min { font-size: 10px; color: #5a6b6b; margin-top: 2px; }
-    .wallet-top { display: flex; justify-content: space-between; align-items: center; background: #eaf4f4; border: 1px solid #c7dfdf; border-radius: 10px; padding: 12px; }
-    .wallet-bal { font-size: 22px; font-weight: 900; color: #083636; }
-    .quick-btn { border: 1px solid #c5d3d3; background: #f8fbfb; color: #0d4f4f; border-radius: 8px; padding: 8px 4px; font-size: 12px; font-weight: 700; cursor: pointer; }
-    .night-row { margin-top: 10px; padding: 8px 10px; background: #f2f6f6; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; gap: 6px; }
-    .night-row.on { background: #fff3e6; border: 1px solid #e07a22; color: #7c3700; font-weight: 700; }
-    .small-btn { background: #fff; border: 1px solid #c5d3d3; color: #0d4f4f; padding: 5px 8px; border-radius: 7px; font-size: 11px; font-weight: 700; cursor: pointer; }
-    .fare-box { margin-top: 12px; padding: 12px; border-radius: 10px; background: #eaf4f4; border: 1px solid #c7dfdf; }
-    .fare-top { display: flex; justify-content: space-between; align-items: center; }
-    .fare-amt { font-size: 18px; font-weight: 800; color: #083636; }
-    .fare-sub { font-size: 11px; color: #4c5e5e; margin-top: 6px; }
-    .ride-card { border: 1px solid #dce5e5; border-radius: 10px; padding: 10px; margin-top: 8px; background: #fcfdfd; font-size: 12px; }
-    .ride-hd { display: flex; justify-content: space-between; font-weight: 700; color: #0d4f4f; margin-bottom: 3px; }
-    .otp-pill { display: inline-block; margin-top: 5px; padding: 3px 8px; border-radius: 6px; background: #fff3e6; border: 1px solid #e07a22; color: #8c3d00; font-weight: 700; font-size: 11px; }
-    .blk-pill { display: inline-block; margin-top: 5px; margin-left: 6px; padding: 3px 8px; border-radius: 6px; background: #fdecec; border: 1px solid #b8292f; color: #961b21; font-weight: 700; font-size: 11px; }
-    .live-map-wrap { margin-top: 8px; border-radius: 10px; overflow: hidden; border: 1px solid #bfd8d6; background: #e8f3f2; }
-    .live-map-canvas { height: 185px; width: 100%; }
-    .live-map-bar { padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; gap: 6px; font-size: 11px; color: #142222; background: #eef7f7; }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', system-ui, sans-serif; }
+    body { background: #eef1f6; color: #161829; padding-bottom: 48px; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
 
-    .full-end { position: fixed; inset: 0; background: #0d4f4f; z-index: 999; display: none; flex-direction: column; justify-content: space-between; padding: 20px 18px; color: #fff; overflow-y: auto; }
+    header { background: #18182b; color: #fff; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
+    header h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; }
+    header p { font-size: 11px; color: #9ea4c4; }
+    .hdr-right { display: flex; align-items: center; gap: 8px; }
+    .hdr-link { background: #292a45; color: #fff; text-decoration: none; border: 1px solid #3f426b; padding: 7px 11px; border-radius: 10px; font-size: 12px; font-weight: 700; }
+    .hdr-btns { display: none; gap: 6px; }
+    .hdr-btn { background: #292a45; color: #fff; border: 1px solid #3f426b; padding: 7px 10px; border-radius: 10px; font-size: 12px; font-weight: 700; cursor: pointer; }
+
+    .wrap { max-width: 490px; margin: 14px auto; padding: 0 12px; }
+    .sheet { background: #fff; border-radius: 22px; padding: 18px; margin-bottom: 14px; box-shadow: 0 10px 28px rgba(24, 24, 43, 0.07); border: 1px solid #e3e7f0; }
+    .sheet-handle { width: 42px; height: 4px; border-radius: 99px; background: #d5dbe8; margin: 0 auto 12px; }
+    h2 { font-size: 18px; font-weight: 800; color: #18182b; margin-bottom: 4px; letter-spacing: -0.3px; }
+    .sub { font-size: 12px; color: #676e8a; margin-bottom: 12px; }
+    label { display: block; font-size: 11px; font-weight: 800; color: #474d6b; text-transform: uppercase; letter-spacing: 0.4px; margin: 12px 0 5px; }
+    input, textarea { width: 100%; padding: 12px 13px; border: 1.5px solid #dce1ed; border-radius: 12px; font-size: 14px; background: #f9fafd; color: #161829; transition: border-color 0.2s; }
+    input:focus, textarea:focus { outline: none; border-color: #18182b; background: #fff; }
+    textarea { min-height: 66px; resize: vertical; }
+
+    .btn { width: 100%; border: none; border-radius: 14px; padding: 13px; font-size: 14px; font-weight: 800; cursor: pointer; margin-top: 12px; transition: transform 0.1s; }
+    .btn:active { transform: scale(0.99); }
+    .btn-primary { background: #18182b; color: #fff; }
+    .btn-mint { background: #0fa968; color: #fff; }
+    .btn-coral { background: #ff5a36; color: #fff; }
+    .btn-soft { background: #edf0f7; color: #18182b; }
+    .msg { margin-top: 10px; font-size: 12px; font-weight: 700; min-height: 16px; color: #0fa968; }
+
+    /* Hero Map Canvas */
+    .hero-map-card { border-radius: 22px; overflow: hidden; margin-bottom: 14px; box-shadow: 0 10px 28px rgba(24, 24, 43, 0.09); border: 1px solid #dce1ed; background: #fff; }
+    #main-hero-map { height: 210px; width: 100%; }
+    .map-caption { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: #18182b; background: #f8f9fc; }
+
+    /* Wallet Strip */
+    .wallet-strip { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #18182b, #2b2d52); color: #fff; border-radius: 16px; padding: 14px; margin-bottom: 10px; }
+    .w-bal { font-size: 24px; font-weight: 800; margin-top: 2px; }
+    .grid5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+    .chip-btn { border: 1px solid #dce1ed; background: #f7f9fc; color: #18182b; border-radius: 10px; padding: 8px 4px; font-size: 12px; font-weight: 800; cursor: pointer; }
+
+    /* Vehicle List Rows */
+    .v-list { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
+    .v-row { display: flex; justify-content: space-between; align-items: center; border: 1.5px solid #e3e7f0; border-radius: 14px; padding: 11px 13px; cursor: pointer; background: #fafbfe; }
+    .v-row.active { border-color: #18182b; background: #f2f4fc; }
+    .v-left { display: flex; flex-direction: column; }
+    .v-name { font-size: 14px; font-weight: 800; color: #18182b; }
+    .v-tag { display: inline-block; font-size: 10px; font-weight: 800; background: #e1f7ed; color: #0b7a4b; padding: 2px 6px; border-radius: 6px; margin-left: 6px; }
+    .v-meta { font-size: 11px; color: #676e8a; margin-top: 2px; }
+    .v-price { font-size: 16px; font-weight: 800; color: #18182b; }
+
+    /* Fare Adjuster Bar */
+    .adjust-box { margin-top: 12px; padding: 12px; border-radius: 14px; background: #f6f8fc; border: 1px solid #e1e6f2; }
+    .adjust-hd { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 800; color: #474d6b; margin-bottom: 8px; }
+    .adjust-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
+    .adj-btn { border: 1px solid #d5dbe8; background: #fff; color: #18182b; border-radius: 8px; padding: 7px 2px; font-size: 11px; font-weight: 800; cursor: pointer; }
+    .adj-btn.on { background: #0fa968; color: #fff; border-color: #0fa968; }
+
+    /* Payment Pills */
+    .pay-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 6px; }
+    .p-pill { border: 1.5px solid #e3e7f0; border-radius: 11px; padding: 9px 6px; text-align: center; cursor: pointer; background: #fafbfe; }
+    .p-pill.active { border-color: #0fa968; background: #edfaf4; }
+    .p-name { font-size: 12px; font-weight: 800; color: #18182b; }
+    .p-acc { font-size: 10px; font-weight: 700; color: #0fa968; }
+
+    .night-bar { margin-top: 12px; padding: 9px 12px; border-radius: 12px; background: #f3f5fa; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: #474d6b; }
+    .night-bar.on { background: #fff1eb; border: 1px solid #ff5a36; color: #b52d0f; }
+    .mini-btn { background: #fff; border: 1px solid #cfd6e6; color: #18182b; padding: 5px 9px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; }
+
+    .summary-strip { margin-top: 12px; padding: 13px; border-radius: 14px; background: #18182b; color: #fff; display: flex; justify-content: space-between; align-items: center; }
+    .sum-amt { font-size: 22px; font-weight: 800; color: #4ef0a8; }
+
+    /* Active Ride Card + 4-Digit PIN Boxes */
+    .ride-item { border: 1.5px solid #e3e7f0; border-radius: 16px; padding: 13px; margin-top: 10px; background: #fcfdff; }
+    .r-top { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 14px; color: #18182b; }
+    .r-badge { font-size: 11px; padding: 3px 9px; border-radius: 99px; background: #e1f7ed; color: #0b7a4b; font-weight: 800; }
+    .pin-row { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding: 8px 10px; border-radius: 12px; background: #f3f5fa; }
+    .pin-digits { display: flex; gap: 5px; }
+    .pin-box { width: 28px; height: 32px; border-radius: 8px; background: #18182b; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 800; }
+    .blk-tag { display: inline-block; margin-top: 6px; padding: 3px 8px; border-radius: 7px; background: #ffe8e8; color: #b81d24; font-size: 11px; font-weight: 800; }
+
+    .live-map-box { margin-top: 10px; border-radius: 12px; overflow: hidden; border: 1px solid #dce1ed; }
+    .live-map-el { height: 170px; width: 100%; }
+    .live-map-ft { padding: 8px 10px; background: #f6f8fc; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; }
+
+    /* Cancel Modal & Full-Screen End Modal */
+    .overlay { position: fixed; inset: 0; background: rgba(16, 18, 34, 0.72); z-index: 900; display: none; align-items: flex-end; justify-content: center; }
+    .overlay.show { display: flex; }
+    .modal-sheet { width: 100%; max-width: 490px; background: #fff; border-radius: 24px 24px 0 0; padding: 20px 18px 28px; max-height: 85vh; overflow-y: auto; }
+    .reason-btn { width: 100%; text-align: left; padding: 12px 14px; margin-top: 8px; border-radius: 12px; border: 1px solid #e3e7f0; background: #f9fafd; font-size: 13px; font-weight: 700; color: #18182b; cursor: pointer; display: flex; justify-content: space-between; }
+
+    .full-end { position: fixed; inset: 0; background: #18182b; z-index: 999; display: none; flex-direction: column; justify-content: space-between; padding: 22px 18px; color: #fff; overflow-y: auto; }
     .full-end.show { display: flex; }
-    .end-tag { display: inline-block; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.28); padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; }
-    .end-hero { margin-top: 14px; background: #fff; color: #142222; border-radius: 16px; padding: 16px; text-align: center; }
-    .end-lbl { font-size: 11px; font-weight: 700; color: #5a6b6b; text-transform: uppercase; }
-    .end-amt { font-size: 36px; font-weight: 900; color: #083636; margin: 4px 0; }
-    .end-plat { font-size: 12px; font-weight: 700; color: #e07a22; }
-    .end-route { margin-top: 6px; font-size: 12px; color: #364a4a; font-weight: 600; }
-    .rate-box { margin-top: 14px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); border-radius: 16px; padding: 14px; }
-    .rate-title { font-size: 14px; font-weight: 800; margin-bottom: 10px; text-align: center; }
-    .star-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
-    .star-btn { border: 1.5px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.12); color: #fff; border-radius: 10px; padding: 10px 4px; font-size: 13px; font-weight: 800; cursor: pointer; }
-    .star-btn.picked { background: #e07a22; border-color: #e07a22; color: #fff; }
-    .fb-lbl { display: block; font-size: 11px; font-weight: 700; color: #e2f1f1; margin: 12px 0 5px; }
-    .fb-inp { width: 100%; padding: 9px 11px; border-radius: 10px; border: 1px solid rgba(255,255,255,0.3); background: #fff; color: #142222; font-size: 13px; min-height: 62px; }
-    .rate-status { margin-top: 8px; font-size: 12px; font-weight: 700; color: #ffe7cf; min-height: 16px; text-align: center; }
-    .end-actions { margin-top: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .end-done-btn { width: 100%; border: none; border-radius: 12px; padding: 13px; font-size: 14px; font-weight: 800; background: #e07a22; color: #fff; cursor: pointer; }
-    .end-blk-btn { width: 100%; border: 1.5px solid #ffb3b6; border-radius: 12px; padding: 13px; font-size: 14px; font-weight: 800; background: #9e1f26; color: #fff; cursor: pointer; }
+    .end-tag { display: inline-block; background: rgba(255,255,255,0.14); padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 800; }
+    .end-card { margin-top: 14px; background: #fff; color: #18182b; border-radius: 20px; padding: 18px; text-align: center; }
+    .end-amt { font-size: 38px; font-weight: 800; color: #0fa968; margin: 4px 0; }
+    .rate-panel { margin-top: 14px; background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.18); border-radius: 18px; padding: 14px; }
+    .star-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 10px; }
+    .star-btn { border: 1.5px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); color: #fff; border-radius: 10px; padding: 10px 4px; font-size: 13px; font-weight: 800; cursor: pointer; }
+    .star-btn.picked { background: #0fa968; border-color: #0fa968; }
+    .end-actions { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .hide { display: none; }
   </style>
 </head>
@@ -81,7 +118,7 @@
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Ludhiana Bike, E-Rickshaw & Cab • v24</p>
+      <p>Ludhiana Mobility • v25</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -93,149 +130,201 @@
   </header>
 
   <div class="wrap">
-    <div id="login-card" class="card">
-      <h2>Login</h2>
-      <p class="sub">Tap Send OTP, then verify with OTP 123456.</p>
+    <!-- Login Sheet -->
+    <div id="login-card" class="sheet">
+      <div class="sheet-handle"></div>
+      <h2>Sign in to Go Musafir</h2>
+      <p class="sub">Enter your number to receive instant verification code.</p>
       <div id="step-phone">
         <label for="phone-inp">Mobile Number</label>
         <input id="phone-inp" type="tel" value="+918564885647" />
-        <button type="button" class="btn btn-amber" onclick="sendOtpNow()">Send OTP</button>
+        <button type="button" class="btn btn-primary" onclick="sendOtpNow()">Send OTP</button>
       </div>
       <div id="step-otp" class="hide">
         <label for="otp-inp">Enter 6-Digit OTP</label>
-        <input id="otp-inp" type="text" maxlength="6" value="123456" />
-        <button type="button" class="btn btn-teal" onclick="verifyOtpNow()">Verify OTP (123456)</button>
-        <button type="button" class="btn btn-gray" onclick="backPhoneNow()">Change Number</button>
+        <input id="otp-inp" class="mono" type="text" maxlength="6" value="123456" />
+        <button type="button" class="btn btn-mint" onclick="verifyOtpNow()">Verify & Continue</button>
+        <button type="button" class="btn btn-soft" onclick="backPhoneNow()">Change Number</button>
       </div>
       <div id="login-msg" class="msg"></div>
     </div>
 
-    <div id="profile-card" class="card hide">
-      <h2>Edit Profile</h2>
+    <!-- Profile Sheet -->
+    <div id="profile-card" class="sheet hide">
+      <h2>Rider Profile</h2>
       <label for="p-name">Full Name</label>
       <input id="p-name" type="text" placeholder="e.g., Harvinder Singh" />
       <label for="p-user">Username</label>
       <input id="p-user" type="text" placeholder="e.g., preet76000" />
-      <button type="button" class="btn btn-teal" onclick="saveProfileNow()">Save Profile</button>
-      <button type="button" class="btn btn-gray" onclick="toggleProfile()">Close</button>
+      <button type="button" class="btn btn-primary" onclick="saveProfileNow()">Save Profile</button>
+      <button type="button" class="btn btn-soft" onclick="toggleProfile()">Close</button>
       <div id="profile-msg" class="msg"></div>
     </div>
 
-    <div id="wallet-card" class="card hide">
-      <div class="wallet-top">
+    <!-- Hero Live Map -->
+    <div id="hero-map-wrap" class="hero-map-card hide">
+      <div id="main-hero-map"></div>
+      <div class="map-caption">
+        <span>Ludhiana Live Zone • Threeke → Clock Tower</span>
+        <span class="mono" style="color:#0fa968;">GPS READY</span>
+      </div>
+    </div>
+
+    <!-- Musafir Wallet Sheet -->
+    <div id="wallet-card" class="sheet hide">
+      <div class="wallet-strip">
         <div>
-          <div style="font-size:11px;font-weight:700;color:#0d4f4f;">MUSAFIR WALLET</div>
-          <div id="c-wallet-bal" class="wallet-bal">₹0</div>
+          <div style="font-size:10px;font-weight:800;letter-spacing:0.6px;color:#9ea4c4;">MUSAFIR WALLET</div>
+          <div id="c-wallet-bal" class="w-bal mono">₹0</div>
         </div>
-        <span class="p-sub" style="font-size:11px;">Instant Ride Pay</span>
+        <div style="text-align:right;font-size:11px;color:#4ef0a8;font-weight:700;">Instant Pay Ready</div>
       </div>
       <div class="grid5">
-        <button type="button" class="quick-btn" onclick="addWalletMoney(50)">+₹50</button>
-        <button type="button" class="quick-btn" onclick="addWalletMoney(100)">+₹100</button>
-        <button type="button" class="quick-btn" onclick="addWalletMoney(200)">+₹200</button>
-        <button type="button" class="quick-btn" onclick="addWalletMoney(500)">+₹500</button>
-        <button type="button" class="quick-btn" onclick="addCustomWalletMoney()">Custom</button>
+        <button type="button" class="chip-btn mono" onclick="addWalletMoney(50)">+₹50</button>
+        <button type="button" class="chip-btn mono" onclick="addWalletMoney(100)">+₹100</button>
+        <button type="button" class="chip-btn mono" onclick="addWalletMoney(200)">+₹200</button>
+        <button type="button" class="chip-btn mono" onclick="addWalletMoney(500)">+₹500</button>
+        <button type="button" class="chip-btn" onclick="addCustomWalletMoney()">Add</button>
       </div>
-      <input id="wallet-add-inp" type="number" min="1" placeholder="Enter amount to add (e.g., 150)" style="margin-top:8px;" />
+      <input id="wallet-add-inp" type="number" min="1" placeholder="Custom wallet amount (₹)" style="margin-top:8px;" />
       <div id="wallet-msg" class="msg"></div>
     </div>
 
-    <div id="book-card" class="card hide">
-      <h2 id="book-title">Book a Ride</h2>
+    <!-- Booking Bottom-Sheet Style Card -->
+    <div id="book-card" class="sheet hide">
+      <div class="sheet-handle"></div>
+      <h2 id="book-title">Where are you going?</h2>
       <p class="sub">Ludhiana local rides • Auto Night 10 PM – 6 AM (+50%)</p>
 
+      <label for="pickup-inp">Pickup Location</label>
+      <input id="pickup-inp" type="text" placeholder="e.g., Threeke, Ludhiana" />
+
+      <label for="drop-inp">Drop Location</label>
+      <input id="drop-inp" type="text" placeholder="e.g., Clock Tower, Ludhiana" />
+
+      <label for="km-inp">Distance (km)</label>
+      <input id="km-inp" class="mono" type="number" step="0.5" min="1" value="10" oninput="resetAdjustAndCalc()" />
+
       <label>Select Ride</label>
-      <div class="grid3">
-        <div class="v-card active" data-v="Bike" data-r="7" data-m="25" onclick="pickV(this)">
-          <div class="v-title">Bike</div>
-          <div class="v-rate" id="r-bike">₹7.00/km</div>
-          <div class="v-min" id="m-bike">Min ₹25</div>
+      <div class="v-list">
+        <div class="v-row active" data-v="Bike" data-r="7" data-m="25" onclick="pickV(this)">
+          <div class="v-left">
+            <div class="v-name">Musafir Bike <span class="v-tag">FASTEST</span></div>
+            <div class="v-meta" id="m-bike">Quick bike rides • Min ₹25</div>
+          </div>
+          <div class="v-price mono" id="p-bike">₹70</div>
         </div>
-        <div class="v-card" data-v="E-Rickshaw" data-r="11" data-m="35" onclick="pickV(this)">
-          <div class="v-title">E-Rickshaw</div>
-          <div class="v-rate" id="r-rick">₹11.00/km</div>
-          <div class="v-min" id="m-rick">Min ₹35</div>
+        <div class="v-row" data-v="E-Rickshaw" data-r="11" data-m="35" onclick="pickV(this)">
+          <div class="v-left">
+            <div class="v-name">E-Rickshaw</div>
+            <div class="v-meta" id="m-rick">Doorstep local ride • Min ₹35</div>
+          </div>
+          <div class="v-price mono" id="p-rick">₹110</div>
         </div>
-        <div class="v-card" data-v="Cab" data-r="16" data-m="70" onclick="pickV(this)">
-          <div class="v-title">Cab</div>
-          <div class="v-rate" id="r-cab">₹16.00/km</div>
-          <div class="v-min" id="m-cab">Min ₹70</div>
+        <div class="v-row" data-v="Cab" data-r="16" data-m="70" onclick="pickV(this)">
+          <div class="v-left">
+            <div class="v-name">Musafir Cab</div>
+            <div class="v-meta" id="m-cab">Comfortable sedan • Min ₹70</div>
+          </div>
+          <div class="v-price mono" id="p-cab">₹160</div>
+        </div>
+      </div>
+
+      <!-- Set a price that works for you -->
+      <div class="adjust-box">
+        <div class="adjust-hd">
+          <span>ADJUST OFFER FARE</span>
+          <span class="mono" id="adj-label">Standard ₹0</span>
+        </div>
+        <div class="adjust-grid mono">
+          <button type="button" class="adj-btn" onclick="setFareDelta(-20, this)">-20</button>
+          <button type="button" class="adj-btn" onclick="setFareDelta(-10, this)">-10</button>
+          <button type="button" class="adj-btn on" id="adj-zero" onclick="setFareDelta(0, this)">0</button>
+          <button type="button" class="adj-btn" onclick="setFareDelta(20, this)">+20</button>
+          <button type="button" class="adj-btn" onclick="setFareDelta(40, this)">+40</button>
+          <button type="button" class="adj-btn" onclick="setFareDelta(80, this)">+80</button>
         </div>
       </div>
 
       <label>Payment Mode (All Accepted)</label>
-      <div class="grid3">
-        <div class="p-card active" data-pm="Cash" onclick="pickPay(this)">
-          <div class="p-title">Cash</div>
-          <div class="p-sub">Accepted</div>
+      <div class="pay-grid">
+        <div class="p-pill active" data-pm="Cash" onclick="pickPay(this)">
+          <div class="p-name">Cash</div>
+          <div class="p-acc">Accepted</div>
         </div>
-        <div class="p-card" data-pm="UPI" onclick="pickPay(this)">
-          <div class="p-title">UPI</div>
-          <div class="p-sub">Accepted</div>
+        <div class="p-pill" data-pm="UPI" onclick="pickPay(this)">
+          <div class="p-name">UPI</div>
+          <div class="p-acc">Accepted</div>
         </div>
-        <div class="p-card" data-pm="Wallet" onclick="pickPay(this)">
-          <div class="p-title">Wallet</div>
-          <div class="p-sub">Accepted</div>
+        <div class="p-pill" data-pm="Wallet" onclick="pickPay(this)">
+          <div class="p-name">Wallet</div>
+          <div class="p-acc">Accepted</div>
         </div>
-      </div>
-      <div class="grid2">
-        <div class="p-card" data-pm="Credit Card" onclick="pickPay(this)">
-          <div class="p-title">Credit Card</div>
-          <div class="p-sub">Accepted</div>
+        <div class="p-pill" data-pm="Credit Card" onclick="pickPay(this)">
+          <div class="p-name">Credit Card</div>
+          <div class="p-acc">Accepted</div>
         </div>
-        <div class="p-card" data-pm="Debit Card" onclick="pickPay(this)">
-          <div class="p-title">Debit Card</div>
-          <div class="p-sub">Accepted</div>
+        <div class="p-pill" data-pm="Debit Card" onclick="pickPay(this)">
+          <div class="p-name">Debit Card</div>
+          <div class="p-acc">Accepted</div>
         </div>
       </div>
 
-      <div id="night-row" class="night-row">
+      <div id="night-row" class="night-bar">
         <span id="night-txt">Night window: 10 PM – 6 AM</span>
-        <button type="button" class="small-btn" id="btn-night" onclick="toggleNightNow()">Test Night Fare</button>
+        <button type="button" class="mini-btn" id="btn-night" onclick="toggleNightNow()">Test Night Fare</button>
       </div>
 
-      <label for="pickup-inp">Pickup (Ludhiana)</label>
-      <input id="pickup-inp" type="text" placeholder="e.g., Threeke" />
-
-      <label for="drop-inp">Drop (Ludhiana)</label>
-      <input id="drop-inp" type="text" placeholder="e.g., Clock Tower" />
-
-      <label for="km-inp">Distance (km)</label>
-      <input id="km-inp" type="number" step="0.5" min="1" value="10" oninput="calcFareNow()" />
-
-      <div class="fare-box">
-        <div class="fare-top">
-          <span id="fare-detail" style="font-size:12px;font-weight:700;color:#0d4f4f;">Full Payment • Bike • 10 km • Cash</span>
-          <span id="fare-total" class="fare-amt">₹70</span>
+      <div class="summary-strip">
+        <div>
+          <div id="fare-detail" style="font-size:12px;font-weight:700;">Full Payment • Bike • 10 km • Cash</div>
+          <div style="font-size:11px;color:#9ea4c4;margin-top:2px;">Platform Charges</div>
         </div>
-        <div class="fare-sub">Platform Charges</div>
+        <div id="fare-total" class="sum-amt mono">₹70</div>
       </div>
 
-      <button type="button" class="btn btn-amber" onclick="bookRideNow()">Confirm Ride Booking</button>
+      <button type="button" class="btn btn-coral" id="book-cta-btn" onclick="bookRideNow()">Book Musafir Bike</button>
       <div id="book-msg" class="msg"></div>
     </div>
 
-    <div id="rides-card" class="card hide">
+    <!-- Active & Past Rides -->
+    <div id="rides-card" class="sheet hide">
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <h2 style="margin-bottom:0;">Your Rides</h2>
-        <button type="button" class="small-btn" onclick="drawRidesNow()">Refresh</button>
+        <button type="button" class="mini-btn" onclick="drawRidesNow()">Refresh</button>
       </div>
       <div id="rides-list"></div>
     </div>
   </div>
 
+  <!-- Cancel Reason Bottom Sheet -->
+  <div id="cancel-modal" class="overlay">
+    <div class="modal-sheet">
+      <div class="sheet-handle"></div>
+      <h2>Why do you want to cancel?</h2>
+      <p class="sub">Select a reason to cancel this ride.</p>
+      <button type="button" class="reason-btn" onclick="confirmCancelRide('Taking longer than expected')"><span>Taking longer than expected</span><span>›</span></button>
+      <button type="button" class="reason-btn" onclick="confirmCancelRide('Change of plans')"><span>Change of plans</span><span>›</span></button>
+      <button type="button" class="reason-btn" onclick="confirmCancelRide('Wrong pickup location')"><span>Wrong pickup location</span><span>›</span></button>
+      <button type="button" class="reason-btn" onclick="confirmCancelRide('Driver not moving towards pickup')"><span>Driver not moving towards pickup</span><span>›</span></button>
+      <button type="button" class="reason-btn" onclick="confirmCancelRide('Others')"><span>Others</span><span>›</span></button>
+      <button type="button" class="btn btn-soft" onclick="closeCancelModal()">Keep Ride</button>
+    </div>
+  </div>
+
+  <!-- Full-Screen Trip Completed + Rating + Feedback + Block -->
   <div id="p-end-screen" class="full-end">
     <div>
       <span class="end-tag">GO MUSAFIR • TRIP COMPLETED</span>
-      <div class="end-hero">
-        <div class="end-lbl">Total Trip Amount</div>
-        <div id="p-end-amt" class="end-amt">₹0</div>
-        <div class="end-plat">Platform Charges</div>
-        <div id="p-end-route" class="end-route"></div>
+      <div class="end-card">
+        <div style="font-size:11px;font-weight:800;color:#676e8a;text-transform:uppercase;">Total Trip Amount</div>
+        <div id="p-end-amt" class="end-amt mono">₹0</div>
+        <div style="font-size:12px;font-weight:800;color:#ff5a36;">Platform Charges</div>
+        <div id="p-end-route" style="margin-top:6px;font-size:12px;color:#474d6b;font-weight:600;"></div>
       </div>
 
-      <div class="rate-box">
-        <div class="rate-title">Rate Driver & Behavior Feedback</div>
+      <div class="rate-panel">
+        <div style="font-size:14px;font-weight:800;text-align:center;">Rate Driver & Behavior Feedback</div>
         <div class="star-row">
           <button type="button" class="star-btn" onclick="setDriverRating(1)">1 ★</button>
           <button type="button" class="star-btn" onclick="setDriverRating(2)">2 ★</button>
@@ -244,21 +333,21 @@
           <button type="button" class="star-btn" onclick="setDriverRating(5)">5 ★</button>
         </div>
 
-        <label class="fb-lbl" for="p-feedback-inp">Driver Behavior Feedback</label>
-        <textarea id="p-feedback-inp" class="fb-inp" placeholder="Write feedback about driver behavior or trip..." oninput="saveDriverFeedbackNow()"></textarea>
-
-        <div id="p-rate-msg" class="rate-status">Tap stars & add feedback</div>
+        <label style="color:#cfd5ee;" for="p-feedback-inp">Driver Behavior Feedback</label>
+        <textarea id="p-feedback-inp" placeholder="Share feedback about driver behavior or trip..." oninput="saveDriverFeedbackNow()"></textarea>
+        <div id="p-rate-msg" style="margin-top:8px;font-size:12px;font-weight:700;color:#4ef0a8;text-align:center;">Tap stars & add feedback</div>
       </div>
     </div>
 
     <div class="end-actions">
-      <button type="button" class="end-blk-btn" id="p-block-btn" onclick="toggleBlockDriverNow()">Block Driver</button>
-      <button type="button" class="end-done-btn" onclick="closePassengerEndScreen()">Done</button>
+      <button type="button" class="btn btn-coral" style="margin-top:0;" id="p-block-btn" onclick="toggleBlockDriverNow()">Block Driver</button>
+      <button type="button" class="btn btn-mint" style="margin-top:0;" onclick="closePassengerEndScreen()">Done</button>
     </div>
   </div>
 
   <script>
     var curV = "Bike", curR = 7, curM = 25;
+    var fareDelta = 0;
     var curPay = "Cash";
     var nightManualOverride = null;
     var customerPhone = "";
@@ -266,6 +355,8 @@
     var walletBalance = 0;
     var rides = [];
     var currentEndIdx = -1;
+    var cancelTargetIdx = -1;
+    var heroMap = null;
     var pMaps = {};
     var pTrackTimers = {};
 
@@ -280,6 +371,17 @@
     function isNightActive() {
       if (nightManualOverride !== null) return nightManualOverride;
       return isAutoNightHour();
+    }
+
+    function initHeroMap() {
+      var el = document.getElementById("main-hero-map");
+      if (!el || typeof L === "undefined") return;
+      if (heroMap) { heroMap.remove(); heroMap = null; }
+      heroMap = L.map("main-hero-map", { zoomControl: false }).setView([30.886, 75.834], 12);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(heroMap);
+      L.polyline([[PICKUP_COORDS.lat, PICKUP_COORDS.lng], [DROP_COORDS.lat, DROP_COORDS.lng]], { color: "#18182b", weight: 4 }).addTo(heroMap);
+      L.circleMarker([PICKUP_COORDS.lat, PICKUP_COORDS.lng], { radius: 7, color: "#0fa968", fillOpacity: 1 }).addTo(heroMap);
+      L.circleMarker([DROP_COORDS.lat, DROP_COORDS.lng], { radius: 7, color: "#ff5a36", fillOpacity: 1 }).addTo(heroMap);
     }
 
     function loadWallet() {
@@ -308,10 +410,7 @@
 
     function addCustomWalletMoney() {
       var v = Number(document.getElementById("wallet-add-inp").value || 0);
-      if (v <= 0) {
-        document.getElementById("wallet-msg").textContent = "Enter valid amount.";
-        return;
-      }
+      if (v <= 0) { document.getElementById("wallet-msg").textContent = "Enter valid amount."; return; }
       addWalletMoney(v);
       document.getElementById("wallet-add-inp").value = "";
     }
@@ -333,26 +432,17 @@
           }
         }
         if (!found) {
-          logs.unshift({
-            type: "Customer",
-            name: customerName || "Passenger",
-            phone: customerPhone,
-            time: new Date().toLocaleString()
-          });
+          logs.unshift({ type: "Customer", name: customerName || "Passenger", phone: customerPhone, time: new Date().toLocaleString() });
         }
         localStorage.setItem("gm_owner_accounts_v1", JSON.stringify(logs));
       } catch (e) {}
     }
 
     function sendOtpNow() {
-      var s1 = document.getElementById("step-phone");
-      var s2 = document.getElementById("step-otp");
-      var o = document.getElementById("otp-inp");
-      var m = document.getElementById("login-msg");
-      if (s1) s1.className = "hide";
-      if (s2) s2.className = "";
-      if (o) o.value = "123456";
-      if (m) m.textContent = "OTP 123456 ready.";
+      document.getElementById("step-phone").className = "hide";
+      document.getElementById("step-otp").className = "";
+      document.getElementById("otp-inp").value = "123456";
+      document.getElementById("login-msg").textContent = "OTP 123456 ready.";
     }
 
     function backPhoneNow() {
@@ -364,18 +454,20 @@
     function verifyOtpNow() {
       recordCustomerOwnerLog();
       loadWallet();
-      document.getElementById("login-card").className = "card hide";
+      document.getElementById("login-card").className = "sheet hide";
       document.getElementById("hdr-btns").style.display = "flex";
-      document.getElementById("wallet-card").className = "card";
-      document.getElementById("book-card").className = "card";
-      document.getElementById("rides-card").className = "card";
+      document.getElementById("hero-map-wrap").className = "hero-map-card";
+      document.getElementById("wallet-card").className = "sheet";
+      document.getElementById("book-card").className = "sheet";
+      document.getElementById("rides-card").className = "sheet";
+      initHeroMap();
       calcFareNow();
       drawRidesNow();
     }
 
     function toggleProfile() {
       var pc = document.getElementById("profile-card");
-      pc.className = pc.className.indexOf("hide") > -1 ? "card" : "card hide";
+      pc.className = pc.className.indexOf("hide") > -1 ? "sheet" : "sheet hide";
     }
 
     function saveProfileNow() {
@@ -383,24 +475,44 @@
       if (!n) return;
       customerName = n;
       recordCustomerOwnerLog();
-      document.getElementById("book-title").textContent = "Hi " + n + ", Book a Ride";
+      document.getElementById("book-title").textContent = "Hi " + n + ", where to?";
       document.getElementById("profile-msg").textContent = "Profile saved!";
     }
 
     function pickV(el) {
-      var cards = document.querySelectorAll(".v-card");
-      for (var i = 0; i < cards.length; i++) cards[i].className = "v-card";
-      el.className = "v-card active";
+      var rows = document.querySelectorAll(".v-row");
+      for (var i = 0; i < rows.length; i++) rows[i].className = "v-row";
+      el.className = "v-row active";
       curV = el.getAttribute("data-v");
       curR = Number(el.getAttribute("data-r"));
       curM = Number(el.getAttribute("data-m"));
+      fareDelta = 0;
+      var adjs = document.querySelectorAll(".adj-btn");
+      for (var j = 0; j < adjs.length; j++) adjs[j].className = "adj-btn";
+      document.getElementById("adj-zero").className = "adj-btn on";
+      calcFareNow();
+    }
+
+    function setFareDelta(delta, btnEl) {
+      fareDelta = Number(delta || 0);
+      var adjs = document.querySelectorAll(".adj-btn");
+      for (var i = 0; i < adjs.length; i++) adjs[i].className = "adj-btn";
+      if (btnEl) btnEl.className = "adj-btn on";
+      calcFareNow();
+    }
+
+    function resetAdjustAndCalc() {
+      fareDelta = 0;
+      var adjs = document.querySelectorAll(".adj-btn");
+      for (var i = 0; i < adjs.length; i++) adjs[i].className = "adj-btn";
+      document.getElementById("adj-zero").className = "adj-btn on";
       calcFareNow();
     }
 
     function pickPay(el) {
-      var cards = document.querySelectorAll(".p-card");
-      for (var i = 0; i < cards.length; i++) cards[i].className = "p-card";
-      el.className = "p-card active";
+      var pills = document.querySelectorAll(".p-pill");
+      for (var i = 0; i < pills.length; i++) pills[i].className = "p-pill";
+      el.className = "p-pill active";
       curPay = el.getAttribute("data-pm") || "Cash";
       calcFareNow();
     }
@@ -413,23 +525,31 @@
     function calcFareNow() {
       var nOn = isNightActive();
       var nMult = nOn ? 1.5 : 1.0;
+      var km = parseFloat(document.getElementById("km-inp").value) || 0;
 
-      document.getElementById("r-bike").textContent = "₹" + (7 * nMult).toFixed(2) + "/km";
-      document.getElementById("m-bike").textContent = "Min ₹" + Math.round(25 * nMult);
-      document.getElementById("r-rick").textContent = "₹" + (11 * nMult).toFixed(2) + "/km";
-      document.getElementById("m-rick").textContent = "Min ₹" + Math.round(35 * nMult);
-      document.getElementById("r-cab").textContent = "₹" + (16 * nMult).toFixed(2) + "/km";
-      document.getElementById("m-cab").textContent = "Min ₹" + Math.round(70 * nMult);
+      var bikeFare = Math.max(Math.round(25 * nMult), Math.round(km * 7 * nMult));
+      var rickFare = Math.max(Math.round(35 * nMult), Math.round(km * 11 * nMult));
+      var cabFare = Math.max(Math.round(70 * nMult), Math.round(km * 16 * nMult));
+
+      document.getElementById("p-bike").textContent = "₹" + bikeFare;
+      document.getElementById("m-bike").textContent = "Quick bike rides • Min ₹" + Math.round(25 * nMult);
+      document.getElementById("p-rick").textContent = "₹" + rickFare;
+      document.getElementById("m-rick").textContent = "Doorstep local ride • Min ₹" + Math.round(35 * nMult);
+      document.getElementById("p-cab").textContent = "₹" + cabFare;
+      document.getElementById("m-cab").textContent = "Comfortable sedan • Min ₹" + Math.round(70 * nMult);
 
       var nr = document.getElementById("night-row");
-      nr.className = nOn ? "night-row on" : "night-row";
+      nr.className = nOn ? "night-bar on" : "night-bar";
       document.getElementById("night-txt").textContent = nOn ? "Night Fare Active (10 PM – 6 AM • +50%)" : "Night window: 10 PM – 6 AM (+50%)";
       document.getElementById("btn-night").textContent = nOn ? "Day Fare" : "Test Night Fare";
 
-      var km = parseFloat(document.getElementById("km-inp").value) || 0;
-      var total = Math.max(Math.round(curM * nMult), Math.round(km * curR * nMult));
+      var baseTotal = Math.max(Math.round(curM * nMult), Math.round(km * curR * nMult));
+      var finalTotal = Math.max(Math.round(curM * nMult), baseTotal + fareDelta);
+
+      document.getElementById("adj-label").textContent = fareDelta === 0 ? "Standard ₹0" : (fareDelta > 0 ? "+₹" + fareDelta : "-₹" + Math.abs(fareDelta));
       document.getElementById("fare-detail").textContent = "Full Payment • " + curV + " • " + km + " km • " + curPay;
-      document.getElementById("fare-total").textContent = "₹" + total;
+      document.getElementById("fare-total").textContent = "₹" + finalTotal;
+      document.getElementById("book-cta-btn").textContent = "Book " + curV + " • ₹" + finalTotal;
     }
 
     function loadRides() {
@@ -446,15 +566,16 @@
     function bookRideNow() {
       recordCustomerOwnerLog();
       loadWallet();
-      var pickup = document.getElementById("pickup-inp").value.trim() || "Ludhiana Pickup";
-      var drop = document.getElementById("drop-inp").value.trim() || "Ludhiana Drop";
+      var pickup = document.getElementById("pickup-inp").value.trim() || "Threeke, Ludhiana";
+      var drop = document.getElementById("drop-inp").value.trim() || "Clock Tower, Ludhiana";
       var km = parseFloat(document.getElementById("km-inp").value) || 1;
       var nOn = isNightActive();
       var nMult = nOn ? 1.5 : 1.0;
-      var total = Math.max(Math.round(curM * nMult), Math.round(km * curR * nMult));
+      var baseTotal = Math.max(Math.round(curM * nMult), Math.round(km * curR * nMult));
+      var total = Math.max(Math.round(curM * nMult), baseTotal + fareDelta);
 
       if (curPay === "Wallet" && walletBalance < total) {
-        document.getElementById("book-msg").textContent = "Wallet balance kam hai. Pehle money add karein.";
+        document.getElementById("book-msg").textContent = "Wallet balance kam hai. Pehle wallet mein money add karein.";
         return;
       }
 
@@ -485,9 +606,27 @@
         passengerRatedPromptSeen: false
       });
       saveRides();
-      document.getElementById("pickup-inp").value = "";
-      document.getElementById("drop-inp").value = "";
       document.getElementById("book-msg").textContent = curV + " booked (" + curPay + ") • ₹" + total;
+      drawRidesNow();
+    }
+
+    function openCancelModal(idx) {
+      cancelTargetIdx = idx;
+      document.getElementById("cancel-modal").className = "overlay show";
+    }
+
+    function closeCancelModal() {
+      cancelTargetIdx = -1;
+      document.getElementById("cancel-modal").className = "overlay";
+    }
+
+    function confirmCancelRide(reason) {
+      loadRides();
+      if (cancelTargetIdx > -1 && rides[cancelTargetIdx]) {
+        rides[cancelTargetIdx].status = "Cancelled (" + reason + ")";
+        saveRides();
+      }
+      closeCancelModal();
       drawRidesNow();
     }
 
@@ -503,51 +642,24 @@
       var elId = "p-live-map-" + idx;
       var el = document.getElementById(elId);
       if (!el || typeof L === "undefined") return;
-
-      if (pMaps[idx]) {
-        pMaps[idx].remove();
-        delete pMaps[idx];
-      }
+      if (pMaps[idx]) { pMaps[idx].remove(); delete pMaps[idx]; }
 
       var prog = statusProgress(rideObj.status || "Searching Driver");
-      var curLat = (typeof rideObj.riderLat === "number")
-        ? rideObj.riderLat
-        : (PICKUP_COORDS.lat + (DROP_COORDS.lat - PICKUP_COORDS.lat) * prog);
-      var curLng = (typeof rideObj.riderLng === "number")
-        ? rideObj.riderLng
-        : (PICKUP_COORDS.lng + (DROP_COORDS.lng - PICKUP_COORDS.lng) * prog);
+      var curLat = (typeof rideObj.riderLat === "number") ? rideObj.riderLat : (PICKUP_COORDS.lat + (DROP_COORDS.lat - PICKUP_COORDS.lat) * prog);
+      var curLng = (typeof rideObj.riderLng === "number") ? rideObj.riderLng : (PICKUP_COORDS.lng + (DROP_COORDS.lng - PICKUP_COORDS.lng) * prog);
 
       var map = L.map(elId, { zoomControl: false }).setView([curLat, curLng], 13);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: "© OSM"
-      }).addTo(map);
-
-      L.polyline(
-        [[PICKUP_COORDS.lat, PICKUP_COORDS.lng], [DROP_COORDS.lat, DROP_COORDS.lng]],
-        { color: "#0d4f4f", weight: 4, dashArray: "6,6" }
-      ).addTo(map);
-
-      L.circleMarker([PICKUP_COORDS.lat, PICKUP_COORDS.lng], { radius: 6, color: "#16794c", fillOpacity: 0.9 }).addTo(map);
-      L.circleMarker([DROP_COORDS.lat, DROP_COORDS.lng], { radius: 6, color: "#b8292f", fillOpacity: 0.9 }).addTo(map);
-
-      var riderMarker = L.circleMarker([curLat, curLng], {
-        radius: 9,
-        color: "#fff",
-        weight: 2,
-        fillColor: "#e07a22",
-        fillOpacity: 1
-      }).addTo(map);
-
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(map);
+      L.polyline([[PICKUP_COORDS.lat, PICKUP_COORDS.lng], [DROP_COORDS.lat, DROP_COORDS.lng]], { color: "#18182b", weight: 4, dashArray: "6,6" }).addTo(map);
+      L.circleMarker([PICKUP_COORDS.lat, PICKUP_COORDS.lng], { radius: 6, color: "#0fa968", fillOpacity: 1 }).addTo(map);
+      L.circleMarker([DROP_COORDS.lat, DROP_COORDS.lng], { radius: 6, color: "#ff5a36", fillOpacity: 1 }).addTo(map);
+      var riderMarker = L.circleMarker([curLat, curLng], { radius: 9, color: "#fff", weight: 2, fillColor: "#18182b", fillOpacity: 1 }).addTo(map);
       pMaps[idx] = { map: map, marker: riderMarker };
     }
 
     function startLiveRiderWatch(idx) {
       var stEl = document.getElementById("p-map-st-" + idx);
-      if (pTrackTimers[idx]) {
-        clearInterval(pTrackTimers[idx]);
-        delete pTrackTimers[idx];
-      }
+      if (pTrackTimers[idx]) { clearInterval(pTrackTimers[idx]); delete pTrackTimers[idx]; }
 
       function updatePos(lat, lng, label) {
         if (pMaps[idx] && pMaps[idx].marker && pMaps[idx].map) {
@@ -557,26 +669,20 @@
         if (stEl) stEl.textContent = label + " (" + lat.toFixed(4) + ", " + lng.toFixed(4) + ")";
       }
 
-      var step = 0;
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          function (pos) {
-            updatePos(pos.coords.latitude, pos.coords.longitude, "Live GPS");
-          },
-          function () {}
-        );
+        navigator.geolocation.getCurrentPosition(function (pos) {
+          updatePos(pos.coords.latitude, pos.coords.longitude, "Live GPS");
+        }, function () {});
       }
 
+      var step = 0;
       pTrackTimers[idx] = setInterval(function () {
         step += 1;
         var t = Math.min(1, step / 8);
         var lat = PICKUP_COORDS.lat + (DROP_COORDS.lat - PICKUP_COORDS.lat) * t;
         var lng = PICKUP_COORDS.lng + (DROP_COORDS.lng - PICKUP_COORDS.lng) * t;
         updatePos(lat, lng, t >= 1 ? "Reached Drop" : "Rider Moving Live");
-        if (t >= 1) {
-          clearInterval(pTrackTimers[idx]);
-          delete pTrackTimers[idx];
-        }
+        if (t >= 1) { clearInterval(pTrackTimers[idx]); delete pTrackTimers[idx]; }
       }, 650);
     }
 
@@ -655,41 +761,55 @@
         var st = String(r.status || "Searching Driver");
         var pm = r.payMode || "Cash";
         var isComp = st.toLowerCase().indexOf("complet") > -1;
+        var isCanc = st.toLowerCase().indexOf("cancel") > -1;
 
         if (isComp && pm === "Wallet" && !r.walletPaid) {
           var amt = Number(r.total || 0);
-          if (walletBalance >= amt) {
-            walletBalance -= amt;
-            r.walletPaid = true;
-            saveWallet();
-          }
+          if (walletBalance >= amt) { walletBalance -= amt; r.walletPaid = true; saveWallet(); }
         }
 
         if (isComp && !r.passengerRatedPromptSeen && showIdx === -1) showIdx = i;
 
+        var dStr = String(r.rideOtp).padStart(4, "0");
+        var pinHtml = (!isComp && !isCanc)
+          ? "<div class='pin-row'>" +
+              "<span style='font-size:11px;font-weight:800;color:#474d6b;'>START RIDE PIN</span>" +
+              "<div class='pin-digits mono'>" +
+                "<span class='pin-box'>" + dStr[0] + "</span>" +
+                "<span class='pin-box'>" + dStr[1] + "</span>" +
+                "<span class='pin-box'>" + dStr[2] + "</span>" +
+                "<span class='pin-box'>" + dStr[3] + "</span>" +
+              "</div>" +
+            "</div>"
+          : "";
+
         var fbLine = r.driverFeedback
-          ? "<div style='color:#2b4545;margin-top:4px;'>Feedback: " + r.driverFeedback + (r.driverRating ? " (" + r.driverRating + " ★)" : "") + "</div>"
-          : (r.driverRating ? "<div style='color:#2b4545;margin-top:4px;'>Rating: " + r.driverRating + " ★</div>" : "");
+          ? "<div style='color:#474d6b;font-size:11px;margin-top:6px;'>Feedback: " + r.driverFeedback + (r.driverRating ? " (" + r.driverRating + " ★)" : "") + "</div>"
+          : (r.driverRating ? "<div style='color:#474d6b;font-size:11px;margin-top:6px;'>Rating: " + r.driverRating + " ★</div>" : "");
 
         var blkTag = r.driverBlockedByCustomer
-          ? "<div class='blk-pill'>Blocked by Customer</div>"
-          : (r.ownerBlockedRole ? "<div class='blk-pill'>Blocked by Owner</div>" : "");
+          ? "<div class='blk-tag'>Blocked by Customer</div>"
+          : (r.ownerBlockedRole ? "<div class='blk-tag'>Blocked by Owner</div>" : "");
 
-        html += "<div class='ride-card'>" +
-          "<div class='ride-hd'><span>" + (r.v || "Ride") + " • ₹" + (r.total || 0) + " • " + pm + "</span><span>" + st + "</span></div>" +
-          "<div>" + (r.pickup || "Pickup") + " → " + (r.drop || "Drop") + " (" + (r.km || 0) + " km)</div>" +
-          "<div style='color:#5a6b6b;margin-top:2px;'>Platform Charges</div>" +
-          (!isComp ? "<div class='otp-pill'>Ride OTP: " + r.rideOtp + "</div>" : "") +
+        var actionHtml = isComp
+          ? '<button type="button" class="btn btn-primary" onclick="openPassengerEndScreen(' + i + ')">Rate, Feedback & Block</button>'
+          : (!isCanc ? '<button type="button" class="btn btn-soft" onclick="openCancelModal(' + i + ')">Cancel Ride</button>' : "");
+
+        html += "<div class='ride-item'>" +
+          "<div class='r-top'><span>" + (r.v || "Ride") + " • <span class='mono'>₹" + (r.total || 0) + "</span> • " + pm + "</span><span class='r-badge'>" + st + "</span></div>" +
+          "<div style='font-size:12px;color:#474d6b;margin-top:4px;'>" + (r.pickup || "Pickup") + " → " + (r.drop || "Drop") + " (<span class='mono'>" + (r.km || 0) + " km</span>)</div>" +
+          "<div style='font-size:11px;color:#676e8a;margin-top:2px;'>Platform Charges</div>" +
+          pinHtml +
           blkTag +
           fbLine +
-          "<div class='live-map-wrap'>" +
-            "<div id='p-live-map-" + i + "' class='live-map-canvas'></div>" +
-            "<div class='live-map-bar'>" +
+          "<div class='live-map-box'>" +
+            "<div id='p-live-map-" + i + "' class='live-map-el'></div>" +
+            "<div class='live-map-ft'>" +
               "<span id='p-map-st-" + i + "'>Rider Live Map • " + st + "</span>" +
-              '<button type="button" class="small-btn" onclick="startLiveRiderWatch(' + i + ')">Track Rider</button>' +
+              '<button type="button" class="mini-btn" onclick="startLiveRiderWatch(' + i + ')">Track Rider</button>' +
             "</div>" +
           "</div>" +
-          (isComp ? '<button type="button" class="btn btn-teal" onclick="openPassengerEndScreen(' + i + ')">Rate, Feedback & Block</button>' : "") +
+          actionHtml +
           "</div>";
       }
       saveRides();
@@ -703,13 +823,14 @@
 
     function logout() {
       document.getElementById("hdr-btns").style.display = "none";
-      document.getElementById("profile-card").className = "card hide";
-      document.getElementById("wallet-card").className = "card hide";
-      document.getElementById("book-card").className = "card hide";
-      document.getElementById("rides-card").className = "card hide";
+      document.getElementById("profile-card").className = "sheet hide";
+      document.getElementById("hero-map-wrap").className = "hero-map-card hide";
+      document.getElementById("wallet-card").className = "sheet hide";
+      document.getElementById("book-card").className = "sheet hide";
+      document.getElementById("rides-card").className = "sheet hide";
       document.getElementById("step-otp").className = "hide";
       document.getElementById("step-phone").className = "";
-      document.getElementById("login-card").className = "card";
+      document.getElementById("login-card").className = "sheet";
       document.getElementById("login-msg").textContent = "";
     }
   </script>
