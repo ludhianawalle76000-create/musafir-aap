@@ -47,9 +47,23 @@
     .map-line { width: 100%; height: 3px; border-top: 2px dashed #0d4f4f; opacity: 0.45; }
     .map-mover { position: absolute; top: 3px; left: 8%; transform: translateX(-50%); background: #e07a22; color: #fff; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 999px; transition: left 0.45s ease; white-space: nowrap; }
     .map-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 7px; font-size: 11px; color: #2b4545; gap: 6px; }
-    .bill-box { margin-top: 8px; padding: 10px; border-radius: 8px; background: #eef7f7; border: 1px solid #bdd9d9; font-size: 11px; color: #142222; line-height: 1.5; }
-    .bill-line { display: flex; justify-content: space-between; margin-top: 2px; }
-    .bill-total { display: flex; justify-content: space-between; margin-top: 6px; padding-top: 6px; border-top: 1px dashed #9fc2c2; font-weight: 800; font-size: 12px; color: #083636; }
+
+    /* Full-screen completion + rating screen */
+    .full-end { position: fixed; inset: 0; background: #0d4f4f; z-index: 999; display: none; flex-direction: column; justify-content: space-between; padding: 24px 18px; color: #fff; overflow-y: auto; }
+    .full-end.show { display: flex; }
+    .end-tag { display: inline-block; background: rgba(255,255,255,0.16); border: 1px solid rgba(255,255,255,0.28); padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; letter-spacing: 0.4px; }
+    .end-hero { margin-top: 24px; background: #fff; color: #142222; border-radius: 18px; padding: 22px 18px; text-align: center; }
+    .end-lbl { font-size: 12px; font-weight: 700; color: #5a6b6b; text-transform: uppercase; }
+    .end-amt { font-size: 42px; font-weight: 900; color: #083636; margin: 6px 0; }
+    .end-plat { font-size: 12px; font-weight: 700; color: #e07a22; }
+    .end-route { margin-top: 10px; font-size: 13px; color: #364a4a; font-weight: 600; }
+    .rate-box { margin-top: 18px; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.22); border-radius: 16px; padding: 18px; text-align: center; }
+    .rate-title { font-size: 15px; font-weight: 800; margin-bottom: 12px; }
+    .star-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 8px; }
+    .star-btn { border: 1.5px solid rgba(255,255,255,0.35); background: rgba(255,255,255,0.12); color: #fff; border-radius: 10px; padding: 11px 4px; font-size: 14px; font-weight: 800; cursor: pointer; }
+    .star-btn.picked { background: #e07a22; border-color: #e07a22; color: #fff; }
+    .rate-status { margin-top: 10px; font-size: 12px; font-weight: 700; color: #ffe7cf; min-height: 16px; }
+    .end-done-btn { width: 100%; border: none; border-radius: 12px; padding: 14px; font-size: 15px; font-weight: 800; background: #e07a22; color: #fff; cursor: pointer; margin-top: 16px; }
     .hide { display: none; }
   </style>
 </head>
@@ -57,7 +71,7 @@
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Ludhiana Bike, E-Rickshaw & Cab • v16</p>
+      <p>Ludhiana Bike, E-Rickshaw & Cab • v17</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -155,11 +169,39 @@
     </div>
   </div>
 
+  <!-- Full-screen Trip Completed + Driver Rating Screen -->
+  <div id="p-end-screen" class="full-end">
+    <div>
+      <span class="end-tag">GO MUSAFIR • TRIP COMPLETED</span>
+      <div class="end-hero">
+        <div class="end-lbl">Total Trip Amount</div>
+        <div id="p-end-amt" class="end-amt">₹0</div>
+        <div class="end-plat">Platform Charges</div>
+        <div id="p-end-route" class="end-route"></div>
+      </div>
+
+      <div class="rate-box">
+        <div class="rate-title">Rate Your Driver</div>
+        <div class="star-row">
+          <button type="button" class="star-btn" onclick="setDriverRating(1)">1 ★</button>
+          <button type="button" class="star-btn" onclick="setDriverRating(2)">2 ★</button>
+          <button type="button" class="star-btn" onclick="setDriverRating(3)">3 ★</button>
+          <button type="button" class="star-btn" onclick="setDriverRating(4)">4 ★</button>
+          <button type="button" class="star-btn" onclick="setDriverRating(5)">5 ★</button>
+        </div>
+        <div id="p-rate-msg" class="rate-status">Tap stars to rate driver</div>
+      </div>
+    </div>
+
+    <button type="button" class="end-done-btn" onclick="closePassengerEndScreen()">Done</button>
+  </div>
+
   <script>
     var curV = "Bike", curR = 7, curM = 25;
     var nightOn = false;
     var rides = [];
     var moveTimers = {};
+    var currentEndIdx = -1;
 
     function loadSharedRides() {
       try {
@@ -295,113 +337,9 @@
         night: nightOn,
         pickup: pickup,
         drop: drop,
-        status: "Searching Driver"
+        status: "Searching Driver",
+        driverRating: 0,
+        passengerRatedPromptSeen: false
       });
       saveSharedRides();
-      document.getElementById("pickup-inp").value = "";
-      document.getElementById("drop-inp").value = "";
-      document.getElementById("book-msg").textContent = curV + " booked • Full Payment ₹" + total;
-      drawRidesNow();
-    }
-
-    function moveOnMap(idx) {
-      var mover = document.getElementById("map-mover-" + idx);
-      var note = document.getElementById("map-note-" + idx);
-      if (!mover) return;
-      if (moveTimers[idx]) {
-        clearInterval(moveTimers[idx]);
-        delete moveTimers[idx];
-      }
-      var pos = 12;
-      mover.style.left = pos + "%";
-      if (note) note.textContent = "Moving towards destination...";
-      moveTimers[idx] = setInterval(function () {
-        pos += 14;
-        if (pos >= 92) {
-          pos = 92;
-          mover.style.left = pos + "%";
-          if (note) note.textContent = "Reached destination on map";
-          clearInterval(moveTimers[idx]);
-          delete moveTimers[idx];
-          return;
-        }
-        mover.style.left = pos + "%";
-      }, 450);
-    }
-
-    function drawRidesNow() {
-      loadSharedRides();
-      var box = document.getElementById("rides-list");
-      if (!rides.length) {
-        box.innerHTML = "<p class='sub'>No rides yet.</p>";
-        return;
-      }
-      var out = "";
-      for (var i = 0; i < rides.length; i++) {
-        var r = rides[i] || {};
-        if (!r.rideOtp) r.rideOtp = makeRideOtp();
-        var st = String(r.status || "Searching Driver");
-        var vName = r.v || "Ride";
-        var kmVal = r.km || 0;
-        var totVal = r.total || 0;
-        var pName = r.pickup || "Pickup";
-        var dName = r.drop || "Drop";
-        var pos = statusMapPos(st);
-        var vLbl = vehicleIcon(vName);
-
-        var otpHtml = st.toLowerCase().indexOf("complet") === -1
-          ? "<div class='otp-pill'>Ride OTP: " + r.rideOtp + "</div>"
-          : "";
-
-        var mapHtml = "<div class='map-box'>" +
-          "<div class='map-lbl'><span>Pickup: " + pName + "</span><span>Drop: " + dName + "</span></div>" +
-          "<div class='map-road'>" +
-            "<div class='map-line'></div>" +
-            "<div class='map-mover' id='map-mover-" + i + "' style='left:" + pos + "%;'>" + vLbl + "</div>" +
-          "</div>" +
-          "<div class='map-foot'>" +
-            "<span id='map-note-" + i + "'>Map Status: " + st + "</span>" +
-            "<button type='button' class='small-btn' onclick='moveOnMap(" + i + ")'>Simulate Move</button>" +
-          "</div>" +
-          "</div>";
-
-        var billHtml = "";
-        if (st.toLowerCase().indexOf("complet") > -1) {
-          billHtml = "<div class='bill-box'>" +
-            "<div style='font-weight:800;color:#0d4f4f;margin-bottom:4px;'>Detailed Bill</div>" +
-            "<div class='bill-line'><span>Ride ID</span><span>" + (r.id || "GM-RIDE") + "</span></div>" +
-            "<div class='bill-line'><span>Vehicle</span><span>" + vName + "</span></div>" +
-            "<div class='bill-line'><span>Route</span><span>" + pName + " → " + dName + "</span></div>" +
-            "<div class='bill-line'><span>Distance</span><span>" + kmVal + " km</span></div>" +
-            "<div class='bill-line'><span>Timing</span><span>" + (r.night ? "Night Fare" : "Day Fare") + "</span></div>" +
-            "<div class='bill-line'><span>Charges</span><span>Platform Charges</span></div>" +
-            "<div class='bill-total'><span>Full Payment</span><span>₹" + totVal + "</span></div>" +
-            "</div>";
-        }
-
-        out += "<div class='ride-card'>" +
-          "<div class='ride-hd'><span>" + vName + " • ₹" + totVal + "</span><span>" + st + "</span></div>" +
-          "<div>" + pName + " → " + dName + " (" + kmVal + " km)</div>" +
-          "<div style='color:#5a6b6b;margin-top:2px;'>Platform Charges</div>" +
-          otpHtml +
-          mapHtml +
-          billHtml +
-          "</div>";
-      }
-      saveSharedRides();
-      box.innerHTML = out;
-    }
-
-    function logout() {
-      document.getElementById("hdr-btns").style.display = "none";
-      document.getElementById("profile-card").className = "card hide";
-      document.getElementById("book-card").className = "card hide";
-      document.getElementById("rides-card").className = "card hide";
-      document.getElementById("step-otp").className = "hide";
-      document.getElementById("step-phone").className = "";
-      document.getElementById("login-card").className = "card";
-      document.getElementById("login-msg").textContent = "";
-    }
-  </script>
-</body>
-</html>
+      document.
