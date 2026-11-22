@@ -3,249 +3,279 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Go Musafir — Ludhiana Rides</title>
+  <title>Go Musafir — Driver & Verification</title>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; font-family: system-ui, sans-serif; }
     body { background: #f4f7f7; color: #142222; padding-bottom: 40px; }
     header { background: #0d4f4f; color: #fff; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; }
     header h1 { font-size: 18px; }
     header p { font-size: 11px; color: #cde5e5; }
-    .hdr-right { display: flex; align-items: center; gap: 8px; }
     .hdr-link { background: rgba(255,255,255,0.18); color: #fff; text-decoration: none; border: 1px solid rgba(255,255,255,0.35); padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; }
-    .hdr-btns { display: none; gap: 8px; }
-    .hdr-btn { background: rgba(255,255,255,0.18); color: #fff; border: 1px solid rgba(255,255,255,0.35); padding: 6px 10px; border-radius: 8px; font-size: 12px; font-weight: 700; cursor: pointer; }
-    .wrap { max-width: 500px; margin: 16px auto; padding: 0 12px; }
+    .wrap { max-width: 520px; margin: 16px auto; padding: 0 12px; }
     .card { background: #fff; border: 1px solid #dce5e5; border-radius: 14px; padding: 18px; margin-bottom: 14px; }
     h2 { font-size: 17px; color: #0d4f4f; margin-bottom: 6px; }
     .sub { font-size: 12px; color: #5a6b6b; margin-bottom: 12px; }
     label { display: block; font-size: 12px; font-weight: 700; color: #0d4f4f; margin: 10px 0 4px; }
-    input { width: 100%; padding: 11px 12px; border: 1.5px solid #cfdcdc; border-radius: 10px; font-size: 14px; }
-    .btn { width: 100%; border: none; border-radius: 10px; padding: 12px; font-size: 14px; font-weight: 700; cursor: pointer; margin-top: 12px; }
+    input, select { width: 100%; padding: 11px 12px; border: 1.5px solid #cfdcdc; border-radius: 10px; font-size: 14px; background: #fff; }
+    .btn { width: 100%; border: none; border-radius: 10px; padding: 12px; font-size: 13px; font-weight: 700; cursor: pointer; margin-top: 10px; }
     .btn-amber { background: #e07a22; color: #fff; }
+    .btn-blue { background: #1d5f8a; color: #fff; }
+    .btn-green-start { background: #198754; color: #fff; }
     .btn-teal { background: #0d4f4f; color: #fff; }
-    .btn-gray { background: #e8efef; color: #142222; }
+    .btn-green { background: #16794c; color: #fff; }
     .msg { margin-top: 10px; font-size: 12px; font-weight: 700; min-height: 16px; color: #16794c; }
-    .grid3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 6px; }
-    .v-card { border: 1.5px solid #dce5e5; border-radius: 10px; padding: 10px 6px; text-align: center; cursor: pointer; background: #fafdfd; }
-    .v-card.active { border-color: #e07a22; background: #fff6ed; }
-    .v-title { font-size: 12px; font-weight: 700; color: #0d4f4f; }
-    .v-rate { font-size: 11px; font-weight: 700; color: #e07a22; margin-top: 2px; }
-    .v-min { font-size: 10px; color: #5a6b6b; margin-top: 2px; }
-    .night-row { margin-top: 10px; padding: 8px 10px; background: #f2f6f6; border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; gap: 6px; }
-    .night-row.on { background: #fff3e6; border: 1px solid #e07a22; color: #7c3700; font-weight: 700; }
-    .small-btn { background: #fff; border: 1px solid #c5d3d3; color: #0d4f4f; padding: 5px 8px; border-radius: 7px; font-size: 11px; font-weight: 700; cursor: pointer; }
-    .fare-box { margin-top: 12px; padding: 12px; border-radius: 10px; background: #eaf4f4; border: 1px solid #c7dfdf; }
-    .fare-top { display: flex; justify-content: space-between; align-items: center; }
-    .fare-amt { font-size: 18px; font-weight: 800; color: #083636; }
-    .fare-sub { font-size: 11px; color: #4c5e5e; margin-top: 6px; }
-    .ride-card { border: 1px solid #dce5e5; border-radius: 10px; padding: 10px; margin-top: 8px; background: #fcfdfd; font-size: 12px; }
-    .ride-hd { display: flex; justify-content: space-between; font-weight: 700; color: #0d4f4f; margin-bottom: 3px; }
-    .otp-pill { display: inline-block; margin-top: 5px; padding: 3px 8px; border-radius: 6px; background: #fff3e6; border: 1px solid #e07a22; color: #8c3d00; font-weight: 700; font-size: 11px; }
-    .bill-box { margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: #f2f8f8; border: 1px solid #cde0e0; font-size: 11px; color: #142222; }
+    .badge-row { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 10px; }
+    .badge { padding: 5px 10px; border-radius: 999px; font-size: 11px; font-weight: 700; }
+    .pending { background: #fff3e6; color: #9a4500; border: 1px solid #e07a22; }
+    .verified { background: #e6f6ee; color: #16794c; border: 1px solid #16794c; }
+    .ride-box { border: 1px solid #dce5e5; border-radius: 10px; padding: 12px; margin-top: 10px; background: #fcfdfd; font-size: 13px; }
+    .ride-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .ride-info { font-weight: 800; color: #0d4f4f; font-size: 15px; }
+    .ride-st { font-size: 11px; font-weight: 700; color: #16794c; }
+    .otp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; align-items: center; }
+    .otp-inp { margin-top: 0 !important; padding: 9px 10px !important; font-size: 13px !important; }
+    .otp-btn { margin-top: 0 !important; padding: 10px !important; }
+    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
     .hide { display: none; }
   </style>
 </head>
 <body>
   <header>
     <div>
-      <h1>Go Musafir</h1>
-      <p>Ludhiana Bike, E-Rickshaw & Cab • v13</p>
+      <h1>Go Musafir Driver</h1>
+      <p>Ludhiana Partner & Document Verification • v14</p>
     </div>
-    <div class="hdr-right">
-      <a class="hdr-link" href="driver.html">Driver App</a>
-      <div id="hdr-btns" class="hdr-btns">
-        <button type="button" class="hdr-btn" id="btn-profile">Profile</button>
-        <button type="button" class="hdr-btn" id="btn-logout">Logout</button>
-      </div>
-    </div>
+    <a class="hdr-link" href="index.html">Passenger App</a>
   </header>
 
   <div class="wrap">
-    <div id="login-card" class="card">
-      <h2>Login with Mobile Number</h2>
+    <div id="drv-login" class="card">
+      <h2>Driver Login</h2>
       <p class="sub">Tap Send OTP, then verify with OTP 123456.</p>
-      <div id="step-phone">
-        <label for="phone-inp">Mobile Number</label>
-        <input id="phone-inp" type="tel" value="+918564885647" />
-        <button type="button" class="btn btn-amber" id="btn-send-otp">Send OTP</button>
+      <div id="d-phone-step">
+        <label for="d-phone">Driver Mobile Number</label>
+        <input id="d-phone" type="tel" value="+919876543210" />
+        <button type="button" class="btn btn-amber" onclick="dSendOtpNow()">Send OTP</button>
       </div>
-      <div id="step-otp" class="hide">
-        <label for="otp-inp">Enter 6-Digit OTP</label>
-        <input id="otp-inp" type="text" maxlength="6" value="123456" />
-        <button type="button" class="btn btn-teal" id="btn-verify-otp">Verify OTP (123456)</button>
-        <button type="button" class="btn btn-gray" id="btn-back-phone">Change Number</button>
+      <div id="d-otp-step" class="hide">
+        <label for="d-otp">Enter OTP</label>
+        <input id="d-otp" type="text" maxlength="6" value="123456" />
+        <button type="button" class="btn btn-teal" onclick="dVerifyOtpNow()">Verify & Continue</button>
       </div>
-      <div id="login-msg" class="msg"></div>
+      <div id="d-login-msg" class="msg"></div>
     </div>
 
-    <div id="profile-card" class="card hide">
-      <h2>Edit Profile</h2>
-      <label for="p-name">Full Name</label>
-      <input id="p-name" type="text" placeholder="e.g., Harvinder Singh" />
-      <label for="p-user">Username</label>
-      <input id="p-user" type="text" placeholder="e.g., preet76000" />
-      <button type="button" class="btn btn-teal" id="btn-save-profile">Save Profile</button>
-      <button type="button" class="btn btn-gray" id="btn-close-profile">Close</button>
-      <div id="profile-msg" class="msg"></div>
+    <div id="drv-panel" class="card hide">
+      <div class="badge-row">
+        <h2 id="d-title" style="margin-bottom:0;">Driver Profile</h2>
+        <span id="doc-badge" class="badge pending">Pending Verification</span>
+      </div>
+      <p class="sub">Complete vehicle & document details before going Online.</p>
+
+      <label for="d-name">Driver Full Name</label>
+      <input id="d-name" type="text" placeholder="e.g., Gurpreet Singh" />
+
+      <label for="d-vehicle">Vehicle Type</label>
+      <select id="d-vehicle">
+        <option value="Bike">Musafir Bike</option>
+        <option value="E-Rickshaw">E-Rickshaw</option>
+        <option value="Cab">Musafir Cab</option>
+      </select>
+
+      <label for="d-vno">Vehicle Number (Ludhiana / Punjab)</label>
+      <input id="d-vno" type="text" placeholder="e.g., PB10XX1234" />
+
+      <label for="d-dl">Driving Licence Number</label>
+      <input id="d-dl" type="text" placeholder="e.g., PB10-20160012345" />
+
+      <label for="d-id">ID & RC Reference</label>
+      <input id="d-id" type="text" placeholder="e.g., ID last 4 digits / RC status" />
+
+      <button type="button" class="btn btn-teal" onclick="dSaveDocsNow()">Submit Documents for Verification</button>
+      <button type="button" class="btn btn-green" onclick="dVerifyDocsNow()">Admin Check: Mark Verified</button>
+      <div id="d-doc-msg" class="msg"></div>
     </div>
 
-    <div id="book-card" class="card hide">
-      <h2 id="book-title">Book a Ride</h2>
-      <p class="sub">Ludhiana local rides • Night window 10 PM – 6 AM</p>
-
-      <label>Select Ride</label>
-      <div class="grid3">
-        <div class="v-card active" data-v="Bike" data-r="7" data-m="25">
-          <div class="v-title">Bike</div>
-          <div class="v-rate" id="r-bike">₹7.35/km</div>
-          <div class="v-min" id="m-bike">Min ₹26</div>
-        </div>
-        <div class="v-card" data-v="E-Rickshaw" data-r="11" data-m="35">
-          <div class="v-title">E-Rickshaw</div>
-          <div class="v-rate" id="r-rick">₹11.55/km</div>
-          <div class="v-min" id="m-rick">Min ₹37</div>
-        </div>
-        <div class="v-card" data-v="Cab" data-r="16" data-m="70">
-          <div class="v-title">Cab</div>
-          <div class="v-rate" id="r-cab">₹16.80/km</div>
-          <div class="v-min" id="m-cab">Min ₹74</div>
-        </div>
+    <div id="drv-rides" class="card hide">
+      <div class="badge-row">
+        <h2 style="margin-bottom:0;">Rides</h2>
+        <button type="button" class="hdr-link" style="color:#0d4f4f;border-color:#0d4f4f;background:#eaf4f4;cursor:pointer;" id="duty-btn" onclick="dToggleDutyNow()">Status: Offline</button>
       </div>
-
-      <div id="night-row" class="night-row">
-        <span id="night-txt">Night window: 10 PM – 6 AM</span>
-        <button type="button" class="small-btn" id="btn-night">Test Night Fare</button>
-      </div>
-
-      <label for="pickup-inp">Pickup (Ludhiana)</label>
-      <input id="pickup-inp" type="text" placeholder="e.g., Threeke" />
-
-      <label for="drop-inp">Drop (Ludhiana)</label>
-      <input id="drop-inp" type="text" placeholder="e.g., Clock Tower" />
-
-      <label for="km-inp">Distance (km)</label>
-      <input id="km-inp" type="number" step="0.5" min="1" value="10" />
-
-      <div class="fare-box">
-        <div class="fare-top">
-          <span id="fare-detail" style="font-size:12px;font-weight:700;color:#0d4f4f;">Full Payment • Bike • 10 km</span>
-          <span id="fare-total" class="fare-amt">₹74</span>
-        </div>
-        <div class="fare-sub">Platform Charges</div>
-      </div>
-
-      <button type="button" class="btn btn-amber" id="btn-book-ride">Confirm Ride Booking</button>
-      <div id="book-msg" class="msg"></div>
-    </div>
-
-    <div id="rides-card" class="card hide">
-      <div style="display:flex;justify-content:space-between;align-items:center;">
-        <h2 style="margin-bottom:0;">Your Rides</h2>
-        <button type="button" class="small-btn" id="btn-refresh-rides">Refresh</button>
-      </div>
-      <div id="rides-list"></div>
+      <div id="d-rides-msg" class="msg"></div>
+      <div id="d-rides-list"></div>
     </div>
   </div>
 
   <script>
-    (function () {
-      var curV = "Bike", curR = 7, curM = 25;
-      var nightOn = false;
-      var phoneNow = "";
-      var rides = [];
+    var dPhone = "";
+    var isVerified = false;
+    var isOnline = false;
+    var activeRides = [];
 
-      function loadSharedRides() {
-        try {
-          var saved = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]");
-          if (Array.isArray(saved)) rides = saved;
-        } catch (e) {}
-      }
-
-      function saveSharedRides() {
-        try {
-          localStorage.setItem("gm_shared_rides_v1", JSON.stringify(rides));
-        } catch (e) {}
-      }
-
-      function makeRideOtp() {
-        return String(Math.floor(1000 + Math.random() * 9000));
-      }
-
-      function calcUI() {
-        var nMult = nightOn ? 1.5 : 1.0;
-        var rBike = (7 * 1.05 * nMult).toFixed(2);
-        var mBike = Math.round(25 * 1.05 * nMult);
-        var rRick = (11 * 1.05 * nMult).toFixed(2);
-        var mRick = Math.round(35 * 1.05 * nMult);
-        var rCab = (16 * 1.05 * nMult).toFixed(2);
-        var mCab = Math.round(70 * 1.05 * nMult);
-
-        document.getElementById("r-bike").textContent = "₹" + rBike + "/km";
-        document.getElementById("m-bike").textContent = "Min ₹" + mBike;
-        document.getElementById("r-rick").textContent = "₹" + rRick + "/km";
-        document.getElementById("m-rick").textContent = "Min ₹" + mRick;
-        document.getElementById("r-cab").textContent = "₹" + rCab + "/km";
-        document.getElementById("m-cab").textContent = "Min ₹" + mCab;
-
-        var nr = document.getElementById("night-row");
-        if (nightOn) {
-          nr.className = "night-row on";
-          document.getElementById("night-txt").textContent = "Night Fare Active (10 PM – 6 AM)";
-          document.getElementById("btn-night").textContent = "Day Fare";
-        } else {
-          nr.className = "night-row";
-          document.getElementById("night-txt").textContent = "Night window: 10 PM – 6 AM";
-          document.getElementById("btn-night").textContent = "Test Night Fare";
-        }
-
-        var km = parseFloat(document.getElementById("km-inp").value) || 0;
-        var effRate = curR * 1.05 * nMult;
-        var effMin = Math.round(curM * 1.05 * nMult);
-        var total = Math.max(effMin, Math.round(km * effRate));
-
-        document.getElementById("fare-detail").textContent = "Full Payment • " + curV + " • " + km + " km";
-        document.getElementById("fare-total").textContent = "₹" + total;
-      }
-
-      function drawRides() {
-        loadSharedRides();
-        var box = document.getElementById("rides-list");
-        if (!rides.length) {
-          box.innerHTML = "<p class='sub'>No rides yet.</p>";
+    function loadRides() {
+      try {
+        var saved = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]");
+        if (Array.isArray(saved)) {
+          activeRides = saved;
           return;
         }
-        var out = "";
-        for (var i = 0; i < rides.length; i++) {
-          var r = rides[i];
-          if (!r.rideOtp) {
-            r.rideOtp = makeRideOtp();
-          }
-          var st = r.status || "Searching Driver";
-          var otpHtml = st !== "Completed"
-            ? "<div class='otp-pill'>Ride OTP: " + r.rideOtp + "</div>"
-            : "";
-          var billHtml = "";
-          if (st === "Completed") {
-            billHtml = "<div class='bill-box'>" +
-              "<strong>Detailed Bill</strong><br>" +
-              "Ride ID: " + (r.id || "") + " • " + r.v + "<br>" +
-              "Route: " + r.pickup + " → " + r.drop + " (" + r.km + " km)<br>" +
-              (r.night ? "Timing: Night Fare<br>" : "Timing: Day Fare<br>") +
-              "Platform Charges<br>" +
-              "<strong>Full Payment: ₹" + r.total + "</strong>" +
-              "</div>";
-          }
-          out += "<div class='ride-card'>" +
-            "<div class='ride-hd'><span>" + r.v + " • ₹" + r.total + "</span><span>" + st + "</span></div>" +
-            "<div>" + r.pickup + " → " + r.drop + " (" + r.km + " km)</div>" +
-            "<div style='color:#5a6b6b;margin-top:2px;'>Platform Charges</div>" +
-            otpHtml +
-            billHtml +
-            "</div>";
-        }
-        saveSharedRides();
-        box.innerHTML = out;
-      }
+      } catch (e) {}
+      activeRides = [];
+    }
 
-      document.getElementById("btn-send-otp").addEventListener("click", function () {
-        phoneNow = document.getElementById("phone-inp").value.trim() || "+9185648
+    function saveRides() {
+      try {
+        localStorage.setItem("gm_shared_rides_v1", JSON.stringify(activeRides));
+      } catch (e) {}
+    }
+
+    function dSendOtpNow() {
+      var pEl = document.getElementById("d-phone");
+      dPhone = (pEl && pEl.value ? pEl.value.trim() : "") || "+919876543210";
+      document.getElementById("d-phone-step").className = "hide";
+      document.getElementById("d-otp-step").className = "";
+      document.getElementById("d-otp").value = "123456";
+      document.getElementById("d-login-msg").textContent = "OTP 123456 ready for " + dPhone + ". Tap Verify & Continue.";
+    }
+
+    function dVerifyOtpNow() {
+      document.getElementById("drv-login").className = "card hide";
+      document.getElementById("drv-panel").className = "card";
+      document.getElementById("drv-rides").className = "card";
+      document.getElementById("d-title").textContent = "Driver (" + (dPhone || "+919876543210") + ")";
+      renderDriverRides();
+    }
+
+    function dSaveDocsNow() {
+      var name = document.getElementById("d-name").value.trim();
+      var vno = document.getElementById("d-vno").value.trim();
+      var dl = document.getElementById("d-dl").value.trim();
+      if (!name || !vno || !dl) {
+        document.getElementById("d-doc-msg").textContent = "Please fill Name, Vehicle Number, and DL Number.";
+        return;
+      }
+      isVerified = false;
+      updateDocBadge();
+      document.getElementById("d-doc-msg").textContent = "Documents submitted! Status is Pending Verification.";
+    }
+
+    function dVerifyDocsNow() {
+      isVerified = true;
+      updateDocBadge();
+      document.getElementById("d-doc-msg").textContent = "Driver documents verified! You can now go Online.";
+      renderDriverRides();
+    }
+
+    function updateDocBadge() {
+      var b = document.getElementById("doc-badge");
+      if (isVerified) {
+        b.className = "badge verified";
+        b.textContent = "Verified";
+      } else {
+        b.className = "badge pending";
+        b.textContent = "Pending Verification";
+      }
+    }
+
+    function dToggleDutyNow() {
+      if (!isVerified && !isOnline) {
+        document.getElementById("d-rides-msg").textContent = "Pehle documents verify karein.";
+        return;
+      }
+      isOnline = !isOnline;
+      document.getElementById("duty-btn").textContent = isOnline ? "Status: Online" : "Status: Offline";
+      document.getElementById("d-rides-msg").textContent = isOnline ? "You are Online." : "You are Offline.";
+      renderDriverRides();
+    }
+
+    function dAcceptRide(idx) {
+      loadRides();
+      if (!isVerified) {
+        document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein.";
+        return;
+      }
+      if (!activeRides[idx]) return;
+      activeRides[idx].status = "Accepted";
+      saveRides();
+      document.getElementById("d-rides-msg").textContent = "Ride Accepted (" + activeRides[idx].km + " km • ₹" + activeRides[idx].total + ").";
+      renderDriverRides();
+    }
+
+    function dArrivedRide(idx) {
+      loadRides();
+      if (!isVerified) {
+        document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein.";
+        return;
+      }
+      if (!activeRides[idx]) return;
+      activeRides[idx].status = "Arrived at Customer Location";
+      saveRides();
+      document.getElementById("d-rides-msg").textContent = "Arrived at Customer Location (" + activeRides[idx].km + " km • ₹" + activeRides[idx].total + ").";
+      renderDriverRides();
+    }
+
+    function dStartRide(idx) {
+      loadRides();
+      if (!isVerified) {
+        document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein.";
+        return;
+      }
+      var r = activeRides[idx];
+      if (!r) return;
+      var inp = document.getElementById("d-otp-" + idx);
+      var enteredOtp = inp ? inp.value.trim() : "";
+      if (!r.rideOtp || enteredOtp === String(r.rideOtp)) {
+        r.status = "Ride Started";
+        saveRides();
+        document.getElementById("d-rides-msg").textContent = "Ride Started (" + r.km + " km • ₹" + r.total + ").";
+        renderDriverRides();
+      } else {
+        document.getElementById("d-rides-msg").textContent = "Galat Customer OTP! Passenger app mein Ride OTP check karein.";
+      }
+    }
+
+    function dCompleteRide(idx) {
+      loadRides();
+      if (!isVerified) {
+        document.getElementById("d-rides-msg").textContent = "Pehle Admin Check: Mark Verified dabayein.";
+        return;
+      }
+      if (!activeRides[idx]) return;
+      activeRides[idx].status = "Completed";
+      saveRides();
+      document.getElementById("d-rides-msg").textContent = "Trip Completed (" + activeRides[idx].km + " km • ₹" + activeRides[idx].total + ").";
+      renderDriverRides();
+    }
+
+    function renderDriverRides() {
+      var box = document.getElementById("d-rides-list");
+      loadRides();
+      if (!activeRides.length) {
+        box.innerHTML = "<p class='sub'>No rides available.</p>";
+        return;
+      }
+      var html = "";
+      for (var i = 0; i < activeRides.length; i++) {
+        var r = activeRides[i];
+        var st = r.status || "Available";
+        var btns = isOnline
+          ? "<div class='row2'>" +
+              '<button type="button" class="btn btn-amber" onclick="dAcceptRide(' + i + ')">Accept Ride</button>' +
+              '<button type="button" class="btn btn-blue" onclick="dArrivedRide(' + i + ')">Arrived at Customer Location</button>' +
+            "</div>" +
+            "<div class='otp-row'>" +
+              '<input type="text" maxlength="4" id="d-otp-' + i + '" class="otp-inp" placeholder="Customer OTP" />' +
+              '<button type="button" class="btn btn-green-start otp-btn" onclick="dStartRide(' + i + ')">Start Ride</button>' +
+            "</div>" +
+            '<button type="button" class="btn btn-teal" onclick="dCompleteRide(' + i + ')">Complete Trip</button>'
+          : "";
+        html += "<div class='ride-box'>" +
+          "<div class='ride-top'><span class='ride-info'>" + r.km + " km • ₹" + r.total + "</span><span class='ride-st'>" + st + "</span></div>" +
+          btns +
+          "</div>";
+      }
+      box.innerHTML = html;
+    }
+  </script>
+</body>
+</html>
