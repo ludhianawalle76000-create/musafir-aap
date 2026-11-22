@@ -47,7 +47,9 @@
     .map-line { width: 100%; height: 3px; border-top: 2px dashed #0d4f4f; opacity: 0.45; }
     .map-mover { position: absolute; top: 3px; left: 8%; transform: translateX(-50%); background: #e07a22; color: #fff; font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 999px; transition: left 0.45s ease; white-space: nowrap; }
     .map-foot { display: flex; justify-content: space-between; align-items: center; margin-top: 7px; font-size: 11px; color: #2b4545; gap: 6px; }
-    .bill-box { margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: #f2f8f8; border: 1px solid #cde0e0; font-size: 11px; color: #142222; }
+    .bill-box { margin-top: 8px; padding: 10px; border-radius: 8px; background: #eef7f7; border: 1px solid #bdd9d9; font-size: 11px; color: #142222; line-height: 1.5; }
+    .bill-line { display: flex; justify-content: space-between; margin-top: 2px; }
+    .bill-total { display: flex; justify-content: space-between; margin-top: 6px; padding-top: 6px; border-top: 1px dashed #9fc2c2; font-weight: 800; font-size: 12px; color: #083636; }
     .hide { display: none; }
   </style>
 </head>
@@ -55,7 +57,7 @@
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Ludhiana Bike, E-Rickshaw & Cab • v15</p>
+      <p>Ludhiana Bike, E-Rickshaw & Cab • v16</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -222,4 +224,184 @@
       var n = document.getElementById("p-name").value.trim();
       if (!n) return;
       document.getElementById("book-title").textContent = "Hi " + n + ", Book a Ride";
-      document.getElementById("profile-
+      document.getElementById("profile-msg").textContent = "Profile saved!";
+    }
+
+    function pickV(el) {
+      var cards = document.querySelectorAll(".v-card");
+      for (var i = 0; i < cards.length; i++) cards[i].className = "v-card";
+      el.className = "v-card active";
+      curV = el.getAttribute("data-v");
+      curR = Number(el.getAttribute("data-r"));
+      curM = Number(el.getAttribute("data-m"));
+      calcFareNow();
+    }
+
+    function toggleNightNow() {
+      nightOn = !nightOn;
+      calcFareNow();
+    }
+
+    function calcFareNow() {
+      var nMult = nightOn ? 1.5 : 1.0;
+      var rBike = (7 * 1.05 * nMult).toFixed(2);
+      var mBike = Math.round(25 * 1.05 * nMult);
+      var rRick = (11 * 1.05 * nMult).toFixed(2);
+      var mRick = Math.round(35 * 1.05 * nMult);
+      var rCab = (16 * 1.05 * nMult).toFixed(2);
+      var mCab = Math.round(70 * 1.05 * nMult);
+
+      document.getElementById("r-bike").textContent = "₹" + rBike + "/km";
+      document.getElementById("m-bike").textContent = "Min ₹" + mBike;
+      document.getElementById("r-rick").textContent = "₹" + rRick + "/km";
+      document.getElementById("m-rick").textContent = "Min ₹" + mRick;
+      document.getElementById("r-cab").textContent = "₹" + rCab + "/km";
+      document.getElementById("m-cab").textContent = "Min ₹" + mCab;
+
+      var nr = document.getElementById("night-row");
+      if (nightOn) {
+        nr.className = "night-row on";
+        document.getElementById("night-txt").textContent = "Night Fare Active (10 PM – 6 AM)";
+        document.getElementById("btn-night").textContent = "Day Fare";
+      } else {
+        nr.className = "night-row";
+        document.getElementById("night-txt").textContent = "Night window: 10 PM – 6 AM";
+        document.getElementById("btn-night").textContent = "Test Night Fare";
+      }
+
+      var km = parseFloat(document.getElementById("km-inp").value) || 0;
+      var effRate = curR * 1.05 * nMult;
+      var effMin = Math.round(curM * 1.05 * nMult);
+      var total = Math.max(effMin, Math.round(km * effRate));
+
+      document.getElementById("fare-detail").textContent = "Full Payment • " + curV + " • " + km + " km";
+      document.getElementById("fare-total").textContent = "₹" + total;
+    }
+
+    function bookRideNow() {
+      var pickup = document.getElementById("pickup-inp").value.trim() || "Ludhiana Pickup";
+      var drop = document.getElementById("drop-inp").value.trim() || "Ludhiana Drop";
+      var km = parseFloat(document.getElementById("km-inp").value) || 1;
+      loadSharedRides();
+      var nMult = nightOn ? 1.5 : 1.0;
+      var total = Math.max(Math.round(curM * 1.05 * nMult), Math.round(km * curR * 1.05 * nMult));
+
+      rides.unshift({
+        id: "GM" + Math.floor(100 + Math.random() * 900),
+        rideOtp: makeRideOtp(),
+        v: curV,
+        km: km,
+        total: total,
+        night: nightOn,
+        pickup: pickup,
+        drop: drop,
+        status: "Searching Driver"
+      });
+      saveSharedRides();
+      document.getElementById("pickup-inp").value = "";
+      document.getElementById("drop-inp").value = "";
+      document.getElementById("book-msg").textContent = curV + " booked • Full Payment ₹" + total;
+      drawRidesNow();
+    }
+
+    function moveOnMap(idx) {
+      var mover = document.getElementById("map-mover-" + idx);
+      var note = document.getElementById("map-note-" + idx);
+      if (!mover) return;
+      if (moveTimers[idx]) {
+        clearInterval(moveTimers[idx]);
+        delete moveTimers[idx];
+      }
+      var pos = 12;
+      mover.style.left = pos + "%";
+      if (note) note.textContent = "Moving towards destination...";
+      moveTimers[idx] = setInterval(function () {
+        pos += 14;
+        if (pos >= 92) {
+          pos = 92;
+          mover.style.left = pos + "%";
+          if (note) note.textContent = "Reached destination on map";
+          clearInterval(moveTimers[idx]);
+          delete moveTimers[idx];
+          return;
+        }
+        mover.style.left = pos + "%";
+      }, 450);
+    }
+
+    function drawRidesNow() {
+      loadSharedRides();
+      var box = document.getElementById("rides-list");
+      if (!rides.length) {
+        box.innerHTML = "<p class='sub'>No rides yet.</p>";
+        return;
+      }
+      var out = "";
+      for (var i = 0; i < rides.length; i++) {
+        var r = rides[i] || {};
+        if (!r.rideOtp) r.rideOtp = makeRideOtp();
+        var st = String(r.status || "Searching Driver");
+        var vName = r.v || "Ride";
+        var kmVal = r.km || 0;
+        var totVal = r.total || 0;
+        var pName = r.pickup || "Pickup";
+        var dName = r.drop || "Drop";
+        var pos = statusMapPos(st);
+        var vLbl = vehicleIcon(vName);
+
+        var otpHtml = st.toLowerCase().indexOf("complet") === -1
+          ? "<div class='otp-pill'>Ride OTP: " + r.rideOtp + "</div>"
+          : "";
+
+        var mapHtml = "<div class='map-box'>" +
+          "<div class='map-lbl'><span>Pickup: " + pName + "</span><span>Drop: " + dName + "</span></div>" +
+          "<div class='map-road'>" +
+            "<div class='map-line'></div>" +
+            "<div class='map-mover' id='map-mover-" + i + "' style='left:" + pos + "%;'>" + vLbl + "</div>" +
+          "</div>" +
+          "<div class='map-foot'>" +
+            "<span id='map-note-" + i + "'>Map Status: " + st + "</span>" +
+            "<button type='button' class='small-btn' onclick='moveOnMap(" + i + ")'>Simulate Move</button>" +
+          "</div>" +
+          "</div>";
+
+        var billHtml = "";
+        if (st.toLowerCase().indexOf("complet") > -1) {
+          billHtml = "<div class='bill-box'>" +
+            "<div style='font-weight:800;color:#0d4f4f;margin-bottom:4px;'>Detailed Bill</div>" +
+            "<div class='bill-line'><span>Ride ID</span><span>" + (r.id || "GM-RIDE") + "</span></div>" +
+            "<div class='bill-line'><span>Vehicle</span><span>" + vName + "</span></div>" +
+            "<div class='bill-line'><span>Route</span><span>" + pName + " → " + dName + "</span></div>" +
+            "<div class='bill-line'><span>Distance</span><span>" + kmVal + " km</span></div>" +
+            "<div class='bill-line'><span>Timing</span><span>" + (r.night ? "Night Fare" : "Day Fare") + "</span></div>" +
+            "<div class='bill-line'><span>Charges</span><span>Platform Charges</span></div>" +
+            "<div class='bill-total'><span>Full Payment</span><span>₹" + totVal + "</span></div>" +
+            "</div>";
+        }
+
+        out += "<div class='ride-card'>" +
+          "<div class='ride-hd'><span>" + vName + " • ₹" + totVal + "</span><span>" + st + "</span></div>" +
+          "<div>" + pName + " → " + dName + " (" + kmVal + " km)</div>" +
+          "<div style='color:#5a6b6b;margin-top:2px;'>Platform Charges</div>" +
+          otpHtml +
+          mapHtml +
+          billHtml +
+          "</div>";
+      }
+      saveSharedRides();
+      box.innerHTML = out;
+    }
+
+    function logout() {
+      document.getElementById("hdr-btns").style.display = "none";
+      document.getElementById("profile-card").className = "card hide";
+      document.getElementById("book-card").className = "card hide";
+      document.getElementById("rides-card").className = "card hide";
+      document.getElementById("step-otp").className = "hide";
+      document.getElementById("step-phone").className = "";
+      document.getElementById("login-card").className = "card";
+      document.getElementById("login-msg").textContent = "";
+    }
+  </script>
+</body>
+</html>
