@@ -1,0 +1,1173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Dastak — Nearby Connections</title>
+  <style>
+    :root {
+      --bg: #050914;
+      --surface: #0d1526;
+      --surface-2: #162238;
+      --border: rgba(148, 163, 184, 0.15);
+      --accent: #22d3ee;
+      --accent-deep: #0891b2;
+      --accent-grad: linear-gradient(135deg, #38bdf8 0%, #06b6d4 52%, #14b8a6 100%);
+      --online: #4ade80;
+      --danger: #fb7185;
+      --warn: #fb923c;
+      --text: #f1f5f9;
+      --muted: #94a3b8;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: radial-gradient(circle at top right, rgba(6, 182, 212, 0.1), transparent 40%), var(--bg);
+      color: var(--text);
+      padding-bottom: 92px;
+      min-height: 100vh;
+    }
+
+    /* Glass Header */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(5, 9, 20, 0.86);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      padding: 13px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .brand-wrap {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .brand-logo {
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
+      background: var(--accent-grad);
+      color: #04131c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 900;
+      font-size: 1.05rem;
+      box-shadow: 0 4px 16px rgba(6, 182, 212, 0.38);
+    }
+
+    .brand-text {
+      font-size: 1.25rem;
+      font-weight: 800;
+      letter-spacing: 0.6px;
+      background: linear-gradient(to right, #ffffff 30%, #67e8f9 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .status-pill {
+      font-size: 0.72rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      font-weight: 700;
+      background: rgba(251, 146, 60, 0.14);
+      color: var(--warn);
+      border: 1px solid rgba(251, 146, 60, 0.38);
+      letter-spacing: 0.3px;
+    }
+
+    .status-pill.verified {
+      background: rgba(74, 222, 128, 0.14);
+      color: var(--online);
+      border-color: rgba(74, 222, 128, 0.38);
+    }
+
+    .status-pill.rejected {
+      background: rgba(251, 113, 133, 0.14);
+      color: var(--danger);
+      border-color: rgba(251, 113, 133, 0.38);
+    }
+
+    .owner-btn {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 6px 11px;
+      border-radius: 10px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    /* Quota Strip */
+    .quota-bar {
+      background: linear-gradient(90deg, rgba(6, 182, 212, 0.12) 0%, rgba(13, 21, 38, 0.96) 100%);
+      border-bottom: 1px solid var(--border);
+      padding: 9px 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .quota-bar strong {
+      color: var(--text);
+    }
+
+    .upgrade-btn {
+      background: var(--accent-grad);
+      color: #04131c;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 8px;
+      font-size: 0.74rem;
+      font-weight: 800;
+      cursor: pointer;
+      box-shadow: 0 3px 12px rgba(6, 182, 212, 0.3);
+    }
+
+    /* Filter Chips */
+    .filters {
+      display: flex;
+      gap: 8px;
+      padding: 12px 14px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .filters::-webkit-scrollbar { display: none; }
+
+    .chip {
+      background: var(--surface);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 7px 15px;
+      border-radius: 999px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .chip.active {
+      background: var(--accent-grad);
+      color: #04131c;
+      font-weight: 800;
+      border-color: transparent;
+      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.32);
+    }
+
+    /* Grid */
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      padding: 0 8px 12px;
+    }
+
+    .tile {
+      position: relative;
+      aspect-ratio: 1 / 1.22;
+      background: var(--surface);
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      border: 1px solid var(--border);
+    }
+
+    .tile.is-online {
+      border-color: rgba(34, 211, 238, 0.35);
+    }
+
+    .tile img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .tile-badge {
+      position: absolute;
+      top: 7px;
+      right: 7px;
+      background: rgba(5, 9, 20, 0.76);
+      backdrop-filter: blur(6px);
+      color: var(--accent);
+      font-size: 0.64rem;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+      border: 1px solid rgba(34, 211, 238, 0.4);
+    }
+
+    .tile-overlay {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(to top, rgba(5, 9, 20, 0.95) 8%, rgba(5, 9, 20, 0.25) 45%, transparent 65%);
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 9px 8px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      display: inline-block;
+      margin-right: 5px;
+      vertical-align: middle;
+    }
+
+    .online {
+      background: var(--online);
+      box-shadow: 0 0 8px var(--online);
+    }
+
+    .offline {
+      background: #64748b;
+    }
+
+    .tile-name {
+      font-size: 0.82rem;
+      font-weight: 700;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .tile-dist {
+      font-size: 0.7rem;
+      color: #cbd5e1;
+      margin-top: 2px;
+    }
+
+    /* Floating Bottom Nav */
+    nav {
+      position: fixed;
+      bottom: 12px;
+      left: 14px;
+      right: 14px;
+      background: rgba(13, 21, 38, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(34, 211, 238, 0.16);
+      border-radius: 20px;
+      display: flex;
+      justify-content: space-around;
+      padding: 9px 6px;
+      z-index: 25;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      color: var(--muted);
+      font-size: 0.74rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 14px;
+      border-radius: 12px;
+      transition: all 0.2s ease;
+    }
+
+    .nav-btn svg {
+      width: 21px;
+      height: 21px;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .nav-btn.active {
+      color: var(--accent);
+      background: rgba(34, 211, 238, 0.12);
+    }
+
+    /* Sections & Cards */
+    .section-view { display: none; padding: 16px; }
+    .section-view.active { display: block; }
+
+    .section-title {
+      font-size: 1.15rem;
+      font-weight: 800;
+      margin-bottom: 12px;
+    }
+
+    .card-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 14px;
+    }
+
+    .lock-banner {
+      background: rgba(251, 146, 60, 0.1);
+      border: 1px solid rgba(251, 146, 60, 0.35);
+      color: #fed7aa;
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 0.83rem;
+      line-height: 1.48;
+      margin-bottom: 12px;
+    }
+
+    /* Modals */
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: var(--bg);
+      z-index: 40;
+      display: none;
+      flex-direction: column;
+    }
+
+    .modal.open {
+      display: flex;
+    }
+
+    .modal-header {
+      padding: 14px 16px;
+      background: rgba(13, 21, 38, 0.96);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .close-btn {
+      background: var(--surface-2);
+      color: var(--text);
+      border: 1px solid var(--border);
+      padding: 7px 13px;
+      border-radius: 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .modal-body {
+      padding: 16px;
+      overflow-y: auto;
+      flex: 1;
+    }
+
+    .profile-hero {
+      width: 100%;
+      height: 320px;
+      object-fit: cover;
+      border-radius: 18px;
+      margin-bottom: 14px;
+      border: 1px solid var(--border);
+    }
+
+    .badge {
+      display: inline-block;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      padding: 5px 11px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      margin: 4px 5px 10px 0;
+      color: var(--accent);
+      font-weight: 600;
+    }
+
+    .action-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-top: 14px;
+    }
+
+    .btn {
+      padding: 13px;
+      border: none;
+      border-radius: 12px;
+      font-weight: 800;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: opacity 0.15s;
+    }
+
+    .btn:active { opacity: 0.85; }
+    .btn-primary { background: var(--accent-grad); color: #04131c; }
+    .btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
+    .btn-success { background: var(--online); color: #052e16; }
+    .btn-danger {
+      background: rgba(251, 113, 133, 0.12);
+      color: var(--danger);
+      border: 1px solid rgba(251, 113, 133, 0.45);
+    }
+
+    /* Chat */
+    .chat-messages {
+      flex: 1;
+      padding: 14px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .msg {
+      max-width: 78%;
+      padding: 11px 14px;
+      border-radius: 16px;
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .msg.them {
+      background: var(--surface-2);
+      align-self: flex-start;
+      border-bottom-left-radius: 4px;
+    }
+
+    .msg.me {
+      background: var(--accent-grad);
+      color: #04131c;
+      align-self: flex-end;
+      font-weight: 600;
+      border-bottom-right-radius: 4px;
+    }
+
+    .chat-input-bar {
+      display: flex;
+      gap: 8px;
+      padding: 11px 12px;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+    }
+
+    .chat-input-bar input {
+      flex: 1;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 11px 15px;
+      border-radius: 999px;
+      outline: none;
+      font-size: 0.9rem;
+    }
+
+    /* Forms */
+    .form-group { margin-bottom: 13px; }
+    .form-group label {
+      display: block;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 6px;
+      font-weight: 600;
+    }
+    .form-group input, .form-group select {
+      width: 100%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 11px 12px;
+      border-radius: 10px;
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    /* Paywall Plus Pass */
+    .plus-pass-card {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.16) 0%, rgba(20, 184, 166, 0.1) 100%);
+      border: 1px solid rgba(34, 211, 238, 0.45);
+      border-radius: 18px;
+      padding: 18px;
+      margin-bottom: 16px;
+    }
+
+    .pay-option {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 14px;
+      border-radius: 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .pay-option.selected {
+      border-color: var(--accent);
+      background: rgba(34, 211, 238, 0.08);
+    }
+
+    /* Owner Stats & Previews */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin-bottom: 14px;
+    }
+
+    .stat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 8px;
+      text-align: center;
+    }
+
+    .stat-num {
+      font-size: 1.15rem;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .stat-label {
+      font-size: 0.72rem;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    .kyc-preview-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .kyc-preview-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px;
+      text-align: center;
+    }
+
+    .kyc-preview-box img {
+      width: 100%;
+      height: 120px;
+      object-fit: cover;
+      border-radius: 8px;
+      margin-top: 6px;
+    }
+
+    .inbox-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 12px;
+      border-radius: 14px;
+      margin-bottom: 10px;
+      cursor: pointer;
+    }
+
+    .inbox-row img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--accent);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="brand-wrap">
+      <div class="brand-logo">D</div>
+      <div class="brand-text">Dastak</div>
+    </div>
+    <div class="header-right">
+      <span id="headerStatusBadge" class="status-pill">Pending</span>
+      <button class="owner-btn" onclick="openOwnerLogin()">Owner</button>
+    </div>
+  </header>
+
+  <div class="quota-bar">
+    <div>
+      ≤10 km: <strong id="freeCounter">0 / 40</strong> ·
+      <strong id="planStatusText" style="color:var(--accent);">Free</strong>
+    </div>
+    <button class="upgrade-btn" onclick="openPayModal()">✦ ₹250 / Week</button>
+  </div>
+
+  <!-- NEARBY TAB -->
+  <div id="tab-nearby">
+    <div class="filters">
+      <button class="chip active" onclick="setFilter('all', this)">All Nearby (≤10 km)</button>
+      <button class="chip" onclick="setFilter('online', this)">● Online Now</button>
+      <button class="chip" onclick="setFilter('under2', this)">Under 2 km</button>
+    </div>
+    <div class="grid" id="userGrid"></div>
+  </div>
+
+  <!-- CHATS TAB -->
+  <div id="tab-chats" class="section-view">
+    <div class="section-title">Messages</div>
+    <div id="chatLockNotice" class="lock-banner" style="display:none;">
+      🔒 <strong>Messaging Locked (Status: Pending):</strong> Aap Dastak ke baaki sabhi features use kar sakte hain. Message bhejne ke liye Owner verification approve hona zaroori hai.
+    </div>
+    <div id="inboxList"></div>
+  </div>
+
+  <!-- VERIFY / PROFILE TAB -->
+  <div id="tab-me" class="section-view">
+    <div class="section-title">My Profile & Verification</div>
+
+    <div class="card-box">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+        <strong>Account Verification</strong>
+        <span id="profileStatusBadge" class="status-pill">Pending</span>
+      </div>
+      <p style="font-size:0.82rem; color:var(--muted); line-height:1.5; margin-bottom:14px;">
+        Apni live selfie aur Indian ID upload karein. Jab tak status Pending hai, aap profiles dekh sakte hain aur wave bhej sakte hain—Owner ke approve karte hi chat unlock ho jayegi.
+      </p>
+
+      <div class="form-group">
+        <label>Display Name</label>
+        <input type="text" id="myName" value="Preet" />
+      </div>
+      <div class="form-group">
+        <label>Indian ID Type</label>
+        <select id="idType">
+          <option value="Aadhaar Card">Aadhaar Card</option>
+          <option value="PAN Card">PAN Card</option>
+          <option value="Driving Licence">Driving Licence</option>
+          <option value="Voter ID">Voter ID</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>ID Reference / Last 4 Digits</label>
+        <input type="text" id="idNumber" placeholder="e.g. XXXX-XXXX-1234" />
+      </div>
+      <div class="form-group">
+        <label>Live Face Selfie</label>
+        <input type="file" id="selfieInput" accept="image/*" capture="user" onchange="handlePhotoUpload(event, 'selfiePhoto')" />
+      </div>
+      <div class="form-group">
+        <label>Indian ID Document Photo</label>
+        <input type="file" id="idDocInput" accept="image/*" onchange="handlePhotoUpload(event, 'idPhoto')" />
+      </div>
+
+      <button class="btn btn-primary" style="width:100%;" onclick="submitVerification()">
+        Submit for Owner Approval
+      </button>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <nav>
+    <button class="nav-btn active" onclick="switchTab('nearby', this)">
+      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
+      Nearby
+    </button>
+    <button class="nav-btn" onclick="switchTab('chats', this)">
+      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      Chats
+    </button>
+    <button class="nav-btn" onclick="switchTab('me', this)">
+      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+      Verify / Me
+    </button>
+  </nav>
+
+  <!-- PROFILE MODAL -->
+  <div class="modal" id="profileModal">
+    <div class="modal-header">
+      <strong id="modalTitle">Profile</strong>
+      <button class="close-btn" onclick="closeModal('profileModal')">Close</button>
+    </div>
+    <div class="modal-body" id="profileContent"></div>
+  </div>
+
+  <!-- CHAT MODAL -->
+  <div class="modal" id="chatModal">
+    <div class="modal-header">
+      <strong id="chatWithTitle">Chat</strong>
+      <div style="display:flex; gap:8px;">
+        <button class="close-btn" onclick="callNotice('Voice')">📞</button>
+        <button class="close-btn" onclick="callNotice('Video')">🎥</button>
+        <button class="close-btn" onclick="closeModal('chatModal')">Back</button>
+      </div>
+    </div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div id="modalChatLock" class="lock-banner" style="margin: 0 12px 10px; display:none;">
+      🔒 Status <strong>Pending</strong> hai — message bhejne ke liye Owner approval ka intezaar karein.
+    </div>
+    <div class="chat-input-bar">
+      <input type="text" id="msgInput" placeholder="Write a message..." onkeypress="if(event.key==='Enter') sendMessage()" />
+      <button class="btn btn-primary" style="padding: 9px 18px; border-radius: 999px;" onclick="sendMessage()">Send</button>
+    </div>
+  </div>
+
+  <!-- PAYMENT MODAL -->
+  <div class="modal" id="payModal">
+    <div class="modal-header">
+      <strong>Dastak Plus Pass</strong>
+      <button class="close-btn" onclick="closeModal('payModal')">Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="plus-pass-card">
+        <div style="font-size:0.76rem; color:var(--accent); font-weight:800; letter-spacing:0.8px;">WEEKLY ACCESS</div>
+        <div style="font-size:1.7rem; font-weight:900; margin:6px 0;">₹250 <span style="font-size:0.85rem; color:var(--muted); font-weight:600;">/ 1 Week</span></div>
+        <p style="font-size:0.83rem; color:#e2e8f0; line-height:1.5;">
+          10 km mein 40 free profiles ke alawa 7 din ke liye <strong>600 profiles</strong> tak poora access unlock karein.
+        </p>
+      </div>
+
+      <div class="pay-option selected" id="opt-upi" onclick="selectPayMethod('UPI')">
+        <div>
+          <strong>UPI Payment</strong>
+          <div style="font-size:0.76rem; color:var(--muted);">GPay, PhonePe, Paytm, BHIM</div>
+        </div>
+        <span style="color:var(--accent); font-size:1.1rem;">●</span>
+      </div>
+
+      <div class="pay-option" id="opt-card" onclick="selectPayMethod('Debit / Credit Card')">
+        <div>
+          <strong>Debit / Credit Card</strong>
+          <div style="font-size:0.76rem; color:var(--muted);">Visa, Mastercard, RuPay</div>
+        </div>
+        <span style="color:var(--muted); font-size:1.1rem;">○</span>
+      </div>
+
+      <div class="form-group" style="margin-top:14px;">
+        <label id="payInputLabel">Enter UPI ID</label>
+        <input type="text" id="payDetailInput" placeholder="yourname@okaxis" />
+      </div>
+
+      <button class="btn btn-primary" style="width:100%;" onclick="activateWeeklyPlan()">
+        Pay ₹250 & Unlock 600 Profiles
+      </button>
+    </div>
+  </div>
+
+  <!-- OWNER PANEL MODAL -->
+  <div class="modal" id="ownerModal">
+    <div class="modal-header">
+      <strong>Dastak Owner Panel</strong>
+      <button class="close-btn" onclick="closeModal('ownerModal')">Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-num" id="statTotalUsers">1</div>
+          <div class="stat-label">Active Users</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="statStatus">Pending</div>
+          <div class="stat-label">KYC Status</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-num" id="statPaid">Free</div>
+          <div class="stat-label">Plan</div>
+        </div>
+      </div>
+
+      <div class="card-box" id="ownerUserCard"></div>
+    </div>
+  </div>
+
+  <script>
+    const OWNER_PIN = "1234";
+
+    const samplePhotos = [
+      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&q=75",
+      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=75",
+      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=75",
+      "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=75",
+      "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=400&q=75",
+      "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&q=75",
+      "https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=400&q=75",
+      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=75"
+    ];
+
+    const namesList = ["Aarav", "Kabir", "Rohan", "Dev", "Ishaan", "Vikram", "Arjun", "Reyansh", "Karan", "Vihaan", "Siddharth", "Yash"];
+
+    const profilesPool = Array.from({ length: 45 }, (_, idx) => {
+      const i = idx + 1;
+      const dist = Number((Math.min(9.8, i * 0.22)).toFixed(1));
+      return {
+        id: i,
+        name: `${namesList[idx % namesList.length]}`,
+        age: 22 + (i % 15),
+        dist,
+        online: i % 2 === 0,
+        verified: i % 3 !== 0,
+        tag: i % 3 === 0 ? "Coffee & Drives" : i % 2 === 0 ? "Hangout" : "Late Night Chat",
+        bio: `Around ${dist} km away. Up for genuine conversations and good vibes.`,
+        img: samplePhotos[idx % samplePhotos.length]
+      };
+    });
+
+    let userAccount = JSON.parse(localStorage.getItem("dastak_account_v1") || JSON.stringify({
+      name: "Preet",
+      idType: "Aadhaar Card",
+      idNumber: "",
+      selfiePhoto: "",
+      idPhoto: "",
+      verificationStatus: "Pending",
+      viewedProfileIds: [],
+      blockedIds: [],
+      hasWeeklyPlan: false,
+      paymentMethod: "UPI"
+    }));
+
+    let chats = JSON.parse(localStorage.getItem("dastak_chats_v1") || "{}");
+    let currentFilter = "all";
+    let activeChatUser = null;
+    let selectedPayMethod = "UPI";
+
+    function saveAccount() {
+      try {
+        localStorage.setItem("dastak_account_v1", JSON.stringify(userAccount));
+      } catch (e) {
+        console.warn("Storage full, keeping photos in session memory.");
+      }
+      updateTopUI();
+    }
+
+    function updateTopUI() {
+      const status = userAccount.verificationStatus;
+      const badgeClass = `status-pill ${status === "Verified" ? "verified" : status === "Rejected" ? "rejected" : ""}`;
+
+      ["headerStatusBadge", "profileStatusBadge"].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.className = badgeClass;
+          el.innerText = status;
+        }
+      });
+
+      const maxAllowed = userAccount.hasWeeklyPlan ? 600 : 40;
+      document.getElementById("freeCounter").innerText = `${userAccount.viewedProfileIds.length} / ${maxAllowed}`;
+      document.getElementById("planStatusText").innerText = userAccount.hasWeeklyPlan ? "Plus (600/Wk)" : "Free";
+    }
+
+    function renderGrid() {
+      const grid = document.getElementById("userGrid");
+      grid.innerHTML = "";
+
+      const list = profilesPool.filter(u => {
+        if ((userAccount.blockedIds || []).includes(u.id)) return false;
+        if (u.dist > 10) return false;
+        if (currentFilter === "online") return u.online;
+        if (currentFilter === "under2") return u.dist <= 2.0;
+        return true;
+      });
+
+      list.forEach(user => {
+        const div = document.createElement("div");
+        div.className = `tile ${user.online ? "is-online" : ""}`;
+        div.onclick = () => handleProfileClick(user);
+        div.innerHTML = `
+          <img src="${user.img}" alt="${user.name}" loading="lazy" />
+          ${user.verified ? `<div class="tile-badge">✓ ID</div>` : ""}
+          <div class="tile-overlay">
+            <div class="tile-name">
+              <span class="status-dot ${user.online ? 'online' : 'offline'}"></span>${user.name}, ${user.age}
+            </div>
+            <div class="tile-dist">${user.dist} km</div>
+          </div>
+        `;
+        grid.appendChild(div);
+      });
+    }
+
+    function handleProfileClick(user) {
+      const maxAllowed = userAccount.hasWeeklyPlan ? 600 : 40;
+      const alreadyViewed = userAccount.viewedProfileIds.includes(user.id);
+
+      if (!alreadyViewed && userAccount.viewedProfileIds.length >= maxAllowed) {
+        openPayModal();
+        return;
+      }
+
+      if (!alreadyViewed) {
+        userAccount.viewedProfileIds.push(user.id);
+        saveAccount();
+      }
+
+      openProfileModal(user);
+    }
+
+    function openProfileModal(user) {
+      document.getElementById("modalTitle").innerText = `${user.name}, ${user.age}`;
+      document.getElementById("profileContent").innerHTML = `
+        <img class="profile-hero" src="${user.img}" alt="${user.name}" />
+        <div>
+          <span class="badge">${user.online ? "● Online Now" : "Offline"}</span>
+          <span class="badge">📍 ${user.dist} km away</span>
+          <span class="badge">${user.tag}</span>
+          ${user.verified ? `<span class="badge" style="color:var(--online);">✓ Verified</span>` : ""}
+        </div>
+        <p style="margin-top: 8px; line-height: 1.55; color: #cbd5e1; font-size:0.92rem;">${user.bio}</p>
+        <div class="action-row">
+          <button class="btn btn-secondary" onclick="sendWave(${user.id}, '${user.name}')">👋 Dastak / Wave</button>
+          <button class="btn btn-primary" onclick="startChat(${user.id})">💬 Chat</button>
+        </div>
+        <button class="btn btn-danger" style="width:100%; margin-top:12px;" onclick="blockUser(${user.id}, '${user.name}')">
+          🚫 Block / Report User
+        </button>
+      `;
+      document.getElementById("profileModal").classList.add("open");
+    }
+
+    function sendWave(id, name) {
+      if (!chats[id]) chats[id] = [];
+      chats[id].push({ sender: "me", text: "👋 Dastak! Sent a wave." });
+      localStorage.setItem("dastak_chats_v1", JSON.stringify(chats));
+      alert(`${name} ko Dastak / Wave bhej diya gaya hai!`);
+    }
+
+    function blockUser(id, name) {
+      if (confirm(`Kya aap ${name} ko block aur report karna chahte hain?`)) {
+        if (!userAccount.blockedIds) userAccount.blockedIds = [];
+        userAccount.blockedIds.push(id);
+        saveAccount();
+        closeModal("profileModal");
+        renderGrid();
+      }
+    }
+
+    function startChat(userId) {
+      closeModal("profileModal");
+      activeChatUser = profilesPool.find(u => u.id === userId);
+      document.getElementById("chatWithTitle").innerText = activeChatUser.name;
+      if (!chats[userId]) {
+        chats[userId] = [{ sender: "them", text: `Hey! Main aas-paas hi hoon (${activeChatUser.dist} km).` }];
+        localStorage.setItem("dastak_chats_v1", JSON.stringify(chats));
+      }
+      renderMessages();
+      const canSend = userAccount.verificationStatus === "Verified";
+      document.getElementById("modalChatLock").style.display = canSend ? "none" : "block";
+      document.getElementById("chatModal").classList.add("open");
+    }
+
+    function callNotice(type) {
+      if (userAccount.verificationStatus !== "Verified") {
+        alert(`${type} call start karne ke liye Owner verification approve hona zaroori hai.`);
+        return;
+      }
+      alert(`${type} calling feature Firebase + WebRTC/Agora connect hone ke baad live hoga.`);
+    }
+
+    function renderMessages() {
+      const box = document.getElementById("chatMessages");
+      box.innerHTML = "";
+      (chats[activeChatUser.id] || []).forEach(m => {
+        const div = document.createElement("div");
+        div.className = `msg ${m.sender}`;
+        div.innerText = m.text;
+        box.appendChild(div);
+      });
+      box.scrollTop = box.scrollHeight;
+    }
+
+    function sendMessage() {
+      if (userAccount.verificationStatus !== "Verified") {
+        alert("Status abhi Pending hai. Owner approval ke baad hi aap message bhej sakenge.");
+        return;
+      }
+      const input = document.getElementById("msgInput");
+      const text = input.value.trim();
+      if (!text || !activeChatUser) return;
+
+      chats[activeChatUser.id].push({ sender: "me", text });
+      input.value = "";
+      localStorage.setItem("dastak_chats_v1", JSON.stringify(chats));
+      renderMessages();
+    }
+
+    function renderInbox() {
+      const canSend = userAccount.verificationStatus === "Verified";
+      document.getElementById("chatLockNotice").style.display = canSend ? "none" : "block";
+
+      const list = document.getElementById("inboxList");
+      list.innerHTML = "";
+      const ids = Object.keys(chats).map(Number).filter(id => !(userAccount.blockedIds || []).includes(id));
+
+      if (ids.length === 0) {
+        list.innerHTML = `<div class="card-box" style="color:var(--muted); font-size:0.86rem;">Abhi koi chat nahi hai. Nearby tab mein kisi bhi profile par tap karein.</div>`;
+        return;
+      }
+
+      ids.forEach(id => {
+        const u = profilesPool.find(x => x.id === id);
+        if (!u) return;
+        const lastMsg = chats[id][chats[id].length - 1]?.text || "";
+        const row = document.createElement("div");
+        row.className = "inbox-row";
+        row.onclick = () => startChat(id);
+        row.innerHTML = `
+          <img src="${u.img}" alt="${u.name}" />
+          <div>
+            <strong>${u.name}</strong>
+            <div style="font-size:0.8rem; color:var(--muted); margin-top:3px;">${lastMsg}</div>
+          </div>
+        `;
+        list.appendChild(row);
+      });
+    }
+
+    function handlePhotoUpload(event, fieldName) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement("canvas");
+          const maxW = 320;
+          const scale = Math.min(1, maxW / img.width);
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+          userAccount[fieldName] = canvas.toDataURL("image/jpeg", 0.65);
+          saveAccount();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function submitVerification() {
+      userAccount.name = document.getElementById("myName").value.trim() || "User";
+      userAccount.idType = document.getElementById("idType").value;
+      userAccount.idNumber = document.getElementById("idNumber").value.trim();
+      userAccount.verificationStatus = "Pending";
+      saveAccount();
+      alert("Verification details submit ho gayi hain! Status Pending hai — Owner ke approve karte hi messaging unlock ho jayegi.");
+    }
+
+    function selectPayMethod(method) {
+      selectedPayMethod = method;
+      document.getElementById("opt-upi").classList.toggle("selected", method === "UPI");
+      document.getElementById("opt-card").classList.toggle("selected", method !== "UPI");
+      document.getElementById("opt-upi").querySelector("span:last-child").innerText = method === "UPI" ? "●" : "○";
+      document.getElementById("opt-card").querySelector("span:last-child").innerText = method !== "UPI" ? "●" : "○";
+      document.getElementById("payInputLabel").innerText = method === "UPI" ? "Enter UPI ID" : "Card Number (Demo)";
+      document.getElementById("payDetailInput").placeholder = method === "UPI" ? "yourname@okaxis" : "XXXX XXXX XXXX 4242";
+    }
+
+    function activateWeeklyPlan() {
+      userAccount.hasWeeklyPlan = true;
+      userAccount.paymentMethod = selectedPayMethod;
+      saveAccount();
+      closeModal("payModal");
+      alert(`Dastak Plus Pass (₹250 / ${selectedPayMethod}) active ho gaya hai! Ab 600 profiles unlock hain.`);
+    }
+
+    function openPayModal() {
+      document.getElementById("payModal").classList.add("open");
+    }
+
+    function openOwnerLogin() {
+      const pin = prompt("Owner PIN enter karein (Default: 1234):");
+      if (pin !== OWNER_PIN) {
+        alert("Galat PIN!");
+        return;
+      }
+      renderOwnerPanel();
+      document.getElementById("ownerModal").classList.add("open");
+    }
+
+    function renderOwnerPanel() {
+      document.getElementById("statTotalUsers").innerText = "1";
+      document.getElementById("statStatus").innerText = userAccount.verificationStatus;
+      document.getElementById("statPaid").innerText = userAccount.hasWeeklyPlan ? "₹250" : "Free";
+
+      const selfieHtml = userAccount.selfiePhoto
+        ? `<img src="${userAccount.selfiePhoto}" alt="Selfie" />`
+        : `<div style="height:120px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.75rem;">No Selfie</div>`;
+
+      const idHtml = userAccount.idPhoto
+        ? `<img src="${userAccount.idPhoto}" alt="ID Doc" />`
+        : `<div style="height:120px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.75rem;">No ID Photo</div>`;
+
+      document.getElementById("ownerUserCard").innerHTML = `
+        <h4 style="margin-bottom:8px; color:var(--accent);">KYC Verification Request</h4>
+        <p style="font-size:0.84rem; line-height:1.55; color:#e2e8f0;">
+          <strong>Name:</strong> ${userAccount.name}<br/>
+          <strong>ID Type:</strong> ${userAccount.idType}<br/>
+          <strong>ID Ref:</strong> ${userAccount.idNumber || "Not entered"}<br/>
+          <strong>Status:</strong> ${userAccount.verificationStatus}
+        </p>
+        <div class="kyc-preview-grid">
+          <div class="kyc-preview-box">
+            <div style="font-size:0.72rem; color:var(--muted);">Live Selfie</div>
+            ${selfieHtml}
+          </div>
+          <div class="kyc-preview-box">
+            <div style="font-size:0.72rem; color:var(--muted);">Indian ID</div>
+            ${idHtml}
+          </div>
+        </div>
+        <div class="action-row">
+          <button class="btn btn-success" onclick="setOwnerApproval('Verified')">✓ Approve User</button>
+          <button class="btn btn-danger" onclick="setOwnerApproval('Rejected')">✕ Reject</button>
+        </div>
+      `;
+    }
+
+    function setOwnerApproval(newStatus) {
+      userAccount.verificationStatus = newStatus;
+      saveAccount();
+      renderOwnerPanel();
+      alert(`User status update ho gaya: ${newStatus}`);
+    }
+
+    function setFilter(type, btn) {
+      currentFilter = type;
+      document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+      btn.classList.add("active");
+      renderGrid();
+    }
+
+    function switchTab(tab, btn) {
+      document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
+      btn.classList.add("active");
+      document.getElementById("tab-nearby").style.display = tab === "nearby" ? "block" : "none";
+      document.getElementById("tab-chats").classList.toggle("active", tab === "chats");
+      document.getElementById("tab-me").classList.toggle("active", tab === "me");
+      if (tab === "chats") renderInbox();
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).classList.remove("open");
+    }
+
+    document.getElementById("myName").value = userAccount.name;
+    document.getElementById("idType").value = userAccount.idType;
+    document.getElementById("idNumber").value = userAccount.idNumber;
+    updateTopUI();
+    renderGrid();
+  </script>
+</body>
+</html>
