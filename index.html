@@ -119,7 +119,7 @@
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Cloud Live • v30</p>
+      <p>Cloud Live • v31</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -414,24 +414,7 @@
     </div>
   </div>
 
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-    var firebaseConfig = {
-      apiKey: "AIzaSyC0OP0etTxACa4fMAxbhz_fjDv00-syZfws",
-      authDomain: "musafir-2016d.firebaseapp.com",
-      projectId: "musafir-2016d",
-      storageBucket: "musafir-2016d.firebasestorage.app",
-      messagingSenderId: "649368739510",
-      appId: "1:649368739510:web:6bfcfecd5d663d9430d017"
-    };
-
-    var app = initializeApp(firebaseConfig);
-    var db = getFirestore(app);
-    var ridesDocRef = doc(db, "gm_cloud", "shared_rides");
-    var accountsDocRef = doc(db, "gm_cloud", "owner_accounts");
-
+  <script>
     var curV = "Bike", curR = 7, curM = 25;
     var fareDelta = 0;
     var curPay = "Cash";
@@ -543,15 +526,17 @@
     }
 
     function refreshHeroMapRoute() {
-      if (!heroMap || typeof L === "undefined") return;
-      if (heroLine) heroMap.removeLayer(heroLine);
-      if (heroStartDot) heroMap.removeLayer(heroStartDot);
-      if (heroEndDot) heroMap.removeLayer(heroEndDot);
-      var linePts = (Array.isArray(routeCoords) && routeCoords.length > 1) ? routeCoords : [[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]];
-      heroLine = L.polyline(linePts, { color: "#18182b", weight: 4 }).addTo(heroMap);
-      heroStartDot = L.circleMarker([pickupCoords.lat, pickupCoords.lng], { radius: 7, color: "#0fa968", fillOpacity: 1 }).addTo(heroMap);
-      heroEndDot = L.circleMarker([dropCoords.lat, dropCoords.lng], { radius: 7, color: "#ff5a36", fillOpacity: 1 }).addTo(heroMap);
-      heroMap.fitBounds([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { padding: [24, 24] });
+      try {
+        if (!heroMap || typeof L === "undefined") return;
+        if (heroLine) heroMap.removeLayer(heroLine);
+        if (heroStartDot) heroMap.removeLayer(heroStartDot);
+        if (heroEndDot) heroMap.removeLayer(heroEndDot);
+        var linePts = (Array.isArray(routeCoords) && routeCoords.length > 1) ? routeCoords : [[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]];
+        heroLine = L.polyline(linePts, { color: "#18182b", weight: 4 }).addTo(heroMap);
+        heroStartDot = L.circleMarker([pickupCoords.lat, pickupCoords.lng], { radius: 7, color: "#0fa968", fillOpacity: 1 }).addTo(heroMap);
+        heroEndDot = L.circleMarker([dropCoords.lat, dropCoords.lng], { radius: 7, color: "#ff5a36", fillOpacity: 1 }).addTo(heroMap);
+        heroMap.fitBounds([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { padding: [24, 24] });
+      } catch (e) {}
     }
 
     function onRouteInputChange() {
@@ -594,29 +579,31 @@
     function isNightActive() { return nightManualOverride !== null ? nightManualOverride : isAutoNightHour(); }
 
     function initHeroMap() {
-      var el = document.getElementById("main-hero-map");
-      if (!el || typeof L === "undefined") return;
-      if (heroMap) { heroMap.remove(); heroMap = null; }
-      heroMap = L.map("main-hero-map", { zoomControl: false }).setView([30.9010, 75.8573], 11);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(heroMap);
-      heroMap.on("click", function (e) {
-        if (!pinMode || !e || !e.latlng) return;
-        var lat = Number(e.latlng.lat.toFixed(4)), lng = Number(e.latlng.lng.toFixed(4));
-        if (pinMode === "pickup") { pickupCoords = { lat: lat, lng: lng }; document.getElementById("pickup-inp").value = "Pinned (" + lat + ", " + lng + ")"; }
-        else if (pinMode === "drop") { dropCoords = { lat: lat, lng: lng }; document.getElementById("drop-inp").value = "Pinned (" + lat + ", " + lng + ")"; }
-        pinMode = null;
-        document.getElementById("btn-pin-pickup").className = "pin-action-btn";
-        document.getElementById("btn-pin-drop").className = "pin-action-btn";
-        document.getElementById("pin-mode-note").textContent = "Pin placed on map!";
-        routeCoords = null;
-        autoKm = haversineRoadKm(pickupCoords, dropCoords);
-        refreshHeroMapRoute();
-        calcFareNow();
-        fetchOsrmRoadRoute(pickupCoords, dropCoords, function (osrm) {
-          if (osrm && osrm.km) { autoKm = osrm.km; routeCoords = osrm.pts; refreshHeroMapRoute(); calcFareNow(); }
+      try {
+        var el = document.getElementById("main-hero-map");
+        if (!el || typeof L === "undefined") return;
+        if (heroMap) { heroMap.remove(); heroMap = null; }
+        heroMap = L.map("main-hero-map", { zoomControl: false }).setView([30.9010, 75.8573], 11);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(heroMap);
+        heroMap.on("click", function (e) {
+          if (!pinMode || !e || !e.latlng) return;
+          var lat = Number(e.latlng.lat.toFixed(4)), lng = Number(e.latlng.lng.toFixed(4));
+          if (pinMode === "pickup") { pickupCoords = { lat: lat, lng: lng }; document.getElementById("pickup-inp").value = "Pinned (" + lat + ", " + lng + ")"; }
+          else if (pinMode === "drop") { dropCoords = { lat: lat, lng: lng }; document.getElementById("drop-inp").value = "Pinned (" + lat + ", " + lng + ")"; }
+          pinMode = null;
+          document.getElementById("btn-pin-pickup").className = "pin-action-btn";
+          document.getElementById("btn-pin-drop").className = "pin-action-btn";
+          document.getElementById("pin-mode-note").textContent = "Pin placed on map!";
+          routeCoords = null;
+          autoKm = haversineRoadKm(pickupCoords, dropCoords);
+          refreshHeroMapRoute();
+          calcFareNow();
+          fetchOsrmRoadRoute(pickupCoords, dropCoords, function (osrm) {
+            if (osrm && osrm.km) { autoKm = osrm.km; routeCoords = osrm.pts; refreshHeroMapRoute(); calcFareNow(); }
+          });
         });
-      });
-      refreshHeroMapRoute();
+        refreshHeroMapRoute();
+      } catch (e) {}
     }
 
     function loadWallet() {
@@ -643,12 +630,16 @@
 
     function syncCloudRides() {
       try { localStorage.setItem("gm_shared_rides_v1", JSON.stringify(rides)); } catch (e) {}
-      setDoc(ridesDocRef, { list: rides, updatedAt: Date.now() }).catch(function () {});
+      if (typeof window.gmPushRidesToCloud === "function") {
+        try { window.gmPushRidesToCloud(rides); } catch (e) {}
+      }
     }
 
     function syncCloudAccounts() {
       try { localStorage.setItem("gm_owner_accounts_v1", JSON.stringify(ownerAccounts)); } catch (e) {}
-      setDoc(accountsDocRef, { list: ownerAccounts, updatedAt: Date.now() }).catch(function () {});
+      if (typeof window.gmPushAccountsToCloud === "function") {
+        try { window.gmPushAccountsToCloud(ownerAccounts); } catch (e) {}
+      }
     }
 
     function recordCustomerOwnerLog() {
@@ -671,7 +662,7 @@
       document.getElementById("step-phone").className = "hide";
       document.getElementById("step-otp").className = "";
       document.getElementById("otp-inp").value = "123456";
-      document.getElementById("login-msg").textContent = "OTP 123456 ready.";
+      document.getElementById("login-msg").textContent = "OTP 123456 sent.";
     }
 
     function backPhoneNow() {
@@ -802,7 +793,7 @@
         ownerBlockedRole: "", passengerRatedPromptSeen: false
       });
       syncCloudRides();
-      document.getElementById("book-msg").textContent = curV + " booked & synced to cloud (" + km + " km • " + curPay + ") • ₹" + total;
+      document.getElementById("book-msg").textContent = curV + " booked (" + km + " km • " + curPay + ") • ₹" + total;
       drawRidesNow();
     }
 
@@ -963,36 +954,50 @@
       document.getElementById("login-msg").textContent = "";
     }
 
-    window.sendOtpNow = sendOtpNow; window.backPhoneNow = backPhoneNow; window.verifyOtpNow = verifyOtpNow;
-    window.toggleProfile = toggleProfile; window.saveProfileNow = saveProfileNow;
-    window.addWalletMoney = addWalletMoney; window.addCustomWalletMoney = addCustomWalletMoney;
-    window.togglePinMode = togglePinMode; window.onRouteInputChange = onRouteInputChange;
-    window.pickV = pickV; window.setFareDelta = setFareDelta; window.openPaymentModal = openPaymentModal;
-    window.closePaymentModal = closePaymentModal; window.selectPaymentOption = selectPaymentOption;
-    window.toggleNightNow = toggleNightNow; window.bookRideNow = bookRideNow;
-    window.openCancelModal = openCancelModal; window.closeCancelModal = closeCancelModal; window.confirmCancelRide = confirmCancelRide;
-    window.startLiveRiderWatch = startLiveRiderWatch; window.openPassengerEndScreen = openPassengerEndScreen;
-    window.setDriverRating = setDriverRating; window.saveDriverFeedbackNow = saveDriverFeedbackNow;
-    window.toggleBlockDriverNow = toggleBlockDriverNow; window.closePassengerEndScreen = closePassengerEndScreen;
-    window.drawRidesNow = drawRidesNow; window.logout = logout;
-
     try { var s = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]"); if (Array.isArray(s)) rides = s; } catch (e) {}
     try { var a = JSON.parse(localStorage.getItem("gm_owner_accounts_v1") || "[]"); if (Array.isArray(a)) ownerAccounts = a; } catch (e) {}
+  </script>
 
-    onSnapshot(ridesDocRef, function (snap) {
-      if (snap.exists() && Array.isArray(snap.data().list)) {
-        rides = snap.data().list;
-        try { localStorage.setItem("gm_shared_rides_v1", JSON.stringify(rides)); } catch (e) {}
-        drawRidesNow();
-      }
-    });
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    onSnapshot(accountsDocRef, function (snap) {
-      if (snap.exists() && Array.isArray(snap.data().list)) {
-        ownerAccounts = snap.data().list;
-        try { localStorage.setItem("gm_owner_accounts_v1", JSON.stringify(ownerAccounts)); } catch (e) {}
-      }
-    });
+    try {
+      var firebaseConfig = {
+        apiKey: "AIzaSyC0OP0etTxACa4fMAxbhz_fjDv00-syZfws",
+        authDomain: "musafir-2016d.firebaseapp.com",
+        projectId: "musafir-2016d",
+        storageBucket: "musafir-2016d.firebasestorage.app",
+        messagingSenderId: "649368739510",
+        appId: "1:649368739510:web:6bfcfecd5d663d9430d017"
+      };
+      var app = initializeApp(firebaseConfig);
+      var db = getFirestore(app);
+      var ridesDocRef = doc(db, "gm_cloud", "shared_rides");
+      var accountsDocRef = doc(db, "gm_cloud", "owner_accounts");
+
+      window.gmPushRidesToCloud = function (list) {
+        setDoc(ridesDocRef, { list: list, updatedAt: Date.now() }).catch(function () {});
+      };
+      window.gmPushAccountsToCloud = function (list) {
+        setDoc(accountsDocRef, { list: list, updatedAt: Date.now() }).catch(function () {});
+      };
+
+      onSnapshot(ridesDocRef, function (snap) {
+        if (snap.exists() && Array.isArray(snap.data().list)) {
+          rides = snap.data().list;
+          try { localStorage.setItem("gm_shared_rides_v1", JSON.stringify(rides)); } catch (e) {}
+          if (typeof drawRidesNow === "function") drawRidesNow();
+        }
+      });
+
+      onSnapshot(accountsDocRef, function (snap) {
+        if (snap.exists() && Array.isArray(snap.data().list)) {
+          ownerAccounts = snap.data().list;
+          try { localStorage.setItem("gm_owner_accounts_v1", JSON.stringify(ownerAccounts)); } catch (e) {}
+        }
+      });
+    } catch (e) {}
   </script>
 </body>
 </html>
