@@ -127,7 +127,7 @@
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Cloud Live • v44</p>
+      <p>Cloud Live • v45</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -173,7 +173,7 @@
         <div id="main-hero-map"></div>
         <div class="map-zoom-dock">
           <button type="button" class="z-btn" onclick="zoomHeroMap(1)" title="Zoom In">+</button>
-          <button type="button" class="z-btn" onclick="zoomHeroMap(-1)" title="Zoom Out">−</button>
+          <button type="button" class="z-btn" onclick="zoomHeroMap(-1)" title="Zoom Out">-</button>
           <button type="button" class="z-btn" onclick="fitHeroMap()" title="Fit Route" style="font-size:11px;">FIT</button>
         </div>
       </div>
@@ -467,48 +467,50 @@
   </div>
 
   <script>
-    function byId(id) { return document.getElementById(id); }
+    function gmEl(id) { return document.getElementById(id); }
 
-    function setHidden(id, hideIt, displayMode) {
-      var el = byId(id);
+    function gmToggleView(id, hideIt, disp) {
+      var el = gmEl(id);
       if (!el) return;
       if (hideIt) {
         el.classList.add("hide");
         el.style.display = "none";
       } else {
         el.classList.remove("hide");
-        el.style.display = displayMode || "block";
+        el.style.display = disp || "block";
       }
     }
 
     function gmShowOtpStep() {
-      setHidden("step-phone", true);
-      setHidden("step-otp", false, "block");
-      if (byId("otp-inp")) byId("otp-inp").value = "123456";
-      if (byId("login-msg")) {
-        byId("login-msg").style.color = "#0fa968";
-        byId("login-msg").textContent = "OTP 123456 sent.";
+      gmToggleView("step-phone", true);
+      gmToggleView("step-otp", false, "block");
+      if (gmEl("otp-inp")) gmEl("otp-inp").value = "123456";
+      if (gmEl("login-msg")) {
+        gmEl("login-msg").style.color = "#0fa968";
+        gmEl("login-msg").textContent = "OTP 123456 sent.";
       }
     }
 
     function gmBackToPhone() {
-      setHidden("step-otp", true);
-      setHidden("step-phone", false, "block");
-      if (byId("login-msg")) byId("login-msg").textContent = "";
+      gmToggleView("step-otp", true);
+      gmToggleView("step-phone", false, "block");
+      if (gmEl("login-msg")) gmEl("login-msg").textContent = "";
     }
 
     function gmCompleteLogin() {
-      setHidden("login-card", true);
-      setHidden("hdr-btns", false, "flex");
-      setHidden("hero-map-wrap", false, "block");
-      setHidden("wallet-card", false, "block");
-      setHidden("book-card", false, "block");
-      setHidden("rides-card", false, "block");
-      if (typeof window.gmAfterLogin === "function") {
-        try { window.gmAfterLogin(); } catch (e) {}
+      gmToggleView("login-card", true);
+      gmToggleView("hdr-btns", false, "flex");
+      gmToggleView("hero-map-wrap", false, "block");
+      gmToggleView("wallet-card", false, "block");
+      gmToggleView("book-card", false, "block");
+      gmToggleView("rides-card", false, "block");
+      if (typeof window.gmBootBooking === "function") {
+        try { window.gmBootBooking(); } catch (err) {}
       }
     }
+  </script>
 
+  <script>
     var curV = "Bike", curR = 7, curM = 25;
     var fareDelta = 0, curPay = "Cash", pinMode = null, nightManualOverride = null;
     var customerPhone = "", customerName = "", walletBalance = 0;
@@ -551,6 +553,8 @@
     var pickupCoords = { lat: 30.8615, lng: 75.8150 };
     var dropCoords = { lat: 30.9120, lng: 75.8540 };
     var routeCoords = null, autoKm = 7.5;
+
+    function byId(id) { return document.getElementById(id); }
 
     function haversineRoadKm(a, b) {
       var R = 6371, dLat = (b.lat - a.lat) * Math.PI / 180, dLng = (b.lng - a.lng) * Math.PI / 180;
@@ -766,7 +770,7 @@
       } catch (e) {}
     }
 
-    window.gmAfterLogin = function () {
+    window.gmBootBooking = function () {
       try { recordCustomerOwnerLog(); } catch (e) {}
       try { loadWallet(); } catch (e) {}
       try { calcFareNow(); } catch (e) {}
@@ -777,7 +781,7 @@
 
     function toggleProfile() {
       var pc = byId("profile-card"); if (!pc) return;
-      if (pc.classList.contains("hide")) setHidden("profile-card", false, "block"); else setHidden("profile-card", true);
+      if (pc.classList.contains("hide")) gmToggleView("profile-card", false, "block"); else gmToggleView("profile-card", true);
     }
 
     function saveProfileNow() {
@@ -1039,11 +1043,11 @@
     }
 
     function logout() {
-      setHidden("hdr-btns", true);
-      ["profile-card", "hero-map-wrap", "wallet-card", "book-card", "rides-card"].forEach(function (id) { setHidden(id, true); });
-      setHidden("step-otp", true);
-      setHidden("step-phone", false, "block");
-      setHidden("login-card", false, "block");
+      gmToggleView("hdr-btns", true);
+      ["profile-card", "hero-map-wrap", "wallet-card", "book-card", "rides-card"].forEach(function (id) { gmToggleView(id, true); });
+      gmToggleView("step-otp", true);
+      gmToggleView("step-phone", false, "block");
+      gmToggleView("login-card", false, "block");
       if (byId("login-msg")) byId("login-msg").textContent = "";
     }
 
@@ -1090,4 +1094,3 @@
   </script>
 </body>
 </html>
-
