@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Go Musafir — Partner & Admin</title>
+  <title>Go Musafir — All Punjab Partner & Admin</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -39,11 +39,9 @@
     .btn-danger-outline { background: #fff5f5; color: #b81d24; border: 1.5px solid #f5c2c4; }
     .msg { margin-top: 8px; font-size: 12px; font-weight: 700; min-height: 16px; color: #0fa968; }
 
-    /* Today's Earnings + Go To Strip */
     .earn-bar { background: linear-gradient(135deg, #18182b, #2a2d52); color: #fff; border-radius: 18px; padding: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
     .goto-bar { background: #f6f8fc; border: 1px solid #e1e6f2; border-radius: 14px; padding: 10px 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
 
-    /* Ride Cards */
     .ride-box { border: 1.5px solid #e3e7f0; border-radius: 16px; padding: 13px; margin-top: 10px; background: #fcfdff; }
     .ride-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
     .ride-info { font-weight: 800; color: #18182b; font-size: 15px; }
@@ -59,7 +57,6 @@
     .nav-map { height: 170px; width: 100%; }
     .nav-bar { padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 11px; font-weight: 700; }
 
-    /* Profile Hero & Menu Rows */
     .prof-banner { height: 92px; border-radius: 16px; background: linear-gradient(120deg, #ff7e36, #18182b); position: relative; margin-bottom: 34px; }
     .prof-avatar { width: 66px; height: 66px; border-radius: 50%; background: #18182b; color: #fff; border: 4px solid #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; position: absolute; bottom: -28px; left: 50%; transform: translateX(-50%); }
     .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; padding: 12px 0; border-top: 1px solid #edf0f7; border-bottom: 1px solid #edf0f7; margin: 12px 0; }
@@ -70,7 +67,6 @@
     .menu-title { font-size: 13px; font-weight: 800; color: #18182b; }
     .menu-sub { font-size: 11px; color: #676e8a; margin-top: 2px; }
 
-    /* ID Card */
     .id-card-box { border: 1.5px solid #dce1ed; border-radius: 18px; overflow: hidden; margin-top: 10px; }
     .id-card-top { background: linear-gradient(135deg, #0fa968, #18182b); color: #fff; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
     .id-badge { background: #fff; color: #0fa968; padding: 4px 10px; border-radius: 99px; font-size: 11px; font-weight: 800; }
@@ -78,13 +74,11 @@
     .id-card-body { padding: 14px; background: #fff; }
     .id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
 
-    /* Documents List */
     .doc-item { display: flex; justify-content: space-between; align-items: center; padding: 11px 12px; border: 1px solid #e3e7f0; border-radius: 12px; margin-top: 8px; background: #fafbfe; }
     .doc-st { font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 8px; }
     .doc-ok { background: #e1f7ed; color: #0b7a4b; }
     .doc-inc { background: #fff1eb; color: #b52d0f; }
 
-    /* Wallet & Owner Box */
     .wallet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
     .w-box { background: #18182b; color: #fff; border-radius: 14px; padding: 12px; }
     .w-lbl { font-size: 10px; font-weight: 700; color: #9ea4c4; text-transform: uppercase; }
@@ -92,13 +86,11 @@
     .owner-box { margin-top: 12px; padding: 13px; border-radius: 16px; background: #f6f8fc; border: 1px solid #e1e6f2; }
     .log-item { font-size: 11px; padding: 8px 0; border-top: 1px dashed #d5dbe8; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
 
-    /* Bottom Navigation */
     .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #dce1ed; display: none; justify-content: space-around; padding: 8px 6px; z-index: 70; }
     .bottom-nav.show { display: flex; }
     .nav-tab { border: none; background: none; color: #676e8a; font-size: 11px; font-weight: 800; padding: 6px 14px; border-radius: 12px; cursor: pointer; }
     .nav-tab.active { background: #18182b; color: #fff; }
 
-    /* Full-Screen Trip End */
     .full-end { position: fixed; inset: 0; background: #18182b; z-index: 999; display: none; flex-direction: column; justify-content: space-between; padding: 22px 18px; color: #fff; overflow-y: auto; }
     .full-end.show { display: flex; }
     .end-tag { display: inline-block; background: rgba(255,255,255,0.14); padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 800; }
@@ -116,7 +108,7 @@
   <header>
     <div>
       <h1>Go Musafir Partner</h1>
-      <p>Captain & Admin Console • v26</p>
+      <p>All Punjab Captain & Admin • v28</p>
     </div>
     <div class="hdr-right">
       <button type="button" id="duty-btn" class="duty-pill hide" onclick="dToggleDutyNow()">OFF DUTY</button>
@@ -125,10 +117,9 @@
   </header>
 
   <div class="wrap">
-    <!-- Login Card -->
     <div id="drv-login" class="sheet">
       <h2>Partner Login</h2>
-      <p class="sub">Sign in with OTP to access Captain Home, Profile & Admin Controls.</p>
+      <p class="sub">Sign in with OTP to operate across all 23 districts of Punjab.</p>
       <div id="d-phone-step">
         <label for="d-phone">Mobile Number</label>
         <input id="d-phone" type="tel" value="+919779176000" />
@@ -142,7 +133,6 @@
       <div id="d-login-msg" class="msg"></div>
     </div>
 
-    <!-- TAB 1: HOME (LIVE RIDES + GO TO AREA + TODAY'S EARNINGS) -->
     <div id="tab-home" class="hide">
       <div class="earn-bar">
         <div>
@@ -150,22 +140,46 @@
           <div id="today-earn-val" class="mono" style="font-size:24px;font-weight:800;color:#4ef0a8;">₹0</div>
         </div>
         <div style="text-align:right;">
-          <div id="home-service-pill" style="font-size:11px;font-weight:800;background:#292a45;padding:5px 10px;border-radius:99px;">Musafir Bike</div>
+          <div id="home-service-pill" style="font-size:11px;font-weight:800;background:#292a45;padding:5px 10px;border-radius:99px;">Musafir Cab</div>
           <div id="home-verify-txt" style="font-size:10px;color:#ffb49e;margin-top:4px;">Pending Verification</div>
         </div>
       </div>
 
       <div class="goto-bar">
-        <div>
-          <div style="font-size:11px;font-weight:800;color:#18182b;">Go To Area</div>
-          <div id="goto-area-txt" style="font-size:11px;color:#676e8a;">Off • All Ludhiana pickups</div>
+        <div style="flex:1;">
+          <div style="font-size:11px;font-weight:800;color:#18182b;">Punjab District / Go-To Filter</div>
+          <select id="district-filter" style="margin-top:4px;padding:7px 9px;font-size:12px;" onchange="renderDriverRides()">
+            <option value="">All Punjab (23 Districts)</option>
+            <option value="Ludhiana">Ludhiana</option>
+            <option value="Amritsar">Amritsar</option>
+            <option value="Barnala">Barnala</option>
+            <option value="Bathinda">Bathinda</option>
+            <option value="Faridkot">Faridkot</option>
+            <option value="Fatehgarh Sahib">Fatehgarh Sahib</option>
+            <option value="Fazilka">Fazilka</option>
+            <option value="Ferozepur">Ferozepur</option>
+            <option value="Gurdaspur">Gurdaspur</option>
+            <option value="Hoshiarpur">Hoshiarpur</option>
+            <option value="Jalandhar">Jalandhar</option>
+            <option value="Kapurthala">Kapurthala</option>
+            <option value="Malerkotla">Malerkotla</option>
+            <option value="Mansa">Mansa</option>
+            <option value="Moga">Moga</option>
+            <option value="Mohali">Mohali (SAS Nagar)</option>
+            <option value="Pathankot">Pathankot</option>
+            <option value="Patiala">Patiala</option>
+            <option value="Rupnagar">Rupnagar (Ropar)</option>
+            <option value="Sangrur">Sangrur</option>
+            <option value="SBS Nagar">SBS Nagar (Nawanshahr)</option>
+            <option value="Sri Muktsar Sahib">Sri Muktsar Sahib</option>
+            <option value="Tarn Taran">Tarn Taran</option>
+          </select>
         </div>
-        <button type="button" class="mini-btn" id="goto-toggle-btn" onclick="toggleGoToArea()">Threeke: OFF</button>
       </div>
 
       <div class="sheet">
         <div style="display:flex;justify-content:space-between;align-items:center;">
-          <h2 style="margin-bottom:0;">Live Ride Requests</h2>
+          <h2 style="margin-bottom:0;">All Punjab Ride Requests</h2>
           <button type="button" class="mini-btn" onclick="renderDriverRides()">Refresh</button>
         </div>
         <div id="d-rides-msg" class="msg"></div>
@@ -173,7 +187,6 @@
       </div>
     </div>
 
-    <!-- TAB 2: ORDERS & EARNINGS / OWNER CONSOLE -->
     <div id="tab-orders" class="hide">
       <div class="sheet">
         <h2>Earnings & Weekly Wallet</h2>
@@ -194,7 +207,7 @@
 
       <div class="sheet">
         <h2>Main Admin / App Owner Control</h2>
-        <p class="sub">All customer & partner accounts, numbers, and block controls</p>
+        <p class="sub">All Punjab customer & partner accounts, numbers, and block controls</p>
         <label for="owner-target-id" style="margin-top:0;">Ride / User ID</label>
         <input id="owner-target-id" class="mono" type="text" placeholder="e.g., GM452" />
         <div class="row2">
@@ -206,7 +219,6 @@
       </div>
     </div>
 
-    <!-- TAB 3: MY PROFILE (RAPIDO CAPTAIN STYLE SECTIONS) -->
     <div id="tab-profile" class="hide">
       <div class="sheet">
         <div class="prof-banner">
@@ -214,7 +226,7 @@
         </div>
         <div style="text-align:center;">
           <h2 id="prof-display-name">HARVINDER SINGH</h2>
-          <div id="prof-sub-badge" style="font-size:11px;font-weight:800;color:#ff5a36;">Pending Verification • Ludhiana</div>
+          <div id="prof-sub-badge" style="font-size:11px;font-weight:800;color:#ff5a36;">Pending Verification • All Punjab</div>
         </div>
 
         <div class="stats-row">
@@ -258,7 +270,7 @@
 
         <button type="button" class="menu-row" onclick="openProfileSub('docs')">
           <div>
-            <div class="menu-title">Documents (RC, DL, PAN)</div>
+            <div class="menu-title">Documents (RC, DL, PAN, All Punjab Permit)</div>
             <div class="menu-sub">DL, RC, Road Tax, Aadhaar, PAN, Permit, Insurance, Fitness</div>
           </div>
           <span style="font-weight:800;">›</span>
@@ -276,7 +288,6 @@
         <button type="button" class="btn btn-danger-outline" onclick="deleteDriverAccount()">Delete Account</button>
       </div>
 
-      <!-- Sub-screen: Performance -->
       <div id="sub-perf" class="sheet hide">
         <div class="badge-row">
           <h2 style="margin-bottom:0;">My Performance</h2>
@@ -296,7 +307,6 @@
         </div>
       </div>
 
-      <!-- Sub-screen: Profile Info -->
       <div id="sub-info" class="sheet hide">
         <div class="badge-row">
           <h2 style="margin-bottom:0;">Profile Info</h2>
@@ -324,7 +334,6 @@
         <div id="info-msg" class="msg"></div>
       </div>
 
-      <!-- Sub-screen: Go Musafir ID Card -->
       <div id="sub-idcard" class="sheet hide">
         <div class="badge-row">
           <h2 style="margin-bottom:0;">Go Musafir ID Card</h2>
@@ -333,7 +342,7 @@
         <div class="id-card-box">
           <div class="id-card-top">
             <div>
-              <div style="font-size:11px;font-weight:800;opacity:0.85;">GO MUSAFIR PARTNER</div>
+              <div style="font-size:11px;font-weight:800;opacity:0.85;">GO MUSAFIR ALL PUNJAB</div>
               <div style="font-size:16px;font-weight:800;">Captain ID</div>
             </div>
             <span id="id-status-pill" class="id-badge pend">Pending</span>
@@ -354,8 +363,8 @@
                 <div class="mono" style="font-size:12px;font-weight:800;" id="id-card-dl">PB1020150343578</div>
               </div>
               <div>
-                <div style="font-size:10px;font-weight:800;color:#676e8a;">LICENSE VALIDITY</div>
-                <div class="mono" style="font-size:12px;font-weight:800;">05/03/2035</div>
+                <div style="font-size:10px;font-weight:800;color:#676e8a;">PERMIT ZONE</div>
+                <div class="mono" style="font-size:12px;font-weight:800;">ALL PUNJAB</div>
               </div>
             </div>
             <button type="button" class="btn btn-soft" onclick="shareIdCard()">Share ID Card</button>
@@ -364,22 +373,21 @@
         </div>
       </div>
 
-      <!-- Sub-screen: Documents (RC, DL, PAN, Road Tax, Aadhaar, Permit, Insurance, Fitness) -->
       <div id="sub-docs" class="sheet hide">
         <div class="badge-row">
           <h2 style="margin-bottom:0;">Documents</h2>
           <button type="button" class="mini-btn" onclick="closeProfileSub()">Back</button>
         </div>
-        <p class="sub">Complete vehicle & KYC documents to get Approved status.</p>
+        <p class="sub">Complete vehicle & All Punjab Permit documents to get Approved status.</p>
 
         <label for="d-vehicle">Service / Vehicle Type</label>
         <select id="d-vehicle" onchange="syncServiceLabels()">
+          <option value="Cab" selected>Musafir Cab (All Punjab)</option>
           <option value="Bike">Musafir Bike</option>
           <option value="E-Rickshaw">E-Rickshaw</option>
-          <option value="Cab">Musafir Cab</option>
         </select>
 
-        <label for="d-vno">Vehicle RC Number</label>
+        <label for="d-vno">Vehicle RC Number (PB01–PB91)</label>
         <input id="d-vno" class="mono" type="text" value="PB10XX1234" />
 
         <label for="d-dl">Driving License Number</label>
@@ -396,7 +404,7 @@
         </div>
         <div class="doc-item"><span class="menu-title">Aadhaar</span><span class="doc-st doc-ok">Uploaded</span></div>
         <div class="doc-item"><span class="menu-title">PAN</span><span class="doc-st doc-ok">Uploaded</span></div>
-        <div class="doc-item"><span class="menu-title">Permit</span><span class="doc-st doc-ok">Uploaded</span></div>
+        <div class="doc-item"><span class="menu-title">All Punjab Commercial Permit</span><span class="doc-st doc-ok">Uploaded</span></div>
         <div class="doc-item"><span class="menu-title">Vehicle Insurance</span><span class="doc-st doc-ok">Uploaded</span></div>
         <div class="doc-item"><span class="menu-title">Fitness Certificate</span><span class="doc-st doc-ok">Uploaded</span></div>
 
@@ -405,7 +413,6 @@
         <div id="d-doc-msg" class="msg"></div>
       </div>
 
-      <!-- Sub-screen: Language Settings -->
       <div id="sub-lang" class="sheet hide">
         <div class="badge-row">
           <h2 style="margin-bottom:0;">Language Settings</h2>
@@ -413,15 +420,15 @@
         </div>
         <label for="app-lang-sel">App Language</label>
         <select id="app-lang-sel">
-          <option value="English">English</option>
           <option value="Punjabi">ਪੰਜਾਬੀ (Punjabi)</option>
+          <option value="English">English</option>
           <option value="Hindi">हिन्दी (Hindi)</option>
         </select>
 
         <label for="notif-lang-sel">Notification Language</label>
         <select id="notif-lang-sel">
-          <option value="English">English</option>
           <option value="Punjabi">ਪੰਜਾਬੀ (Punjabi)</option>
+          <option value="English">English</option>
           <option value="Hindi">हिन्दी (Hindi)</option>
         </select>
         <button type="button" class="btn btn-primary" onclick="saveLanguagePrefs()">Save Language Settings</button>
@@ -430,14 +437,12 @@
     </div>
   </div>
 
-  <!-- Bottom Tab Navigation -->
   <nav id="bottom-nav" class="bottom-nav">
     <button type="button" class="nav-tab active" id="nav-home" onclick="switchDriverTab('home')">Home</button>
     <button type="button" class="nav-tab" id="nav-orders" onclick="switchDriverTab('orders')">Orders & Wallet</button>
     <button type="button" class="nav-tab" id="nav-profile" onclick="switchDriverTab('profile')">My Profile</button>
   </nav>
 
-  <!-- Full-Screen Trip Completed + Rating + Feedback + Block -->
   <div id="d-end-screen" class="full-end">
     <div>
       <span class="end-tag">GO MUSAFIR • TRIP COMPLETED</span>
@@ -473,7 +478,6 @@
   <script>
     var isVerified = false;
     var isOnline = false;
-    var goToThreekeOnly = false;
     var activeRides = [];
     var ownerAccounts = [];
     var driverWallet = 0;
@@ -482,8 +486,8 @@
     var dMaps = {};
     var dNavTimers = {};
 
-    var PICKUP_COORDS = { lat: 30.8615, lng: 75.8150 };
-    var DROP_COORDS = { lat: 30.9120, lng: 75.8540 };
+    var DEFAULT_PICKUP = { lat: 30.8615, lng: 75.8150 };
+    var DEFAULT_DROP = { lat: 30.9120, lng: 75.8540 };
 
     function isAutoNightHour() {
       var hr = new Date().getHours();
@@ -566,7 +570,7 @@
     function recordDriverOwnerLog() {
       var phone = (document.getElementById("d-phone").value || "").trim() || "+919779176000";
       var name = (document.getElementById("d-name").value || "").trim() || "HARVINDER SINGH";
-      var vType = (document.getElementById("d-vehicle").value || "").trim() || "Bike";
+      var vType = (document.getElementById("d-vehicle").value || "").trim() || "Cab";
       var vNo = (document.getElementById("d-vno").value || "").trim() || "PB10XX1234";
       var dlNo = (document.getElementById("d-dl").value || "").trim() || "PB1020150343578";
       var idRef = (document.getElementById("d-id").value || "").trim() || "-";
@@ -715,13 +719,6 @@
       document.getElementById("lang-msg").textContent = "Saved: App (" + l1 + "), Notifications (" + l2 + ").";
     }
 
-    function toggleGoToArea() {
-      goToThreekeOnly = !goToThreekeOnly;
-      document.getElementById("goto-toggle-btn").textContent = goToThreekeOnly ? "Threeke: ON" : "Threeke: OFF";
-      document.getElementById("goto-area-txt").textContent = goToThreekeOnly ? "Active • Showing Threeke area rides" : "Off • All Ludhiana pickups";
-      renderDriverRides();
-    }
-
     function dSaveDocsNow() {
       var name = document.getElementById("d-name").value.trim();
       var vno = document.getElementById("d-vno").value.trim();
@@ -741,7 +738,7 @@
       document.getElementById("id-card-dl").textContent = document.getElementById("d-dl").value.trim() || "PB1020150343578";
       updateVerifyUI();
       recordDriverOwnerLog();
-      document.getElementById("d-doc-msg").textContent = "Captain Approved! You can now go ON DUTY.";
+      document.getElementById("d-doc-msg").textContent = "Captain Approved! You can now go ON DUTY across All Punjab.";
       renderDriverRides();
     }
 
@@ -751,12 +748,12 @@
       var pSub = document.getElementById("prof-sub-badge");
       if (isVerified) {
         idPill.className = "id-badge"; idPill.textContent = "Approved";
-        hTxt.style.color = "#4ef0a8"; hTxt.textContent = "Approved Captain";
-        pSub.style.color = "#0fa968"; pSub.textContent = "Approved Captain • Ludhiana";
+        hTxt.style.color = "#4ef0a8"; hTxt.textContent = "Approved • All Punjab";
+        pSub.style.color = "#0fa968"; pSub.textContent = "Approved Captain • All Punjab";
       } else {
         idPill.className = "id-badge pend"; idPill.textContent = "Pending";
         hTxt.style.color = "#ffb49e"; hTxt.textContent = "Pending Verification";
-        pSub.style.color = "#ff5a36"; pSub.textContent = "Pending Verification • Ludhiana";
+        pSub.style.color = "#ff5a36"; pSub.textContent = "Pending Verification • All Punjab";
       }
     }
 
@@ -771,7 +768,7 @@
       var btn = document.getElementById("duty-btn");
       btn.textContent = isOnline ? "ON DUTY" : "OFF DUTY";
       btn.className = isOnline ? "duty-pill on" : "duty-pill";
-      document.getElementById("d-rides-msg").textContent = isOnline ? "You are ON DUTY." : "You are OFF DUTY.";
+      document.getElementById("d-rides-msg").textContent = isOnline ? "You are ON DUTY across All Punjab." : "You are OFF DUTY.";
       renderDriverRides();
     }
 
@@ -799,16 +796,18 @@
       if (!el || typeof L === "undefined") return;
       if (dMaps[idx]) { dMaps[idx].remove(); delete dMaps[idx]; }
 
-      var curLat = (typeof rideObj.riderLat === "number") ? rideObj.riderLat : PICKUP_COORDS.lat;
-      var curLng = (typeof rideObj.riderLng === "number") ? rideObj.riderLng : PICKUP_COORDS.lng;
+      var aPt = { lat: rideObj.pLat || DEFAULT_PICKUP.lat, lng: rideObj.pLng || DEFAULT_PICKUP.lng };
+      var bPt = { lat: rideObj.dLat || DEFAULT_DROP.lat, lng: rideObj.dLng || DEFAULT_DROP.lng };
+      var curLat = (typeof rideObj.riderLat === "number") ? rideObj.riderLat : aPt.lat;
+      var curLng = (typeof rideObj.riderLng === "number") ? rideObj.riderLng : aPt.lng;
 
-      var map = L.map(elId, { zoomControl: false }).setView([curLat, curLng], 13);
+      var map = L.map(elId, { zoomControl: false }).setView([curLat, curLng], 10);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(map);
-      L.polyline([[PICKUP_COORDS.lat, PICKUP_COORDS.lng], [DROP_COORDS.lat, DROP_COORDS.lng]], { color: "#3b4cca", weight: 4 }).addTo(map);
-      L.circleMarker([PICKUP_COORDS.lat, PICKUP_COORDS.lng], { radius: 6, color: "#0fa968", fillOpacity: 1 }).addTo(map);
-      L.circleMarker([DROP_COORDS.lat, DROP_COORDS.lng], { radius: 6, color: "#ff5a36", fillOpacity: 1 }).addTo(map);
+      L.polyline([[aPt.lat, aPt.lng], [bPt.lat, bPt.lng]], { color: "#3b4cca", weight: 4 }).addTo(map);
+      L.circleMarker([aPt.lat, aPt.lng], { radius: 6, color: "#0fa968", fillOpacity: 1 }).addTo(map);
+      L.circleMarker([bPt.lat, bPt.lng], { radius: 6, color: "#ff5a36", fillOpacity: 1 }).addTo(map);
       var marker = L.circleMarker([curLat, curLng], { radius: 9, color: "#fff", weight: 2, fillColor: "#18182b", fillOpacity: 1 }).addTo(map);
-      dMaps[idx] = { map: map, marker: marker };
+      dMaps[idx] = { map: map, marker: marker, aPt: aPt, bPt: bPt };
     }
 
     function startDriverNavigation(idx) {
@@ -818,10 +817,12 @@
       var stEl = document.getElementById("d-nav-st-" + idx);
       if (dNavTimers[idx]) { clearInterval(dNavTimers[idx]); delete dNavTimers[idx]; }
 
-      var targetLat = (r.status === "Ride Started") ? DROP_COORDS.lat : PICKUP_COORDS.lat;
-      var targetLng = (r.status === "Ride Started") ? DROP_COORDS.lng : PICKUP_COORDS.lng;
-      var startLat = (typeof r.riderLat === "number") ? r.riderLat : PICKUP_COORDS.lat;
-      var startLng = (typeof r.riderLng === "number") ? r.riderLng : PICKUP_COORDS.lng;
+      var aPt = { lat: r.pLat || DEFAULT_PICKUP.lat, lng: r.pLng || DEFAULT_PICKUP.lng };
+      var bPt = { lat: r.dLat || DEFAULT_DROP.lat, lng: r.dLng || DEFAULT_DROP.lng };
+      var targetLat = (r.status === "Ride Started") ? bPt.lat : aPt.lat;
+      var targetLng = (r.status === "Ride Started") ? bPt.lng : aPt.lng;
+      var startLat = (typeof r.riderLat === "number") ? r.riderLat : aPt.lat;
+      var startLng = (typeof r.riderLng === "number") ? r.riderLng : aPt.lng;
 
       function pushPos(lat, lng, msg) {
         r.riderLat = lat;
@@ -869,8 +870,8 @@
       var r = activeRides[idx];
       if (!r) return;
       r.status = "Arrived at Customer Location";
-      r.riderLat = PICKUP_COORDS.lat;
-      r.riderLng = PICKUP_COORDS.lng;
+      r.riderLat = r.pLat || DEFAULT_PICKUP.lat;
+      r.riderLng = r.pLng || DEFAULT_PICKUP.lng;
       saveRides();
       document.getElementById("d-rides-msg").textContent = "Arrived at Pickup (" + r.km + " km • ₹" + driverRideFare(r) + ").";
       renderDriverRides();
@@ -957,8 +958,8 @@
       var r = activeRides[idx];
       if (!r) return;
       r.status = "Completed";
-      r.riderLat = DROP_COORDS.lat;
-      r.riderLng = DROP_COORDS.lng;
+      r.riderLat = r.dLat || DEFAULT_DROP.lat;
+      r.riderLng = r.dLng || DEFAULT_DROP.lng;
       r.passengerRatedPromptSeen = false;
       saveRides();
       syncWalletsFromCompletedRides();
@@ -971,14 +972,15 @@
       var box = document.getElementById("d-rides-list");
       loadRides();
       syncWalletsFromCompletedRides();
-      if (!activeRides.length) { box.innerHTML = "<p class='sub'>No rides available.</p>"; return; }
+      if (!activeRides.length) { box.innerHTML = "<p class='sub'>No rides available across Punjab yet.</p>"; return; }
+      var distFilter = (document.getElementById("district-filter").value || "").trim().toLowerCase();
       var html = "";
       var shownCount = 0;
       for (var i = 0; i < activeRides.length; i++) {
         var r = activeRides[i];
-        if (goToThreekeOnly) {
+        if (distFilter) {
           var routeTxt = String((r.pickup || "") + " " + (r.drop || "")).toLowerCase();
-          if (routeTxt.indexOf("threeke") === -1) continue;
+          if (routeTxt.indexOf(distFilter) === -1) continue;
         }
         shownCount += 1;
         var st = r.status || "Available";
@@ -1004,17 +1006,20 @@
           ? "<div style='font-size:11px;color:#474d6b;margin-top:6px;'>Customer Feedback: " + r.customerFeedback + (r.customerRating ? " (" + r.customerRating + " ★)" : "") + "</div>"
           : (r.customerRating ? "<div style='font-size:11px;color:#474d6b;margin-top:6px;'>Customer Rating: " + r.customerRating + " ★</div>" : "");
 
-        var gmapsUrl = "https://www.google.com/maps/dir/?api=1&destination=" + DROP_COORDS.lat + "," + DROP_COORDS.lng;
+        var destLat = r.dLat || DEFAULT_DROP.lat;
+        var destLng = r.dLng || DEFAULT_DROP.lng;
+        var gmapsUrl = "https://www.google.com/maps/dir/?api=1&destination=" + destLat + "," + destLng;
 
         html += "<div class='ride-box'>" +
           "<div class='ride-top'><span class='ride-info'><span class='mono'>" + r.km + " km</span> • <span class='mono'>₹" + dAmt + "</span> • " + pm + "</span><span class='ride-st'>" + st + "</span></div>" +
+          "<div style='font-size:12px;color:#474d6b;margin-top:4px;'>" + (r.pickup || "Pickup") + " → " + (r.drop || "Drop") + "</div>" +
           blkTag +
           fbNote +
           btns +
           "<div class='nav-wrap'>" +
             "<div id='d-nav-map-" + i + "' class='nav-map'></div>" +
             "<div class='nav-bar'>" +
-              "<span id='d-nav-st-" + i + "'>Live Navigation Map</span>" +
+              "<span id='d-nav-st-" + i + "'>All Punjab Live Navigation</span>" +
               "<div style='display:flex;gap:6px;'>" +
                 '<button type="button" class="mini-btn" onclick="startDriverNavigation(' + i + ')">Navigate on Map</button>' +
                 '<a class="mini-btn" target="_blank" rel="noopener" href="' + gmapsUrl + '">Google Maps</a>' +
@@ -1023,7 +1028,7 @@
           "</div>" +
           "</div>";
       }
-      box.innerHTML = shownCount ? html : "<p class='sub'>No rides matching Threeke Go To filter.</p>";
+      box.innerHTML = shownCount ? html : "<p class='sub'>No rides matching selected Punjab district.</p>";
 
       for (var m = 0; m < activeRides.length; m++) {
         initDriverNavMap(m, activeRides[m] || {});
