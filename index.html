@@ -121,14 +121,14 @@
     .star-btn { border: 1.5px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); color: #fff; border-radius: 10px; padding: 10px 4px; font-size: 13px; font-weight: 800; cursor: pointer; }
     .star-btn.picked { background: #0fa968; border-color: #0fa968; }
     .end-actions { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .hide { display: none; }
+    .hide { display: none !important; }
   </style>
 </head>
 <body>
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Cloud Live • v41</p>
+      <p>Cloud Live • v42</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -147,13 +147,13 @@
       <div id="step-phone">
         <label for="phone-inp">Mobile Number</label>
         <input id="phone-inp" type="tel" value="+918564885647" />
-        <button type="button" id="send-otp-btn" class="btn btn-primary">Send OTP</button>
+        <button type="button" id="send-otp-btn" class="btn btn-primary" onclick="gmShowOtpStep()">Send OTP</button>
       </div>
       <div id="step-otp" class="hide">
         <label for="otp-inp">Enter 6-Digit OTP</label>
         <input id="otp-inp" class="mono" type="text" maxlength="6" value="123456" />
-        <button type="button" id="verify-otp-btn" class="btn btn-mint">Verify & Continue</button>
-        <button type="button" id="back-phone-btn" class="btn btn-soft">Change Number</button>
+        <button type="button" id="verify-otp-btn" class="btn btn-mint" onclick="gmCompleteLogin()">Verify & Continue</button>
+        <button type="button" id="back-phone-btn" class="btn btn-soft" onclick="gmBackToPhone()">Change Number</button>
       </div>
       <div id="login-msg" class="msg"></div>
     </div>
@@ -468,6 +468,64 @@
   </div>
 
   <script>
+    function gmShowOtpStep() {
+      var pStep = document.getElementById("step-phone");
+      var oStep = document.getElementById("step-otp");
+      var oInp = document.getElementById("otp-inp");
+      var lMsg = document.getElementById("login-msg");
+      if (pStep) {
+        pStep.classList.add("hide");
+        pStep.style.display = "none";
+      }
+      if (oStep) {
+        oStep.classList.remove("hide");
+        oStep.style.display = "block";
+      }
+      if (oInp) oInp.value = "123456";
+      if (lMsg) {
+        lMsg.style.color = "#0fa968";
+        lMsg.textContent = "OTP 123456 sent.";
+      }
+    }
+
+    function gmBackToPhone() {
+      var pStep = document.getElementById("step-phone");
+      var oStep = document.getElementById("step-otp");
+      var lMsg = document.getElementById("login-msg");
+      if (oStep) {
+        oStep.classList.add("hide");
+        oStep.style.display = "none";
+      }
+      if (pStep) {
+        pStep.classList.remove("hide");
+        pStep.style.display = "block";
+      }
+      if (lMsg) lMsg.textContent = "";
+    }
+
+    function gmCompleteLogin() {
+      var lCard = document.getElementById("login-card");
+      if (lCard) {
+        lCard.classList.add("hide");
+        lCard.style.display = "none";
+      }
+      var showIds = ["hero-map-wrap", "wallet-card", "book-card", "rides-card"];
+      for (var i = 0; i < showIds.length; i++) {
+        var el = document.getElementById(showIds[i]);
+        if (el) {
+          el.classList.remove("hide");
+          el.style.display = "block";
+        }
+      }
+      var hb = document.getElementById("hdr-btns");
+      if (hb) hb.style.display = "flex";
+      if (typeof window.gmAfterLoginInit === "function") {
+        try { window.gmAfterLoginInit(); } catch (e) {}
+      }
+    }
+  </script>
+
+  <script>
     var curV = "Bike", curR = 7, curM = 25;
     var fareDelta = 0;
     var curPay = "Cash";
@@ -520,20 +578,6 @@
     var autoKm = 7.5;
 
     function byId(id) { return document.getElementById(id); }
-
-    function showEl(id, displayVal) {
-      var el = byId(id);
-      if (!el) return;
-      el.classList.remove("hide");
-      el.style.display = displayVal || "block";
-    }
-
-    function hideEl(id) {
-      var el = byId(id);
-      if (!el) return;
-      el.classList.add("hide");
-      el.style.display = "none";
-    }
 
     function haversineRoadKm(a, b) {
       var R = 6371;
@@ -776,43 +820,20 @@
       } catch (e) {}
     }
 
-    function gmShowOtpStep() {
-      hideEl("step-phone");
-      showEl("step-otp", "block");
-      if (byId("otp-inp")) byId("otp-inp").value = "123456";
-      if (byId("login-msg")) {
-        byId("login-msg").style.color = "#0fa968";
-        byId("login-msg").textContent = "OTP 123456 sent.";
-      }
-    }
-
-    function gmBackToPhone() {
-      hideEl("step-otp");
-      showEl("step-phone", "block");
-      if (byId("login-msg")) byId("login-msg").textContent = "";
-    }
-
-    function gmCompleteLogin() {
-      hideEl("login-card");
-      showEl("hdr-btns", "flex");
-      showEl("hero-map-wrap", "block");
-      showEl("wallet-card", "block");
-      showEl("book-card", "block");
-      showEl("rides-card", "block");
-
+    window.gmAfterLoginInit = function () {
       try { recordCustomerOwnerLog(); } catch (e) {}
       try { loadWallet(); } catch (e) {}
       try { calcFareNow(); } catch (e) {}
       try { drawRidesNow(); } catch (e) {}
       try { initHeroMap(); } catch (e) {}
       try { onRouteInputChange(); } catch (e) {}
-    }
+    };
 
     function toggleProfile() {
       var pc = byId("profile-card");
       if (!pc) return;
-      if (pc.classList.contains("hide")) showEl("profile-card", "block");
-      else hideEl("profile-card");
+      pc.classList.toggle("hide");
+      pc.style.display = pc.classList.contains("hide") ? "none" : "block";
     }
 
     function saveProfileNow() {
@@ -1094,15 +1115,13 @@
     }
 
     function logout() {
-      hideEl("hdr-btns");
-      hideEl("profile-card");
-      hideEl("hero-map-wrap");
-      hideEl("wallet-card");
-      hideEl("book-card");
-      hideEl("rides-card");
-      hideEl("step-otp");
-      showEl("step-phone", "block");
-      showEl("login-card", "block");
+      if (byId("hdr-btns")) byId("hdr-btns").style.display = "none";
+      ["profile-card", "hero-map-wrap", "wallet-card", "book-card", "rides-card"].forEach(function (id) {
+        if (byId(id)) { byId(id).classList.add("hide"); byId(id).style.display = "none"; }
+      });
+      if (byId("step-otp")) { byId("step-otp").classList.add("hide"); byId("step-otp").style.display = "none"; }
+      if (byId("step-phone")) { byId("step-phone").classList.remove("hide"); byId("step-phone").style.display = "block"; }
+      if (byId("login-card")) { byId("login-card").classList.remove("hide"); byId("login-card").style.display = "block"; }
       if (byId("login-msg")) byId("login-msg").textContent = "";
     }
 
@@ -1217,4 +1236,3 @@
   </script>
 </body>
 </html>
-
