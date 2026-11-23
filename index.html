@@ -48,7 +48,7 @@
     .hero-map-card { border-radius: 22px; overflow: hidden; margin-bottom: 14px; box-shadow: 0 10px 28px rgba(24, 24, 43, 0.09); border: 1px solid #dce1ed; background: #fff; }
     .map-stage { position: relative; height: 255px; width: 100%; background: linear-gradient(160deg, #dce8f8, #eef5ec); overflow: hidden; }
     #main-hero-map { height: 100%; width: 100%; position: relative; z-index: 2; }
-    .map-grid-fallback { position: absolute; inset: 0; z-index: 1; background-image: linear-gradient(to right, rgba(24,24,43,0.07) 1px, transparent 1px), linear-gradient(to bottom, rgba(24,24,43,0.07) 1px, transparent 1px); background-size: 28px 28px; display: flex; align-items: flex-end; padding: 10px; }
+    .map-grid-fallback { position: absolute; inset: 0; z-index: 1; background-image: linear-gradient(to right, rgba(24,24,43,0.07) 1px, transparent 1px), linear-gradient(to bottom, rgba(24,24,43,0.07) 1px, transparent 1px); background-size: 28px 28px; display: flex; align-items: flex-end; padding: 10px; pointer-events: none; }
     .map-coord-pill { background: rgba(24,24,43,0.82); color: #fff; padding: 4px 9px; border-radius: 8px; font-size: 10px; font-weight: 700; }
     .map-zoom-dock { position: absolute; right: 10px; top: 10px; z-index: 450; display: flex; flex-direction: column; gap: 6px; }
     .z-btn { width: 36px; height: 36px; border-radius: 10px; border: 1.5px solid #18182b; background: rgba(255, 255, 255, 0.96); color: #18182b; font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(24, 24, 43, 0.16); }
@@ -133,7 +133,7 @@
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Cloud Live • v48</p>
+      <p>Cloud Live • v49</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -479,53 +479,6 @@
   </div>
 
   <script>
-    function gmEl(id) { return document.getElementById(id); }
-
-    function gmToggleView(id, hideIt, disp) {
-      var el = gmEl(id);
-      if (!el) return;
-      if (hideIt) {
-        el.classList.add("hide");
-        el.style.display = "none";
-      } else {
-        el.classList.remove("hide");
-        el.style.display = disp || "block";
-      }
-    }
-
-    function gmShowOtpStep() {
-      gmToggleView("step-phone", true);
-      gmToggleView("step-otp", false, "block");
-      if (gmEl("otp-inp")) gmEl("otp-inp").value = "123456";
-      if (gmEl("login-msg")) {
-        gmEl("login-msg").style.color = "#0fa968";
-        gmEl("login-msg").textContent = "OTP 123456 sent.";
-      }
-    }
-
-    function gmBackToPhone() {
-      gmToggleView("step-otp", true);
-      gmToggleView("step-phone", false, "block");
-      if (gmEl("login-msg")) gmEl("login-msg").textContent = "";
-    }
-
-    function gmCompleteLogin(skipSave) {
-      if (!skipSave) {
-        try { localStorage.setItem("gm_logged_in_v1", "1"); } catch (e) {}
-      }
-      gmToggleView("login-card", true);
-      gmToggleView("hdr-btns", false, "flex");
-      gmToggleView("hero-map-wrap", false, "block");
-      gmToggleView("wallet-card", false, "block");
-      gmToggleView("book-card", false, "block");
-      gmToggleView("rides-card", false, "block");
-      if (typeof window.gmStartApp === "function") {
-        try { window.gmStartApp(); } catch (err) {}
-      }
-    }
-  </script>
-
-  <script>
     var curV = "Bike", curR = 7, curM = 25;
     var fareDelta = 0, curPay = "Cash", pinMode = null, nightManualOverride = null;
     var customerPhone = "", customerName = "", walletBalance = 0;
@@ -568,6 +521,49 @@
     var pickupCoords = { lat: 30.8615, lng: 75.8150 };
     var dropCoords = { lat: 30.9120, lng: 75.8540 };
     var routeCoords = null, autoKm = 7.5;
+
+    function gmEl(id) { return document.getElementById(id); }
+
+    function gmToggleView(id, hideIt, disp) {
+      var el = gmEl(id);
+      if (!el) return;
+      if (hideIt) {
+        el.classList.add("hide");
+        el.style.display = "none";
+      } else {
+        el.classList.remove("hide");
+        el.style.display = disp || "block";
+      }
+    }
+
+    function gmShowOtpStep() {
+      gmToggleView("step-phone", true);
+      gmToggleView("step-otp", false, "block");
+      if (gmEl("otp-inp")) gmEl("otp-inp").value = "123456";
+      if (gmEl("login-msg")) {
+        gmEl("login-msg").style.color = "#0fa968";
+        gmEl("login-msg").textContent = "OTP 123456 sent.";
+      }
+    }
+
+    function gmBackToPhone() {
+      gmToggleView("step-otp", true);
+      gmToggleView("step-phone", false, "block");
+      if (gmEl("login-msg")) gmEl("login-msg").textContent = "";
+    }
+
+    function gmCompleteLogin(skipSave) {
+      if (!skipSave) {
+        try { localStorage.setItem("gm_logged_in_v1", "1"); } catch (e) {}
+      }
+      gmToggleView("login-card", true);
+      gmToggleView("hdr-btns", false, "flex");
+      gmToggleView("hero-map-wrap", false, "block");
+      gmToggleView("wallet-card", false, "block");
+      gmToggleView("book-card", false, "block");
+      gmToggleView("rides-card", false, "block");
+      gmStartApp();
+    }
 
     function haversineRoadKm(a, b) {
       var R = 6371, dLat = (b.lat - a.lat) * Math.PI / 180, dLng = (b.lng - a.lng) * Math.PI / 180;
@@ -612,7 +608,7 @@
               var km = Math.max(1.0, Math.round((rt.distance / 1000) * 10) / 10);
               var pts = (rt.geometry && Array.isArray(rt.geometry.coordinates)) ? rt.geometry.coordinates.map(function (c) { return [c[1], c[0]]; }) : null;
               cb({ km: km, pts: pts });
-            } else cb(null);
+            } else { cb(null); }
           })
           .catch(function () { cb(null); });
       } catch (e) { cb(null); }
@@ -628,17 +624,28 @@
     function applyPinAtCoords(mode, lat, lng) {
       try {
         var rLat = Number(lat.toFixed(4)), rLng = Number(lng.toFixed(4));
-        if (mode === "pickup") { pickupCoords = { lat: rLat, lng: rLng }; if (gmEl("pickup-inp")) gmEl("pickup-inp").value = "Pinned (" + rLat + ", " + rLng + ")"; }
-        else { dropCoords = { lat: rLat, lng: rLng }; if (gmEl("drop-inp")) gmEl("drop-inp").value = "Pinned (" + rLat + ", " + rLng + ")"; }
+        if (mode === "pickup") {
+          pickupCoords = { lat: rLat, lng: rLng };
+          if (gmEl("pickup-inp")) gmEl("pickup-inp").value = "Pinned (" + rLat + ", " + rLng + ")";
+        } else {
+          dropCoords = { lat: rLat, lng: rLng };
+          if (gmEl("drop-inp")) gmEl("drop-inp").value = "Pinned (" + rLat + ", " + rLng + ")";
+        }
         pinMode = null;
         if (gmEl("btn-pin-pickup")) gmEl("btn-pin-pickup").className = "pin-action-btn";
         if (gmEl("btn-pin-drop")) gmEl("btn-pin-drop").className = "pin-action-btn";
         if (gmEl("pin-mode-note")) gmEl("pin-mode-note").textContent = (mode === "pickup" ? "Pickup pin set!" : "Drop pin set!");
         routeCoords = null;
         autoKm = haversineRoadKm(pickupCoords, dropCoords);
-        refreshHeroMapRoute(); calcFareNow();
+        refreshHeroMapRoute();
+        calcFareNow();
         fetchOsrmRoadRoute(pickupCoords, dropCoords, function (osrm) {
-          if (osrm && osrm.km) { autoKm = osrm.km; routeCoords = osrm.pts; refreshHeroMapRoute(); calcFareNow(); }
+          if (osrm && osrm.km) {
+            autoKm = osrm.km;
+            routeCoords = osrm.pts;
+            refreshHeroMapRoute();
+            calcFareNow();
+          }
         });
       } catch (e) {}
     }
@@ -664,11 +671,23 @@
     }
 
     function zoomHeroMap(delta) {
-      try { if (!heroMap) initHeroMap(); if (!heroMap) return; heroMap.invalidateSize(); if (delta > 0) heroMap.zoomIn(); else heroMap.zoomOut(); updateZoomReadout(); } catch (e) {}
+      try {
+        if (!heroMap) initHeroMap();
+        if (!heroMap) return;
+        heroMap.invalidateSize();
+        if (delta > 0) heroMap.zoomIn(); else heroMap.zoomOut();
+        updateZoomReadout();
+      } catch (e) {}
     }
 
     function fitHeroMap() {
-      try { if (!heroMap) initHeroMap(); if (!heroMap) return; heroMap.invalidateSize(); heroMap.fitBounds([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { padding: [24, 24] }); updateZoomReadout(); } catch (e) {}
+      try {
+        if (!heroMap) initHeroMap();
+        if (!heroMap) return;
+        heroMap.invalidateSize();
+        heroMap.fitBounds([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { padding: [24, 24] });
+        updateZoomReadout();
+      } catch (e) {}
     }
 
     function refreshHeroMapRoute() {
@@ -699,16 +718,19 @@
         if (gmEl("auto-dist-val")) gmEl("auto-dist-val").textContent = autoKm + " km";
         if (gmEl("hero-dist-badge")) gmEl("hero-dist-badge").textContent = autoKm + " km";
         if (gmEl("hero-route-lbl")) gmEl("hero-route-lbl").textContent = (pTxt || "Pickup") + " -> " + (dTxt || "Drop");
-        refreshHeroMapRoute(); calcFareNow();
+        refreshHeroMapRoute();
+        calcFareNow();
         clearTimeout(routeFetchTimer);
         routeFetchTimer = setTimeout(function () {
           function afterCoordsReady() {
             fetchOsrmRoadRoute(pickupCoords, dropCoords, function (osrm) {
               if (osrm && osrm.km) {
-                autoKm = osrm.km; routeCoords = osrm.pts;
+                autoKm = osrm.km;
+                routeCoords = osrm.pts;
                 if (gmEl("auto-dist-val")) gmEl("auto-dist-val").textContent = autoKm + " km";
                 if (gmEl("hero-dist-badge")) gmEl("hero-dist-badge").textContent = autoKm + " km";
-                refreshHeroMapRoute(); calcFareNow();
+                refreshHeroMapRoute();
+                calcFareNow();
               }
             });
           }
@@ -750,8 +772,11 @@
 
     function addWalletMoney(amt) {
       try {
-        loadWallet(); var n = Number(amt || 0); if (n <= 0) return;
-        walletBalance += Math.round(n); saveWallet();
+        loadWallet();
+        var n = Number(amt || 0);
+        if (n <= 0) return;
+        walletBalance += Math.round(n);
+        saveWallet();
         if (gmEl("wallet-msg")) gmEl("wallet-msg").textContent = "₹" + Math.round(n) + " added to Musafir Wallet.";
       } catch (e) {}
     }
@@ -760,7 +785,8 @@
       try {
         var inp = gmEl("wallet-add-inp"), v = inp ? Number(inp.value || 0) : 0;
         if (v <= 0) { if (gmEl("wallet-msg")) gmEl("wallet-msg").textContent = "Enter valid amount."; return; }
-        addWalletMoney(v); if (inp) inp.value = "";
+        addWalletMoney(v);
+        if (inp) inp.value = "";
       } catch (e) {}
     }
 
@@ -784,7 +810,8 @@
         for (var i = 0; i < ownerAccounts.length; i++) {
           if (ownerAccounts[i].type === "Customer" && ownerAccounts[i].phone === customerPhone) {
             if (customerName) ownerAccounts[i].name = customerName;
-            ownerAccounts[i].lastSeen = new Date().toLocaleString(); found = true;
+            ownerAccounts[i].lastSeen = new Date().toLocaleString();
+            found = true;
           }
         }
         if (!found) ownerAccounts.unshift({ type: "Customer", name: customerName || "Passenger", phone: customerPhone, time: new Date().toLocaleString() });
@@ -792,24 +819,28 @@
       } catch (e) {}
     }
 
-    window.gmStartApp = function () {
+    function gmStartApp() {
       try { recordCustomerOwnerLog(); } catch (e) {}
       try { loadWallet(); } catch (e) {}
       try { calcFareNow(); } catch (e) {}
       try { drawRidesNow(); } catch (e) {}
       try { initHeroMap(); } catch (e) {}
       try { onRouteInputChange(); } catch (e) {}
-    };
+    }
 
     function toggleProfile() {
-      var pc = gmEl("profile-card"); if (!pc) return;
-      if (pc.classList.contains("hide")) gmToggleView("profile-card", false, "block"); else gmToggleView("profile-card", true);
+      var pc = gmEl("profile-card");
+      if (!pc) return;
+      if (pc.classList.contains("hide")) gmToggleView("profile-card", false, "block");
+      else gmToggleView("profile-card", true);
     }
 
     function saveProfileNow() {
       try {
-        var n = gmEl("p-name") ? gmEl("p-name").value.trim() : ""; if (!n) return;
-        customerName = n; recordCustomerOwnerLog();
+        var n = gmEl("p-name") ? gmEl("p-name").value.trim() : "";
+        if (!n) return;
+        customerName = n;
+        recordCustomerOwnerLog();
         if (gmEl("book-title")) gmEl("book-title").textContent = "Hi " + n + ", where in Punjab?";
         if (gmEl("profile-msg")) gmEl("profile-msg").textContent = "Profile saved!";
       } catch (e) {}
@@ -819,7 +850,9 @@
       try {
         document.querySelectorAll(".v-row").forEach(function (r) { r.classList.remove("active"); });
         el.classList.add("active");
-        curV = el.getAttribute("data-v") || "Bike"; curR = Number(el.getAttribute("data-r") || 7); curM = Number(el.getAttribute("data-m") || 25);
+        curV = el.getAttribute("data-v") || "Bike";
+        curR = Number(el.getAttribute("data-r") || 7);
+        curM = Number(el.getAttribute("data-m") || 25);
         fareDelta = 0;
         document.querySelectorAll(".adj-btn").forEach(function (b) { b.classList.remove("on"); });
         if (gmEl("adj-zero")) gmEl("adj-zero").classList.add("on");
@@ -856,7 +889,8 @@
         if (gmEl("selected-pay-lbl")) gmEl("selected-pay-lbl").textContent = curPay;
         document.querySelectorAll("#payment-modal .pay-opt-row").forEach(function (row) { row.classList.remove("active"); });
         el.classList.add("active");
-        calcFareNow(); closePaymentModal();
+        calcFareNow();
+        closePaymentModal();
       } catch (e) {}
     }
 
@@ -895,7 +929,8 @@
 
     function bookRideNow() {
       try {
-        recordCustomerOwnerLog(); loadWallet();
+        recordCustomerOwnerLog();
+        loadWallet();
         var pickup = (gmEl("pickup-inp") && gmEl("pickup-inp").value.trim()) || "Threeke, Ludhiana";
         var drop = (gmEl("drop-inp") && gmEl("drop-inp").value.trim()) || "Clock Tower, Ludhiana";
         var km = autoKm, nOn = isNightActive(), nMult = nOn ? 1.5 : 1.0;
@@ -910,15 +945,33 @@
         var generatedPin = String(Math.floor(1000 + Math.random() * 9000));
         rides.unshift({
           id: "GM" + Math.floor(100 + Math.random() * 900),
-          rideOtp: generatedPin, pin: generatedPin,
-          customerPhone: customerPhone || "+918564885647", customerName: customerName || "Passenger",
-          v: curV, payMode: curPay, km: km, total: total, isNight: nOn,
-          pickup: pickup, drop: drop,
-          pLat: pickupCoords.lat, pLng: pickupCoords.lng, dLat: dropCoords.lat, dLng: dropCoords.lng,
-          status: "Searching Driver", riderLat: pickupCoords.lat, riderLng: pickupCoords.lng,
-          walletPaid: false, driverRating: 0, driverFeedback: "", driverBlockedByCustomer: false,
-          customerRating: 0, customerFeedback: "", customerBlockedByDriver: false,
-          ownerBlockedRole: "", passengerRatedPromptSeen: false
+          rideOtp: generatedPin,
+          pin: generatedPin,
+          customerPhone: customerPhone || "+918564885647",
+          customerName: customerName || "Passenger",
+          v: curV,
+          payMode: curPay,
+          km: km,
+          total: total,
+          isNight: nOn,
+          pickup: pickup,
+          drop: drop,
+          pLat: pickupCoords.lat,
+          pLng: pickupCoords.lng,
+          dLat: dropCoords.lat,
+          dLng: dropCoords.lng,
+          status: "Searching Driver",
+          riderLat: pickupCoords.lat,
+          riderLng: pickupCoords.lng,
+          walletPaid: false,
+          driverRating: 0,
+          driverFeedback: "",
+          driverBlockedByCustomer: false,
+          customerRating: 0,
+          customerFeedback: "",
+          customerBlockedByDriver: false,
+          ownerBlockedRole: "",
+          passengerRatedPromptSeen: false
         });
         syncCloudRides();
         if (gmEl("book-msg")) gmEl("book-msg").textContent = curV + " booked (" + km + " km • " + curPay + ") • ₹" + total;
@@ -930,8 +983,12 @@
     function closeCancelModal() { cancelTargetIdx = -1; if (gmEl("cancel-modal")) gmEl("cancel-modal").classList.remove("show"); }
 
     function confirmCancelRide(reason) {
-      if (cancelTargetIdx !== -1 && rides[cancelTargetIdx]) { rides[cancelTargetIdx].status = "Cancelled (" + reason + ")"; syncCloudRides(); }
-      closeCancelModal(); drawRidesNow();
+      if (cancelTargetIdx !== -1 && rides[cancelTargetIdx]) {
+        rides[cancelTargetIdx].status = "Cancelled (" + reason + ")";
+        syncCloudRides();
+      }
+      closeCancelModal();
+      drawRidesNow();
     }
 
     function statusProgress(st) {
@@ -969,7 +1026,10 @@
         var aPt = (pMaps[idx] && pMaps[idx].aPt) ? pMaps[idx].aPt : pickupCoords;
         var bPt = (pMaps[idx] && pMaps[idx].bPt) ? pMaps[idx].bPt : dropCoords;
         function updatePos(lat, lng, label) {
-          if (pMaps[idx] && pMaps[idx].marker && pMaps[idx].map) { pMaps[idx].marker.setLatLng([lat, lng]); pMaps[idx].map.panTo([lat, lng]); }
+          if (pMaps[idx] && pMaps[idx].marker && pMaps[idx].map) {
+            pMaps[idx].marker.setLatLng([lat, lng]);
+            pMaps[idx].map.panTo([lat, lng]);
+          }
           if (stEl) stEl.textContent = label + " (" + lat.toFixed(4) + ", " + lng.toFixed(4) + ")";
         }
         if (navigator.geolocation) {
@@ -977,7 +1037,8 @@
         }
         var step = 0;
         pTrackTimers[idx] = setInterval(function () {
-          step += 1; var t = Math.min(1, step / 8);
+          step += 1;
+          var t = Math.min(1, step / 8);
           updatePos(aPt.lat + (bPt.lat - aPt.lat) * t, aPt.lng + (bPt.lng - aPt.lng) * t, t >= 1 ? "Reached Drop" : "Rider Moving Live");
           if (t >= 1) { clearInterval(pTrackTimers[idx]); delete pTrackTimers[idx]; }
         }, 650);
@@ -986,8 +1047,10 @@
 
     function openPassengerEndScreen(idx) {
       try {
-        var r = rides[idx]; if (!r) return;
-        currentEndIdx = idx; var pm = r.payMode || "Cash";
+        var r = rides[idx];
+        if (!r) return;
+        currentEndIdx = idx;
+        var pm = r.payMode || "Cash";
         if (gmEl("p-end-amt")) gmEl("p-end-amt").textContent = "₹" + (r.total || 0);
         if (gmEl("p-end-route")) gmEl("p-end-route").textContent = (r.v || "Ride") + " • " + pm + " • " + (r.pickup || "Pickup") + " -> " + (r.drop || "Drop") + " (" + (r.km || 0) + " km)";
         if (gmEl("p-feedback-inp")) gmEl("p-feedback-inp").value = r.driverFeedback || "";
@@ -1001,20 +1064,32 @@
     }
 
     function setDriverRating(stars) {
-      if (currentEndIdx !== -1 && rides[currentEndIdx]) { rides[currentEndIdx].driverRating = stars; rides[currentEndIdx].passengerRatedPromptSeen = true; syncCloudRides(); }
-      document.querySelectorAll("#p-end-screen .star-btn").forEach(function (btn, i) { if (i + 1 <= stars) btn.classList.add("picked"); else btn.classList.remove("picked"); });
+      if (currentEndIdx !== -1 && rides[currentEndIdx]) {
+        rides[currentEndIdx].driverRating = stars;
+        rides[currentEndIdx].passengerRatedPromptSeen = true;
+        syncCloudRides();
+      }
+      document.querySelectorAll("#p-end-screen .star-btn").forEach(function (btn, i) {
+        if (i + 1 <= stars) btn.classList.add("picked"); else btn.classList.remove("picked");
+      });
       if (gmEl("p-rate-msg")) gmEl("p-rate-msg").textContent = "Rated " + stars + " ★";
     }
 
     function saveDriverFeedbackNow() {
       var fb = gmEl("p-feedback-inp") ? gmEl("p-feedback-inp").value.trim() : "";
-      if (currentEndIdx !== -1 && rides[currentEndIdx]) { rides[currentEndIdx].driverFeedback = fb; syncCloudRides(); }
+      if (currentEndIdx !== -1 && rides[currentEndIdx]) {
+        rides[currentEndIdx].driverFeedback = fb;
+        syncCloudRides();
+      }
       if (gmEl("p-rate-msg")) gmEl("p-rate-msg").textContent = fb ? "Feedback saved" : "Tap stars & add feedback";
     }
 
     function toggleBlockDriverNow() {
       if (currentEndIdx !== -1 && rides[currentEndIdx]) {
-        var r = rides[currentEndIdx]; r.driverBlockedByCustomer = !r.driverBlockedByCustomer; r.passengerRatedPromptSeen = true; syncCloudRides();
+        var r = rides[currentEndIdx];
+        r.driverBlockedByCustomer = !r.driverBlockedByCustomer;
+        r.passengerRatedPromptSeen = true;
+        syncCloudRides();
         if (gmEl("p-block-btn")) gmEl("p-block-btn").textContent = r.driverBlockedByCustomer ? "Unblock Driver" : "Block Driver";
         if (gmEl("p-rate-msg")) gmEl("p-rate-msg").textContent = r.driverBlockedByCustomer ? "Driver blocked by customer" : "Driver unblocked";
       }
@@ -1022,40 +1097,70 @@
 
     function closePassengerEndScreen() {
       saveDriverFeedbackNow();
-      if (currentEndIdx !== -1 && rides[currentEndIdx]) { rides[currentEndIdx].passengerRatedPromptSeen = true; syncCloudRides(); }
+      if (currentEndIdx !== -1 && rides[currentEndIdx]) {
+        rides[currentEndIdx].passengerRatedPromptSeen = true;
+        syncCloudRides();
+      }
       if (gmEl("p-end-screen")) gmEl("p-end-screen").classList.remove("show");
-      currentEndIdx = -1; drawRidesNow();
+      currentEndIdx = -1;
+      drawRidesNow();
     }
 
     function drawRidesNow() {
       try {
         loadWallet();
-        var box = gmEl("rides-list"); if (!box) return;
-        if (!rides.length) { box.innerHTML = "<p class='sub'>No rides yet.</p>"; return; }
+        var box = gmEl("rides-list");
+        if (!box) return;
+        if (!rides.length) {
+          box.innerHTML = "<p class='sub'>No rides yet.</p>";
+          return;
+        }
         var html = "", showIdx = -1, changed = false;
         for (var i = 0; i < rides.length; i++) {
           var r = rides[i] || {};
           var rawPin = r.rideOtp || r.pin;
-          if (!rawPin) { rawPin = String(Math.floor(1000 + Math.random() * 9000)); r.rideOtp = rawPin; r.pin = rawPin; changed = true; }
+          if (!rawPin) {
+            rawPin = String(Math.floor(1000 + Math.random() * 9000));
+            r.rideOtp = rawPin;
+            r.pin = rawPin;
+            changed = true;
+          }
           var st = String(r.status || "Searching Driver"), pm = r.payMode || "Cash";
-          var isComp = st.toLowerCase().indexOf("complet") !== -1, isCanc = st.toLowerCase().indexOf("cancel") !== -1;
+          var isComp = st.toLowerCase().indexOf("complet") !== -1;
+          var isCanc = st.toLowerCase().indexOf("cancel") !== -1;
           if (isComp && pm === "Wallet" && !r.walletPaid) {
             var amt = Number(r.total || 0);
-            if (walletBalance >= amt) { walletBalance -= amt; r.walletPaid = true; changed = true; saveWallet(); }
+            if (walletBalance >= amt) {
+              walletBalance -= amt;
+              r.walletPaid = true;
+              changed = true;
+              saveWallet();
+            }
           }
           if (isComp && !r.passengerRatedPromptSeen && showIdx === -1) showIdx = i;
           var dStr = String(rawPin).padStart(4, "0");
-          var pinHtml = (!isComp && !isCanc) ? "<div class='pin-row'><span style='font-size:11px;font-weight:800;color:#474d6b;'>START RIDE PIN</span><div class='pin-digits mono'><span class='pin-box'>" + dStr[0] + "</span><span class='pin-box'>" + dStr[1] + "</span><span class='pin-box'>" + dStr[2] + "</span><span class='pin-box'>" + dStr[3] + "</span></div></div>" : "";
-          var fbLine = r.driverFeedback ? "<div style='color:#474d6b;font-size:11px;margin-top:6px;'>Feedback: " + r.driverFeedback + (r.driverRating ? " (" + r.driverRating + " ★)" : "") + "</div>" : (r.driverRating ? "<div style='color:#474d6b;font-size:11px;margin-top:6px;'>Rating: " + r.driverRating + " ★</div>" : "");
-          var blkTag = r.driverBlockedByCustomer ? "<div class='blk-tag'>Blocked by Customer</div>" : (r.ownerBlockedRole ? "<div class='blk-tag'>Blocked by Owner</div>" : "");
-          var actionHtml = isComp ? '<button type="button" class="btn btn-primary" onclick="openPassengerEndScreen(' + i + ')">Rate, Feedback & Block</button>' : (!isCanc ? '<button type="button" class="btn btn-soft" onclick="openCancelModal(' + i + ')">Cancel Ride</button>' : "");
+          var pinHtml = (!isComp && !isCanc)
+            ? '<div class="pin-row"><span style="font-size:11px;font-weight:800;color:#474d6b;">START RIDE PIN</span><div class="pin-digits mono"><span class="pin-box">' + dStr[0] + '</span><span class="pin-box">' + dStr[1] + '</span><span class="pin-box">' + dStr[2] + '</span><span class="pin-box">' + dStr[3] + '</span></div></div>'
+            : '';
+          var fbLine = r.driverFeedback
+            ? '<div style="color:#474d6b;font-size:11px;margin-top:6px;">Feedback: ' + r.driverFeedback + (r.driverRating ? ' (' + r.driverRating + ' ★)' : '') + '</div>'
+            : (r.driverRating ? '<div style="color:#474d6b;font-size:11px;margin-top:6px;">Rating: ' + r.driverRating + ' ★</div>' : '');
+          var blkTag = r.driverBlockedByCustomer
+            ? '<div class="blk-tag">Blocked by Customer</div>'
+            : (r.ownerBlockedRole ? '<div class="blk-tag">Blocked by Owner</div>' : '');
+          var actionHtml = isComp
+            ? '<button type="button" class="btn btn-primary" onclick="openPassengerEndScreen(' + i + ')">Rate, Feedback & Block</button>'
+            : (!isCanc ? '<button type="button" class="btn btn-soft" onclick="openCancelModal(' + i + ')">Cancel Ride</button>' : '');
 
-          html += "<div class='ride-item'><div class='r-top'><span>" + (r.v || "Ride") + " • <span class='mono'>₹" + (r.total || 0) + "</span> • " + pm + "</span><span class='r-badge'>" + st + "</span></div>" +
-            "<div style='font-size:12px;color:#474d6b;margin-top:4px;'>" + (r.pickup || "Pickup") + " -> " + (r.drop || "Drop") + " (<span class='mono'>" + (r.km || 0) + " km</span>)</div>" +
-            "<div style='font-size:11px;color:#676e8a;margin-top:2px;'>Platform Charges</div>" +
+          html += '<div class="ride-item">' +
+            '<div class="r-top"><span>' + (r.v || "Ride") + ' • <span class="mono">₹' + (r.total || 0) + '</span> • ' + pm + '</span><span class="r-badge">' + st + '</span></div>' +
+            '<div style="font-size:12px;color:#474d6b;margin-top:4px;">' + (r.pickup || "Pickup") + ' -> ' + (r.drop || "Drop") + ' (<span class="mono">' + (r.km || 0) + ' km</span>)</div>' +
+            '<div style="font-size:11px;color:#676e8a;margin-top:2px;">Platform Charges</div>' +
             pinHtml + blkTag + fbLine +
-            "<div class='live-map-box'><div id='p-live-map-" + i + "' class='live-map-el'></div><div class='live-map-ft'><span id='p-map-st-" + i + "'>Rider Live Map • " + st + "</span><button type="button" class="mini-btn" onclick="startLiveRiderWatch(" + i + ")">Track Rider</button></div></div>" +
-            actionHtml + "</div>";
+            '<div class="live-map-box"><div id="p-live-map-' + i + '" class="live-map-el"></div>' +
+            '<div class="live-map-ft"><span id="p-map-st-' + i + '">Rider Live Map • ' + st + '</span><button type="button" class="mini-btn" onclick="startLiveRiderWatch(' + i + ')">Track Rider</button></div></div>' +
+            actionHtml +
+            '</div>';
         }
         if (changed) syncCloudRides();
         box.innerHTML = html;
@@ -1077,11 +1182,13 @@
     try { var s = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]"); if (Array.isArray(s)) rides = s; } catch (e) {}
     try { var a = JSON.parse(localStorage.getItem("gm_owner_accounts_v1") || "[]"); if (Array.isArray(a)) ownerAccounts = a; } catch (e) {}
 
-    try {
-      if (localStorage.getItem("gm_logged_in_v1") === "1") {
-        gmCompleteLogin(true);
-      }
-    } catch (e) {}
+    window.addEventListener("DOMContentLoaded", function () {
+      try {
+        if (localStorage.getItem("gm_logged_in_v1") === "1") {
+          gmCompleteLogin(true);
+        }
+      } catch (e) {}
+    });
   </script>
 
   <script type="module">
