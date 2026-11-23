@@ -119,7 +119,7 @@
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Cloud Live • v31</p>
+      <p>Cloud Live • v32</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -138,13 +138,13 @@
       <div id="step-phone">
         <label for="phone-inp">Mobile Number</label>
         <input id="phone-inp" type="tel" value="+918564885647" />
-        <button type="button" class="btn btn-primary" onclick="sendOtpNow()">Send OTP</button>
+        <button type="button" id="send-otp-btn" class="btn btn-primary" onclick="sendOtpNow()">Send OTP</button>
       </div>
       <div id="step-otp" class="hide">
         <label for="otp-inp">Enter 6-Digit OTP</label>
         <input id="otp-inp" class="mono" type="text" maxlength="6" value="123456" />
-        <button type="button" class="btn btn-mint" onclick="verifyOtpNow()">Verify & Continue</button>
-        <button type="button" class="btn btn-soft" onclick="backPhoneNow()">Change Number</button>
+        <button type="button" id="verify-otp-btn" class="btn btn-mint" onclick="verifyOtpNow()">Verify & Continue</button>
+        <button type="button" id="back-phone-btn" class="btn btn-soft" onclick="backPhoneNow()">Change Number</button>
       </div>
       <div id="login-msg" class="msg"></div>
     </div>
@@ -659,31 +659,80 @@
     }
 
     function sendOtpNow() {
-      document.getElementById("step-phone").className = "hide";
-      document.getElementById("step-otp").className = "";
-      document.getElementById("otp-inp").value = "123456";
-      document.getElementById("login-msg").textContent = "OTP 123456 sent.";
+      try {
+        var phoneStep = document.getElementById("step-phone");
+        var otpStep = document.getElementById("step-otp");
+        var otpInp = document.getElementById("otp-inp");
+        var msgEl = document.getElementById("login-msg");
+        if (phoneStep) phoneStep.classList.add("hide");
+        if (otpStep) otpStep.classList.remove("hide");
+        if (otpInp) {
+          otpInp.value = "123456";
+          otpInp.focus();
+        }
+        if (msgEl) msgEl.textContent = "OTP 123456 sent.";
+      } catch (e) {
+        var msgFallback = document.getElementById("login-msg");
+        if (msgFallback) msgFallback.textContent = "OTP: 123456";
+      }
     }
 
     function backPhoneNow() {
-      document.getElementById("step-otp").className = "hide";
-      document.getElementById("step-phone").className = "";
-      document.getElementById("login-msg").textContent = "";
+      try {
+        var phoneStep = document.getElementById("step-phone");
+        var otpStep = document.getElementById("step-otp");
+        var msgEl = document.getElementById("login-msg");
+        if (otpStep) otpStep.classList.add("hide");
+        if (phoneStep) phoneStep.classList.remove("hide");
+        if (msgEl) msgEl.textContent = "";
+      } catch (e) {}
     }
 
     function verifyOtpNow() {
-      recordCustomerOwnerLog();
-      loadWallet();
-      document.getElementById("login-card").className = "sheet hide";
-      document.getElementById("hdr-btns").style.display = "flex";
-      document.getElementById("hero-map-wrap").className = "hero-map-card";
-      document.getElementById("wallet-card").className = "sheet";
-      document.getElementById("book-card").className = "sheet";
-      document.getElementById("rides-card").className = "sheet";
-      initHeroMap();
-      onRouteInputChange();
-      drawRidesNow();
+      try {
+        recordCustomerOwnerLog();
+        loadWallet();
+        var loginCard = document.getElementById("login-card");
+        var hdrBtns = document.getElementById("hdr-btns");
+        var heroWrap = document.getElementById("hero-map-wrap");
+        var walletCard = document.getElementById("wallet-card");
+        var bookCard = document.getElementById("book-card");
+        var ridesCard = document.getElementById("rides-card");
+        if (loginCard) loginCard.classList.add("hide");
+        if (hdrBtns) hdrBtns.style.display = "flex";
+        if (heroWrap) heroWrap.classList.remove("hide");
+        if (walletCard) walletCard.classList.remove("hide");
+        if (bookCard) bookCard.classList.remove("hide");
+        if (ridesCard) ridesCard.classList.remove("hide");
+        initHeroMap();
+        onRouteInputChange();
+        drawRidesNow();
+      } catch (e) {}
     }
+
+    document.addEventListener("DOMContentLoaded", function () {
+      var sendBtn = document.getElementById("send-otp-btn");
+      if (sendBtn) {
+        sendBtn.addEventListener("click", function (ev) {
+          ev.preventDefault();
+          sendOtpNow();
+        });
+      }
+      var verifyBtn = document.getElementById("verify-otp-btn");
+      if (verifyBtn) {
+        verifyBtn.addEventListener("click", function (ev) {
+          ev.preventDefault();
+          verifyOtpNow();
+        });
+      }
+      var backBtn = document.getElementById("back-phone-btn");
+      if (backBtn) {
+        backBtn.addEventListener("click", function (ev) {
+          ev.preventDefault();
+          backPhoneNow();
+        });
+      }
+    });
 
     function toggleProfile() { var pc = document.getElementById("profile-card"); pc.className = pc.className.indexOf("hide") > -1 ? "sheet" : "sheet hide"; }
 
