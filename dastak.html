@@ -539,16 +539,8 @@
       font-size: 0.84rem;
     }
 
-    .range-val {
-      color: var(--accent);
-      font-weight: 800;
-    }
-
-    input[type="range"] {
-      width: 100%;
-      accent-color: #22d3ee;
-      margin-bottom: 14px;
-    }
+    .range-val { color: var(--accent); font-weight: 800; }
+    input[type="range"] { width: 100%; accent-color: #22d3ee; margin-bottom: 14px; }
 
     .toggle-row {
       display: flex;
@@ -563,32 +555,52 @@
       font-weight: 600;
     }
 
-    .toggle-row input[type="checkbox"] {
-      width: 20px;
-      height: 20px;
-      accent-color: #22d3ee;
-    }
+    .toggle-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: #22d3ee; }
 
-    /* Chat */
+    /* Chat & Paid Delete Controls */
     .chat-messages {
       flex: 1;
       padding: 14px;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
-      gap: 10px;
+      gap: 12px;
     }
 
+    .msg-wrap {
+      display: flex;
+      flex-direction: column;
+      max-width: 80%;
+    }
+
+    .msg-wrap.them { align-self: flex-start; align-items: flex-start; }
+    .msg-wrap.me { align-self: flex-end; align-items: flex-end; }
+
     .msg {
-      max-width: 78%;
       padding: 11px 14px;
       border-radius: 16px;
       font-size: 0.9rem;
       line-height: 1.45;
+      word-break: break-word;
     }
 
-    .msg.them { background: var(--surface-2); align-self: flex-start; border-bottom-left-radius: 4px; }
-    .msg.me { background: var(--accent-grad); color: #04131c; align-self: flex-end; font-weight: 600; border-bottom-right-radius: 4px; }
+    .msg.them { background: var(--surface-2); border-bottom-left-radius: 4px; }
+    .msg.me { background: var(--accent-grad); color: #04131c; font-weight: 600; border-bottom-right-radius: 4px; }
+
+    .msg-del-btn {
+      margin-top: 4px;
+      background: none;
+      border: none;
+      font-size: 0.7rem;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 2px 4px;
+      color: var(--danger);
+    }
+
+    .msg-del-btn.locked {
+      color: var(--muted);
+    }
 
     .chat-input-bar {
       display: flex;
@@ -885,7 +897,7 @@
   <!-- XTRA PAYMENT MODAL -->
   <div class="modal" id="payModal">
     <div class="modal-header">
-      <strong>★ Dastak XTRA Profiles</strong>
+      <strong>★ Dastak XTRA Pass</strong>
       <button class="close-btn" onclick="closeModal('payModal')">Close</button>
     </div>
     <div class="modal-body">
@@ -894,8 +906,8 @@
         <div style="font-size:1.75rem; font-weight:900; margin:6px 0;">₹250 <span style="font-size:0.85rem; color:var(--muted); font-weight:600;">/ 1 Week</span></div>
         <ul style="font-size:0.82rem; color:#e2e8f0; line-height:1.65; padding-left:18px; margin-top:6px;">
           <li>10 km mein 40 free profiles ke baad <strong>600 XTRA Profiles</strong> unlock</li>
+          <li><strong>Sent Message Delete / Unsend:</strong> Bheje hue messages kabhi bhi delete karein</li>
           <li>50 km tak advanced distance aur full filters access</li>
-          <li>7 din tak bina rok-tok sabhi locked profiles dekhein</li>
         </ul>
       </div>
 
@@ -921,7 +933,7 @@
       </div>
 
       <button class="btn btn-xtra" style="width:100%;" id="payActionBtn" onclick="activateWeeklyPlan()">
-        Pay ₹250 & Unlock 600 XTRA Profiles
+        Pay ₹250 & Unlock XTRA Features
       </button>
     </div>
   </div>
@@ -969,7 +981,6 @@
     const namesList = ["Aarav", "Kabir", "Rohan", "Dev", "Ishaan", "Vikram", "Arjun", "Reyansh", "Karan", "Vihaan", "Siddharth", "Yash", "Manav", "Nikhil", "Raghav"];
     const tagsList = ["Coffee & Drives", "Hangout", "Late Night Chat", "Friendship"];
 
-    // 40 Free profiles (<=10 km) + 560 XTRA profiles (10.2 km - 50 km) = 600 Total Pool
     const profilesPool = Array.from({ length: 600 }, (_, idx) => {
       const i = idx + 1;
       const isXtra = i > 40;
@@ -1006,7 +1017,7 @@
     let chats = JSON.parse(localStorage.getItem("dastak_chats_v1") || "{}");
     let activeChatUser = null;
     let selectedPayMethod = "UPI";
-    let visibleXtraCount = 18; // Loads smoothly in chunks up to 600
+    let visibleXtraCount = 18;
 
     let filters = {
       quick: "all",
@@ -1043,8 +1054,8 @@
       document.getElementById("planStatusText").innerText = userAccount.hasWeeklyPlan ? "★ XTRA Active (600)" : "Free (40)";
       document.getElementById("headerXtraBtn").innerText = userAccount.hasWeeklyPlan ? "★ XTRA ON" : "★ XTRA";
       document.getElementById("payActionBtn").innerText = userAccount.hasWeeklyPlan
-        ? "✓ XTRA Plan Already Active (600 Profiles)"
-        : "Pay ₹250 & Unlock 600 XTRA Profiles";
+        ? "✓ XTRA Plan Already Active"
+        : "Pay ₹250 & Unlock XTRA Features";
 
       let activeFilterCount = 0;
       if (filters.maxDist < 50) activeFilterCount++;
@@ -1079,14 +1090,12 @@
       const xtraList = matching.filter(u => u.isXtra);
 
       if (freeList.length === 0 && xtraList.length === 0) {
-        grid.innerHTML = `<div class="grid-banner"><div><h4>Koi profile nahi mili</h4><p>Filters thode change karein ya Reset All par tap karein.</p></div><button class="btn btn-primary" style="padding:8px 12px; font-size:0.78rem;" onclick="resetFilters()">Reset</button></div>`;
+        grid.innerHTML = `<div class="grid-banner"><div><h4>Koi profile nahi mili</h4><p>Filters thode change karein ya Reset par tap karein.</p></div><button class="btn btn-primary" style="padding:8px 12px; font-size:0.78rem;" onclick="resetFilters()">Reset</button></div>`;
         return;
       }
 
-      // Render Free Nearby Profiles (<=10 km)
       freeList.forEach(user => grid.appendChild(createTile(user, false)));
 
-      // Render XTRA Section Banner + XTRA Profiles
       if (xtraList.length > 0) {
         const banner = document.createElement("div");
         banner.className = "grid-banner";
@@ -1094,7 +1103,7 @@
           banner.innerHTML = `
             <div>
               <h4>★ XTRA Profiles (${xtraList.length}+ aur nearby)</h4>
-              <p>40 free profiles ke baad 600 XTRA profiles kholne ke liye ₹250/week pass lein.</p>
+              <p>600 profiles + Sent Message Delete unlock karne ke liye ₹250/week pass lein.</p>
             </div>
             <button class="btn btn-xtra" style="padding:9px 13px; font-size:0.76rem; white-space:nowrap;" onclick="openPayModal()">Unlock ₹250</button>
           `;
@@ -1102,7 +1111,7 @@
           banner.innerHTML = `
             <div>
               <h4>★ Dastak XTRA Unlocked</h4>
-              <p>Aapke liye 600 profiles (50 km tak) poori tarah open hain.</p>
+              <p>600 profiles aur Sent Message Delete option active hai.</p>
             </div>
             <span class="status-pill verified">Active</span>
           `;
@@ -1275,15 +1284,51 @@
     }
 
     function renderMessages() {
+      if (!activeChatUser) return;
       const box = document.getElementById("chatMessages");
       box.innerHTML = "";
-      (chats[activeChatUser.id] || []).forEach(m => {
-        const div = document.createElement("div");
-        div.className = `msg ${m.sender}`;
-        div.innerText = m.text;
-        box.appendChild(div);
+      const list = chats[activeChatUser.id] || [];
+
+      list.forEach((m, idx) => {
+        const wrap = document.createElement("div");
+        wrap.className = `msg-wrap ${m.sender}`;
+
+        const bubble = document.createElement("div");
+        bubble.className = `msg ${m.sender}`;
+        bubble.innerText = m.text;
+        wrap.appendChild(bubble);
+
+        // Delete button ONLY on user's own sent messages
+        if (m.sender === "me") {
+          const delBtn = document.createElement("button");
+          delBtn.className = `msg-del-btn ${userAccount.hasWeeklyPlan ? "" : "locked"}`;
+          delBtn.innerText = userAccount.hasWeeklyPlan ? "🗑️ Delete" : "🔒 Delete (XTRA)";
+          delBtn.onclick = () => deleteSentMessage(idx);
+          wrap.appendChild(delBtn);
+        }
+
+        box.appendChild(wrap);
       });
+
       box.scrollTop = box.scrollHeight;
+    }
+
+    function deleteSentMessage(msgIndex) {
+      if (!activeChatUser) return;
+
+      if (!userAccount.hasWeeklyPlan) {
+        if (confirm("Sent message delete karne ka option sirf Paid (★ XTRA ₹250/week) users ke liye hai. Kya aap XTRA unlock karna chahte hain?")) {
+          openPayModal();
+        }
+        return;
+      }
+
+      if (confirm("Kya aap is sent message ko delete karna chahte hain?")) {
+        chats[activeChatUser.id].splice(msgIndex, 1);
+        localStorage.setItem("dastak_chats_v1", JSON.stringify(chats));
+        renderMessages();
+        renderInbox();
+      }
     }
 
     function sendMessage() {
@@ -1317,7 +1362,8 @@
       ids.forEach(id => {
         const u = profilesPool.find(x => x.id === id);
         if (!u) return;
-        const lastMsg = chats[id][chats[id].length - 1]?.text || "";
+        const msgArr = chats[id] || [];
+        const lastMsg = msgArr.length ? msgArr[msgArr.length - 1].text : "Message deleted";
         const row = document.createElement("div");
         row.className = "inbox-row";
         row.onclick = () => startChat(id);
@@ -1378,7 +1424,8 @@
       saveAccount();
       closeModal("payModal");
       renderGrid();
-      alert(`Dastak XTRA (₹250 / ${selectedPayMethod}) active ho gaya hai! Ab 600 XTRA profiles unlock hain.`);
+      renderMessages();
+      alert(`Dastak XTRA (₹250 / ${selectedPayMethod}) active ho gaya hai! Ab 600 profiles aur Sent Message Delete unlock hain.`);
     }
 
     function openPayModal() {
@@ -1414,7 +1461,8 @@
           <strong>Name:</strong> ${userAccount.name}<br/>
           <strong>ID Type:</strong> ${userAccount.idType}<br/>
           <strong>ID Ref:</strong> ${userAccount.idNumber || "Not entered"}<br/>
-          <strong>Status:</strong> ${userAccount.verificationStatus}
+          <strong>Status:</strong> ${userAccount.verificationStatus}<br/>
+          <strong>Plan:</strong> ${userAccount.hasWeeklyPlan ? "Paid (★ XTRA)" : "Free"}
         </p>
         <div class="kyc-preview-grid">
           <div class="kyc-preview-box">
@@ -1430,7 +1478,18 @@
           <button class="btn btn-success" onclick="setOwnerApproval('Verified')">✓ Approve User</button>
           <button class="btn btn-danger" onclick="setOwnerApproval('Rejected')">✕ Reject</button>
         </div>
+        <button class="btn btn-secondary" style="width:100%; margin-top:10px;" onclick="togglePlanForTest()">
+          Switch Plan: ${userAccount.hasWeeklyPlan ? "Set to Free" : "Set to Paid (XTRA)"}
+        </button>
       `;
+    }
+
+    function togglePlanForTest() {
+      userAccount.hasWeeklyPlan = !userAccount.hasWeeklyPlan;
+      saveAccount();
+      renderOwnerPanel();
+      renderGrid();
+      renderMessages();
     }
 
     function setOwnerApproval(newStatus) {
