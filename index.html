@@ -112,14 +112,14 @@
     .star-btn { border: 1.5px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); color: #fff; border-radius: 10px; padding: 10px 4px; font-size: 13px; font-weight: 800; cursor: pointer; }
     .star-btn.picked { background: #0fa968; border-color: #0fa968; }
     .end-actions { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .hide { display: none; }
+    .hide { display: none !important; }
   </style>
 </head>
 <body>
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Cloud Live • v36</p>
+      <p>Cloud Live • v37</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -415,24 +415,13 @@
   </div>
 
   <script>
-    window.onerror = function (message, source, lineno) {
-      var lm = document.getElementById("login-msg");
-      if (lm) {
-        lm.style.color = "#b81d24";
-        lm.textContent = "Err (L" + lineno + "): " + message;
-      }
-    };
-
     function gmShowOtpStep() {
       var pStep = document.getElementById("step-phone");
       var oStep = document.getElementById("step-otp");
       var oInp = document.getElementById("otp-inp");
       var lMsg = document.getElementById("login-msg");
-      if (pStep) pStep.style.display = "none";
-      if (oStep) {
-        oStep.classList.remove("hide");
-        oStep.style.display = "block";
-      }
+      if (pStep) pStep.classList.add("hide");
+      if (oStep) oStep.classList.remove("hide");
       if (oInp) oInp.value = "123456";
       if (lMsg) {
         lMsg.style.color = "#0fa968";
@@ -444,12 +433,29 @@
       var pStep = document.getElementById("step-phone");
       var oStep = document.getElementById("step-otp");
       var lMsg = document.getElementById("login-msg");
-      if (oStep) {
-        oStep.classList.add("hide");
-        oStep.style.display = "none";
-      }
-      if (pStep) pStep.style.display = "block";
+      if (oStep) oStep.classList.add("hide");
+      if (pStep) pStep.classList.remove("hide");
       if (lMsg) lMsg.textContent = "";
+    }
+
+    function gmCompleteLogin() {
+      var lCard = document.getElementById("login-card");
+      var hBtns = document.getElementById("hdr-btns");
+      var mWrap = document.getElementById("hero-map-wrap");
+      var wCard = document.getElementById("wallet-card");
+      var bCard = document.getElementById("book-card");
+      var rCard = document.getElementById("rides-card");
+
+      if (lCard) lCard.classList.add("hide");
+      if (hBtns) hBtns.style.display = "flex";
+      if (mWrap) mWrap.classList.remove("hide");
+      if (wCard) wCard.classList.remove("hide");
+      if (bCard) bCard.classList.remove("hide");
+      if (rCard) rCard.classList.remove("hide");
+
+      if (typeof window.gmOnLoginSuccess === "function") {
+        try { window.gmOnLoginSuccess(); } catch (err) {}
+      }
     }
 
     document.addEventListener("click", function (e) {
@@ -463,7 +469,7 @@
         gmBackToPhone();
       } else if (target.id === "verify-otp-btn") {
         e.preventDefault();
-        if (typeof verifyOtpNow === "function") verifyOtpNow();
+        gmCompleteLogin();
       }
     });
   </script>
@@ -594,39 +600,41 @@
     }
 
     function onRouteInputChange() {
-      var pTxt = document.getElementById("pickup-inp").value.trim();
-      var dTxt = document.getElementById("drop-inp").value.trim();
-      var pLocal = lookupSpot(pTxt);
-      var dLocal = lookupSpot(dTxt);
-      if (pLocal) pickupCoords = pLocal;
-      if (dLocal) dropCoords = dLocal;
-      routeCoords = null;
-      autoKm = haversineRoadKm(pickupCoords, dropCoords);
-      document.getElementById("auto-dist-val").textContent = autoKm + " km";
-      document.getElementById("hero-dist-badge").textContent = autoKm + " km";
-      document.getElementById("hero-route-lbl").textContent = (pTxt || "Pickup") + " → " + (dTxt || "Drop");
-      refreshHeroMapRoute();
-      calcFareNow();
+      try {
+        var pTxt = document.getElementById("pickup-inp").value.trim();
+        var dTxt = document.getElementById("drop-inp").value.trim();
+        var pLocal = lookupSpot(pTxt);
+        var dLocal = lookupSpot(dTxt);
+        if (pLocal) pickupCoords = pLocal;
+        if (dLocal) dropCoords = dLocal;
+        routeCoords = null;
+        autoKm = haversineRoadKm(pickupCoords, dropCoords);
+        document.getElementById("auto-dist-val").textContent = autoKm + " km";
+        document.getElementById("hero-dist-badge").textContent = autoKm + " km";
+        document.getElementById("hero-route-lbl").textContent = (pTxt || "Pickup") + " → " + (dTxt || "Drop");
+        refreshHeroMapRoute();
+        calcFareNow();
 
-      clearTimeout(routeFetchTimer);
-      routeFetchTimer = setTimeout(function () {
-        function afterCoordsReady() {
-          fetchOsrmRoadRoute(pickupCoords, dropCoords, function (osrm) {
-            if (osrm && osrm.km) {
-              autoKm = osrm.km;
-              routeCoords = osrm.pts;
-              document.getElementById("auto-dist-val").textContent = autoKm + " km";
-              document.getElementById("hero-dist-badge").textContent = autoKm + " km";
-              refreshHeroMapRoute();
-              calcFareNow();
-            }
-          });
-        }
-        var pending = 0;
-        if (pTxt && !pLocal) { pending++; geocodePlace(pTxt, function (pt) { if (pt) pickupCoords = pt; pending--; if (!pending) afterCoordsReady(); }); }
-        if (dTxt && !dLocal) { pending++; geocodePlace(dTxt, function (pt) { if (pt) dropCoords = pt; pending--; if (!pending) afterCoordsReady(); }); }
-        if (!pending) afterCoordsReady();
-      }, 300);
+        clearTimeout(routeFetchTimer);
+        routeFetchTimer = setTimeout(function () {
+          function afterCoordsReady() {
+            fetchOsrmRoadRoute(pickupCoords, dropCoords, function (osrm) {
+              if (osrm && osrm.km) {
+                autoKm = osrm.km;
+                routeCoords = osrm.pts;
+                document.getElementById("auto-dist-val").textContent = autoKm + " km";
+                document.getElementById("hero-dist-badge").textContent = autoKm + " km";
+                refreshHeroMapRoute();
+                calcFareNow();
+              }
+            });
+          }
+          var pending = 0;
+          if (pTxt && !pLocal) { pending++; geocodePlace(pTxt, function (pt) { if (pt) pickupCoords = pt; pending--; if (!pending) afterCoordsReady(); }); }
+          if (dTxt && !dLocal) { pending++; geocodePlace(dTxt, function (pt) { if (pt) dropCoords = pt; pending--; if (!pending) afterCoordsReady(); }); }
+          if (!pending) afterCoordsReady();
+        }, 300);
+      } catch (e) {}
     }
 
     function isAutoNightHour() { var hr = new Date().getHours(); return (hr >= 22 || hr <= 5); }
@@ -697,34 +705,30 @@
     }
 
     function recordCustomerOwnerLog() {
-      customerPhone = (document.getElementById("phone-inp").value || "").trim() || customerPhone || "+918564885647";
-      var nEl = document.getElementById("p-name");
-      if (nEl && nEl.value.trim()) customerName = nEl.value.trim();
-      var found = false;
-      for (var i = 0; i < ownerAccounts.length; i++) {
-        if (ownerAccounts[i].type === "Customer" && ownerAccounts[i].phone === customerPhone) {
-          if (customerName) ownerAccounts[i].name = customerName;
-          ownerAccounts[i].lastSeen = new Date().toLocaleString();
-          found = true;
+      try {
+        customerPhone = (document.getElementById("phone-inp").value || "").trim() || customerPhone || "+918564885647";
+        var nEl = document.getElementById("p-name");
+        if (nEl && nEl.value.trim()) customerName = nEl.value.trim();
+        var found = false;
+        for (var i = 0; i < ownerAccounts.length; i++) {
+          if (ownerAccounts[i].type === "Customer" && ownerAccounts[i].phone === customerPhone) {
+            if (customerName) ownerAccounts[i].name = customerName;
+            ownerAccounts[i].lastSeen = new Date().toLocaleString();
+            found = true;
+          }
         }
-      }
-      if (!found) ownerAccounts.unshift({ type: "Customer", name: customerName || "Passenger", phone: customerPhone, time: new Date().toLocaleString() });
-      syncCloudAccounts();
+        if (!found) ownerAccounts.unshift({ type: "Customer", name: customerName || "Passenger", phone: customerPhone, time: new Date().toLocaleString() });
+        syncCloudAccounts();
+      } catch (e) {}
     }
 
-    function verifyOtpNow() {
+    window.gmOnLoginSuccess = function () {
       recordCustomerOwnerLog();
       loadWallet();
-      document.getElementById("login-card").classList.add("hide");
-      document.getElementById("hdr-btns").style.display = "flex";
-      document.getElementById("hero-map-wrap").classList.remove("hide");
-      document.getElementById("wallet-card").classList.remove("hide");
-      document.getElementById("book-card").classList.remove("hide");
-      document.getElementById("rides-card").classList.remove("hide");
       initHeroMap();
       onRouteInputChange();
       drawRidesNow();
-    }
+    };
 
     function toggleProfile() {
       var pc = document.getElementById("profile-card");
@@ -948,50 +952,52 @@
     }
 
     function drawRidesNow() {
-      loadWallet();
-      var box = document.getElementById("rides-list");
-      if (!box) return;
-      if (!rides.length) { box.innerHTML = "<p class='sub'>No rides yet.</p>"; return; }
-      var html = "", showIdx = -1, changed = false;
-      for (var i = 0; i < rides.length; i++) {
-        var r = rides[i] || {};
-        var rawPin = r.rideOtp || r.pin;
-        if (!rawPin) {
-          rawPin = String(Math.floor(1000 + Math.random() * 9000));
-          r.rideOtp = rawPin;
-          r.pin = rawPin;
-          changed = true;
-        }
-        var st = String(r.status || "Searching Driver"), pm = r.payMode || "Cash";
-        var isComp = st.toLowerCase().indexOf("complet") !== -1, isCanc = st.toLowerCase().indexOf("cancel") !== -1;
-        if (isComp && pm === "Wallet" && !r.walletPaid) {
-          var amt = Number(r.total || 0);
-          if (walletBalance >= amt) { walletBalance -= amt; r.walletPaid = true; changed = true; saveWallet(); }
-        }
-        if (isComp && !r.passengerRatedPromptSeen && showIdx === -1) showIdx = i;
-        var dStr = String(rawPin).padStart(4, "0");
-        var pinHtml = (!isComp && !isCanc)
-          ? "<div class='pin-row'><span style='font-size:11px;font-weight:800;color:#474d6b;'>START RIDE PIN</span><div class='pin-digits mono'><span class='pin-box'>" + dStr[0] + "</span><span class='pin-box'>" + dStr[1] + "</span><span class='pin-box'>" + dStr[2] + "</span><span class='pin-box'>" + dStr[3] + "</span></div></div>"
-          : "";
-        var fbLine = r.driverFeedback
-          ? "<div style='color:#474d6b;font-size:11px;margin-top:6px;'>Feedback: " + r.driverFeedback + (r.driverRating ? " (" + r.driverRating + " ★)" : "") + "</div>"
-          : (r.driverRating ? "<div style='color:#474d6b;font-size:11px;margin-top:6px;'>Rating: " + r.driverRating + " ★</div>" : "");
-        var blkTag = r.driverBlockedByCustomer ? "<div class='blk-tag'>Blocked by Customer</div>" : (r.ownerBlockedRole ? "<div class='blk-tag'>Blocked by Owner</div>" : "");
-        var actionHtml = isComp
-          ? '<button type="button" class="btn btn-primary" data-open-end="' + i + '">Rate, Feedback & Block</button>'
-          : (!isCanc ? '<button type="button" class="btn btn-soft" data-cancel-idx="' + i + '">Cancel Ride</button>' : "");
+      try {
+        loadWallet();
+        var box = document.getElementById("rides-list");
+        if (!box) return;
+        if (!rides.length) { box.innerHTML = "<p class='sub'>No rides yet.</p>"; return; }
+        var html = "", showIdx = -1, changed = false;
+        for (var i = 0; i < rides.length; i++) {
+          var r = rides[i] || {};
+          var rawPin = r.rideOtp || r.pin;
+          if (!rawPin) {
+            rawPin = String(Math.floor(1000 + Math.random() * 9000));
+            r.rideOtp = rawPin;
+            r.pin = rawPin;
+            changed = true;
+          }
+          var st = String(r.status || "Searching Driver"), pm = r.payMode || "Cash";
+          var isComp = st.toLowerCase().indexOf("complet") !== -1, isCanc = st.toLowerCase().indexOf("cancel") !== -1;
+          if (isComp && pm === "Wallet" && !r.walletPaid) {
+            var amt = Number(r.total || 0);
+            if (walletBalance >= amt) { walletBalance -= amt; r.walletPaid = true; changed = true; saveWallet(); }
+          }
+          if (isComp && !r.passengerRatedPromptSeen && showIdx === -1) showIdx = i;
+          var dStr = String(rawPin).padStart(4, "0");
+          var pinHtml = (!isComp && !isCanc)
+            ? "<div class='pin-row'><span style='font-size:11px;font-weight:800;color:#474d6b;'>START RIDE PIN</span><div class='pin-digits mono'><span class='pin-box'>" + dStr[0] + "</span><span class='pin-box'>" + dStr[1] + "</span><span class='pin-box'>" + dStr[2] + "</span><span class='pin-box'>" + dStr[3] + "</span></div></div>"
+            : "";
+          var fbLine = r.driverFeedback
+            ? "<div style='color:#474d6b;font-size:11px;margin-top:6px;'>Feedback: " + r.driverFeedback + (r.driverRating ? " (" + r.driverRating + " ★)" : "") + "</div>"
+            : (r.driverRating ? "<div style='color:#474d6b;font-size:11px;margin-top:6px;'>Rating: " + r.driverRating + " ★</div>" : "");
+          var blkTag = r.driverBlockedByCustomer ? "<div class='blk-tag'>Blocked by Customer</div>" : (r.ownerBlockedRole ? "<div class='blk-tag'>Blocked by Owner</div>" : "");
+          var actionHtml = isComp
+            ? '<button type="button" class="btn btn-primary" data-open-end="' + i + '">Rate, Feedback & Block</button>'
+            : (!isCanc ? '<button type="button" class="btn btn-soft" data-cancel-idx="' + i + '">Cancel Ride</button>' : "");
 
-        html += "<div class='ride-item'><div class='r-top'><span>" + (r.v || "Ride") + " • <span class='mono'>₹" + (r.total || 0) + "</span> • " + pm + "</span><span class='r-badge'>" + st + "</span></div>" +
-          "<div style='font-size:12px;color:#474d6b;margin-top:4px;'>" + (r.pickup || "Pickup") + " → " + (r.drop || "Drop") + " (<span class='mono'>" + (r.km || 0) + " km</span>)</div>" +
-          "<div style='font-size:11px;color:#676e8a;margin-top:2px;'>Platform Charges</div>" +
-          pinHtml + blkTag + fbLine +
-          "<div class='live-map-box'><div id='p-live-map-" + i + "' class='live-map-el'></div><div class='live-map-ft'><span id='p-map-st-" + i + "'>Rider Live Map • " + st + "</span><button type="button" class="mini-btn" data-track-idx="' + i + '">Track Rider</button></div></div>" +
-          actionHtml + "</div>";
-      }
-      if (changed) syncCloudRides();
-      box.innerHTML = html;
-      for (var m = 0; m < rides.length; m++) initRideLiveMap(m, rides[m] || {});
-      if (showIdx !== -1) openPassengerEndScreen(showIdx);
+          html += "<div class='ride-item'><div class='r-top'><span>" + (r.v || "Ride") + " • <span class='mono'>₹" + (r.total || 0) + "</span> • " + pm + "</span><span class='r-badge'>" + st + "</span></div>" +
+            "<div style='font-size:12px;color:#474d6b;margin-top:4px;'>" + (r.pickup || "Pickup") + " → " + (r.drop || "Drop") + " (<span class='mono'>" + (r.km || 0) + " km</span>)</div>" +
+            "<div style='font-size:11px;color:#676e8a;margin-top:2px;'>Platform Charges</div>" +
+            pinHtml + blkTag + fbLine +
+            "<div class='live-map-box'><div id='p-live-map-" + i + "' class='live-map-el'></div><div class='live-map-ft'><span id='p-map-st-" + i + "'>Rider Live Map • " + st + "</span><button type="button" class="mini-btn" data-track-idx="' + i + '">Track Rider</button></div></div>" +
+            actionHtml + "</div>";
+        }
+        if (changed) syncCloudRides();
+        box.innerHTML = html;
+        for (var m = 0; m < rides.length; m++) initRideLiveMap(m, rides[m] || {});
+        if (showIdx !== -1) openPassengerEndScreen(showIdx);
+      } catch (e) {}
     }
 
     function logout() {
@@ -1007,63 +1013,67 @@
       document.getElementById("login-msg").textContent = "";
     }
 
-    document.getElementById("btn-toggle-profile").addEventListener("click", toggleProfile);
-    document.getElementById("btn-logout").addEventListener("click", logout);
-    document.getElementById("btn-save-profile").addEventListener("click", saveProfileNow);
-    document.getElementById("btn-close-profile").addEventListener("click", toggleProfile);
+    try {
+      document.getElementById("btn-toggle-profile").addEventListener("click", toggleProfile);
+      document.getElementById("btn-logout").addEventListener("click", logout);
+      document.getElementById("btn-save-profile").addEventListener("click", saveProfileNow);
+      document.getElementById("btn-close-profile").addEventListener("click", toggleProfile);
 
-    document.querySelectorAll("#wallet-card .chip-btn[data-wadd]").forEach(function (btn) {
-      btn.addEventListener("click", function () { addWalletMoney(Number(btn.getAttribute("data-wadd"))); });
-    });
-    document.getElementById("btn-wadd-custom").addEventListener("click", addCustomWalletMoney);
+      document.querySelectorAll("#wallet-card .chip-btn[data-wadd]").forEach(function (btn) {
+        btn.addEventListener("click", function () { addWalletMoney(Number(btn.getAttribute("data-wadd"))); });
+      });
+      document.getElementById("btn-wadd-custom").addEventListener("click", addCustomWalletMoney);
 
-    document.getElementById("pickup-inp").addEventListener("input", onRouteInputChange);
-    document.getElementById("pickup-inp").addEventListener("change", onRouteInputChange);
-    document.getElementById("drop-inp").addEventListener("input", onRouteInputChange);
-    document.getElementById("drop-inp").addEventListener("change", onRouteInputChange);
-    document.getElementById("btn-pin-pickup").addEventListener("click", function () { togglePinMode("pickup"); });
-    document.getElementById("btn-pin-drop").addEventListener("click", function () { togglePinMode("drop"); });
+      document.getElementById("pickup-inp").addEventListener("input", onRouteInputChange);
+      document.getElementById("pickup-inp").addEventListener("change", onRouteInputChange);
+      document.getElementById("drop-inp").addEventListener("input", onRouteInputChange);
+      document.getElementById("drop-inp").addEventListener("change", onRouteInputChange);
+      document.getElementById("btn-pin-pickup").addEventListener("click", function () { togglePinMode("pickup"); });
+      document.getElementById("btn-pin-drop").addEventListener("click", function () { togglePinMode("drop"); });
 
-    document.querySelectorAll(".v-row").forEach(function (row) {
-      row.addEventListener("click", function () { pickV(row); });
-    });
-    document.querySelectorAll(".adj-btn").forEach(function (btn) {
-      btn.addEventListener("click", function () { setFareDelta(Number(btn.getAttribute("data-delta")), btn); });
-    });
+      document.querySelectorAll(".v-row").forEach(function (row) {
+        row.addEventListener("click", function () { pickV(row); });
+      });
+      document.querySelectorAll(".adj-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () { setFareDelta(Number(btn.getAttribute("data-delta")), btn); });
+      });
 
-    document.getElementById("open-pay-box").addEventListener("click", openPaymentModal);
-    document.getElementById("btn-close-pay").addEventListener("click", closePaymentModal);
-    document.querySelectorAll("#payment-modal .pay-opt-row").forEach(function (row) {
-      row.addEventListener("click", function () { selectPaymentOption(row); });
-    });
+      document.getElementById("open-pay-box").addEventListener("click", openPaymentModal);
+      document.getElementById("btn-close-pay").addEventListener("click", closePaymentModal);
+      document.querySelectorAll("#payment-modal .pay-opt-row").forEach(function (row) {
+        row.addEventListener("click", function () { selectPaymentOption(row); });
+      });
 
-    document.getElementById("btn-night").addEventListener("click", toggleNightNow);
-    document.getElementById("book-cta-btn").addEventListener("click", bookRideNow);
-    document.getElementById("btn-refresh-rides").addEventListener("click", drawRidesNow);
+      document.getElementById("btn-night").addEventListener("click", toggleNightNow);
+      document.getElementById("book-cta-btn").addEventListener("click", bookRideNow);
+      document.getElementById("btn-refresh-rides").addEventListener("click", drawRidesNow);
 
-    document.getElementById("rides-list").addEventListener("click", function (e) {
-      var openEndBtn = e.target.closest("[data-open-end]");
-      if (openEndBtn) { openPassengerEndScreen(Number(openEndBtn.getAttribute("data-open-end"))); return; }
-      var cancelBtn = e.target.closest("[data-cancel-idx]");
-      if (cancelBtn) { openCancelModal(Number(cancelBtn.getAttribute("data-cancel-idx"))); return; }
-      var trackBtn = e.target.closest("[data-track-idx]");
-      if (trackBtn) { startLiveRiderWatch(Number(trackBtn.getAttribute("data-track-idx"))); }
-    });
+      document.getElementById("rides-list").addEventListener("click", function (e) {
+        var openEndBtn = e.target.closest("[data-open-end]");
+        if (openEndBtn) { openPassengerEndScreen(Number(openEndBtn.getAttribute("data-open-end"))); return; }
+        var cancelBtn = e.target.closest("[data-cancel-idx]");
+        if (cancelBtn) { openCancelModal(Number(cancelBtn.getAttribute("data-cancel-idx"))); return; }
+        var trackBtn = e.target.closest("[data-track-idx]");
+        if (trackBtn) { startLiveRiderWatch(Number(trackBtn.getAttribute("data-track-idx"))); }
+      });
 
-    document.querySelectorAll("#cancel-modal .reason-btn").forEach(function (btn) {
-      btn.addEventListener("click", function () { confirmCancelRide(btn.getAttribute("data-reason")); });
-    });
-    document.getElementById("btn-keep-ride").addEventListener("click", closeCancelModal);
+      document.querySelectorAll("#cancel-modal .reason-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () { confirmCancelRide(btn.getAttribute("data-reason")); });
+      });
+      document.getElementById("btn-keep-ride").addEventListener("click", closeCancelModal);
 
-    document.querySelectorAll("#p-end-screen .star-btn").forEach(function (btn) {
-      btn.addEventListener("click", function () { setDriverRating(Number(btn.getAttribute("data-star"))); });
-    });
-    document.getElementById("p-feedback-inp").addEventListener("input", saveDriverFeedbackNow);
-    document.getElementById("p-block-btn").addEventListener("click", toggleBlockDriverNow);
-    document.getElementById("p-done-btn").addEventListener("click", closePassengerEndScreen);
+      document.querySelectorAll("#p-end-screen .star-btn").forEach(function (btn) {
+        btn.addEventListener("click", function () { setDriverRating(Number(btn.getAttribute("data-star"))); });
+      });
+      document.getElementById("p-feedback-inp").addEventListener("input", saveDriverFeedbackNow);
+      document.getElementById("p-block-btn").addEventListener("click", toggleBlockDriverNow);
+      document.getElementById("p-done-btn").addEventListener("click", closePassengerEndScreen);
 
-    try { var s = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]"); if (Array.isArray(s)) rides = s; } catch (e) {}
-    try { var a = JSON.parse(localStorage.getItem("gm_owner_accounts_v1") || "[]"); if (Array.isArray(a)) ownerAccounts = a; } catch (e) {}
+      var s = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]");
+      if (Array.isArray(s)) rides = s;
+      var a = JSON.parse(localStorage.getItem("gm_owner_accounts_v1") || "[]");
+      if (Array.isArray(a)) ownerAccounts = a;
+    } catch (e) {}
   </script>
 
   <script type="module">
