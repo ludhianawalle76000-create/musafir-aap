@@ -14,9 +14,11 @@
     body { background: #eef1f6; color: #161829; padding-bottom: 48px; }
     .mono { font-family: 'JetBrains Mono', monospace; }
 
-    header { background: #18182b; color: #fff; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
-    header h1 { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; }
-    header p { font-size: 11px; color: #9ea4c4; }
+    header { background: #18182b; color: #fff; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 50; }
+    .brand-box { display: flex; align-items: center; gap: 10px; }
+    .brand-logo { width: 38px; height: 38px; border-radius: 12px; background: linear-gradient(135deg, #0fa968, #ff5a36); display: flex; align-items: center; justify-content: center; flex-shrink: 0; box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+    header h1 { font-size: 17px; font-weight: 800; letter-spacing: -0.3px; line-height: 1.15; }
+    header p { font-size: 10px; color: #9ea4c4; margin-top: 2px; }
     .hdr-right { display: flex; align-items: center; gap: 8px; }
     .hdr-link { background: #292a45; color: #fff; text-decoration: none; border: 1px solid #3f426b; padding: 7px 11px; border-radius: 10px; font-size: 12px; font-weight: 700; }
     .hdr-btns { display: none; gap: 6px; }
@@ -46,13 +48,12 @@
     .msg { margin-top: 10px; font-size: 12px; font-weight: 700; min-height: 16px; color: #0fa968; }
 
     .hero-map-card { border-radius: 22px; overflow: hidden; margin-bottom: 14px; box-shadow: 0 10px 28px rgba(24, 24, 43, 0.09); border: 1px solid #dce1ed; background: #fff; }
-    .map-stage { position: relative; height: 255px; width: 100%; background: linear-gradient(160deg, #dce8f8, #eef5ec); overflow: hidden; }
+    .map-stage { position: relative; height: 245px; width: 100%; background: linear-gradient(160deg, #dce8f8, #eef5ec); overflow: hidden; }
     #main-hero-map { height: 100%; width: 100%; position: relative; z-index: 2; }
     .map-grid-fallback { position: absolute; inset: 0; z-index: 1; background-image: linear-gradient(to right, rgba(24,24,43,0.07) 1px, transparent 1px), linear-gradient(to bottom, rgba(24,24,43,0.07) 1px, transparent 1px); background-size: 28px 28px; display: flex; align-items: flex-end; padding: 10px; }
     .map-coord-pill { background: rgba(24,24,43,0.82); color: #fff; padding: 4px 9px; border-radius: 8px; font-size: 10px; font-weight: 700; }
     .map-zoom-dock { position: absolute; right: 10px; top: 10px; z-index: 450; display: flex; flex-direction: column; gap: 6px; }
     .z-btn { width: 36px; height: 36px; border-radius: 10px; border: 1.5px solid #18182b; background: rgba(255, 255, 255, 0.96); color: #18182b; font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(24, 24, 43, 0.16); }
-    .z-btn:active { background: #18182b; color: #fff; }
     .map-caption { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: #18182b; background: #f8f9fc; gap: 8px; flex-wrap: wrap; }
     .map-quick-bar { padding: 8px 14px 12px; display: flex; gap: 6px; flex-wrap: wrap; background: #f8f9fc; border-top: 1px solid #e6ebf5; }
 
@@ -65,13 +66,13 @@
 
     .v-list { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
     .v-row { display: flex; justify-content: space-between; align-items: center; border: 1.5px solid #e3e7f0; border-radius: 16px; padding: 12px 14px; cursor: pointer; background: #fafbfe; gap: 12px; }
-    .v-row.active { border-color: #18182b; background: #f2f4fc; box-shadow: 0 6px 16px rgba(24, 24, 43, 0.06); }
+    .v-row.active { border-color: #18182b; background: #f2f4fc; box-shadow: 0 6px 16px rgba(24, 24, 43, 0.07); }
     .v-left-wrap { display: flex; align-items: center; gap: 12px; flex: 1; }
-    .v-icon-box { width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1.5px solid transparent; }
-    .v-icon-bike { background: #e8fbf2; border-color: #bcead4; color: #0b7a4b; }
-    .v-icon-rick { background: #fff1eb; border-color: #ffd2c2; color: #d94322; }
-    .v-icon-cab { background: #eef1fa; border-color: #cfd7f0; color: #18182b; }
-    .v-row.active .v-icon-box { background: #18182b; border-color: #18182b; color: #4ef0a8; }
+    .v-icon-box { width: 54px; height: 54px; border-radius: 15px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1.5px solid transparent; }
+    .v-icon-bike { background: #e6faf1; border-color: #b7e8d0; }
+    .v-icon-rick { background: #fff0ea; border-color: #ffcfc0; }
+    .v-icon-cab { background: #edf0fa; border-color: #cbd3ee; }
+    .v-row.active .v-icon-box { background: #18182b; border-color: #18182b; }
     .v-left { display: flex; flex-direction: column; }
     .v-name { font-size: 14px; font-weight: 800; color: #18182b; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
     .v-tag { display: inline-block; font-size: 10px; font-weight: 800; background: #e1f7ed; color: #0b7a4b; padding: 2px 7px; border-radius: 6px; }
@@ -131,9 +132,17 @@
 </head>
 <body>
   <header>
-    <div>
-      <h1>Go Musafir</h1>
-      <p>Cloud Live • v48</p>
+    <div class="brand-box">
+      <div class="brand-logo" aria-hidden="true">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+          <path d="M12 2.5C8.4 2.5 5.5 5.3 5.5 8.8C5.5 13.5 12 21.5 12 21.5C12 21.5 18.5 13.5 18.5 8.8C18.5 5.3 15.6 2.5 12 2.5Z" fill="#18182b"/>
+          <circle cx="12" cy="8.8" r="3" fill="#4ef0a8"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Go Musafir</h1>
+        <p>Cloud Live • v49</p>
+      </div>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -273,14 +282,17 @@
 
       <label>Select Ride</label>
       <div class="v-list">
-        <div class="v-row active" data-v="Bike" data-r="7" data-m="25" onclick="pickV(this)">
+        <div class="v-row active" id="vrow-Bike" onclick="pickV('Bike', 7, 25)">
           <div class="v-left-wrap">
             <div class="v-icon-box v-icon-bike">
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="6.5" cy="19.5" r="3.6"></circle>
-                <circle cx="21.5" cy="19.5" r="3.6"></circle>
-                <path d="M14 19.5v-5.8l-3.6-3.4 4.6-3.5 2.4 3.5h2.6"></path>
-                <path d="M17.5 7.5h3"></path>
+              <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
+                <circle cx="8.5" cy="24.5" r="4.6" fill="#18182b"/>
+                <circle cx="8.5" cy="24.5" r="2" fill="#4ef0a8"/>
+                <circle cx="27.5" cy="24.5" r="4.6" fill="#18182b"/>
+                <circle cx="27.5" cy="24.5" r="2" fill="#4ef0a8"/>
+                <path d="M12 24L16.5 15.5H23L26 24" stroke="#0b7a4b" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M14.5 14.5H20.5L22.5 10.5H26" stroke="#ff5a36" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="26.8" cy="11.5" r="2" fill="#ff5a36"/>
               </svg>
             </div>
             <div class="v-left">
@@ -291,15 +303,17 @@
           <div class="v-price mono" id="p-bike">₹53</div>
         </div>
 
-        <div class="v-row" data-v="E-Rickshaw" data-r="11" data-m="35" onclick="pickV(this)">
+        <div class="v-row" id="vrow-E-Rickshaw" onclick="pickV('E-Rickshaw', 11, 35)">
           <div class="v-left-wrap">
             <div class="v-icon-box v-icon-rick">
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4.5 17.5h16.5l2.5-6H6.5l-2 6z"></path>
-                <path d="M10.5 11.5V6.8h8.2l2.3 4.7"></path>
-                <path d="M14.5 6.8v4.7"></path>
-                <circle cx="8.5" cy="20.5" r="2.5"></circle>
-                <circle cx="19.5" cy="20.5" r="2.5"></circle>
+              <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
+                <path d="M7 11.5C7 9.5 8.6 8 10.6 8H21.5L26 15.5H7V11.5Z" fill="#ff5a36"/>
+                <path d="M10.2 10.2H19.8L22.6 14.2H10.2V10.2Z" fill="#fff"/>
+                <rect x="6" y="15.5" width="21.5" height="5.5" rx="2" fill="#18182b"/>
+                <circle cx="10.2" cy="23.5" r="3.4" fill="#18182b"/>
+                <circle cx="10.2" cy="23.5" r="1.4" fill="#4ef0a8"/>
+                <circle cx="23.5" cy="23.5" r="3.4" fill="#18182b"/>
+                <circle cx="23.5" cy="23.5" r="1.4" fill="#4ef0a8"/>
               </svg>
             </div>
             <div class="v-left">
@@ -310,15 +324,19 @@
           <div class="v-price mono" id="p-rick">₹83</div>
         </div>
 
-        <div class="v-row" data-v="Cab" data-r="16" data-m="70" onclick="pickV(this)">
+        <div class="v-row" id="vrow-Cab" onclick="pickV('Cab', 16, 70)">
           <div class="v-left-wrap">
             <div class="v-icon-box v-icon-cab">
-              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5.5 17.5l2-6.2h13l2 6.2"></path>
-                <path d="M8.5 11.3l1.4-3.8h8.2l1.4 3.8"></path>
-                <rect x="4.5" y="16" width="19" height="4.5" rx="1.8"></rect>
-                <circle cx="8.5" cy="21.5" r="2"></circle>
-                <circle cx="19.5" cy="21.5" r="2"></circle>
+              <svg width="34" height="34" viewBox="0 0 36 36" fill="none">
+                <path d="M9.5 14L12.3 8.5H23.7L26.5 14H9.5Z" fill="#18182b"/>
+                <path d="M12.8 10.2H17.3V13.2H11.4L12.8 10.2Z" fill="#4ef0a8"/>
+                <path d="M18.7 10.2H23.2L24.6 13.2H18.7V10.2Z" fill="#4ef0a8"/>
+                <rect x="5.5" y="14" width="25" height="7.5" rx="3.2" fill="#18182b"/>
+                <rect x="27.5" y="16.2" width="2.4" height="2.4" rx="1" fill="#ff5a36"/>
+                <circle cx="10.5" cy="23.5" r="3.5" fill="#18182b"/>
+                <circle cx="10.5" cy="23.5" r="1.5" fill="#fff"/>
+                <circle cx="25.5" cy="23.5" r="3.5" fill="#18182b"/>
+                <circle cx="25.5" cy="23.5" r="1.5" fill="#fff"/>
               </svg>
             </div>
             <div class="v-left">
@@ -336,12 +354,12 @@
           <span class="mono" id="adj-label">Standard ₹0</span>
         </div>
         <div class="adjust-grid mono">
-          <button type="button" class="adj-btn" onclick="setFareDelta(-20, this)">-20</button>
-          <button type="button" class="adj-btn" onclick="setFareDelta(-10, this)">-10</button>
-          <button type="button" class="adj-btn on" id="adj-zero" onclick="setFareDelta(0, this)">0</button>
-          <button type="button" class="adj-btn" onclick="setFareDelta(20, this)">+20</button>
-          <button type="button" class="adj-btn" onclick="setFareDelta(40, this)">+40</button>
-          <button type="button" class="adj-btn" onclick="setFareDelta(80, this)">+80</button>
+          <button type="button" class="adj-btn" id="adj-m20" onclick="setFareDelta(-20, 'adj-m20')">-20</button>
+          <button type="button" class="adj-btn" id="adj-m10" onclick="setFareDelta(-10, 'adj-m10')">-10</button>
+          <button type="button" class="adj-btn on" id="adj-zero" onclick="setFareDelta(0, 'adj-zero')">0</button>
+          <button type="button" class="adj-btn" id="adj-p20" onclick="setFareDelta(20, 'adj-p20')">+20</button>
+          <button type="button" class="adj-btn" id="adj-p40" onclick="setFareDelta(40, 'adj-p40')">+40</button>
+          <button type="button" class="adj-btn" id="adj-p80" onclick="setFareDelta(80, 'adj-p80')">+80</button>
         </div>
       </div>
 
@@ -389,41 +407,41 @@
       </div>
 
       <div class="pay-grp-title">Wallets</div>
-      <div class="pay-opt-row" data-pm="Wallet" onclick="selectPaymentOption(this)">
+      <div class="pay-opt-row" id="pm-Wallet" onclick="selectPaymentOption('Wallet')">
         <div><div style="font-size:13px;font-weight:800;">Musafir Wallet</div><div class="mono" style="font-size:11px;color:#676e8a;" id="pay-modal-wbal">Balance ₹0</div></div>
         <span class="radio-dot"></span>
       </div>
-      <div class="pay-opt-row" data-pm="Amazon Pay" onclick="selectPaymentOption(this)">
+      <div class="pay-opt-row" id="pm-Amazon-Pay" onclick="selectPaymentOption('Amazon Pay')">
         <div><div style="font-size:13px;font-weight:800;">Amazon Pay</div><div style="font-size:11px;color:#0fa968;font-weight:700;">Wallet Accepted</div></div>
         <span class="radio-dot"></span>
       </div>
-      <div class="pay-opt-row" data-pm="Airtel Pay" onclick="selectPaymentOption(this)">
+      <div class="pay-opt-row" id="pm-Airtel-Pay" onclick="selectPaymentOption('Airtel Pay')">
         <div><div style="font-size:13px;font-weight:800;">Airtel Pay</div><div style="font-size:11px;color:#0fa968;font-weight:700;">Wallet Accepted</div></div>
         <span class="radio-dot"></span>
       </div>
-      <div class="pay-opt-row" data-pm="Jio Pay" onclick="selectPaymentOption(this)">
+      <div class="pay-opt-row" id="pm-Jio-Pay" onclick="selectPaymentOption('Jio Pay')">
         <div><div style="font-size:13px;font-weight:800;">Jio Pay</div><div style="font-size:11px;color:#0fa968;font-weight:700;">Wallet Accepted</div></div>
         <span class="radio-dot"></span>
       </div>
 
       <div class="pay-grp-title">Pay by any UPI or Direct Bank App</div>
-      <div class="pay-opt-row" data-pm="UPI" onclick="selectPaymentOption(this)">
+      <div class="pay-opt-row" id="pm-UPI" onclick="selectPaymentOption('UPI')">
         <div><div style="font-size:13px;font-weight:800;">Pay by any UPI app</div><div style="font-size:11px;color:#676e8a;">GPay, PhonePe, Paytm, BHIM</div></div>
         <span class="radio-dot"></span>
       </div>
-      <div class="pay-opt-row" data-pm="Direct Bank App" onclick="selectPaymentOption(this)">
+      <div class="pay-opt-row" id="pm-Direct-Bank-App" onclick="selectPaymentOption('Direct Bank App')">
         <div><div style="font-size:13px;font-weight:800;">Direct Bank App / NetBanking</div><div style="font-size:11px;color:#676e8a;">Direct bank transfer payment</div></div>
         <span class="radio-dot"></span>
       </div>
 
       <div class="pay-grp-title">Card</div>
-      <div class="pay-opt-row" data-pm="Card" onclick="selectPaymentOption(this)">
+      <div class="pay-opt-row" id="pm-Card" onclick="selectPaymentOption('Card')">
         <div><div style="font-size:13px;font-weight:800;">Card</div><div style="font-size:11px;color:#676e8a;">Pay securely via card</div></div>
         <span class="radio-dot"></span>
       </div>
 
       <div class="pay-grp-title">Pay at Drop</div>
-      <div class="pay-opt-row active" data-pm="Cash" onclick="selectPaymentOption(this)">
+      <div class="pay-opt-row active" id="pm-Cash" onclick="selectPaymentOption('Cash')">
         <div><div style="font-size:13px;font-weight:800;">Cash</div><div style="font-size:11px;color:#676e8a;">Pay cash after trip</div></div>
         <span class="radio-dot"></span>
       </div>
@@ -459,11 +477,11 @@
       <div class="rate-panel">
         <div style="font-size:14px;font-weight:800;text-align:center;">Rate Driver & Behavior Feedback</div>
         <div class="star-row">
-          <button type="button" class="star-btn" onclick="setDriverRating(1)">1 ★</button>
-          <button type="button" class="star-btn" onclick="setDriverRating(2)">2 ★</button>
-          <button type="button" class="star-btn" onclick="setDriverRating(3)">3 ★</button>
-          <button type="button" class="star-btn" onclick="setDriverRating(4)">4 ★</button>
-          <button type="button" class="star-btn" onclick="setDriverRating(5)">5 ★</button>
+          <button type="button" class="star-btn" id="star-1" onclick="setDriverRating(1)">1 ★</button>
+          <button type="button" class="star-btn" id="star-2" onclick="setDriverRating(2)">2 ★</button>
+          <button type="button" class="star-btn" id="star-3" onclick="setDriverRating(3)">3 ★</button>
+          <button type="button" class="star-btn" id="star-4" onclick="setDriverRating(4)">4 ★</button>
+          <button type="button" class="star-btn" id="star-5" onclick="setDriverRating(5)">5 ★</button>
         </div>
 
         <label style="color:#cfd5ee;" for="p-feedback-inp">Driver Behavior Feedback</label>
@@ -474,15 +492,15 @@
 
     <div class="end-actions">
       <button type="button" class="btn btn-coral" style="margin-top:0;" id="p-block-btn" onclick="toggleBlockDriverNow()">Block Driver</button>
-      <button type="button" class="btn btn-mint" style="margin-top:0;" onclick="closePassengerEndScreen()">Done</button>
+      <button type="button" class="btn btn-mint" style="margin-top:0;" id="p-done-btn" onclick="closePassengerEndScreen()">Done</button>
     </div>
   </div>
 
   <script>
-    function gmEl(id) { return document.getElementById(id); }
+    function byId(id) { return document.getElementById(id); }
 
-    function gmToggleView(id, hideIt, disp) {
-      var el = gmEl(id);
+    function setHidden(id, hideIt, disp) {
+      var el = byId(id);
       if (!el) return;
       if (hideIt) {
         el.classList.add("hide");
@@ -494,38 +512,21 @@
     }
 
     function gmShowOtpStep() {
-      gmToggleView("step-phone", true);
-      gmToggleView("step-otp", false, "block");
-      if (gmEl("otp-inp")) gmEl("otp-inp").value = "123456";
-      if (gmEl("login-msg")) {
-        gmEl("login-msg").style.color = "#0fa968";
-        gmEl("login-msg").textContent = "OTP 123456 sent.";
+      setHidden("step-phone", true);
+      setHidden("step-otp", false, "block");
+      if (byId("otp-inp")) byId("otp-inp").value = "123456";
+      if (byId("login-msg")) {
+        byId("login-msg").style.color = "#0fa968";
+        byId("login-msg").textContent = "OTP 123456 sent.";
       }
     }
 
     function gmBackToPhone() {
-      gmToggleView("step-otp", true);
-      gmToggleView("step-phone", false, "block");
-      if (gmEl("login-msg")) gmEl("login-msg").textContent = "";
+      setHidden("step-otp", true);
+      setHidden("step-phone", false, "block");
+      if (byId("login-msg")) byId("login-msg").textContent = "";
     }
 
-    function gmCompleteLogin(skipSave) {
-      if (!skipSave) {
-        try { localStorage.setItem("gm_logged_in_v1", "1"); } catch (e) {}
-      }
-      gmToggleView("login-card", true);
-      gmToggleView("hdr-btns", false, "flex");
-      gmToggleView("hero-map-wrap", false, "block");
-      gmToggleView("wallet-card", false, "block");
-      gmToggleView("book-card", false, "block");
-      gmToggleView("rides-card", false, "block");
-      if (typeof window.gmStartApp === "function") {
-        try { window.gmStartApp(); } catch (err) {}
-      }
-    }
-  </script>
-
-  <script>
     var curV = "Bike", curR = 7, curM = 25;
     var fareDelta = 0, curPay = "Cash", pinMode = null, nightManualOverride = null;
     var customerPhone = "", customerName = "", walletBalance = 0;
@@ -568,8 +569,6 @@
     var pickupCoords = { lat: 30.8615, lng: 75.8150 };
     var dropCoords = { lat: 30.9120, lng: 75.8540 };
     var routeCoords = null, autoKm = 7.5;
-
-    function byId(id) { return document.getElementById(id); }
 
     function haversineRoadKm(a, b) {
       var R = 6371, dLat = (b.lat - a.lat) * Math.PI / 180, dLng = (b.lng - a.lng) * Math.PI / 180;
@@ -794,17 +793,27 @@
       } catch (e) {}
     }
 
-    window.gmStartApp = function () {
+    function gmCompleteLogin(skipSave) {
+      if (!skipSave) {
+        try { localStorage.setItem("gm_logged_in_v1", "1"); } catch (e) {}
+      }
+      setHidden("login-card", true);
+      setHidden("hdr-btns", false, "flex");
+      setHidden("hero-map-wrap", false, "block");
+      setHidden("wallet-card", false, "block");
+      setHidden("book-card", false, "block");
+      setHidden("rides-card", false, "block");
+
       try { recordCustomerOwnerLog(); } catch (e) {}
       try { loadWallet(); } catch (e) {}
       try { calcFareNow(); } catch (e) {}
       try { drawRidesNow(); } catch (e) {}
       try { initHeroMap(); } catch (e) {}
-    };
+    }
 
     function toggleProfile() {
       var pc = byId("profile-card"); if (!pc) return;
-      if (pc.classList.contains("hide")) gmToggleView("profile-card", false, "block"); else gmToggleView("profile-card", true);
+      if (pc.classList.contains("hide")) setHidden("profile-card", false, "block"); else setHidden("profile-card", true);
     }
 
     function saveProfileNow() {
@@ -816,23 +825,32 @@
       } catch (e) {}
     }
 
-    function pickV(el) {
+    function pickV(vName, rate, minF) {
       try {
-        document.querySelectorAll(".v-row").forEach(function (r) { r.classList.remove("active"); });
-        el.classList.add("active");
-        curV = el.getAttribute("data-v") || "Bike"; curR = Number(el.getAttribute("data-r") || 7); curM = Number(el.getAttribute("data-m") || 25);
+        var vIds = ["vrow-Bike", "vrow-E-Rickshaw", "vrow-Cab"];
+        for (var i = 0; i < vIds.length; i++) {
+          if (byId(vIds[i])) byId(vIds[i]).classList.remove("active");
+        }
+        if (byId("vrow-" + vName)) byId("vrow-" + vName).classList.add("active");
+        curV = vName; curR = rate; curM = minF;
         fareDelta = 0;
-        document.querySelectorAll(".adj-btn").forEach(function (b) { b.classList.remove("on"); });
+        var adjIds = ["adj-m20", "adj-m10", "adj-zero", "adj-p20", "adj-p40", "adj-p80"];
+        for (var j = 0; j < adjIds.length; j++) {
+          if (byId(adjIds[j])) byId(adjIds[j]).classList.remove("on");
+        }
         if (byId("adj-zero")) byId("adj-zero").classList.add("on");
         calcFareNow();
       } catch (e) {}
     }
 
-    function setFareDelta(delta, btnEl) {
+    function setFareDelta(delta, btnId) {
       try {
         fareDelta = Number(delta || 0);
-        document.querySelectorAll(".adj-btn").forEach(function (b) { b.classList.remove("on"); });
-        if (btnEl) btnEl.classList.add("on");
+        var adjIds = ["adj-m20", "adj-m10", "adj-zero", "adj-p20", "adj-p40", "adj-p80"];
+        for (var i = 0; i < adjIds.length; i++) {
+          if (byId(adjIds[i])) byId(adjIds[i]).classList.remove("on");
+        }
+        if (btnId && byId(btnId)) byId(btnId).classList.add("on");
         calcFareNow();
       } catch (e) {}
     }
@@ -842,22 +860,34 @@
         loadWallet();
         if (byId("pay-modal-amt") && byId("fare-total")) byId("pay-modal-amt").textContent = byId("fare-total").textContent;
         if (byId("pay-modal-wbal")) byId("pay-modal-wbal").textContent = "Balance ₹" + walletBalance;
-        document.querySelectorAll("#payment-modal .pay-opt-row").forEach(function (row) {
-          if (row.getAttribute("data-pm") === curPay) row.classList.add("active"); else row.classList.remove("active");
-        });
+        var pmIds = ["pm-Wallet", "pm-Amazon-Pay", "pm-Airtel-Pay", "pm-Jio-Pay", "pm-UPI", "pm-Direct-Bank-App", "pm-Card", "pm-Cash"];
+        var activeId = "pm-" + curPay.replace(/ /g, "-");
+        for (var i = 0; i < pmIds.length; i++) {
+          if (byId(pmIds[i])) {
+            if (pmIds[i] === activeId) byId(pmIds[i]).classList.add("active");
+            else byId(pmIds[i]).classList.remove("active");
+          }
+        }
         if (byId("payment-modal")) byId("payment-modal").classList.add("show");
       } catch (e) {}
     }
 
     function closePaymentModal() { if (byId("payment-modal")) byId("payment-modal").classList.remove("show"); }
 
-    function selectPaymentOption(el) {
+    function selectPaymentOption(pmName) {
       try {
-        curPay = el.getAttribute("data-pm") || "Cash";
+        curPay = pmName || "Cash";
         if (byId("selected-pay-lbl")) byId("selected-pay-lbl").textContent = curPay;
-        document.querySelectorAll("#payment-modal .pay-opt-row").forEach(function (row) { row.classList.remove("active"); });
-        el.classList.add("active");
-        calcFareNow(); closePaymentModal();
+        var pmIds = ["pm-Wallet", "pm-Amazon-Pay", "pm-Airtel-Pay", "pm-Jio-Pay", "pm-UPI", "pm-Direct-Bank-App", "pm-Card", "pm-Cash"];
+        var activeId = "pm-" + curPay.replace(/ /g, "-");
+        for (var i = 0; i < pmIds.length; i++) {
+          if (byId(pmIds[i])) {
+            if (pmIds[i] === activeId) byId(pmIds[i]).classList.add("active");
+            else byId(pmIds[i]).classList.remove("active");
+          }
+        }
+        calcFareNow();
+        closePaymentModal();
       } catch (e) {}
     }
 
@@ -985,6 +1015,16 @@
       } catch (e) {}
     }
 
+    function highlightStars(stars) {
+      for (var s = 1; s <= 5; s++) {
+        var sb = byId("star-" + s);
+        if (sb) {
+          if (s <= stars) sb.classList.add("picked");
+          else sb.classList.remove("picked");
+        }
+      }
+    }
+
     function openPassengerEndScreen(idx) {
       try {
         var r = rides[idx]; if (!r) return;
@@ -992,9 +1032,7 @@
         if (byId("p-end-amt")) byId("p-end-amt").textContent = "₹" + (r.total || 0);
         if (byId("p-end-route")) byId("p-end-route").textContent = (r.v || "Ride") + " • " + pm + " • " + (r.pickup || "Pickup") + " -> " + (r.drop || "Drop") + " (" + (r.km || 0) + " km)";
         if (byId("p-feedback-inp")) byId("p-feedback-inp").value = r.driverFeedback || "";
-        document.querySelectorAll("#p-end-screen .star-btn").forEach(function (btn, i) {
-          if (i + 1 <= (r.driverRating || 0)) btn.classList.add("picked"); else btn.classList.remove("picked");
-        });
+        highlightStars(r.driverRating || 0);
         if (byId("p-block-btn")) byId("p-block-btn").textContent = r.driverBlockedByCustomer ? "Unblock Driver" : "Block Driver";
         if (byId("p-rate-msg")) byId("p-rate-msg").textContent = r.driverRating ? "Rated " + r.driverRating + " ★" : "Tap stars & add feedback";
         if (byId("p-end-screen")) byId("p-end-screen").classList.add("show");
@@ -1003,7 +1041,7 @@
 
     function setDriverRating(stars) {
       if (currentEndIdx !== -1 && rides[currentEndIdx]) { rides[currentEndIdx].driverRating = stars; rides[currentEndIdx].passengerRatedPromptSeen = true; syncCloudRides(); }
-      document.querySelectorAll("#p-end-screen .star-btn").forEach(function (btn, i) { if (i + 1 <= stars) btn.classList.add("picked"); else btn.classList.remove("picked"); });
+      highlightStars(stars);
       if (byId("p-rate-msg")) byId("p-rate-msg").textContent = "Rated " + stars + " ★";
     }
 
@@ -1049,15 +1087,13 @@
           var pinHtml = (!isComp && !isCanc) ? "<div class='pin-row'><span style='font-size:11px;font-weight:800;color:#474d6b;'>START RIDE PIN</span><div class='pin-digits mono'><span class='pin-box'>" + dStr[0] + "</span><span class='pin-box'>" + dStr[1] + "</span><span class='pin-box'>" + dStr[2] + "</span><span class='pin-box'>" + dStr[3] + "</span></div></div>" : "";
           var fbLine = r.driverFeedback ? "<div style='color:#474d6b;font-size:11px;margin-top:6px;'>Feedback: " + r.driverFeedback + (r.driverRating ? " (" + r.driverRating + " ★)" : "") + "</div>" : (r.driverRating ? "<div style='color:#474d6b;font-size:11px;margin-top:6px;'>Rating: " + r.driverRating + " ★</div>" : "");
           var blkTag = r.driverBlockedByCustomer ? "<div class='blk-tag'>Blocked by Customer</div>" : (r.ownerBlockedRole ? "<div class='blk-tag'>Blocked by Owner</div>" : "");
-          var actionHtml = isComp
-            ? '<button type="button" class="btn btn-primary" onclick="openPassengerEndScreen(' + i + ')">Rate, Feedback & Block</button>'
-            : (!isCanc ? '<button type="button" class="btn btn-soft" onclick="openCancelModal(' + i + ')">Cancel Ride</button>' : "");
+          var actionHtml = isComp ? '<button type="button" class="btn btn-primary" onclick="openPassengerEndScreen(' + i + ')">Rate, Feedback & Block</button>' : (!isCanc ? '<button type="button" class="btn btn-soft" onclick="openCancelModal(' + i + ')">Cancel Ride</button>' : "");
 
           html += "<div class='ride-item'><div class='r-top'><span>" + (r.v || "Ride") + " • <span class='mono'>₹" + (r.total || 0) + "</span> • " + pm + "</span><span class='r-badge'>" + st + "</span></div>" +
             "<div style='font-size:12px;color:#474d6b;margin-top:4px;'>" + (r.pickup || "Pickup") + " -> " + (r.drop || "Drop") + " (<span class='mono'>" + (r.km || 0) + " km</span>)</div>" +
             "<div style='font-size:11px;color:#676e8a;margin-top:2px;'>Platform Charges</div>" +
             pinHtml + blkTag + fbLine +
-            "<div class='live-map-box'><div id='p-live-map-" + i + "' class='live-map-el'></div><div class='live-map-ft'><span id='p-map-st-" + i + "'>Rider Live Map • " + st + "</span><button type='button" class="mini-btn" onclick="startLiveRiderWatch(\'' + i + '\')">Track Rider</button></div></div>" +
+            "<div class='live-map-box'><div id='p-live-map-" + i + "' class='live-map-el'></div><div class='live-map-ft'><span id='p-map-st-" + i + "'>Rider Live Map • " + st + "</span><button type="button" class="mini-btn" onclick="startLiveRiderWatch(\'' + i + '\')">Track Rider</button></div></div>" +
             actionHtml + "</div>";
         }
         if (changed) syncCloudRides();
@@ -1069,11 +1105,11 @@
 
     function logout() {
       try { localStorage.removeItem("gm_logged_in_v1"); } catch (e) {}
-      gmToggleView("hdr-btns", true);
-      ["profile-card", "hero-map-wrap", "wallet-card", "book-card", "rides-card"].forEach(function (id) { gmToggleView(id, true); });
-      gmToggleView("step-otp", true);
-      gmToggleView("step-phone", false, "block");
-      gmToggleView("login-card", false, "block");
+      setHidden("hdr-btns", true);
+      ["profile-card", "hero-map-wrap", "wallet-card", "book-card", "rides-card"].forEach(function (id) { setHidden(id, true); });
+      setHidden("step-otp", true);
+      setHidden("step-phone", false, "block");
+      setHidden("login-card", false, "block");
       if (byId("login-msg")) byId("login-msg").textContent = "";
     }
 
@@ -1126,4 +1162,3 @@
   </script>
 </body>
 </html>
-
