@@ -32,6 +32,11 @@
     input:focus, textarea:focus { outline: none; border-color: #18182b; background: #fff; }
     textarea { min-height: 66px; resize: vertical; }
 
+    .inp-with-btn { display: flex; gap: 8px; align-items: center; }
+    .inp-with-btn input { flex: 1; }
+    .pin-action-btn { border: 1.5px solid #18182b; background: #f2f4fc; color: #18182b; border-radius: 12px; padding: 11px 12px; font-size: 12px; font-weight: 800; cursor: pointer; white-space: nowrap; }
+    .pin-action-btn.active { background: #ff5a36; border-color: #ff5a36; color: #fff; }
+
     .btn { width: 100%; border: none; border-radius: 14px; padding: 13px; font-size: 14px; font-weight: 800; cursor: pointer; margin-top: 12px; transition: transform 0.1s; }
     .btn:active { transform: scale(0.99); }
     .btn-primary { background: #18182b; color: #fff; }
@@ -41,8 +46,8 @@
     .msg { margin-top: 10px; font-size: 12px; font-weight: 700; min-height: 16px; color: #0fa968; }
 
     .hero-map-card { border-radius: 22px; overflow: hidden; margin-bottom: 14px; box-shadow: 0 10px 28px rgba(24, 24, 43, 0.09); border: 1px solid #dce1ed; background: #fff; }
-    #main-hero-map { height: 215px; width: 100%; }
-    .map-caption { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: #18182b; background: #f8f9fc; gap: 8px; }
+    #main-hero-map { height: 225px; width: 100%; }
+    .map-caption { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: #18182b; background: #f8f9fc; gap: 8px; flex-wrap: wrap; }
 
     .wallet-strip { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #18182b, #2b2d52); color: #fff; border-radius: 16px; padding: 14px; margin-bottom: 10px; }
     .w-bal { font-size: 24px; font-weight: 800; margin-top: 2px; }
@@ -66,11 +71,12 @@
     .adj-btn { border: 1px solid #d5dbe8; background: #fff; color: #18182b; border-radius: 8px; padding: 7px 2px; font-size: 11px; font-weight: 800; cursor: pointer; }
     .adj-btn.on { background: #0fa968; color: #fff; border-color: #0fa968; }
 
-    .pay-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 6px; }
-    .p-pill { border: 1.5px solid #e3e7f0; border-radius: 11px; padding: 9px 6px; text-align: center; cursor: pointer; background: #fafbfe; }
-    .p-pill.active { border-color: #0fa968; background: #edfaf4; }
-    .p-name { font-size: 12px; font-weight: 800; color: #18182b; }
-    .p-acc { font-size: 10px; font-weight: 700; color: #0fa968; }
+    .pay-selector-box { margin-top: 10px; padding: 12px; border-radius: 14px; border: 1.5px solid #e3e7f0; background: #fafbfe; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+    .pay-grp-title { font-size: 11px; font-weight: 800; color: #676e8a; text-transform: uppercase; margin: 12px 0 6px; }
+    .pay-opt-row { display: flex; justify-content: space-between; align-items: center; padding: 11px 12px; border: 1.5px solid #e3e7f0; border-radius: 12px; margin-bottom: 7px; cursor: pointer; background: #fff; }
+    .pay-opt-row.active { border-color: #0fa968; background: #edfaf4; }
+    .radio-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid #8c93b0; display: inline-block; }
+    .pay-opt-row.active .radio-dot { border-color: #0fa968; background: #0fa968; }
 
     .night-bar { margin-top: 12px; padding: 9px 12px; border-radius: 12px; background: #f3f5fa; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: #474d6b; }
     .night-bar.on { background: #fff1eb; border: 1px solid #ff5a36; color: #b52d0f; }
@@ -113,7 +119,7 @@
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>All Punjab Mobility (23 Districts) • v28</p>
+      <p>All Punjab Mobility • v29</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -157,7 +163,7 @@
     <div id="hero-map-wrap" class="hero-map-card hide">
       <div id="main-hero-map"></div>
       <div class="map-caption">
-        <span id="hero-route-lbl">All Punjab Live Map • Auto Route</span>
+        <span id="hero-route-lbl">Tap map or Pin Drop to set drop point</span>
         <span class="mono" id="hero-dist-badge" style="color:#0fa968;">7.5 km</span>
       </div>
     </div>
@@ -184,13 +190,20 @@
     <div id="book-card" class="sheet hide">
       <div class="sheet-handle"></div>
       <h2 id="book-title">Where in Punjab are you going?</h2>
-      <p class="sub">Local & Intercity rides across all 23 Punjab districts</p>
+      <p class="sub">Type location or tap Pin on Map to set exact drop point</p>
 
-      <label for="pickup-inp">Pickup Location (City / District / Village)</label>
-      <input id="pickup-inp" type="text" list="punjab-places" placeholder="e.g., Threeke, Ludhiana" oninput="onRouteInputChange()" onchange="onRouteInputChange()" />
+      <label for="pickup-inp">Pickup Location</label>
+      <div class="inp-with-btn">
+        <input id="pickup-inp" type="text" list="punjab-places" placeholder="e.g., Threeke, Ludhiana" oninput="onRouteInputChange()" onchange="onRouteInputChange()" />
+        <button type="button" class="pin-action-btn" id="btn-pin-pickup" onclick="togglePinMode('pickup')">Pin Pickup</button>
+      </div>
 
-      <label for="drop-inp">Drop Location (Any Punjab District / City)</label>
-      <input id="drop-inp" type="text" list="punjab-places" placeholder="e.g., Amritsar, Jalandhar, Patiala..." oninput="onRouteInputChange()" onchange="onRouteInputChange()" />
+      <label for="drop-inp">Drop Location</label>
+      <div class="inp-with-btn">
+        <input id="drop-inp" type="text" list="punjab-places" placeholder="Type city/place or tap Pin Drop" oninput="onRouteInputChange()" onchange="onRouteInputChange()" />
+        <button type="button" class="pin-action-btn" id="btn-pin-drop" onclick="togglePinMode('drop')">Pin Drop</button>
+      </div>
+      <div id="pin-mode-note" class="msg" style="color:#ff5a36;"></div>
 
       <datalist id="punjab-places">
         <option value="Threeke, Ludhiana"></option>
@@ -224,12 +237,10 @@
         <option value="Batala"></option>
         <option value="Abohar"></option>
         <option value="Rajpura"></option>
-        <option value="Zirakpur"></option>
-        <option value="Kharar"></option>
       </datalist>
 
       <div class="auto-dist-pill">
-        <span id="auto-dist-status">Punjab Map Road Distance</span>
+        <span id="auto-dist-status">Map Route Distance (Auto)</span>
         <span class="mono" id="auto-dist-val">7.5 km</span>
       </div>
 
@@ -273,28 +284,13 @@
         </div>
       </div>
 
-      <label>Payment Mode (All Accepted)</label>
-      <div class="pay-grid">
-        <div class="p-pill active" data-pm="Cash" onclick="pickPay(this)">
-          <div class="p-name">Cash</div>
-          <div class="p-acc">Accepted</div>
+      <label>Payment Method</label>
+      <div class="pay-selector-box" onclick="openPaymentModal()">
+        <div>
+          <div style="font-size:13px;font-weight:800;color:#18182b;" id="selected-pay-lbl">Cash</div>
+          <div style="font-size:11px;color:#0fa968;font-weight:700;">Wallets • UPI & Bank Apps • Card • Cash</div>
         </div>
-        <div class="p-pill" data-pm="UPI" onclick="pickPay(this)">
-          <div class="p-name">UPI</div>
-          <div class="p-acc">Accepted</div>
-        </div>
-        <div class="p-pill" data-pm="Wallet" onclick="pickPay(this)">
-          <div class="p-name">Wallet</div>
-          <div class="p-acc">Accepted</div>
-        </div>
-        <div class="p-pill" data-pm="Credit Card" onclick="pickPay(this)">
-          <div class="p-name">Credit Card</div>
-          <div class="p-acc">Accepted</div>
-        </div>
-        <div class="p-pill" data-pm="Debit Card" onclick="pickPay(this)">
-          <div class="p-name">Debit Card</div>
-          <div class="p-acc">Accepted</div>
-        </div>
+        <span style="font-size:12px;font-weight:800;color:#18182b;">Change ›</span>
       </div>
 
       <div id="night-row" class="night-bar">
@@ -323,6 +319,60 @@
     </div>
   </div>
 
+  <!-- Payments Bottom Sheet (Wallets, UPI & Direct Bank Apps, Card, Cash) -->
+  <div id="payment-modal" class="overlay">
+    <div class="modal-sheet">
+      <div class="sheet-handle"></div>
+      <div style="display:flex;justify-content:space-between;align-items:center;">
+        <h2 style="margin-bottom:0;">Payments</h2>
+        <span class="mono" style="font-size:15px;font-weight:800;color:#0fa968;" id="pay-modal-amt">₹53</span>
+      </div>
+
+      <div class="pay-grp-title">Wallets</div>
+      <div class="pay-opt-row" data-pm="Wallet" onclick="selectPaymentOption(this)">
+        <div><div style="font-size:13px;font-weight:800;">Musafir Wallet</div><div class="mono" style="font-size:11px;color:#676e8a;" id="pay-modal-wbal">Balance ₹0</div></div>
+        <span class="radio-dot"></span>
+      </div>
+      <div class="pay-opt-row" data-pm="Amazon Pay" onclick="selectPaymentOption(this)">
+        <div><div style="font-size:13px;font-weight:800;">Amazon Pay</div><div style="font-size:11px;color:#0fa968;font-weight:700;">Wallet Accepted</div></div>
+        <span class="radio-dot"></span>
+      </div>
+      <div class="pay-opt-row" data-pm="Airtel Pay" onclick="selectPaymentOption(this)">
+        <div><div style="font-size:13px;font-weight:800;">Airtel Pay</div><div style="font-size:11px;color:#0fa968;font-weight:700;">Wallet Accepted</div></div>
+        <span class="radio-dot"></span>
+      </div>
+      <div class="pay-opt-row" data-pm="Jio Pay" onclick="selectPaymentOption(this)">
+        <div><div style="font-size:13px;font-weight:800;">Jio Pay</div><div style="font-size:11px;color:#0fa968;font-weight:700;">Wallet Accepted</div></div>
+        <span class="radio-dot"></span>
+      </div>
+
+      <div class="pay-grp-title">Pay by any UPI or Direct Bank App</div>
+      <div class="pay-opt-row" data-pm="UPI" onclick="selectPaymentOption(this)">
+        <div><div style="font-size:13px;font-weight:800;">Pay by any UPI app</div><div style="font-size:11px;color:#676e8a;">GPay, PhonePe, Paytm, BHIM</div></div>
+        <span class="radio-dot"></span>
+      </div>
+      <div class="pay-opt-row" data-pm="Direct Bank App" onclick="selectPaymentOption(this)">
+        <div><div style="font-size:13px;font-weight:800;">Direct Bank App / NetBanking</div><div style="font-size:11px;color:#676e8a;">Direct bank transfer payment</div></div>
+        <span class="radio-dot"></span>
+      </div>
+
+      <div class="pay-grp-title">Card</div>
+      <div class="pay-opt-row" data-pm="Card" onclick="selectPaymentOption(this)">
+        <div><div style="font-size:13px;font-weight:800;">Card</div><div style="font-size:11px;color:#676e8a;">Pay securely via card</div></div>
+        <span class="radio-dot"></span>
+      </div>
+
+      <div class="pay-grp-title">Pay at Drop</div>
+      <div class="pay-opt-row active" data-pm="Cash" onclick="selectPaymentOption(this)">
+        <div><div style="font-size:13px;font-weight:800;">Cash</div><div style="font-size:11px;color:#676e8a;">Pay cash after trip</div></div>
+        <span class="radio-dot"></span>
+      </div>
+
+      <button type="button" class="btn btn-primary" onclick="closePaymentModal()">Done</button>
+    </div>
+  </div>
+
+  <!-- Cancel Reason Modal -->
   <div id="cancel-modal" class="overlay">
     <div class="modal-sheet">
       <div class="sheet-handle"></div>
@@ -337,6 +387,7 @@
     </div>
   </div>
 
+  <!-- Full-Screen Trip Completed + Rating + Feedback + Block -->
   <div id="p-end-screen" class="full-end">
     <div>
       <span class="end-tag">GO MUSAFIR • TRIP COMPLETED</span>
@@ -373,6 +424,7 @@
     var curV = "Bike", curR = 7, curM = 25;
     var fareDelta = 0;
     var curPay = "Cash";
+    var pinMode = null; // "pickup" or "drop" or null
     var nightManualOverride = null;
     var customerPhone = "";
     var customerName = "";
@@ -388,7 +440,6 @@
     var pTrackTimers = {};
     var routeFetchTimer = null;
 
-    /* All 23 Districts of Punjab + Major Towns/Localities */
     var PUNJAB_PLACES_DB = {
       "threeke": { lat: 30.8615, lng: 75.8150 },
       "clock tower": { lat: 30.9120, lng: 75.8540 },
@@ -398,41 +449,26 @@
       "bathinda": { lat: 30.2110, lng: 74.9455 },
       "faridkot": { lat: 30.6769, lng: 74.7583 },
       "fatehgarh sahib": { lat: 30.6435, lng: 76.3970 },
-      "sirhind": { lat: 30.6435, lng: 76.3970 },
       "fazilka": { lat: 30.4036, lng: 74.0280 },
       "ferozepur": { lat: 30.9331, lng: 74.6225 },
       "gurdaspur": { lat: 32.0414, lng: 75.4031 },
       "hoshiarpur": { lat: 31.5143, lng: 75.9115 },
       "jalandhar": { lat: 31.3260, lng: 75.5762 },
-      "jalandhar cantt": { lat: 31.2886, lng: 75.6054 },
       "kapurthala": { lat: 31.3723, lng: 75.3821 },
       "malerkotla": { lat: 30.5250, lng: 75.8901 },
       "mansa": { lat: 29.9995, lng: 75.3937 },
       "moga": { lat: 30.8230, lng: 75.1734 },
       "mohali": { lat: 30.7046, lng: 76.7179 },
-      "sas nagar": { lat: 30.7046, lng: 76.7179 },
-      "sahibzada ajit singh nagar": { lat: 30.7046, lng: 76.7179 },
       "pathankot": { lat: 32.2643, lng: 75.6421 },
       "patiala": { lat: 30.3398, lng: 76.3869 },
       "rupnagar": { lat: 30.9661, lng: 76.5231 },
-      "ropar": { lat: 30.9661, lng: 76.5231 },
       "sangrur": { lat: 30.2458, lng: 75.8421 },
       "sbs nagar": { lat: 31.1256, lng: 76.1186 },
-      "nawanshahr": { lat: 31.1256, lng: 76.1186 },
-      "shaheed bhagat singh nagar": { lat: 31.1256, lng: 76.1186 },
       "sri muktsar sahib": { lat: 30.4762, lng: 74.5122 },
-      "muktsar": { lat: 30.4762, lng: 74.5122 },
       "tarn taran": { lat: 31.4519, lng: 74.9278 },
       "phagwara": { lat: 31.2240, lng: 75.7708 },
       "khanna": { lat: 30.7071, lng: 76.2170 },
-      "jagraon": { lat: 30.7881, lng: 75.4735 },
-      "batala": { lat: 31.8186, lng: 75.2028 },
-      "abohar": { lat: 30.1453, lng: 74.1993 },
-      "rajpura": { lat: 30.4840, lng: 76.5940 },
-      "zirakpur": { lat: 30.6425, lng: 76.8173 },
-      "kharar": { lat: 30.7499, lng: 76.6411 },
-      "sunam": { lat: 30.1280, lng: 75.7998 },
-      "nabha": { lat: 30.3752, lng: 76.1526 }
+      "jagraon": { lat: 30.7881, lng: 75.4735 }
     };
 
     var pickupCoords = { lat: 30.8615, lng: 75.8150 };
@@ -499,6 +535,24 @@
           }
         })
         .catch(function () { cb(null); });
+    }
+
+    function togglePinMode(mode) {
+      pinMode = (pinMode === mode) ? null : mode;
+      var bP = document.getElementById("btn-pin-pickup");
+      var bD = document.getElementById("btn-pin-drop");
+      var note = document.getElementById("pin-mode-note");
+      bP.className = pinMode === "pickup" ? "pin-action-btn active" : "pin-action-btn";
+      bD.className = pinMode === "drop" ? "pin-action-btn active" : "pin-action-btn";
+      if (pinMode === "pickup") {
+        note.textContent = "Tap anywhere on the map above to set Pickup pin.";
+      } else if (pinMode === "drop") {
+        note.textContent = "Tap anywhere on the map above to set Drop pin.";
+      } else {
+        note.textContent = "";
+      }
+      var mapCard = document.getElementById("hero-map-wrap");
+      if (pinMode && mapCard) mapCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
 
     function refreshHeroMapRoute() {
@@ -584,8 +638,38 @@
       var el = document.getElementById("main-hero-map");
       if (!el || typeof L === "undefined") return;
       if (heroMap) { heroMap.remove(); heroMap = null; }
-      heroMap = L.map("main-hero-map", { zoomControl: false }).setView([31.1471, 75.3412], 8);
+      heroMap = L.map("main-hero-map", { zoomControl: false }).setView([30.9010, 75.8573], 11);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(heroMap);
+
+      heroMap.on("click", function (e) {
+        if (!pinMode || !e || !e.latlng) return;
+        var lat = Number(e.latlng.lat.toFixed(4));
+        var lng = Number(e.latlng.lng.toFixed(4));
+        if (pinMode === "pickup") {
+          pickupCoords = { lat: lat, lng: lng };
+          document.getElementById("pickup-inp").value = "Pinned (" + lat + ", " + lng + ")";
+        } else if (pinMode === "drop") {
+          dropCoords = { lat: lat, lng: lng };
+          document.getElementById("drop-inp").value = "Pinned (" + lat + ", " + lng + ")";
+        }
+        pinMode = null;
+        document.getElementById("btn-pin-pickup").className = "pin-action-btn";
+        document.getElementById("btn-pin-drop").className = "pin-action-btn";
+        document.getElementById("pin-mode-note").textContent = "Pin placed on map!";
+        routeCoords = null;
+        autoKm = haversineRoadKm(pickupCoords, dropCoords);
+        refreshHeroMapRoute();
+        calcFareNow();
+        fetchOsrmRoadRoute(pickupCoords, dropCoords, function (osrm) {
+          if (osrm && osrm.km) {
+            autoKm = osrm.km;
+            routeCoords = osrm.pts;
+            refreshHeroMapRoute();
+            calcFareNow();
+          }
+        });
+      });
+
       refreshHeroMapRoute();
     }
 
@@ -706,12 +790,29 @@
       calcFareNow();
     }
 
-    function pickPay(el) {
-      var pills = document.querySelectorAll(".p-pill");
-      for (var i = 0; i < pills.length; i++) pills[i].className = "p-pill";
-      el.className = "p-pill active";
+    function openPaymentModal() {
+      loadWallet();
+      document.getElementById("pay-modal-amt").textContent = document.getElementById("fare-total").textContent;
+      document.getElementById("pay-modal-wbal").textContent = "Balance ₹" + walletBalance;
+      var rows = document.querySelectorAll("#payment-modal .pay-opt-row");
+      for (var i = 0; i < rows.length; i++) {
+        rows[i].className = (rows[i].getAttribute("data-pm") === curPay) ? "pay-opt-row active" : "pay-opt-row";
+      }
+      document.getElementById("payment-modal").className = "overlay show";
+    }
+
+    function closePaymentModal() {
+      document.getElementById("payment-modal").className = "overlay";
+    }
+
+    function selectPaymentOption(el) {
       curPay = el.getAttribute("data-pm") || "Cash";
+      document.getElementById("selected-pay-lbl").textContent = curPay;
+      var rows = document.querySelectorAll("#payment-modal .pay-opt-row");
+      for (var i = 0; i < rows.length; i++) rows[i].className = "pay-opt-row";
+      el.className = "pay-opt-row active";
       calcFareNow();
+      closePaymentModal();
     }
 
     function toggleNightNow() {
