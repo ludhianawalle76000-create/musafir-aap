@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Go Musafir — Ludhiana Rides</title>
+  <title>Go Musafir — All Punjab Rides</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -41,7 +41,7 @@
     .msg { margin-top: 10px; font-size: 12px; font-weight: 700; min-height: 16px; color: #0fa968; }
 
     .hero-map-card { border-radius: 22px; overflow: hidden; margin-bottom: 14px; box-shadow: 0 10px 28px rgba(24, 24, 43, 0.09); border: 1px solid #dce1ed; background: #fff; }
-    #main-hero-map { height: 210px; width: 100%; }
+    #main-hero-map { height: 215px; width: 100%; }
     .map-caption { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: #18182b; background: #f8f9fc; gap: 8px; }
 
     .wallet-strip { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #18182b, #2b2d52); color: #fff; border-radius: 16px; padding: 14px; margin-bottom: 10px; }
@@ -113,7 +113,7 @@
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Ludhiana Mobility • v26</p>
+      <p>All Punjab Mobility (23 Districts) • v28</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -128,7 +128,7 @@
     <div id="login-card" class="sheet">
       <div class="sheet-handle"></div>
       <h2>Sign in to Go Musafir</h2>
-      <p class="sub">Enter your number to receive instant verification code.</p>
+      <p class="sub">Book Bike, E-Rickshaw & Cab across all 23 districts of Punjab.</p>
       <div id="step-phone">
         <label for="phone-inp">Mobile Number</label>
         <input id="phone-inp" type="tel" value="+918564885647" />
@@ -157,7 +157,7 @@
     <div id="hero-map-wrap" class="hero-map-card hide">
       <div id="main-hero-map"></div>
       <div class="map-caption">
-        <span id="hero-route-lbl">Ludhiana Live Map • Auto Route</span>
+        <span id="hero-route-lbl">All Punjab Live Map • Auto Route</span>
         <span class="mono" id="hero-dist-badge" style="color:#0fa968;">7.5 km</span>
       </div>
     </div>
@@ -168,7 +168,7 @@
           <div style="font-size:10px;font-weight:800;letter-spacing:0.6px;color:#9ea4c4;">MUSAFIR WALLET</div>
           <div id="c-wallet-bal" class="w-bal mono">₹0</div>
         </div>
-        <div style="text-align:right;font-size:11px;color:#4ef0a8;font-weight:700;">Instant Pay Ready</div>
+        <div style="text-align:right;font-size:11px;color:#4ef0a8;font-weight:700;">All Punjab Instant Pay</div>
       </div>
       <div class="grid5">
         <button type="button" class="chip-btn mono" onclick="addWalletMoney(50)">+₹50</button>
@@ -183,32 +183,53 @@
 
     <div id="book-card" class="sheet hide">
       <div class="sheet-handle"></div>
-      <h2 id="book-title">Where are you going?</h2>
-      <p class="sub">Select pickup & drop — map auto-calculates distance</p>
+      <h2 id="book-title">Where in Punjab are you going?</h2>
+      <p class="sub">Local & Intercity rides across all 23 Punjab districts</p>
 
-      <label for="pickup-inp">Pickup Location</label>
-      <input id="pickup-inp" type="text" list="ludhiana-places" placeholder="e.g., Threeke" oninput="onRouteInputChange()" onchange="onRouteInputChange()" />
+      <label for="pickup-inp">Pickup Location (City / District / Village)</label>
+      <input id="pickup-inp" type="text" list="punjab-places" placeholder="e.g., Threeke, Ludhiana" oninput="onRouteInputChange()" onchange="onRouteInputChange()" />
 
-      <label for="drop-inp">Drop Location</label>
-      <input id="drop-inp" type="text" list="ludhiana-places" placeholder="e.g., Clock Tower" oninput="onRouteInputChange()" onchange="onRouteInputChange()" />
+      <label for="drop-inp">Drop Location (Any Punjab District / City)</label>
+      <input id="drop-inp" type="text" list="punjab-places" placeholder="e.g., Amritsar, Jalandhar, Patiala..." oninput="onRouteInputChange()" onchange="onRouteInputChange()" />
 
-      <datalist id="ludhiana-places">
-        <option value="Threeke"></option>
-        <option value="Sua Road"></option>
-        <option value="Clock Tower"></option>
-        <option value="Ferozepur Road"></option>
-        <option value="Gill Road"></option>
-        <option value="Sarabha Nagar"></option>
-        <option value="Model Town"></option>
-        <option value="Dugri"></option>
-        <option value="Jalandhar Bypass"></option>
-        <option value="PAU Ludhiana"></option>
-        <option value="Civil Lines"></option>
-        <option value="Haibowal"></option>
+      <datalist id="punjab-places">
+        <option value="Threeke, Ludhiana"></option>
+        <option value="Ludhiana"></option>
+        <option value="Clock Tower, Ludhiana"></option>
+        <option value="Amritsar"></option>
+        <option value="Barnala"></option>
+        <option value="Bathinda"></option>
+        <option value="Faridkot"></option>
+        <option value="Fatehgarh Sahib"></option>
+        <option value="Fazilka"></option>
+        <option value="Ferozepur"></option>
+        <option value="Gurdaspur"></option>
+        <option value="Hoshiarpur"></option>
+        <option value="Jalandhar"></option>
+        <option value="Kapurthala"></option>
+        <option value="Malerkotla"></option>
+        <option value="Mansa"></option>
+        <option value="Moga"></option>
+        <option value="Mohali (SAS Nagar)"></option>
+        <option value="Pathankot"></option>
+        <option value="Patiala"></option>
+        <option value="Rupnagar (Ropar)"></option>
+        <option value="Sangrur"></option>
+        <option value="SBS Nagar (Nawanshahr)"></option>
+        <option value="Sri Muktsar Sahib"></option>
+        <option value="Tarn Taran"></option>
+        <option value="Phagwara"></option>
+        <option value="Khanna"></option>
+        <option value="Jagraon"></option>
+        <option value="Batala"></option>
+        <option value="Abohar"></option>
+        <option value="Rajpura"></option>
+        <option value="Zirakpur"></option>
+        <option value="Kharar"></option>
       </datalist>
 
       <div class="auto-dist-pill">
-        <span id="auto-dist-status">Map Route Distance (Auto)</span>
+        <span id="auto-dist-status">Punjab Map Road Distance</span>
         <span class="mono" id="auto-dist-val">7.5 km</span>
       </div>
 
@@ -216,7 +237,7 @@
       <div class="v-list">
         <div class="v-row active" data-v="Bike" data-r="7" data-m="25" onclick="pickV(this)">
           <div class="v-left">
-            <div class="v-name">Musafir Bike <span class="v-tag">FASTEST</span></div>
+            <div class="v-name">Musafir Bike <span class="v-tag">CITY & LOCAL</span></div>
             <div class="v-meta" id="m-bike">Quick bike rides • Min ₹25</div>
           </div>
           <div class="v-price mono" id="p-bike">₹53</div>
@@ -230,8 +251,8 @@
         </div>
         <div class="v-row" data-v="Cab" data-r="16" data-m="70" onclick="pickV(this)">
           <div class="v-left">
-            <div class="v-name">Musafir Cab</div>
-            <div class="v-meta" id="m-cab">Comfortable sedan • Min ₹70</div>
+            <div class="v-name">Musafir Cab <span class="v-tag">ALL PUNJAB</span></div>
+            <div class="v-meta" id="m-cab">Local & Inter-District AC Cab • Min ₹70</div>
           </div>
           <div class="v-price mono" id="p-cab">₹120</div>
         </div>
@@ -365,25 +386,58 @@
     var heroEndDot = null;
     var pMaps = {};
     var pTrackTimers = {};
-    var geocodeTimer = null;
+    var routeFetchTimer = null;
 
-    var LUDHIANA_SPOTS = {
+    /* All 23 Districts of Punjab + Major Towns/Localities */
+    var PUNJAB_PLACES_DB = {
       "threeke": { lat: 30.8615, lng: 75.8150 },
-      "sua road": { lat: 30.8640, lng: 75.8220 },
       "clock tower": { lat: 30.9120, lng: 75.8540 },
-      "ferozepur road": { lat: 30.8910, lng: 75.8280 },
-      "gill road": { lat: 30.8790, lng: 75.8450 },
-      "sarabha nagar": { lat: 30.8880, lng: 75.8060 },
-      "model town": { lat: 30.8835, lng: 75.8390 },
-      "dugri": { lat: 30.8670, lng: 75.8420 },
-      "jalandhar bypass": { lat: 30.9350, lng: 75.8250 },
-      "pau ludhiana": { lat: 30.9010, lng: 75.8080 },
-      "civil lines": { lat: 30.9140, lng: 75.8380 },
-      "haibowal": { lat: 30.9230, lng: 75.8090 }
+      "ludhiana": { lat: 30.9010, lng: 75.8573 },
+      "amritsar": { lat: 31.6340, lng: 74.8723 },
+      "barnala": { lat: 30.3819, lng: 75.5487 },
+      "bathinda": { lat: 30.2110, lng: 74.9455 },
+      "faridkot": { lat: 30.6769, lng: 74.7583 },
+      "fatehgarh sahib": { lat: 30.6435, lng: 76.3970 },
+      "sirhind": { lat: 30.6435, lng: 76.3970 },
+      "fazilka": { lat: 30.4036, lng: 74.0280 },
+      "ferozepur": { lat: 30.9331, lng: 74.6225 },
+      "gurdaspur": { lat: 32.0414, lng: 75.4031 },
+      "hoshiarpur": { lat: 31.5143, lng: 75.9115 },
+      "jalandhar": { lat: 31.3260, lng: 75.5762 },
+      "jalandhar cantt": { lat: 31.2886, lng: 75.6054 },
+      "kapurthala": { lat: 31.3723, lng: 75.3821 },
+      "malerkotla": { lat: 30.5250, lng: 75.8901 },
+      "mansa": { lat: 29.9995, lng: 75.3937 },
+      "moga": { lat: 30.8230, lng: 75.1734 },
+      "mohali": { lat: 30.7046, lng: 76.7179 },
+      "sas nagar": { lat: 30.7046, lng: 76.7179 },
+      "sahibzada ajit singh nagar": { lat: 30.7046, lng: 76.7179 },
+      "pathankot": { lat: 32.2643, lng: 75.6421 },
+      "patiala": { lat: 30.3398, lng: 76.3869 },
+      "rupnagar": { lat: 30.9661, lng: 76.5231 },
+      "ropar": { lat: 30.9661, lng: 76.5231 },
+      "sangrur": { lat: 30.2458, lng: 75.8421 },
+      "sbs nagar": { lat: 31.1256, lng: 76.1186 },
+      "nawanshahr": { lat: 31.1256, lng: 76.1186 },
+      "shaheed bhagat singh nagar": { lat: 31.1256, lng: 76.1186 },
+      "sri muktsar sahib": { lat: 30.4762, lng: 74.5122 },
+      "muktsar": { lat: 30.4762, lng: 74.5122 },
+      "tarn taran": { lat: 31.4519, lng: 74.9278 },
+      "phagwara": { lat: 31.2240, lng: 75.7708 },
+      "khanna": { lat: 30.7071, lng: 76.2170 },
+      "jagraon": { lat: 30.7881, lng: 75.4735 },
+      "batala": { lat: 31.8186, lng: 75.2028 },
+      "abohar": { lat: 30.1453, lng: 74.1993 },
+      "rajpura": { lat: 30.4840, lng: 76.5940 },
+      "zirakpur": { lat: 30.6425, lng: 76.8173 },
+      "kharar": { lat: 30.7499, lng: 76.6411 },
+      "sunam": { lat: 30.1280, lng: 75.7998 },
+      "nabha": { lat: 30.3752, lng: 76.1526 }
     };
 
     var pickupCoords = { lat: 30.8615, lng: 75.8150 };
     var dropCoords = { lat: 30.9120, lng: 75.8540 };
+    var routeCoords = null;
     var autoKm = 7.5;
 
     function haversineRoadKm(a, b) {
@@ -394,18 +448,17 @@
         Math.cos(a.lat * Math.PI / 180) * Math.cos(b.lat * Math.PI / 180) *
         Math.sin(dLng / 2) * Math.sin(dLng / 2);
       var straight = R * 2 * Math.atan2(Math.sqrt(s1), Math.sqrt(1 - s1));
-      var roadDist = Math.max(1.0, Math.round(straight * 1.25 * 10) / 10);
-      return roadDist;
+      return Math.max(1.0, Math.round(straight * 1.18 * 10) / 10);
     }
 
     function lookupSpot(text) {
       var k = String(text || "").trim().toLowerCase();
       if (!k) return null;
-      if (LUDHIANA_SPOTS[k]) return LUDHIANA_SPOTS[k];
-      var keys = Object.keys(LUDHIANA_SPOTS);
+      if (PUNJAB_PLACES_DB[k]) return PUNJAB_PLACES_DB[k];
+      var keys = Object.keys(PUNJAB_PLACES_DB);
       for (var i = 0; i < keys.length; i++) {
         if (k.indexOf(keys[i]) > -1 || keys[i].indexOf(k) > -1) {
-          return LUDHIANA_SPOTS[keys[i]];
+          return PUNJAB_PLACES_DB[keys[i]];
         }
       }
       return null;
@@ -416,11 +469,31 @@
       if (localHit) { cb(localHit); return; }
       var q = String(query || "").trim();
       if (q.length < 3) { cb(null); return; }
-      fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(q + ", Ludhiana, Punjab"))
+      fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(q + ", Punjab, India"))
         .then(function (res) { return res.json(); })
         .then(function (arr) {
           if (Array.isArray(arr) && arr.length > 0) {
             cb({ lat: parseFloat(arr[0].lat), lng: parseFloat(arr[0].lon) });
+          } else {
+            cb(null);
+          }
+        })
+        .catch(function () { cb(null); });
+    }
+
+    function fetchOsrmRoadRoute(a, b, cb) {
+      var url = "https://router.project-osrm.org/route/v1/driving/" +
+        a.lng + "," + a.lat + ";" + b.lng + "," + b.lat + "?overview=full&geometries=geojson";
+      fetch(url)
+        .then(function (res) { return res.json(); })
+        .then(function (data) {
+          if (data && data.routes && data.routes.length > 0) {
+            var rt = data.routes[0];
+            var km = Math.max(1.0, Math.round((rt.distance / 1000) * 10) / 10);
+            var pts = (rt.geometry && Array.isArray(rt.geometry.coordinates))
+              ? rt.geometry.coordinates.map(function (c) { return [c[1], c[0]]; })
+              : null;
+            cb({ km: km, pts: pts });
           } else {
             cb(null);
           }
@@ -434,7 +507,11 @@
       if (heroStartDot) heroMap.removeLayer(heroStartDot);
       if (heroEndDot) heroMap.removeLayer(heroEndDot);
 
-      heroLine = L.polyline([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { color: "#18182b", weight: 4 }).addTo(heroMap);
+      var linePts = (Array.isArray(routeCoords) && routeCoords.length > 1)
+        ? routeCoords
+        : [[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]];
+
+      heroLine = L.polyline(linePts, { color: "#18182b", weight: 4 }).addTo(heroMap);
       heroStartDot = L.circleMarker([pickupCoords.lat, pickupCoords.lng], { radius: 7, color: "#0fa968", fillOpacity: 1 }).addTo(heroMap);
       heroEndDot = L.circleMarker([dropCoords.lat, dropCoords.lng], { radius: 7, color: "#ff5a36", fillOpacity: 1 }).addTo(heroMap);
       heroMap.fitBounds([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { padding: [24, 24] });
@@ -448,6 +525,7 @@
       var dLocal = lookupSpot(dTxt);
       if (pLocal) pickupCoords = pLocal;
       if (dLocal) dropCoords = dLocal;
+      routeCoords = null;
 
       autoKm = haversineRoadKm(pickupCoords, dropCoords);
       document.getElementById("auto-dist-val").textContent = autoKm + " km";
@@ -456,33 +534,40 @@
       refreshHeroMapRoute();
       calcFareNow();
 
-      clearTimeout(geocodeTimer);
-      geocodeTimer = setTimeout(function () {
-        if (pTxt && !pLocal) {
-          geocodePlace(pTxt, function (pt) {
-            if (pt) {
-              pickupCoords = pt;
-              autoKm = haversineRoadKm(pickupCoords, dropCoords);
+      clearTimeout(routeFetchTimer);
+      routeFetchTimer = setTimeout(function () {
+        function afterCoordsReady() {
+          fetchOsrmRoadRoute(pickupCoords, dropCoords, function (osrm) {
+            if (osrm && osrm.km) {
+              autoKm = osrm.km;
+              routeCoords = osrm.pts;
               document.getElementById("auto-dist-val").textContent = autoKm + " km";
               document.getElementById("hero-dist-badge").textContent = autoKm + " km";
               refreshHeroMapRoute();
               calcFareNow();
             }
+          });
+        }
+
+        var pending = 0;
+        if (pTxt && !pLocal) {
+          pending += 1;
+          geocodePlace(pTxt, function (pt) {
+            if (pt) pickupCoords = pt;
+            pending -= 1;
+            if (pending === 0) afterCoordsReady();
           });
         }
         if (dTxt && !dLocal) {
+          pending += 1;
           geocodePlace(dTxt, function (pt) {
-            if (pt) {
-              dropCoords = pt;
-              autoKm = haversineRoadKm(pickupCoords, dropCoords);
-              document.getElementById("auto-dist-val").textContent = autoKm + " km";
-              document.getElementById("hero-dist-badge").textContent = autoKm + " km";
-              refreshHeroMapRoute();
-              calcFareNow();
-            }
+            if (pt) dropCoords = pt;
+            pending -= 1;
+            if (pending === 0) afterCoordsReady();
           });
         }
-      }, 350);
+        if (pending === 0) afterCoordsReady();
+      }, 300);
     }
 
     function isAutoNightHour() {
@@ -499,7 +584,7 @@
       var el = document.getElementById("main-hero-map");
       if (!el || typeof L === "undefined") return;
       if (heroMap) { heroMap.remove(); heroMap = null; }
-      heroMap = L.map("main-hero-map", { zoomControl: false }).setView([30.886, 75.834], 12);
+      heroMap = L.map("main-hero-map", { zoomControl: false }).setView([31.1471, 75.3412], 8);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(heroMap);
       refreshHeroMapRoute();
     }
@@ -595,7 +680,7 @@
       if (!n) return;
       customerName = n;
       recordCustomerOwnerLog();
-      document.getElementById("book-title").textContent = "Hi " + n + ", where to?";
+      document.getElementById("book-title").textContent = "Hi " + n + ", where in Punjab?";
       document.getElementById("profile-msg").textContent = "Profile saved!";
     }
 
@@ -648,7 +733,7 @@
       document.getElementById("p-rick").textContent = "₹" + rickFare;
       document.getElementById("m-rick").textContent = "Doorstep local ride • Min ₹" + Math.round(35 * nMult);
       document.getElementById("p-cab").textContent = "₹" + cabFare;
-      document.getElementById("m-cab").textContent = "Comfortable sedan • Min ₹" + Math.round(70 * nMult);
+      document.getElementById("m-cab").textContent = "Local & Inter-District AC Cab • Min ₹" + Math.round(70 * nMult);
 
       var nr = document.getElementById("night-row");
       nr.className = nOn ? "night-bar on" : "night-bar";
@@ -706,6 +791,10 @@
         isNight: nOn,
         pickup: pickup,
         drop: drop,
+        pLat: pickupCoords.lat,
+        pLng: pickupCoords.lng,
+        dLat: dropCoords.lat,
+        dLng: dropCoords.lng,
         status: "Searching Driver",
         riderLat: pickupCoords.lat,
         riderLng: pickupCoords.lng,
@@ -758,22 +847,26 @@
       if (!el || typeof L === "undefined") return;
       if (pMaps[idx]) { pMaps[idx].remove(); delete pMaps[idx]; }
 
+      var aPt = { lat: rideObj.pLat || pickupCoords.lat, lng: rideObj.pLng || pickupCoords.lng };
+      var bPt = { lat: rideObj.dLat || dropCoords.lat, lng: rideObj.dLng || dropCoords.lng };
       var prog = statusProgress(rideObj.status || "Searching Driver");
-      var curLat = (typeof rideObj.riderLat === "number") ? rideObj.riderLat : (pickupCoords.lat + (dropCoords.lat - pickupCoords.lat) * prog);
-      var curLng = (typeof rideObj.riderLng === "number") ? rideObj.riderLng : (pickupCoords.lng + (dropCoords.lng - pickupCoords.lng) * prog);
+      var curLat = (typeof rideObj.riderLat === "number") ? rideObj.riderLat : (aPt.lat + (bPt.lat - aPt.lat) * prog);
+      var curLng = (typeof rideObj.riderLng === "number") ? rideObj.riderLng : (aPt.lng + (bPt.lng - aPt.lng) * prog);
 
-      var map = L.map(elId, { zoomControl: false }).setView([curLat, curLng], 13);
+      var map = L.map(elId, { zoomControl: false }).setView([curLat, curLng], 10);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(map);
-      L.polyline([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { color: "#18182b", weight: 4, dashArray: "6,6" }).addTo(map);
-      L.circleMarker([pickupCoords.lat, pickupCoords.lng], { radius: 6, color: "#0fa968", fillOpacity: 1 }).addTo(map);
-      L.circleMarker([dropCoords.lat, dropCoords.lng], { radius: 6, color: "#ff5a36", fillOpacity: 1 }).addTo(map);
+      L.polyline([[aPt.lat, aPt.lng], [bPt.lat, bPt.lng]], { color: "#18182b", weight: 4, dashArray: "6,6" }).addTo(map);
+      L.circleMarker([aPt.lat, aPt.lng], { radius: 6, color: "#0fa968", fillOpacity: 1 }).addTo(map);
+      L.circleMarker([bPt.lat, bPt.lng], { radius: 6, color: "#ff5a36", fillOpacity: 1 }).addTo(map);
       var riderMarker = L.circleMarker([curLat, curLng], { radius: 9, color: "#fff", weight: 2, fillColor: "#18182b", fillOpacity: 1 }).addTo(map);
-      pMaps[idx] = { map: map, marker: riderMarker };
+      pMaps[idx] = { map: map, marker: riderMarker, aPt: aPt, bPt: bPt };
     }
 
     function startLiveRiderWatch(idx) {
       var stEl = document.getElementById("p-map-st-" + idx);
       if (pTrackTimers[idx]) { clearInterval(pTrackTimers[idx]); delete pTrackTimers[idx]; }
+      var aPt = (pMaps[idx] && pMaps[idx].aPt) ? pMaps[idx].aPt : pickupCoords;
+      var bPt = (pMaps[idx] && pMaps[idx].bPt) ? pMaps[idx].bPt : dropCoords;
 
       function updatePos(lat, lng, label) {
         if (pMaps[idx] && pMaps[idx].marker && pMaps[idx].map) {
@@ -793,8 +886,8 @@
       pTrackTimers[idx] = setInterval(function () {
         step += 1;
         var t = Math.min(1, step / 8);
-        var lat = pickupCoords.lat + (dropCoords.lat - pickupCoords.lat) * t;
-        var lng = pickupCoords.lng + (dropCoords.lng - pickupCoords.lng) * t;
+        var lat = aPt.lat + (bPt.lat - aPt.lat) * t;
+        var lng = aPt.lng + (bPt.lng - aPt.lng) * t;
         updatePos(lat, lng, t >= 1 ? "Reached Drop" : "Rider Moving Live");
         if (t >= 1) { clearInterval(pTrackTimers[idx]); delete pTrackTimers[idx]; }
       }, 650);
