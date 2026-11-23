@@ -46,10 +46,13 @@
     .msg { margin-top: 10px; font-size: 12px; font-weight: 700; min-height: 16px; color: #0fa968; }
 
     .hero-map-card { border-radius: 22px; overflow: hidden; margin-bottom: 14px; box-shadow: 0 10px 28px rgba(24, 24, 43, 0.09); border: 1px solid #dce1ed; background: #fff; }
-    .map-stage { position: relative; }
-    #main-hero-map { height: 255px; width: 100%; background: #e3e8f2; }
-    .map-zoom-dock { position: absolute; right: 10px; top: 10px; z-index: 420; display: flex; flex-direction: column; gap: 6px; }
-    .z-btn { width: 36px; height: 36px; border-radius: 10px; border: 1.5px solid #18182b; background: rgba(255, 255, 255, 0.95); color: #18182b; font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(24, 24, 43, 0.16); }
+    .map-stage { position: relative; height: 255px; width: 100%; background: linear-gradient(160deg, #dce8f8, #eef5ec); overflow: hidden; }
+    #main-hero-map { height: 100%; width: 100%; position: relative; z-index: 2; }
+    .map-grid-fallback { position: absolute; inset: 0; z-index: 1; background-image: linear-gradient(to right, rgba(24,24,43,0.07) 1px, transparent 1px), linear-gradient(to bottom, rgba(24,24,43,0.07) 1px, transparent 1px); background-size: 28px 28px; display: flex; align-items: flex-end; padding: 10px; }
+    .map-coord-pill { background: rgba(24,24,43,0.82); color: #fff; padding: 4px 9px; border-radius: 8px; font-size: 10px; font-weight: 700; }
+    .map-zoom-dock { position: absolute; right: 10px; top: 10px; z-index: 450; display: flex; flex-direction: column; gap: 6px; }
+    .z-btn { width: 36px; height: 36px; border-radius: 10px; border: 1.5px solid #18182b; background: rgba(255, 255, 255, 0.96); color: #18182b; font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(24, 24, 43, 0.16); }
+    .z-btn:active { background: #18182b; color: #fff; }
     .map-caption { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: #18182b; background: #f8f9fc; gap: 8px; flex-wrap: wrap; }
     .map-quick-bar { padding: 8px 14px 12px; display: flex; gap: 6px; flex-wrap: wrap; background: #f8f9fc; border-top: 1px solid #e6ebf5; }
 
@@ -127,7 +130,7 @@
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Cloud Live • v45</p>
+      <p>Cloud Live • v46</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -170,6 +173,9 @@
 
     <div id="hero-map-wrap" class="hero-map-card hide">
       <div class="map-stage">
+        <div class="map-grid-fallback">
+          <span class="map-coord-pill mono" id="map-zoom-readout">Zoom 12x • Ludhiana</span>
+        </div>
         <div id="main-hero-map"></div>
         <div class="map-zoom-dock">
           <button type="button" class="z-btn" onclick="zoomHeroMap(1)" title="Zoom In">+</button>
@@ -215,13 +221,13 @@
 
       <label for="pickup-inp">Pickup Location</label>
       <div class="inp-with-btn">
-        <input id="pickup-inp" type="text" list="punjab-places" placeholder="e.g., Threeke, Ludhiana" oninput="onRouteInputChange()" onchange="onRouteInputChange()" />
+        <input id="pickup-inp" type="text" list="punjab-places" value="Threeke, Ludhiana" oninput="onRouteInputChange()" onchange="onRouteInputChange()" />
         <button type="button" class="pin-action-btn" id="btn-pin-pickup" onclick="togglePinMode('pickup')">Pin Pickup</button>
       </div>
 
       <label for="drop-inp">Drop Location</label>
       <div class="inp-with-btn">
-        <input id="drop-inp" type="text" list="punjab-places" placeholder="Type city/place or tap Pin Drop" oninput="onRouteInputChange()" onchange="onRouteInputChange()" />
+        <input id="drop-inp" type="text" list="punjab-places" value="Clock Tower, Ludhiana" oninput="onRouteInputChange()" onchange="onRouteInputChange()" />
         <button type="button" class="pin-action-btn" id="btn-pin-drop" onclick="togglePinMode('drop')">Pin Drop</button>
       </div>
       <div id="pin-mode-note" class="msg" style="color:#ff5a36;"></div>
@@ -467,50 +473,6 @@
   </div>
 
   <script>
-    function gmEl(id) { return document.getElementById(id); }
-
-    function gmToggleView(id, hideIt, disp) {
-      var el = gmEl(id);
-      if (!el) return;
-      if (hideIt) {
-        el.classList.add("hide");
-        el.style.display = "none";
-      } else {
-        el.classList.remove("hide");
-        el.style.display = disp || "block";
-      }
-    }
-
-    function gmShowOtpStep() {
-      gmToggleView("step-phone", true);
-      gmToggleView("step-otp", false, "block");
-      if (gmEl("otp-inp")) gmEl("otp-inp").value = "123456";
-      if (gmEl("login-msg")) {
-        gmEl("login-msg").style.color = "#0fa968";
-        gmEl("login-msg").textContent = "OTP 123456 sent.";
-      }
-    }
-
-    function gmBackToPhone() {
-      gmToggleView("step-otp", true);
-      gmToggleView("step-phone", false, "block");
-      if (gmEl("login-msg")) gmEl("login-msg").textContent = "";
-    }
-
-    function gmCompleteLogin() {
-      gmToggleView("login-card", true);
-      gmToggleView("hdr-btns", false, "flex");
-      gmToggleView("hero-map-wrap", false, "block");
-      gmToggleView("wallet-card", false, "block");
-      gmToggleView("book-card", false, "block");
-      gmToggleView("rides-card", false, "block");
-      if (typeof window.gmBootBooking === "function") {
-        try { window.gmBootBooking(); } catch (err) {}
-      }
-    }
-  </script>
-
-  <script>
     var curV = "Bike", curR = 7, curM = 25;
     var fareDelta = 0, curPay = "Cash", pinMode = null, nightManualOverride = null;
     var customerPhone = "", customerName = "", walletBalance = 0;
@@ -555,6 +517,58 @@
     var routeCoords = null, autoKm = 7.5;
 
     function byId(id) { return document.getElementById(id); }
+
+    function setHidden(id, hideIt, disp) {
+      var el = byId(id);
+      if (!el) return;
+      if (hideIt) {
+        el.classList.add("hide");
+        el.style.display = "none";
+      } else {
+        el.classList.remove("hide");
+        el.style.display = disp || "block";
+      }
+    }
+
+    function updateZoomReadout() {
+      var z = heroMap ? heroMap.getZoom() : 12;
+      var el = byId("map-zoom-readout");
+      if (el) el.textContent = "Zoom " + z + "x • " + pickupCoords.lat.toFixed(2) + ", " + pickupCoords.lng.toFixed(2);
+    }
+
+    function gmShowOtpStep() {
+      setHidden("step-phone", true);
+      setHidden("step-otp", false, "block");
+      if (byId("otp-inp")) byId("otp-inp").value = "123456";
+      if (byId("login-msg")) {
+        byId("login-msg").style.color = "#0fa968";
+        byId("login-msg").textContent = "OTP 123456 sent.";
+      }
+    }
+
+    function gmBackToPhone() {
+      setHidden("step-otp", true);
+      setHidden("step-phone", false, "block");
+      if (byId("login-msg")) byId("login-msg").textContent = "";
+    }
+
+    function gmCompleteLogin(skipSave) {
+      if (!skipSave) {
+        try { localStorage.setItem("gm_logged_in_v1", "1"); } catch (e) {}
+      }
+      setHidden("login-card", true);
+      setHidden("hdr-btns", false, "flex");
+      setHidden("hero-map-wrap", false, "block");
+      setHidden("wallet-card", false, "block");
+      setHidden("book-card", false, "block");
+      setHidden("rides-card", false, "block");
+
+      try { recordCustomerOwnerLog(); } catch (e) {}
+      try { loadWallet(); } catch (e) {}
+      try { calcFareNow(); } catch (e) {}
+      try { drawRidesNow(); } catch (e) {}
+      try { initHeroMap(); } catch (e) {}
+    }
 
     function haversineRoadKm(a, b) {
       var R = 6371, dLat = (b.lat - a.lat) * Math.PI / 180, dLng = (b.lng - a.lng) * Math.PI / 180;
@@ -608,15 +622,21 @@
     function applyPinAtCoords(mode, lat, lng) {
       try {
         var rLat = Number(lat.toFixed(4)), rLng = Number(lng.toFixed(4));
-        if (mode === "pickup") { pickupCoords = { lat: rLat, lng: rLng }; if (byId("pickup-inp")) byId("pickup-inp").value = "Pinned (" + rLat + ", " + rLng + ")"; }
-        else { dropCoords = { lat: rLat, lng: rLng }; if (byId("drop-inp")) byId("drop-inp").value = "Pinned (" + rLat + ", " + rLng + ")"; }
+        if (mode === "pickup") {
+          pickupCoords = { lat: rLat, lng: rLng };
+          if (byId("pickup-inp")) byId("pickup-inp").value = "Pinned (" + rLat + ", " + rLng + ")";
+        } else {
+          dropCoords = { lat: rLat, lng: rLng };
+          if (byId("drop-inp")) byId("drop-inp").value = "Pinned (" + rLat + ", " + rLng + ")";
+        }
         pinMode = null;
         if (byId("btn-pin-pickup")) byId("btn-pin-pickup").className = "pin-action-btn";
         if (byId("btn-pin-drop")) byId("btn-pin-drop").className = "pin-action-btn";
         if (byId("pin-mode-note")) byId("pin-mode-note").textContent = (mode === "pickup" ? "Pickup pin set!" : "Drop pin set!");
         routeCoords = null;
         autoKm = haversineRoadKm(pickupCoords, dropCoords);
-        refreshHeroMapRoute(); calcFareNow();
+        refreshHeroMapRoute();
+        calcFareNow();
         fetchOsrmRoadRoute(pickupCoords, dropCoords, function (osrm) {
           if (osrm && osrm.km) { autoKm = osrm.km; routeCoords = osrm.pts; refreshHeroMapRoute(); calcFareNow(); }
         });
@@ -644,11 +664,23 @@
     }
 
     function zoomHeroMap(delta) {
-      try { if (!heroMap) initHeroMap(); if (!heroMap) return; heroMap.invalidateSize(); if (delta > 0) heroMap.zoomIn(); else heroMap.zoomOut(); } catch (e) {}
+      try {
+        if (!heroMap) initHeroMap();
+        if (!heroMap) return;
+        heroMap.invalidateSize();
+        if (delta > 0) heroMap.zoomIn(); else heroMap.zoomOut();
+        updateZoomReadout();
+      } catch (e) {}
     }
 
     function fitHeroMap() {
-      try { if (!heroMap) initHeroMap(); if (!heroMap) return; heroMap.invalidateSize(); heroMap.fitBounds([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { padding: [24, 24] }); } catch (e) {}
+      try {
+        if (!heroMap) initHeroMap();
+        if (!heroMap) return;
+        heroMap.invalidateSize();
+        heroMap.fitBounds([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { padding: [24, 24] });
+        updateZoomReadout();
+      } catch (e) {}
     }
 
     function refreshHeroMapRoute() {
@@ -663,6 +695,7 @@
         heroStartDot = L.circleMarker([pickupCoords.lat, pickupCoords.lng], { radius: 8, color: "#0fa968", fillColor: "#0fa968", fillOpacity: 1 }).addTo(heroMap);
         heroEndDot = L.circleMarker([dropCoords.lat, dropCoords.lng], { radius: 8, color: "#ff5a36", fillColor: "#ff5a36", fillOpacity: 1 }).addTo(heroMap);
         heroMap.fitBounds([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { padding: [24, 24] });
+        updateZoomReadout();
       } catch (e) {}
     }
 
@@ -677,8 +710,9 @@
         autoKm = haversineRoadKm(pickupCoords, dropCoords);
         if (byId("auto-dist-val")) byId("auto-dist-val").textContent = autoKm + " km";
         if (byId("hero-dist-badge")) byId("hero-dist-badge").textContent = autoKm + " km";
-        if (byId("hero-route-lbl")) byId("hero-route-lbl").textContent = (pTxt || "Pickup") + " → " + (dTxt || "Drop");
-        refreshHeroMapRoute(); calcFareNow();
+        if (byId("hero-route-lbl")) byId("hero-route-lbl").textContent = (pTxt || "Pickup") + " -> " + (dTxt || "Drop");
+        refreshHeroMapRoute();
+        calcFareNow();
         clearTimeout(routeFetchTimer);
         routeFetchTimer = setTimeout(function () {
           function afterCoordsReady() {
@@ -708,11 +742,12 @@
         if (!el || typeof L === "undefined") return;
         if (heroMap) { heroMap.remove(); heroMap = null; }
         heroMap = L.map("main-hero-map", { zoomControl: true }).setView([30.9010, 75.8573], 12);
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(heroMap);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OSM" }).addTo(heroMap);
         heroMap.on("click", function (e) { if (e && e.latlng) applyPinAtCoords(pinMode || "drop", e.latlng.lat, e.latlng.lng); });
+        heroMap.on("zoomend", updateZoomReadout);
         refreshHeroMapRoute();
-        setTimeout(function () { if (heroMap) heroMap.invalidateSize(); }, 150);
-        setTimeout(function () { if (heroMap) heroMap.invalidateSize(); }, 500);
+        setTimeout(function () { if (heroMap) heroMap.invalidateSize(); updateZoomReadout(); }, 150);
+        setTimeout(function () { if (heroMap) heroMap.invalidateSize(); updateZoomReadout(); }, 500);
       } catch (e) {}
     }
 
@@ -770,18 +805,9 @@
       } catch (e) {}
     }
 
-    window.gmBootBooking = function () {
-      try { recordCustomerOwnerLog(); } catch (e) {}
-      try { loadWallet(); } catch (e) {}
-      try { calcFareNow(); } catch (e) {}
-      try { drawRidesNow(); } catch (e) {}
-      try { initHeroMap(); } catch (e) {}
-      try { onRouteInputChange(); } catch (e) {}
-    };
-
     function toggleProfile() {
       var pc = byId("profile-card"); if (!pc) return;
-      if (pc.classList.contains("hide")) gmToggleView("profile-card", false, "block"); else gmToggleView("profile-card", true);
+      if (pc.classList.contains("hide")) setHidden("profile-card", false, "block"); else setHidden("profile-card", true);
     }
 
     function saveProfileNow() {
@@ -856,7 +882,7 @@
 
         var nr = byId("night-row");
         if (nr) nr.className = nOn ? "night-bar on" : "night-bar";
-        if (byId("night-txt")) byId("night-txt").textContent = nOn ? "Night Fare Active (10 PM – 6 AM • +50%)" : "Night window: 10 PM – 6 AM (+50%)";
+        if (byId("night-txt")) byId("night-txt").textContent = nOn ? "Night Fare Active (10 PM - 6 AM • +50%)" : "Night window: 10 PM - 6 AM (+50%)";
         if (byId("btn-night")) byId("btn-night").textContent = nOn ? "Day Fare" : "Test Night Fare";
 
         var baseTotal = Math.max(Math.round(curM * nMult), Math.round(km * curR * nMult));
@@ -931,7 +957,7 @@
         var curLat = (typeof rideObj.riderLat === "number") ? rideObj.riderLat : (aPt.lat + (bPt.lat - aPt.lat) * prog);
         var curLng = (typeof rideObj.riderLng === "number") ? rideObj.riderLng : (aPt.lng + (bPt.lng - aPt.lng) * prog);
         var map = L.map(elId, { zoomControl: true }).setView([curLat, curLng], 10);
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(map);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "&copy; OSM" }).addTo(map);
         L.polyline([[aPt.lat, aPt.lng], [bPt.lat, bPt.lng]], { color: "#18182b", weight: 4, dashArray: "6,6" }).addTo(map);
         L.circleMarker([aPt.lat, aPt.lng], { radius: 6, color: "#0fa968", fillOpacity: 1 }).addTo(map);
         L.circleMarker([bPt.lat, bPt.lng], { radius: 6, color: "#ff5a36", fillOpacity: 1 }).addTo(map);
@@ -967,7 +993,7 @@
         var r = rides[idx]; if (!r) return;
         currentEndIdx = idx; var pm = r.payMode || "Cash";
         if (byId("p-end-amt")) byId("p-end-amt").textContent = "₹" + (r.total || 0);
-        if (byId("p-end-route")) byId("p-end-route").textContent = (r.v || "Ride") + " • " + pm + " • " + (r.pickup || "Pickup") + " → " + (r.drop || "Drop") + " (" + (r.km || 0) + " km)";
+        if (byId("p-end-route")) byId("p-end-route").textContent = (r.v || "Ride") + " • " + pm + " • " + (r.pickup || "Pickup") + " -> " + (r.drop || "Drop") + " (" + (r.km || 0) + " km)";
         if (byId("p-feedback-inp")) byId("p-feedback-inp").value = r.driverFeedback || "";
         document.querySelectorAll("#p-end-screen .star-btn").forEach(function (btn, i) {
           if (i + 1 <= (r.driverRating || 0)) btn.classList.add("picked"); else btn.classList.remove("picked");
@@ -1029,7 +1055,7 @@
           var actionHtml = isComp ? '<button type="button" class="btn btn-primary" onclick="openPassengerEndScreen(' + i + ')">Rate, Feedback & Block</button>' : (!isCanc ? '<button type="button" class="btn btn-soft" onclick="openCancelModal(' + i + ')">Cancel Ride</button>' : "");
 
           html += "<div class='ride-item'><div class='r-top'><span>" + (r.v || "Ride") + " • <span class='mono'>₹" + (r.total || 0) + "</span> • " + pm + "</span><span class='r-badge'>" + st + "</span></div>" +
-            "<div style='font-size:12px;color:#474d6b;margin-top:4px;'>" + (r.pickup || "Pickup") + " → " + (r.drop || "Drop") + " (<span class='mono'>" + (r.km || 0) + " km</span>)</div>" +
+            "<div style='font-size:12px;color:#474d6b;margin-top:4px;'>" + (r.pickup || "Pickup") + " -> " + (r.drop || "Drop") + " (<span class='mono'>" + (r.km || 0) + " km</span>)</div>" +
             "<div style='font-size:11px;color:#676e8a;margin-top:2px;'>Platform Charges</div>" +
             pinHtml + blkTag + fbLine +
             "<div class='live-map-box'><div id='p-live-map-" + i + "' class='live-map-el'></div><div class='live-map-ft'><span id='p-map-st-" + i + "'>Rider Live Map • " + st + "</span><button type="button" class="mini-btn" onclick="startLiveRiderWatch(" + i + ")">Track Rider</button></div></div>" +
@@ -1043,16 +1069,23 @@
     }
 
     function logout() {
-      gmToggleView("hdr-btns", true);
-      ["profile-card", "hero-map-wrap", "wallet-card", "book-card", "rides-card"].forEach(function (id) { gmToggleView(id, true); });
-      gmToggleView("step-otp", true);
-      gmToggleView("step-phone", false, "block");
-      gmToggleView("login-card", false, "block");
+      try { localStorage.removeItem("gm_logged_in_v1"); } catch (e) {}
+      setHidden("hdr-btns", true);
+      ["profile-card", "hero-map-wrap", "wallet-card", "book-card", "rides-card"].forEach(function (id) { setHidden(id, true); });
+      setHidden("step-otp", true);
+      setHidden("step-phone", false, "block");
+      setHidden("login-card", false, "block");
       if (byId("login-msg")) byId("login-msg").textContent = "";
     }
 
     try { var s = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]"); if (Array.isArray(s)) rides = s; } catch (e) {}
     try { var a = JSON.parse(localStorage.getItem("gm_owner_accounts_v1") || "[]"); if (Array.isArray(a)) ownerAccounts = a; } catch (e) {}
+
+    try {
+      if (localStorage.getItem("gm_logged_in_v1") === "1") {
+        gmCompleteLogin(true);
+      }
+    } catch (e) {}
   </script>
 
   <script type="module">
