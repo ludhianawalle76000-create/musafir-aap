@@ -46,8 +46,13 @@
     .msg { margin-top: 10px; font-size: 12px; font-weight: 700; min-height: 16px; color: #0fa968; }
 
     .hero-map-card { border-radius: 22px; overflow: hidden; margin-bottom: 14px; box-shadow: 0 10px 28px rgba(24, 24, 43, 0.09); border: 1px solid #dce1ed; background: #fff; }
-    #main-hero-map { height: 225px; width: 100%; }
+    .map-stage { position: relative; }
+    #main-hero-map { height: 255px; width: 100%; background: #e3e8f2; }
+    .map-zoom-dock { position: absolute; right: 10px; top: 10px; z-index: 420; display: flex; flex-direction: column; gap: 6px; }
+    .z-btn { width: 36px; height: 36px; border-radius: 10px; border: 1.5px solid #18182b; background: rgba(255, 255, 255, 0.95); color: #18182b; font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(24, 24, 43, 0.16); }
+    .z-btn:active { background: #18182b; color: #fff; }
     .map-caption { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: #18182b; background: #f8f9fc; gap: 8px; flex-wrap: wrap; }
+    .map-quick-bar { padding: 8px 14px 12px; display: flex; gap: 6px; flex-wrap: wrap; background: #f8f9fc; border-top: 1px solid #e6ebf5; }
 
     .wallet-strip { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #18182b, #2b2d52); color: #fff; border-radius: 16px; padding: 14px; margin-bottom: 10px; }
     .w-bal { font-size: 24px; font-weight: 800; margin-top: 2px; }
@@ -119,7 +124,7 @@
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Cloud Live • v37</p>
+      <p>Cloud Live • v40</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -161,10 +166,23 @@
     </div>
 
     <div id="hero-map-wrap" class="hero-map-card hide">
-      <div id="main-hero-map"></div>
+      <div class="map-stage">
+        <div id="main-hero-map"></div>
+        <div class="map-zoom-dock">
+          <button type="button" class="z-btn" id="btn-zoom-in" title="Zoom In">+</button>
+          <button type="button" class="z-btn" id="btn-zoom-out" title="Zoom Out">−</button>
+          <button type="button" class="z-btn" id="btn-zoom-fit" title="Fit Route" style="font-size:11px;">FIT</button>
+        </div>
+      </div>
       <div class="map-caption">
         <span id="hero-route-lbl">Tap map or Pin Drop to set drop point</span>
         <span class="mono" id="hero-dist-badge" style="color:#0fa968;">7.5 km</span>
+      </div>
+      <div class="map-quick-bar">
+        <button type="button" class="mini-btn" id="qpin-pickup-btn">Set Pickup Here</button>
+        <button type="button" class="mini-btn" id="qpin-drop-btn">Set Drop Here</button>
+        <button type="button" class="mini-btn" id="qzoom-in-btn">Zoom In (+)</button>
+        <button type="button" class="mini-btn" id="qzoom-out-btn">Zoom Out (-)</button>
       </div>
     </div>
 
@@ -190,7 +208,7 @@
     <div id="book-card" class="sheet hide">
       <div class="sheet-handle"></div>
       <h2 id="book-title">Where in Punjab are you going?</h2>
-      <p class="sub">Type location or tap Pin on Map to set exact drop point</p>
+      <p class="sub">Zoom in/out map & tap Pin Pickup / Pin Drop for exact spot</p>
 
       <label for="pickup-inp">Pickup Location</label>
       <div class="inp-with-btn">
@@ -415,13 +433,40 @@
   </div>
 
   <script>
+    function gmRevealBookingUi() {
+      var idsHide = ["login-card"];
+      var idsShow = ["hero-map-wrap", "wallet-card", "book-card", "rides-card"];
+      for (var i = 0; i < idsHide.length; i++) {
+        var elH = document.getElementById(idsHide[i]);
+        if (elH) {
+          elH.classList.add("hide");
+          elH.style.display = "none";
+        }
+      }
+      for (var j = 0; j < idsShow.length; j++) {
+        var elS = document.getElementById(idsShow[j]);
+        if (elS) {
+          elS.classList.remove("hide");
+          elS.style.display = "";
+        }
+      }
+      var hb = document.getElementById("hdr-btns");
+      if (hb) hb.style.display = "flex";
+    }
+
     function gmShowOtpStep() {
       var pStep = document.getElementById("step-phone");
       var oStep = document.getElementById("step-otp");
       var oInp = document.getElementById("otp-inp");
       var lMsg = document.getElementById("login-msg");
-      if (pStep) pStep.classList.add("hide");
-      if (oStep) oStep.classList.remove("hide");
+      if (pStep) {
+        pStep.classList.add("hide");
+        pStep.style.display = "none";
+      }
+      if (oStep) {
+        oStep.classList.remove("hide");
+        oStep.style.display = "block";
+      }
       if (oInp) oInp.value = "123456";
       if (lMsg) {
         lMsg.style.color = "#0fa968";
@@ -433,29 +478,15 @@
       var pStep = document.getElementById("step-phone");
       var oStep = document.getElementById("step-otp");
       var lMsg = document.getElementById("login-msg");
-      if (oStep) oStep.classList.add("hide");
-      if (pStep) pStep.classList.remove("hide");
-      if (lMsg) lMsg.textContent = "";
-    }
-
-    function gmCompleteLogin() {
-      var lCard = document.getElementById("login-card");
-      var hBtns = document.getElementById("hdr-btns");
-      var mWrap = document.getElementById("hero-map-wrap");
-      var wCard = document.getElementById("wallet-card");
-      var bCard = document.getElementById("book-card");
-      var rCard = document.getElementById("rides-card");
-
-      if (lCard) lCard.classList.add("hide");
-      if (hBtns) hBtns.style.display = "flex";
-      if (mWrap) mWrap.classList.remove("hide");
-      if (wCard) wCard.classList.remove("hide");
-      if (bCard) bCard.classList.remove("hide");
-      if (rCard) rCard.classList.remove("hide");
-
-      if (typeof window.gmOnLoginSuccess === "function") {
-        try { window.gmOnLoginSuccess(); } catch (err) {}
+      if (oStep) {
+        oStep.classList.add("hide");
+        oStep.style.display = "none";
       }
+      if (pStep) {
+        pStep.classList.remove("hide");
+        pStep.style.display = "block";
+      }
+      if (lMsg) lMsg.textContent = "";
     }
 
     document.addEventListener("click", function (e) {
@@ -469,7 +500,10 @@
         gmBackToPhone();
       } else if (target.id === "verify-otp-btn") {
         e.preventDefault();
-        gmCompleteLogin();
+        gmRevealBookingUi();
+        if (typeof window.gmOnLoginSuccess === "function") {
+          try { window.gmOnLoginSuccess(); } catch (err) {}
+        }
       }
     });
   </script>
@@ -574,27 +608,80 @@
         .catch(function () { cb(null); });
     }
 
+    function applyPinAtCoords(mode, lat, lng) {
+      var rLat = Number(lat.toFixed(4));
+      var rLng = Number(lng.toFixed(4));
+      if (mode === "pickup") {
+        pickupCoords = { lat: rLat, lng: rLng };
+        document.getElementById("pickup-inp").value = "Pinned (" + rLat + ", " + rLng + ")";
+      } else if (mode === "drop") {
+        dropCoords = { lat: rLat, lng: rLng };
+        document.getElementById("drop-inp").value = "Pinned (" + rLat + ", " + rLng + ")";
+      }
+      pinMode = null;
+      document.getElementById("btn-pin-pickup").className = "pin-action-btn";
+      document.getElementById("btn-pin-drop").className = "pin-action-btn";
+      document.getElementById("pin-mode-note").textContent = (mode === "pickup" ? "Pickup pin set!" : "Drop pin set!");
+      routeCoords = null;
+      autoKm = haversineRoadKm(pickupCoords, dropCoords);
+      refreshHeroMapRoute();
+      calcFareNow();
+      fetchOsrmRoadRoute(pickupCoords, dropCoords, function (osrm) {
+        if (osrm && osrm.km) {
+          autoKm = osrm.km;
+          routeCoords = osrm.pts;
+          refreshHeroMapRoute();
+          calcFareNow();
+        }
+      });
+    }
+
     function togglePinMode(mode) {
       pinMode = (pinMode === mode) ? null : mode;
       document.getElementById("btn-pin-pickup").className = pinMode === "pickup" ? "pin-action-btn active" : "pin-action-btn";
       document.getElementById("btn-pin-drop").className = pinMode === "drop" ? "pin-action-btn active" : "pin-action-btn";
       document.getElementById("pin-mode-note").textContent = pinMode === "pickup"
-        ? "Tap map above to set Pickup pin."
-        : (pinMode === "drop" ? "Tap map above to set Drop pin." : "");
+        ? "Zoom map & tap anywhere to set Pickup pin."
+        : (pinMode === "drop" ? "Zoom map & tap anywhere to set Drop pin." : "");
       var mapCard = document.getElementById("hero-map-wrap");
-      if (pinMode && mapCard) mapCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      if (pinMode && mapCard) {
+        mapCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+        setTimeout(function () {
+          if (heroMap) heroMap.invalidateSize();
+        }, 250);
+      }
+    }
+
+    function zoomHeroMap(delta) {
+      try {
+        if (!heroMap) initHeroMap();
+        if (!heroMap) return;
+        heroMap.invalidateSize();
+        if (delta > 0) heroMap.zoomIn();
+        else heroMap.zoomOut();
+      } catch (e) {}
+    }
+
+    function fitHeroMap() {
+      try {
+        if (!heroMap) initHeroMap();
+        if (!heroMap) return;
+        heroMap.invalidateSize();
+        heroMap.fitBounds([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { padding: [24, 24] });
+      } catch (e) {}
     }
 
     function refreshHeroMapRoute() {
       try {
         if (!heroMap || typeof L === "undefined") return;
+        heroMap.invalidateSize();
         if (heroLine) heroMap.removeLayer(heroLine);
         if (heroStartDot) heroMap.removeLayer(heroStartDot);
         if (heroEndDot) heroMap.removeLayer(heroEndDot);
         var linePts = (Array.isArray(routeCoords) && routeCoords.length > 1) ? routeCoords : [[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]];
         heroLine = L.polyline(linePts, { color: "#18182b", weight: 4 }).addTo(heroMap);
-        heroStartDot = L.circleMarker([pickupCoords.lat, pickupCoords.lng], { radius: 7, color: "#0fa968", fillOpacity: 1 }).addTo(heroMap);
-        heroEndDot = L.circleMarker([dropCoords.lat, dropCoords.lng], { radius: 7, color: "#ff5a36", fillOpacity: 1 }).addTo(heroMap);
+        heroStartDot = L.circleMarker([pickupCoords.lat, pickupCoords.lng], { radius: 8, color: "#0fa968", fillColor: "#0fa968", fillOpacity: 1 }).addTo(heroMap);
+        heroEndDot = L.circleMarker([dropCoords.lat, dropCoords.lng], { radius: 8, color: "#ff5a36", fillColor: "#ff5a36", fillOpacity: 1 }).addTo(heroMap);
         heroMap.fitBounds([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { padding: [24, 24] });
       } catch (e) {}
     }
@@ -645,26 +732,16 @@
         var el = document.getElementById("main-hero-map");
         if (!el || typeof L === "undefined") return;
         if (heroMap) { heroMap.remove(); heroMap = null; }
-        heroMap = L.map("main-hero-map", { zoomControl: false }).setView([30.9010, 75.8573], 11);
+        heroMap = L.map("main-hero-map", { zoomControl: true }).setView([30.9010, 75.8573], 12);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(heroMap);
         heroMap.on("click", function (e) {
-          if (!pinMode || !e || !e.latlng) return;
-          var lat = Number(e.latlng.lat.toFixed(4)), lng = Number(e.latlng.lng.toFixed(4));
-          if (pinMode === "pickup") { pickupCoords = { lat: lat, lng: lng }; document.getElementById("pickup-inp").value = "Pinned (" + lat + ", " + lng + ")"; }
-          else if (pinMode === "drop") { dropCoords = { lat: lat, lng: lng }; document.getElementById("drop-inp").value = "Pinned (" + lat + ", " + lng + ")"; }
-          pinMode = null;
-          document.getElementById("btn-pin-pickup").className = "pin-action-btn";
-          document.getElementById("btn-pin-drop").className = "pin-action-btn";
-          document.getElementById("pin-mode-note").textContent = "Pin placed on map!";
-          routeCoords = null;
-          autoKm = haversineRoadKm(pickupCoords, dropCoords);
-          refreshHeroMapRoute();
-          calcFareNow();
-          fetchOsrmRoadRoute(pickupCoords, dropCoords, function (osrm) {
-            if (osrm && osrm.km) { autoKm = osrm.km; routeCoords = osrm.pts; refreshHeroMapRoute(); calcFareNow(); }
-          });
+          if (!e || !e.latlng) return;
+          var targetMode = pinMode || "drop";
+          applyPinAtCoords(targetMode, e.latlng.lat, e.latlng.lng);
         });
         refreshHeroMapRoute();
+        setTimeout(function () { if (heroMap) heroMap.invalidateSize(); }, 120);
+        setTimeout(function () { if (heroMap) heroMap.invalidateSize(); }, 450);
       } catch (e) {}
     }
 
@@ -723,11 +800,12 @@
     }
 
     window.gmOnLoginSuccess = function () {
-      recordCustomerOwnerLog();
-      loadWallet();
-      initHeroMap();
-      onRouteInputChange();
-      drawRidesNow();
+      try { recordCustomerOwnerLog(); } catch (e) {}
+      try { loadWallet(); } catch (e) {}
+      try { calcFareNow(); } catch (e) {}
+      try { drawRidesNow(); } catch (e) {}
+      try { initHeroMap(); } catch (e) {}
+      try { onRouteInputChange(); } catch (e) {}
     };
 
     function toggleProfile() {
@@ -876,7 +954,7 @@
         var prog = statusProgress(rideObj.status || "Searching Driver");
         var curLat = (typeof rideObj.riderLat === "number") ? rideObj.riderLat : (aPt.lat + (bPt.lat - aPt.lat) * prog);
         var curLng = (typeof rideObj.riderLng === "number") ? rideObj.riderLng : (aPt.lng + (bPt.lng - aPt.lng) * prog);
-        var map = L.map(elId, { zoomControl: false }).setView([curLat, curLng], 10);
+        var map = L.map(elId, { zoomControl: true }).setView([curLat, curLng], 10);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(map);
         L.polyline([[aPt.lat, aPt.lng], [bPt.lat, bPt.lng]], { color: "#18182b", weight: 4, dashArray: "6,6" }).addTo(map);
         L.circleMarker([aPt.lat, aPt.lng], { radius: 6, color: "#0fa968", fillOpacity: 1 }).addTo(map);
@@ -1008,8 +1086,12 @@
       document.getElementById("book-card").classList.add("hide");
       document.getElementById("rides-card").classList.add("hide");
       document.getElementById("step-otp").classList.add("hide");
+      document.getElementById("step-otp").style.display = "none";
       document.getElementById("step-phone").classList.remove("hide");
-      document.getElementById("login-card").classList.remove("hide");
+      document.getElementById("step-phone").style.display = "block";
+      var lc = document.getElementById("login-card");
+      lc.classList.remove("hide");
+      lc.style.display = "";
       document.getElementById("login-msg").textContent = "";
     }
 
@@ -1018,6 +1100,20 @@
       document.getElementById("btn-logout").addEventListener("click", logout);
       document.getElementById("btn-save-profile").addEventListener("click", saveProfileNow);
       document.getElementById("btn-close-profile").addEventListener("click", toggleProfile);
+
+      document.getElementById("btn-zoom-in").addEventListener("click", function () { zoomHeroMap(1); });
+      document.getElementById("btn-zoom-out").addEventListener("click", function () { zoomHeroMap(-1); });
+      document.getElementById("btn-zoom-fit").addEventListener("click", fitHeroMap);
+      document.getElementById("qzoom-in-btn").addEventListener("click", function () { zoomHeroMap(1); });
+      document.getElementById("qzoom-out-btn").addEventListener("click", function () { zoomHeroMap(-1); });
+      document.getElementById("qpin-pickup-btn").addEventListener("click", function () {
+        var c = heroMap ? heroMap.getCenter() : pickupCoords;
+        applyPinAtCoords("pickup", c.lat, c.lng);
+      });
+      document.getElementById("qpin-drop-btn").addEventListener("click", function () {
+        var c = heroMap ? heroMap.getCenter() : dropCoords;
+        applyPinAtCoords("drop", c.lat, c.lng);
+      });
 
       document.querySelectorAll("#wallet-card .chip-btn[data-wadd]").forEach(function (btn) {
         btn.addEventListener("click", function () { addWalletMoney(Number(btn.getAttribute("data-wadd"))); });
