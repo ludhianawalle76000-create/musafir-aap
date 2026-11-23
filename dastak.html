@@ -9,10 +9,10 @@
       --bg: #050914;
       --surface: #0d1526;
       --surface-2: #162238;
-      --border: rgba(148, 163, 184, 0.15);
+      --border: rgba(148, 163, 184, 0.16);
       --accent: #22d3ee;
-      --accent-deep: #0891b2;
       --accent-grad: linear-gradient(135deg, #38bdf8 0%, #06b6d4 52%, #14b8a6 100%);
+      --xtra-grad: linear-gradient(135deg, #818cf8 0%, #38bdf8 50%, #2dd4bf 100%);
       --online: #4ade80;
       --danger: #fb7185;
       --warn: #fb923c;
@@ -35,45 +35,49 @@
       min-height: 100vh;
     }
 
-    /* Glass Header */
-    header {
+    /* Sticky Top Container */
+    .top-sticky {
       position: sticky;
       top: 0;
-      z-index: 20;
-      background: rgba(5, 9, 20, 0.86);
+      z-index: 25;
+      background: rgba(5, 9, 20, 0.92);
       backdrop-filter: blur(14px);
       -webkit-backdrop-filter: blur(14px);
-      padding: 13px 16px;
       border-bottom: 1px solid var(--border);
+    }
+
+    header {
+      padding: 11px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
+      gap: 6px;
     }
 
     .brand-wrap {
       display: flex;
       align-items: center;
-      gap: 9px;
+      gap: 8px;
     }
 
     .brand-logo {
-      width: 32px;
-      height: 32px;
-      border-radius: 10px;
+      width: 30px;
+      height: 30px;
+      border-radius: 9px;
       background: var(--accent-grad);
       color: #04131c;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 1.05rem;
-      box-shadow: 0 4px 16px rgba(6, 182, 212, 0.38);
+      font-size: 1rem;
+      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
     }
 
     .brand-text {
-      font-size: 1.25rem;
+      font-size: 1.18rem;
       font-weight: 800;
-      letter-spacing: 0.6px;
+      letter-spacing: 0.4px;
       background: linear-gradient(to right, #ffffff 30%, #67e8f9 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -82,18 +86,30 @@
     .header-right {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 6px;
+    }
+
+    .xtra-pill-btn {
+      background: var(--xtra-grad);
+      color: #04131c;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 900;
+      cursor: pointer;
+      letter-spacing: 0.3px;
+      box-shadow: 0 2px 10px rgba(56, 189, 248, 0.3);
     }
 
     .status-pill {
-      font-size: 0.72rem;
-      padding: 4px 10px;
+      font-size: 0.7rem;
+      padding: 4px 8px;
       border-radius: 999px;
       font-weight: 700;
       background: rgba(251, 146, 60, 0.14);
       color: var(--warn);
       border: 1px solid rgba(251, 146, 60, 0.38);
-      letter-spacing: 0.3px;
     }
 
     .status-pill.verified {
@@ -112,62 +128,67 @@
       background: var(--surface-2);
       color: var(--text);
       border: 1px solid var(--border);
-      padding: 6px 11px;
-      border-radius: 10px;
-      font-size: 0.76rem;
+      padding: 5px 9px;
+      border-radius: 8px;
+      font-size: 0.72rem;
       font-weight: 700;
       cursor: pointer;
     }
 
-    /* Quota Strip */
-    .quota-bar {
-      background: linear-gradient(90deg, rgba(6, 182, 212, 0.12) 0%, rgba(13, 21, 38, 0.96) 100%);
-      border-bottom: 1px solid var(--border);
-      padding: 9px 16px;
+    /* Sticky Filter & Quota Subbar */
+    .subbar-wrap {
+      border-top: 1px solid rgba(148, 163, 184, 0.1);
+    }
+
+    .quota-strip {
+      padding: 6px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      font-size: 0.78rem;
+      font-size: 0.74rem;
       color: var(--muted);
+      background: rgba(13, 21, 38, 0.65);
     }
 
-    .quota-bar strong {
+    .quota-strip strong {
       color: var(--text);
     }
 
-    .upgrade-btn {
-      background: var(--accent-grad);
-      color: #04131c;
-      border: none;
-      padding: 6px 12px;
-      border-radius: 8px;
-      font-size: 0.74rem;
-      font-weight: 800;
-      cursor: pointer;
-      box-shadow: 0 3px 12px rgba(6, 182, 212, 0.3);
-    }
-
-    /* Filter Chips */
-    .filters {
+    .filters-bar {
       display: flex;
-      gap: 8px;
-      padding: 12px 14px;
+      align-items: center;
+      gap: 7px;
+      padding: 8px 12px 10px;
       overflow-x: auto;
       scrollbar-width: none;
     }
-    .filters::-webkit-scrollbar { display: none; }
+    .filters-bar::-webkit-scrollbar { display: none; }
+
+    .filter-open-btn {
+      background: var(--surface-2);
+      color: var(--accent);
+      border: 1px solid rgba(34, 211, 238, 0.45);
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
 
     .chip {
       background: var(--surface);
       color: var(--muted);
       border: 1px solid var(--border);
-      padding: 7px 15px;
+      padding: 6px 13px;
       border-radius: 999px;
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
-      transition: all 0.2s ease;
     }
 
     .chip.active {
@@ -175,7 +196,16 @@
       color: #04131c;
       font-weight: 800;
       border-color: transparent;
-      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.32);
+    }
+
+    .chip.xtra-chip {
+      border-color: rgba(129, 140, 248, 0.45);
+      color: #a5b4fc;
+    }
+
+    .chip.xtra-chip.active {
+      background: var(--xtra-grad);
+      color: #04131c;
     }
 
     /* Grid */
@@ -183,14 +213,14 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 6px;
-      padding: 0 8px 12px;
+      padding: 8px 8px 12px;
     }
 
     .tile {
       position: relative;
       aspect-ratio: 1 / 1.22;
       background: var(--surface);
-      border-radius: 14px;
+      border-radius: 13px;
       overflow: hidden;
       cursor: pointer;
       border: 1px solid var(--border);
@@ -200,6 +230,10 @@
       border-color: rgba(34, 211, 238, 0.35);
     }
 
+    .tile.is-locked {
+      border-color: rgba(129, 140, 248, 0.4);
+    }
+
     .tile img {
       width: 100%;
       height: 100%;
@@ -207,50 +241,89 @@
       display: block;
     }
 
+    .tile.is-locked img {
+      filter: blur(8px) brightness(0.65);
+      transform: scale(1.08);
+    }
+
     .tile-badge {
       position: absolute;
-      top: 7px;
-      right: 7px;
-      background: rgba(5, 9, 20, 0.76);
+      top: 6px;
+      right: 6px;
+      background: rgba(5, 9, 20, 0.78);
       backdrop-filter: blur(6px);
       color: var(--accent);
-      font-size: 0.64rem;
+      font-size: 0.62rem;
       font-weight: 700;
       padding: 2px 6px;
       border-radius: 6px;
       border: 1px solid rgba(34, 211, 238, 0.4);
+      z-index: 2;
+    }
+
+    .tile-badge.xtra-tag {
+      background: var(--xtra-grad);
+      color: #04131c;
+      border: none;
+      font-weight: 900;
+    }
+
+    .lock-center {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      z-index: 2;
+      text-align: center;
+      padding: 6px;
+    }
+
+    .lock-icon-circle {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: rgba(5, 9, 20, 0.8);
+      border: 1px solid rgba(56, 189, 248, 0.6);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.95rem;
+    }
+
+    .lock-label {
+      font-size: 0.66rem;
+      font-weight: 800;
+      color: #e0f2fe;
+      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
     }
 
     .tile-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(5, 9, 20, 0.95) 8%, rgba(5, 9, 20, 0.25) 45%, transparent 65%);
+      background: linear-gradient(to top, rgba(5, 9, 20, 0.95) 8%, rgba(5, 9, 20, 0.2) 45%, transparent 65%);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
-      padding: 9px 8px;
+      padding: 8px;
     }
 
     .status-dot {
-      width: 8px;
-      height: 8px;
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       display: inline-block;
-      margin-right: 5px;
+      margin-right: 4px;
       vertical-align: middle;
     }
 
-    .online {
-      background: var(--online);
-      box-shadow: 0 0 8px var(--online);
-    }
-
-    .offline {
-      background: #64748b;
-    }
+    .online { background: var(--online); box-shadow: 0 0 7px var(--online); }
+    .offline { background: #64748b; }
 
     .tile-name {
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       font-weight: 700;
       white-space: nowrap;
       overflow: hidden;
@@ -258,9 +331,41 @@
     }
 
     .tile-dist {
-      font-size: 0.7rem;
+      font-size: 0.68rem;
       color: #cbd5e1;
-      margin-top: 2px;
+      margin-top: 1px;
+    }
+
+    /* Full-width Banner inside Grid */
+    .grid-banner {
+      grid-column: 1 / -1;
+      background: linear-gradient(135deg, rgba(129, 140, 248, 0.18) 0%, rgba(6, 182, 212, 0.14) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.45);
+      border-radius: 16px;
+      padding: 15px;
+      margin: 6px 0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .grid-banner h4 {
+      font-size: 0.92rem;
+      color: #e0f2fe;
+      margin-bottom: 3px;
+    }
+
+    .grid-banner p {
+      font-size: 0.76rem;
+      color: #cbd5e1;
+      line-height: 1.4;
+    }
+
+    .load-more-wrap {
+      grid-column: 1 / -1;
+      padding: 8px 0 12px;
+      text-align: center;
     }
 
     /* Floating Bottom Nav */
@@ -269,15 +374,15 @@
       bottom: 12px;
       left: 14px;
       right: 14px;
-      background: rgba(13, 21, 38, 0.92);
+      background: rgba(13, 21, 38, 0.94);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(34, 211, 238, 0.16);
+      border: 1px solid rgba(34, 211, 238, 0.18);
       border-radius: 20px;
       display: flex;
       justify-content: space-around;
-      padding: 9px 6px;
-      z-index: 25;
+      padding: 8px 6px;
+      z-index: 30;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
     }
 
@@ -285,21 +390,20 @@
       background: none;
       border: none;
       color: var(--muted);
-      font-size: 0.74rem;
+      font-size: 0.72rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 4px;
-      padding: 4px 14px;
+      padding: 4px 12px;
       border-radius: 12px;
-      transition: all 0.2s ease;
     }
 
     .nav-btn svg {
-      width: 21px;
-      height: 21px;
+      width: 20px;
+      height: 20px;
       stroke: currentColor;
       fill: none;
       stroke-width: 2;
@@ -344,7 +448,7 @@
       position: fixed;
       inset: 0;
       background: var(--bg);
-      z-index: 40;
+      z-index: 50;
       display: none;
       flex-direction: column;
     }
@@ -381,7 +485,7 @@
 
     .profile-hero {
       width: 100%;
-      height: 320px;
+      height: 310px;
       object-fit: cover;
       border-radius: 18px;
       margin-bottom: 14px;
@@ -414,17 +518,55 @@
       font-weight: 800;
       font-size: 0.9rem;
       cursor: pointer;
-      transition: opacity 0.15s;
     }
 
-    .btn:active { opacity: 0.85; }
     .btn-primary { background: var(--accent-grad); color: #04131c; }
+    .btn-xtra { background: var(--xtra-grad); color: #04131c; }
     .btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
     .btn-success { background: var(--online); color: #052e16; }
     .btn-danger {
       background: rgba(251, 113, 133, 0.12);
       color: var(--danger);
       border: 1px solid rgba(251, 113, 133, 0.45);
+    }
+
+    /* Filter Modal Controls */
+    .range-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+      font-size: 0.84rem;
+    }
+
+    .range-val {
+      color: var(--accent);
+      font-weight: 800;
+    }
+
+    input[type="range"] {
+      width: 100%;
+      accent-color: #22d3ee;
+      margin-bottom: 14px;
+    }
+
+    .toggle-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      padding: 12px 14px;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      font-size: 0.88rem;
+      font-weight: 600;
+    }
+
+    .toggle-row input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      accent-color: #22d3ee;
     }
 
     /* Chat */
@@ -445,19 +587,8 @@
       line-height: 1.45;
     }
 
-    .msg.them {
-      background: var(--surface-2);
-      align-self: flex-start;
-      border-bottom-left-radius: 4px;
-    }
-
-    .msg.me {
-      background: var(--accent-grad);
-      color: #04131c;
-      align-self: flex-end;
-      font-weight: 600;
-      border-bottom-right-radius: 4px;
-    }
+    .msg.them { background: var(--surface-2); align-self: flex-start; border-bottom-left-radius: 4px; }
+    .msg.me { background: var(--accent-grad); color: #04131c; align-self: flex-end; font-weight: 600; border-bottom-right-radius: 4px; }
 
     .chat-input-bar {
       display: flex;
@@ -480,13 +611,7 @@
 
     /* Forms */
     .form-group { margin-bottom: 13px; }
-    .form-group label {
-      display: block;
-      font-size: 0.8rem;
-      color: var(--muted);
-      margin-bottom: 6px;
-      font-weight: 600;
-    }
+    .form-group label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
     .form-group input, .form-group select {
       width: 100%;
       background: var(--bg);
@@ -498,10 +623,9 @@
       outline: none;
     }
 
-    /* Paywall Plus Pass */
     .plus-pass-card {
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.16) 0%, rgba(20, 184, 166, 0.1) 100%);
-      border: 1px solid rgba(34, 211, 238, 0.45);
+      background: linear-gradient(135deg, rgba(129, 140, 248, 0.18) 0%, rgba(20, 184, 166, 0.14) 100%);
+      border: 1px solid rgba(56, 189, 248, 0.45);
       border-radius: 18px;
       padding: 18px;
       margin-bottom: 16px;
@@ -524,7 +648,6 @@
       background: rgba(34, 211, 238, 0.08);
     }
 
-    /* Owner Stats & Previews */
     .stats-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -540,40 +663,12 @@
       text-align: center;
     }
 
-    .stat-num {
-      font-size: 1.15rem;
-      font-weight: 800;
-      color: var(--accent);
-    }
+    .stat-num { font-size: 1.15rem; font-weight: 800; color: var(--accent); }
+    .stat-label { font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
 
-    .stat-label {
-      font-size: 0.72rem;
-      color: var(--muted);
-      margin-top: 3px;
-    }
-
-    .kyc-preview-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin: 12px 0;
-    }
-
-    .kyc-preview-box {
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 8px;
-      text-align: center;
-    }
-
-    .kyc-preview-box img {
-      width: 100%;
-      height: 120px;
-      object-fit: cover;
-      border-radius: 8px;
-      margin-top: 6px;
-    }
+    .kyc-preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
+    .kyc-preview-box { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 8px; text-align: center; }
+    .kyc-preview-box img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-top: 6px; }
 
     .inbox-row {
       display: flex;
@@ -587,43 +682,43 @@
       cursor: pointer;
     }
 
-    .inbox-row img {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      object-fit: cover;
-      border: 2px solid var(--accent);
-    }
+    .inbox-row img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
   </style>
 </head>
 <body>
 
-  <header>
-    <div class="brand-wrap">
-      <div class="brand-logo">D</div>
-      <div class="brand-text">Dastak</div>
-    </div>
-    <div class="header-right">
-      <span id="headerStatusBadge" class="status-pill">Pending</span>
-      <button class="owner-btn" onclick="openOwnerLogin()">Owner</button>
-    </div>
-  </header>
+  <!-- STICKY HEADER + FILTERS -->
+  <div class="top-sticky">
+    <header>
+      <div class="brand-wrap">
+        <div class="brand-logo">D</div>
+        <div class="brand-text">Dastak</div>
+      </div>
+      <div class="header-right">
+        <button class="xtra-pill-btn" id="headerXtraBtn" onclick="openPayModal()">★ XTRA</button>
+        <span id="headerStatusBadge" class="status-pill">Pending</span>
+        <button class="owner-btn" onclick="openOwnerLogin()">Owner</button>
+      </div>
+    </header>
 
-  <div class="quota-bar">
-    <div>
-      ≤10 km: <strong id="freeCounter">0 / 40</strong> ·
-      <strong id="planStatusText" style="color:var(--accent);">Free</strong>
+    <div class="subbar-wrap" id="nearbyStickyControls">
+      <div class="quota-strip">
+        <div>Viewed: <strong id="freeCounter">0 / 40</strong> · Range: <strong id="rangeLabel">≤10 km</strong></div>
+        <div id="planStatusText" style="color:var(--accent); font-weight:700;">Free Plan</div>
+      </div>
+      <div class="filters-bar">
+        <button class="filter-open-btn" id="openFilterBtn" onclick="openFilterModal()">⚙ Filters</button>
+        <button class="chip active" onclick="setQuickFilter('all', this)">All Nearby</button>
+        <button class="chip" onclick="setQuickFilter('online', this)">● Online</button>
+        <button class="chip" onclick="setQuickFilter('verified', this)">✓ ID Verified</button>
+        <button class="chip" onclick="setQuickFilter('under5', this)">≤ 5 km</button>
+        <button class="chip xtra-chip" onclick="setQuickFilter('xtra', this)">★ XTRA (600)</button>
+      </div>
     </div>
-    <button class="upgrade-btn" onclick="openPayModal()">✦ ₹250 / Week</button>
   </div>
 
   <!-- NEARBY TAB -->
   <div id="tab-nearby">
-    <div class="filters">
-      <button class="chip active" onclick="setFilter('all', this)">All Nearby (≤10 km)</button>
-      <button class="chip" onclick="setFilter('online', this)">● Online Now</button>
-      <button class="chip" onclick="setFilter('under2', this)">Under 2 km</button>
-    </div>
     <div class="grid" id="userGrid"></div>
   </div>
 
@@ -646,7 +741,7 @@
         <span id="profileStatusBadge" class="status-pill">Pending</span>
       </div>
       <p style="font-size:0.82rem; color:var(--muted); line-height:1.5; margin-bottom:14px;">
-        Apni live selfie aur Indian ID upload karein. Jab tak status Pending hai, aap profiles dekh sakte hain aur wave bhej sakte hain—Owner ke approve karte hi chat unlock ho jayegi.
+        Apni live selfie aur Indian ID upload karein. Status Pending hone par bhi aap poori app use kar sakte hain—sirf messaging Owner approval ke baad khulti hai.
       </p>
 
       <div class="form-group">
@@ -687,6 +782,10 @@
       <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
       Nearby
     </button>
+    <button class="nav-btn" onclick="openPayModal()">
+      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+      XTRA
+    </button>
     <button class="nav-btn" onclick="switchTab('chats', this)">
       <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
       Chats
@@ -696,6 +795,63 @@
       Verify / Me
     </button>
   </nav>
+
+  <!-- FULL FILTER MODAL -->
+  <div class="modal" id="filterModal">
+    <div class="modal-header">
+      <strong>Search Filters</strong>
+      <button class="close-btn" onclick="closeModal('filterModal')">Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="card-box">
+        <div class="range-row">
+          <span>Max Distance</span>
+          <span class="range-val" id="distValText">50 km</span>
+        </div>
+        <input type="range" id="filterDist" min="2" max="50" value="50" oninput="document.getElementById('distValText').innerText = this.value + ' km'" />
+
+        <div class="range-row">
+          <span>Minimum Age</span>
+          <span class="range-val" id="minAgeText">18 yrs</span>
+        </div>
+        <input type="range" id="filterMinAge" min="18" max="50" value="18" oninput="document.getElementById('minAgeText').innerText = this.value + ' yrs'" />
+
+        <div class="range-row">
+          <span>Maximum Age</span>
+          <span class="range-val" id="maxAgeText">50 yrs</span>
+        </div>
+        <input type="range" id="filterMaxAge" min="18" max="60" value="50" oninput="document.getElementById('maxAgeText').innerText = this.value + ' yrs'" />
+      </div>
+
+      <label class="toggle-row">
+        <span>● Online Now Only</span>
+        <input type="checkbox" id="filterOnlineOnly" />
+      </label>
+
+      <label class="toggle-row">
+        <span>✓ ID Verified Profiles Only</span>
+        <input type="checkbox" id="filterVerifiedOnly" />
+      </label>
+
+      <div class="card-box" style="margin-top:10px;">
+        <div class="form-group" style="margin-bottom:0;">
+          <label>Looking For / Vibe</label>
+          <select id="filterTag">
+            <option value="all">All Vibes</option>
+            <option value="Coffee & Drives">Coffee & Drives</option>
+            <option value="Hangout">Hangout</option>
+            <option value="Late Night Chat">Late Night Chat</option>
+            <option value="Friendship">Friendship</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn btn-secondary" onclick="resetFilters()">Reset All</button>
+        <button class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
+      </div>
+    </div>
+  </div>
 
   <!-- PROFILE MODAL -->
   <div class="modal" id="profileModal">
@@ -726,19 +882,21 @@
     </div>
   </div>
 
-  <!-- PAYMENT MODAL -->
+  <!-- XTRA PAYMENT MODAL -->
   <div class="modal" id="payModal">
     <div class="modal-header">
-      <strong>Dastak Plus Pass</strong>
+      <strong>★ Dastak XTRA Profiles</strong>
       <button class="close-btn" onclick="closeModal('payModal')">Close</button>
     </div>
     <div class="modal-body">
       <div class="plus-pass-card">
-        <div style="font-size:0.76rem; color:var(--accent); font-weight:800; letter-spacing:0.8px;">WEEKLY ACCESS</div>
-        <div style="font-size:1.7rem; font-weight:900; margin:6px 0;">₹250 <span style="font-size:0.85rem; color:var(--muted); font-weight:600;">/ 1 Week</span></div>
-        <p style="font-size:0.83rem; color:#e2e8f0; line-height:1.5;">
-          10 km mein 40 free profiles ke alawa 7 din ke liye <strong>600 profiles</strong> tak poora access unlock karein.
-        </p>
+        <div style="font-size:0.75rem; color:var(--accent); font-weight:800; letter-spacing:0.8px;">DASTAK XTRA WEEKLY PASS</div>
+        <div style="font-size:1.75rem; font-weight:900; margin:6px 0;">₹250 <span style="font-size:0.85rem; color:var(--muted); font-weight:600;">/ 1 Week</span></div>
+        <ul style="font-size:0.82rem; color:#e2e8f0; line-height:1.65; padding-left:18px; margin-top:6px;">
+          <li>10 km mein 40 free profiles ke baad <strong>600 XTRA Profiles</strong> unlock</li>
+          <li>50 km tak advanced distance aur full filters access</li>
+          <li>7 din tak bina rok-tok sabhi locked profiles dekhein</li>
+        </ul>
       </div>
 
       <div class="pay-option selected" id="opt-upi" onclick="selectPayMethod('UPI')">
@@ -762,8 +920,8 @@
         <input type="text" id="payDetailInput" placeholder="yourname@okaxis" />
       </div>
 
-      <button class="btn btn-primary" style="width:100%;" onclick="activateWeeklyPlan()">
-        Pay ₹250 & Unlock 600 Profiles
+      <button class="btn btn-xtra" style="width:100%;" id="payActionBtn" onclick="activateWeeklyPlan()">
+        Pay ₹250 & Unlock 600 XTRA Profiles
       </button>
     </div>
   </div>
@@ -808,20 +966,26 @@
       "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=75"
     ];
 
-    const namesList = ["Aarav", "Kabir", "Rohan", "Dev", "Ishaan", "Vikram", "Arjun", "Reyansh", "Karan", "Vihaan", "Siddharth", "Yash"];
+    const namesList = ["Aarav", "Kabir", "Rohan", "Dev", "Ishaan", "Vikram", "Arjun", "Reyansh", "Karan", "Vihaan", "Siddharth", "Yash", "Manav", "Nikhil", "Raghav"];
+    const tagsList = ["Coffee & Drives", "Hangout", "Late Night Chat", "Friendship"];
 
-    const profilesPool = Array.from({ length: 45 }, (_, idx) => {
+    // 40 Free profiles (<=10 km) + 560 XTRA profiles (10.2 km - 50 km) = 600 Total Pool
+    const profilesPool = Array.from({ length: 600 }, (_, idx) => {
       const i = idx + 1;
-      const dist = Number((Math.min(9.8, i * 0.22)).toFixed(1));
+      const isXtra = i > 40;
+      const dist = !isXtra
+        ? Number((0.3 + idx * 0.24).toFixed(1))
+        : Number((10.2 + (idx - 40) * 0.07).toFixed(1));
       return {
         id: i,
-        name: `${namesList[idx % namesList.length]}`,
-        age: 22 + (i % 15),
+        name: namesList[idx % namesList.length],
+        age: 19 + (i % 24),
         dist,
+        isXtra,
         online: i % 2 === 0,
         verified: i % 3 !== 0,
-        tag: i % 3 === 0 ? "Coffee & Drives" : i % 2 === 0 ? "Hangout" : "Late Night Chat",
-        bio: `Around ${dist} km away. Up for genuine conversations and good vibes.`,
+        tag: tagsList[idx % tagsList.length],
+        bio: `Around ${dist} km away. Looking for ${tagsList[idx % tagsList.length].toLowerCase()} and genuine people.`,
         img: samplePhotos[idx % samplePhotos.length]
       };
     });
@@ -840,16 +1004,24 @@
     }));
 
     let chats = JSON.parse(localStorage.getItem("dastak_chats_v1") || "{}");
-    let currentFilter = "all";
     let activeChatUser = null;
     let selectedPayMethod = "UPI";
+    let visibleXtraCount = 18; // Loads smoothly in chunks up to 600
+
+    let filters = {
+      quick: "all",
+      maxDist: 50,
+      minAge: 18,
+      maxAge: 50,
+      onlineOnly: false,
+      verifiedOnly: false,
+      tag: "all"
+    };
 
     function saveAccount() {
       try {
         localStorage.setItem("dastak_account_v1", JSON.stringify(userAccount));
-      } catch (e) {
-        console.warn("Storage full, keeping photos in session memory.");
-      }
+      } catch (e) {}
       updateTopUI();
     }
 
@@ -866,42 +1038,167 @@
       });
 
       const maxAllowed = userAccount.hasWeeklyPlan ? 600 : 40;
-      document.getElementById("freeCounter").innerText = `${userAccount.viewedProfileIds.length} / ${maxAllowed}`;
-      document.getElementById("planStatusText").innerText = userAccount.hasWeeklyPlan ? "Plus (600/Wk)" : "Free";
+      document.getElementById("freeCounter").innerText = `${(userAccount.viewedProfileIds || []).length} / ${maxAllowed}`;
+      document.getElementById("rangeLabel").innerText = userAccount.hasWeeklyPlan ? `≤${filters.maxDist} km` : "≤10 km + XTRA";
+      document.getElementById("planStatusText").innerText = userAccount.hasWeeklyPlan ? "★ XTRA Active (600)" : "Free (40)";
+      document.getElementById("headerXtraBtn").innerText = userAccount.hasWeeklyPlan ? "★ XTRA ON" : "★ XTRA";
+      document.getElementById("payActionBtn").innerText = userAccount.hasWeeklyPlan
+        ? "✓ XTRA Plan Already Active (600 Profiles)"
+        : "Pay ₹250 & Unlock 600 XTRA Profiles";
+
+      let activeFilterCount = 0;
+      if (filters.maxDist < 50) activeFilterCount++;
+      if (filters.minAge > 18 || filters.maxAge < 50) activeFilterCount++;
+      if (filters.onlineOnly) activeFilterCount++;
+      if (filters.verifiedOnly) activeFilterCount++;
+      if (filters.tag !== "all") activeFilterCount++;
+      document.getElementById("openFilterBtn").innerText = activeFilterCount > 0 ? `⚙ Filters (${activeFilterCount})` : "⚙ Filters";
     }
 
     function renderGrid() {
       const grid = document.getElementById("userGrid");
       grid.innerHTML = "";
 
-      const list = profilesPool.filter(u => {
-        if ((userAccount.blockedIds || []).includes(u.id)) return false;
-        if (u.dist > 10) return false;
-        if (currentFilter === "online") return u.online;
-        if (currentFilter === "under2") return u.dist <= 2.0;
+      const blocked = userAccount.blockedIds || [];
+      const matching = profilesPool.filter(u => {
+        if (blocked.includes(u.id)) return false;
+        if (u.age < filters.minAge || u.age > filters.maxAge) return false;
+        if (u.dist > filters.maxDist) return false;
+        if (filters.onlineOnly && !u.online) return false;
+        if (filters.verifiedOnly && !u.verified) return false;
+        if (filters.tag !== "all" && u.tag !== filters.tag) return false;
+
+        if (filters.quick === "online" && !u.online) return false;
+        if (filters.quick === "verified" && !u.verified) return false;
+        if (filters.quick === "under5" && u.dist > 5) return false;
+        if (filters.quick === "xtra" && !u.isXtra) return false;
         return true;
       });
 
-      list.forEach(user => {
-        const div = document.createElement("div");
-        div.className = `tile ${user.online ? "is-online" : ""}`;
-        div.onclick = () => handleProfileClick(user);
-        div.innerHTML = `
-          <img src="${user.img}" alt="${user.name}" loading="lazy" />
-          ${user.verified ? `<div class="tile-badge">✓ ID</div>` : ""}
-          <div class="tile-overlay">
-            <div class="tile-name">
-              <span class="status-dot ${user.online ? 'online' : 'offline'}"></span>${user.name}, ${user.age}
+      const freeList = matching.filter(u => !u.isXtra);
+      const xtraList = matching.filter(u => u.isXtra);
+
+      if (freeList.length === 0 && xtraList.length === 0) {
+        grid.innerHTML = `<div class="grid-banner"><div><h4>Koi profile nahi mili</h4><p>Filters thode change karein ya Reset All par tap karein.</p></div><button class="btn btn-primary" style="padding:8px 12px; font-size:0.78rem;" onclick="resetFilters()">Reset</button></div>`;
+        return;
+      }
+
+      // Render Free Nearby Profiles (<=10 km)
+      freeList.forEach(user => grid.appendChild(createTile(user, false)));
+
+      // Render XTRA Section Banner + XTRA Profiles
+      if (xtraList.length > 0) {
+        const banner = document.createElement("div");
+        banner.className = "grid-banner";
+        if (!userAccount.hasWeeklyPlan) {
+          banner.innerHTML = `
+            <div>
+              <h4>★ XTRA Profiles (${xtraList.length}+ aur nearby)</h4>
+              <p>40 free profiles ke baad 600 XTRA profiles kholne ke liye ₹250/week pass lein.</p>
             </div>
-            <div class="tile-dist">${user.dist} km</div>
+            <button class="btn btn-xtra" style="padding:9px 13px; font-size:0.76rem; white-space:nowrap;" onclick="openPayModal()">Unlock ₹250</button>
+          `;
+        } else {
+          banner.innerHTML = `
+            <div>
+              <h4>★ Dastak XTRA Unlocked</h4>
+              <p>Aapke liye 600 profiles (50 km tak) poori tarah open hain.</p>
+            </div>
+            <span class="status-pill verified">Active</span>
+          `;
+        }
+        grid.appendChild(banner);
+
+        const sliceCount = userAccount.hasWeeklyPlan ? visibleXtraCount : 12;
+        xtraList.slice(0, sliceCount).forEach(user => {
+          grid.appendChild(createTile(user, !userAccount.hasWeeklyPlan));
+        });
+
+        if (userAccount.hasWeeklyPlan && xtraList.length > visibleXtraCount) {
+          const moreWrap = document.createElement("div");
+          moreWrap.className = "load-more-wrap";
+          moreWrap.innerHTML = `<button class="btn btn-secondary" style="padding:10px 22px; font-size:0.82rem;" onclick="loadMoreXtra()">Load More XTRA Profiles (${xtraList.length - visibleXtraCount} left)</button>`;
+          grid.appendChild(moreWrap);
+        }
+      }
+    }
+
+    function createTile(user, isLocked) {
+      const div = document.createElement("div");
+      div.className = `tile ${user.online ? "is-online" : ""} ${isLocked ? "is-locked" : ""}`;
+      div.onclick = () => isLocked ? openPayModal() : handleProfileClick(user);
+
+      div.innerHTML = `
+        <img src="${user.img}" alt="${user.name}" loading="lazy" />
+        ${isLocked
+          ? `<div class="tile-badge xtra-tag">★ XTRA</div>
+             <div class="lock-center">
+               <div class="lock-icon-circle">🔒</div>
+               <div class="lock-label">Unlock ₹250</div>
+             </div>`
+          : `${user.verified ? `<div class="tile-badge">✓ ID</div>` : ""}`
+        }
+        <div class="tile-overlay">
+          <div class="tile-name">
+            <span class="status-dot ${user.online ? 'online' : 'offline'}"></span>${isLocked ? "XTRA Member" : `${user.name}, ${user.age}`}
           </div>
-        `;
-        grid.appendChild(div);
-      });
+          <div class="tile-dist">${user.dist} km</div>
+        </div>
+      `;
+      return div;
+    }
+
+    function loadMoreXtra() {
+      visibleXtraCount += 30;
+      renderGrid();
+    }
+
+    function setQuickFilter(type, btn) {
+      filters.quick = type;
+      document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
+      btn.classList.add("active");
+      renderGrid();
+    }
+
+    function openFilterModal() {
+      document.getElementById("filterDist").value = filters.maxDist;
+      document.getElementById("distValText").innerText = filters.maxDist + " km";
+      document.getElementById("filterMinAge").value = filters.minAge;
+      document.getElementById("minAgeText").innerText = filters.minAge + " yrs";
+      document.getElementById("filterMaxAge").value = filters.maxAge;
+      document.getElementById("maxAgeText").innerText = filters.maxAge + " yrs";
+      document.getElementById("filterOnlineOnly").checked = filters.onlineOnly;
+      document.getElementById("filterVerifiedOnly").checked = filters.verifiedOnly;
+      document.getElementById("filterTag").value = filters.tag;
+      document.getElementById("filterModal").classList.add("open");
+    }
+
+    function applyFilters() {
+      filters.maxDist = Number(document.getElementById("filterDist").value);
+      filters.minAge = Number(document.getElementById("filterMinAge").value);
+      filters.maxAge = Number(document.getElementById("filterMaxAge").value);
+      if (filters.minAge > filters.maxAge) {
+        const t = filters.minAge; filters.minAge = filters.maxAge; filters.maxAge = t;
+      }
+      filters.onlineOnly = document.getElementById("filterOnlineOnly").checked;
+      filters.verifiedOnly = document.getElementById("filterVerifiedOnly").checked;
+      filters.tag = document.getElementById("filterTag").value;
+      closeModal("filterModal");
+      updateTopUI();
+      renderGrid();
+    }
+
+    function resetFilters() {
+      filters = { quick: "all", maxDist: 50, minAge: 18, maxAge: 50, onlineOnly: false, verifiedOnly: false, tag: "all" };
+      document.querySelectorAll(".chip").forEach((c, idx) => c.classList.toggle("active", idx === 0));
+      closeModal("filterModal");
+      updateTopUI();
+      renderGrid();
     }
 
     function handleProfileClick(user) {
       const maxAllowed = userAccount.hasWeeklyPlan ? 600 : 40;
+      if (!userAccount.viewedProfileIds) userAccount.viewedProfileIds = [];
       const alreadyViewed = userAccount.viewedProfileIds.includes(user.id);
 
       if (!alreadyViewed && userAccount.viewedProfileIds.length >= maxAllowed) {
@@ -913,7 +1210,6 @@
         userAccount.viewedProfileIds.push(user.id);
         saveAccount();
       }
-
       openProfileModal(user);
     }
 
@@ -925,7 +1221,7 @@
           <span class="badge">${user.online ? "● Online Now" : "Offline"}</span>
           <span class="badge">📍 ${user.dist} km away</span>
           <span class="badge">${user.tag}</span>
-          ${user.verified ? `<span class="badge" style="color:var(--online);">✓ Verified</span>` : ""}
+          ${user.verified ? `<span class="badge" style="color:var(--online);">✓ ID Verified</span>` : ""}
         </div>
         <p style="margin-top: 8px; line-height: 1.55; color: #cbd5e1; font-size:0.92rem;">${user.bio}</p>
         <div class="action-row">
@@ -1081,7 +1377,8 @@
       userAccount.paymentMethod = selectedPayMethod;
       saveAccount();
       closeModal("payModal");
-      alert(`Dastak Plus Pass (₹250 / ${selectedPayMethod}) active ho gaya hai! Ab 600 profiles unlock hain.`);
+      renderGrid();
+      alert(`Dastak XTRA (₹250 / ${selectedPayMethod}) active ho gaya hai! Ab 600 XTRA profiles unlock hain.`);
     }
 
     function openPayModal() {
@@ -1143,17 +1440,11 @@
       alert(`User status update ho gaya: ${newStatus}`);
     }
 
-    function setFilter(type, btn) {
-      currentFilter = type;
-      document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-      btn.classList.add("active");
-      renderGrid();
-    }
-
     function switchTab(tab, btn) {
       document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
       btn.classList.add("active");
       document.getElementById("tab-nearby").style.display = tab === "nearby" ? "block" : "none";
+      document.getElementById("nearbyStickyControls").style.display = tab === "nearby" ? "block" : "none";
       document.getElementById("tab-chats").classList.toggle("active", tab === "chats");
       document.getElementById("tab-me").classList.toggle("active", tab === "me");
       if (tab === "chats") renderInbox();
