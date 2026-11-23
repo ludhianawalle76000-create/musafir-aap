@@ -64,16 +64,19 @@
     .auto-dist-pill { margin-top: 10px; padding: 9px 12px; border-radius: 12px; background: #eefaf4; border: 1px solid #bcead4; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #0b7a4b; }
 
     .v-list { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
-    .v-row { display: flex; justify-content: space-between; align-items: center; border: 1.5px solid #e3e7f0; border-radius: 14px; padding: 11px 13px; cursor: pointer; background: #fafbfe; gap: 10px; }
-    .v-row.active { border-color: #18182b; background: #f2f4fc; }
-    .v-left-wrap { display: flex; align-items: center; gap: 11px; flex: 1; }
-    .v-icon-box { width: 44px; height: 44px; border-radius: 12px; background: #eef2fa; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid #dce3f2; }
-    .v-row.active .v-icon-box { background: #18182b; border-color: #18182b; }
-    .v-row.active .v-icon-box svg { stroke: #4ef0a8; }
+    .v-row { display: flex; justify-content: space-between; align-items: center; border: 1.5px solid #e3e7f0; border-radius: 16px; padding: 12px 14px; cursor: pointer; background: #fafbfe; gap: 12px; }
+    .v-row.active { border-color: #18182b; background: #f2f4fc; box-shadow: 0 6px 16px rgba(24, 24, 43, 0.06); }
+    .v-left-wrap { display: flex; align-items: center; gap: 12px; flex: 1; }
+    .v-icon-box { width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1.5px solid transparent; }
+    .v-icon-bike { background: #e8fbf2; border-color: #bcead4; color: #0b7a4b; }
+    .v-icon-rick { background: #fff1eb; border-color: #ffd2c2; color: #d94322; }
+    .v-icon-cab { background: #eef1fa; border-color: #cfd7f0; color: #18182b; }
+    .v-row.active .v-icon-box { background: #18182b; border-color: #18182b; color: #4ef0a8; }
     .v-left { display: flex; flex-direction: column; }
-    .v-name { font-size: 14px; font-weight: 800; color: #18182b; }
-    .v-tag { display: inline-block; font-size: 10px; font-weight: 800; background: #e1f7ed; color: #0b7a4b; padding: 2px 6px; border-radius: 6px; margin-left: 6px; }
-    .v-meta { font-size: 11px; color: #676e8a; margin-top: 2px; }
+    .v-name { font-size: 14px; font-weight: 800; color: #18182b; display: flex; align-items: center; flex-wrap: wrap; gap: 6px; }
+    .v-tag { display: inline-block; font-size: 10px; font-weight: 800; background: #e1f7ed; color: #0b7a4b; padding: 2px 7px; border-radius: 6px; }
+    .v-tag-cab { background: #ffe9e3; color: #c93b1b; }
+    .v-meta { font-size: 11px; color: #676e8a; margin-top: 3px; }
     .v-price { font-size: 16px; font-weight: 800; color: #18182b; }
 
     .adjust-box { margin-top: 12px; padding: 12px; border-radius: 14px; background: #f6f8fc; border: 1px solid #e1e6f2; }
@@ -130,7 +133,7 @@
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Cloud Live • v46</p>
+      <p>Cloud Live • v48</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -154,7 +157,7 @@
       <div id="step-otp" class="hide">
         <label for="otp-inp">Enter 6-Digit OTP</label>
         <input id="otp-inp" class="mono" type="text" maxlength="6" value="123456" />
-        <button type="button" id="verify-otp-btn" class="btn btn-mint" onclick="gmCompleteLogin()">Verify & Continue</button>
+        <button type="button" id="verify-otp-btn" class="btn btn-mint" onclick="gmCompleteLogin(false)">Verify & Continue</button>
         <button type="button" id="back-phone-btn" class="btn btn-soft" onclick="gmBackToPhone()">Change Number</button>
       </div>
       <div id="login-msg" class="msg"></div>
@@ -272,11 +275,12 @@
       <div class="v-list">
         <div class="v-row active" data-v="Bike" data-r="7" data-m="25" onclick="pickV(this)">
           <div class="v-left-wrap">
-            <div class="v-icon-box">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18182b" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-                <circle cx="5.5" cy="17" r="3"></circle>
-                <circle cx="18.5" cy="17" r="3"></circle>
-                <path d="M12 17v-5l-3-3 4-3 2 3h2"></path>
+            <div class="v-icon-box v-icon-bike">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="6.5" cy="19.5" r="3.6"></circle>
+                <circle cx="21.5" cy="19.5" r="3.6"></circle>
+                <path d="M14 19.5v-5.8l-3.6-3.4 4.6-3.5 2.4 3.5h2.6"></path>
+                <path d="M17.5 7.5h3"></path>
               </svg>
             </div>
             <div class="v-left">
@@ -289,16 +293,17 @@
 
         <div class="v-row" data-v="E-Rickshaw" data-r="11" data-m="35" onclick="pickV(this)">
           <div class="v-left-wrap">
-            <div class="v-icon-box">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18182b" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M4 15h14l2-5H6l-2 5z"></path>
-                <path d="M9 10V6h7l2 4"></path>
-                <circle cx="7.5" cy="17.5" r="2.2"></circle>
-                <circle cx="16.5" cy="17.5" r="2.2"></circle>
+            <div class="v-icon-box v-icon-rick">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4.5 17.5h16.5l2.5-6H6.5l-2 6z"></path>
+                <path d="M10.5 11.5V6.8h8.2l2.3 4.7"></path>
+                <path d="M14.5 6.8v4.7"></path>
+                <circle cx="8.5" cy="20.5" r="2.5"></circle>
+                <circle cx="19.5" cy="20.5" r="2.5"></circle>
               </svg>
             </div>
             <div class="v-left">
-              <div class="v-name">E-Rickshaw</div>
+              <div class="v-name">E-Rickshaw <span class="v-tag">DOORSTEP</span></div>
               <div class="v-meta" id="m-rick">Doorstep local ride • Min ₹35</div>
             </div>
           </div>
@@ -307,16 +312,17 @@
 
         <div class="v-row" data-v="Cab" data-r="16" data-m="70" onclick="pickV(this)">
           <div class="v-left-wrap">
-            <div class="v-icon-box">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18182b" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 16l1.5-5h11L19 16"></path>
-                <rect x="4" y="14" width="16" height="4" rx="1.5"></rect>
-                <circle cx="7.5" cy="18.5" r="1.8"></circle>
-                <circle cx="16.5" cy="18.5" r="1.8"></circle>
+            <div class="v-icon-box v-icon-cab">
+              <svg width="28" height="28" viewBox="0 0 28 28" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5.5 17.5l2-6.2h13l2 6.2"></path>
+                <path d="M8.5 11.3l1.4-3.8h8.2l1.4 3.8"></path>
+                <rect x="4.5" y="16" width="19" height="4.5" rx="1.8"></rect>
+                <circle cx="8.5" cy="21.5" r="2"></circle>
+                <circle cx="19.5" cy="21.5" r="2"></circle>
               </svg>
             </div>
             <div class="v-left">
-              <div class="v-name">Musafir Cab <span class="v-tag">ALL PUNJAB</span></div>
+              <div class="v-name">Musafir Cab <span class="v-tag v-tag-cab">ALL PUNJAB</span></div>
               <div class="v-meta" id="m-cab">Local & Inter-District AC Cab • Min ₹70</div>
             </div>
           </div>
@@ -349,7 +355,7 @@
       </div>
 
       <div id="night-row" class="night-bar">
-        <span id="night-txt">Night window: 10 PM – 6 AM</span>
+        <span id="night-txt">Night window: 10 PM - 6 AM</span>
         <button type="button" class="mini-btn" id="btn-night" onclick="toggleNightNow()">Test Night Fare</button>
       </div>
 
@@ -473,6 +479,53 @@
   </div>
 
   <script>
+    function gmEl(id) { return document.getElementById(id); }
+
+    function gmToggleView(id, hideIt, disp) {
+      var el = gmEl(id);
+      if (!el) return;
+      if (hideIt) {
+        el.classList.add("hide");
+        el.style.display = "none";
+      } else {
+        el.classList.remove("hide");
+        el.style.display = disp || "block";
+      }
+    }
+
+    function gmShowOtpStep() {
+      gmToggleView("step-phone", true);
+      gmToggleView("step-otp", false, "block");
+      if (gmEl("otp-inp")) gmEl("otp-inp").value = "123456";
+      if (gmEl("login-msg")) {
+        gmEl("login-msg").style.color = "#0fa968";
+        gmEl("login-msg").textContent = "OTP 123456 sent.";
+      }
+    }
+
+    function gmBackToPhone() {
+      gmToggleView("step-otp", true);
+      gmToggleView("step-phone", false, "block");
+      if (gmEl("login-msg")) gmEl("login-msg").textContent = "";
+    }
+
+    function gmCompleteLogin(skipSave) {
+      if (!skipSave) {
+        try { localStorage.setItem("gm_logged_in_v1", "1"); } catch (e) {}
+      }
+      gmToggleView("login-card", true);
+      gmToggleView("hdr-btns", false, "flex");
+      gmToggleView("hero-map-wrap", false, "block");
+      gmToggleView("wallet-card", false, "block");
+      gmToggleView("book-card", false, "block");
+      gmToggleView("rides-card", false, "block");
+      if (typeof window.gmStartApp === "function") {
+        try { window.gmStartApp(); } catch (err) {}
+      }
+    }
+  </script>
+
+  <script>
     var curV = "Bike", curR = 7, curM = 25;
     var fareDelta = 0, curPay = "Cash", pinMode = null, nightManualOverride = null;
     var customerPhone = "", customerName = "", walletBalance = 0;
@@ -517,58 +570,6 @@
     var routeCoords = null, autoKm = 7.5;
 
     function byId(id) { return document.getElementById(id); }
-
-    function setHidden(id, hideIt, disp) {
-      var el = byId(id);
-      if (!el) return;
-      if (hideIt) {
-        el.classList.add("hide");
-        el.style.display = "none";
-      } else {
-        el.classList.remove("hide");
-        el.style.display = disp || "block";
-      }
-    }
-
-    function updateZoomReadout() {
-      var z = heroMap ? heroMap.getZoom() : 12;
-      var el = byId("map-zoom-readout");
-      if (el) el.textContent = "Zoom " + z + "x • " + pickupCoords.lat.toFixed(2) + ", " + pickupCoords.lng.toFixed(2);
-    }
-
-    function gmShowOtpStep() {
-      setHidden("step-phone", true);
-      setHidden("step-otp", false, "block");
-      if (byId("otp-inp")) byId("otp-inp").value = "123456";
-      if (byId("login-msg")) {
-        byId("login-msg").style.color = "#0fa968";
-        byId("login-msg").textContent = "OTP 123456 sent.";
-      }
-    }
-
-    function gmBackToPhone() {
-      setHidden("step-otp", true);
-      setHidden("step-phone", false, "block");
-      if (byId("login-msg")) byId("login-msg").textContent = "";
-    }
-
-    function gmCompleteLogin(skipSave) {
-      if (!skipSave) {
-        try { localStorage.setItem("gm_logged_in_v1", "1"); } catch (e) {}
-      }
-      setHidden("login-card", true);
-      setHidden("hdr-btns", false, "flex");
-      setHidden("hero-map-wrap", false, "block");
-      setHidden("wallet-card", false, "block");
-      setHidden("book-card", false, "block");
-      setHidden("rides-card", false, "block");
-
-      try { recordCustomerOwnerLog(); } catch (e) {}
-      try { loadWallet(); } catch (e) {}
-      try { calcFareNow(); } catch (e) {}
-      try { drawRidesNow(); } catch (e) {}
-      try { initHeroMap(); } catch (e) {}
-    }
 
     function haversineRoadKm(a, b) {
       var R = 6371, dLat = (b.lat - a.lat) * Math.PI / 180, dLng = (b.lng - a.lng) * Math.PI / 180;
@@ -619,24 +620,25 @@
       } catch (e) { cb(null); }
     }
 
+    function updateZoomReadout() {
+      try {
+        var z = heroMap ? heroMap.getZoom() : 12;
+        if (byId("map-zoom-readout")) byId("map-zoom-readout").textContent = "Zoom " + z + "x • " + pickupCoords.lat.toFixed(2) + ", " + pickupCoords.lng.toFixed(2);
+      } catch (e) {}
+    }
+
     function applyPinAtCoords(mode, lat, lng) {
       try {
         var rLat = Number(lat.toFixed(4)), rLng = Number(lng.toFixed(4));
-        if (mode === "pickup") {
-          pickupCoords = { lat: rLat, lng: rLng };
-          if (byId("pickup-inp")) byId("pickup-inp").value = "Pinned (" + rLat + ", " + rLng + ")";
-        } else {
-          dropCoords = { lat: rLat, lng: rLng };
-          if (byId("drop-inp")) byId("drop-inp").value = "Pinned (" + rLat + ", " + rLng + ")";
-        }
+        if (mode === "pickup") { pickupCoords = { lat: rLat, lng: rLng }; if (byId("pickup-inp")) byId("pickup-inp").value = "Pinned (" + rLat + ", " + rLng + ")"; }
+        else { dropCoords = { lat: rLat, lng: rLng }; if (byId("drop-inp")) byId("drop-inp").value = "Pinned (" + rLat + ", " + rLng + ")"; }
         pinMode = null;
         if (byId("btn-pin-pickup")) byId("btn-pin-pickup").className = "pin-action-btn";
         if (byId("btn-pin-drop")) byId("btn-pin-drop").className = "pin-action-btn";
         if (byId("pin-mode-note")) byId("pin-mode-note").textContent = (mode === "pickup" ? "Pickup pin set!" : "Drop pin set!");
         routeCoords = null;
         autoKm = haversineRoadKm(pickupCoords, dropCoords);
-        refreshHeroMapRoute();
-        calcFareNow();
+        refreshHeroMapRoute(); calcFareNow();
         fetchOsrmRoadRoute(pickupCoords, dropCoords, function (osrm) {
           if (osrm && osrm.km) { autoKm = osrm.km; routeCoords = osrm.pts; refreshHeroMapRoute(); calcFareNow(); }
         });
@@ -664,23 +666,11 @@
     }
 
     function zoomHeroMap(delta) {
-      try {
-        if (!heroMap) initHeroMap();
-        if (!heroMap) return;
-        heroMap.invalidateSize();
-        if (delta > 0) heroMap.zoomIn(); else heroMap.zoomOut();
-        updateZoomReadout();
-      } catch (e) {}
+      try { if (!heroMap) initHeroMap(); if (!heroMap) return; heroMap.invalidateSize(); if (delta > 0) heroMap.zoomIn(); else heroMap.zoomOut(); updateZoomReadout(); } catch (e) {}
     }
 
     function fitHeroMap() {
-      try {
-        if (!heroMap) initHeroMap();
-        if (!heroMap) return;
-        heroMap.invalidateSize();
-        heroMap.fitBounds([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { padding: [24, 24] });
-        updateZoomReadout();
-      } catch (e) {}
+      try { if (!heroMap) initHeroMap(); if (!heroMap) return; heroMap.invalidateSize(); heroMap.fitBounds([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { padding: [24, 24] }); updateZoomReadout(); } catch (e) {}
     }
 
     function refreshHeroMapRoute() {
@@ -711,8 +701,7 @@
         if (byId("auto-dist-val")) byId("auto-dist-val").textContent = autoKm + " km";
         if (byId("hero-dist-badge")) byId("hero-dist-badge").textContent = autoKm + " km";
         if (byId("hero-route-lbl")) byId("hero-route-lbl").textContent = (pTxt || "Pickup") + " -> " + (dTxt || "Drop");
-        refreshHeroMapRoute();
-        calcFareNow();
+        refreshHeroMapRoute(); calcFareNow();
         clearTimeout(routeFetchTimer);
         routeFetchTimer = setTimeout(function () {
           function afterCoordsReady() {
@@ -805,9 +794,17 @@
       } catch (e) {}
     }
 
+    window.gmStartApp = function () {
+      try { recordCustomerOwnerLog(); } catch (e) {}
+      try { loadWallet(); } catch (e) {}
+      try { calcFareNow(); } catch (e) {}
+      try { drawRidesNow(); } catch (e) {}
+      try { initHeroMap(); } catch (e) {}
+    };
+
     function toggleProfile() {
       var pc = byId("profile-card"); if (!pc) return;
-      if (pc.classList.contains("hide")) setHidden("profile-card", false, "block"); else setHidden("profile-card", true);
+      if (pc.classList.contains("hide")) gmToggleView("profile-card", false, "block"); else gmToggleView("profile-card", true);
     }
 
     function saveProfileNow() {
@@ -1052,13 +1049,15 @@
           var pinHtml = (!isComp && !isCanc) ? "<div class='pin-row'><span style='font-size:11px;font-weight:800;color:#474d6b;'>START RIDE PIN</span><div class='pin-digits mono'><span class='pin-box'>" + dStr[0] + "</span><span class='pin-box'>" + dStr[1] + "</span><span class='pin-box'>" + dStr[2] + "</span><span class='pin-box'>" + dStr[3] + "</span></div></div>" : "";
           var fbLine = r.driverFeedback ? "<div style='color:#474d6b;font-size:11px;margin-top:6px;'>Feedback: " + r.driverFeedback + (r.driverRating ? " (" + r.driverRating + " ★)" : "") + "</div>" : (r.driverRating ? "<div style='color:#474d6b;font-size:11px;margin-top:6px;'>Rating: " + r.driverRating + " ★</div>" : "");
           var blkTag = r.driverBlockedByCustomer ? "<div class='blk-tag'>Blocked by Customer</div>" : (r.ownerBlockedRole ? "<div class='blk-tag'>Blocked by Owner</div>" : "");
-          var actionHtml = isComp ? '<button type="button" class="btn btn-primary" onclick="openPassengerEndScreen(' + i + ')">Rate, Feedback & Block</button>' : (!isCanc ? '<button type="button" class="btn btn-soft" onclick="openCancelModal(' + i + ')">Cancel Ride</button>' : "");
+          var actionHtml = isComp
+            ? '<button type="button" class="btn btn-primary" onclick="openPassengerEndScreen(' + i + ')">Rate, Feedback & Block</button>'
+            : (!isCanc ? '<button type="button" class="btn btn-soft" onclick="openCancelModal(' + i + ')">Cancel Ride</button>' : "");
 
           html += "<div class='ride-item'><div class='r-top'><span>" + (r.v || "Ride") + " • <span class='mono'>₹" + (r.total || 0) + "</span> • " + pm + "</span><span class='r-badge'>" + st + "</span></div>" +
             "<div style='font-size:12px;color:#474d6b;margin-top:4px;'>" + (r.pickup || "Pickup") + " -> " + (r.drop || "Drop") + " (<span class='mono'>" + (r.km || 0) + " km</span>)</div>" +
             "<div style='font-size:11px;color:#676e8a;margin-top:2px;'>Platform Charges</div>" +
             pinHtml + blkTag + fbLine +
-            "<div class='live-map-box'><div id='p-live-map-" + i + "' class='live-map-el'></div><div class='live-map-ft'><span id='p-map-st-" + i + "'>Rider Live Map • " + st + "</span><button type="button" class="mini-btn" onclick="startLiveRiderWatch(" + i + ")">Track Rider</button></div></div>" +
+            "<div class='live-map-box'><div id='p-live-map-" + i + "' class='live-map-el'></div><div class='live-map-ft'><span id='p-map-st-" + i + "'>Rider Live Map • " + st + "</span><button type='button" class="mini-btn" onclick="startLiveRiderWatch(\'' + i + '\')">Track Rider</button></div></div>" +
             actionHtml + "</div>";
         }
         if (changed) syncCloudRides();
@@ -1070,11 +1069,11 @@
 
     function logout() {
       try { localStorage.removeItem("gm_logged_in_v1"); } catch (e) {}
-      setHidden("hdr-btns", true);
-      ["profile-card", "hero-map-wrap", "wallet-card", "book-card", "rides-card"].forEach(function (id) { setHidden(id, true); });
-      setHidden("step-otp", true);
-      setHidden("step-phone", false, "block");
-      setHidden("login-card", false, "block");
+      gmToggleView("hdr-btns", true);
+      ["profile-card", "hero-map-wrap", "wallet-card", "book-card", "rides-card"].forEach(function (id) { gmToggleView(id, true); });
+      gmToggleView("step-otp", true);
+      gmToggleView("step-phone", false, "block");
+      gmToggleView("login-card", false, "block");
       if (byId("login-msg")) byId("login-msg").textContent = "";
     }
 
@@ -1127,3 +1126,4 @@
   </script>
 </body>
 </html>
+
