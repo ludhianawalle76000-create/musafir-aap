@@ -119,7 +119,7 @@
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Cloud Live • v35</p>
+      <p>Cloud Live • v36</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -415,6 +415,60 @@
   </div>
 
   <script>
+    window.onerror = function (message, source, lineno) {
+      var lm = document.getElementById("login-msg");
+      if (lm) {
+        lm.style.color = "#b81d24";
+        lm.textContent = "Err (L" + lineno + "): " + message;
+      }
+    };
+
+    function gmShowOtpStep() {
+      var pStep = document.getElementById("step-phone");
+      var oStep = document.getElementById("step-otp");
+      var oInp = document.getElementById("otp-inp");
+      var lMsg = document.getElementById("login-msg");
+      if (pStep) pStep.style.display = "none";
+      if (oStep) {
+        oStep.classList.remove("hide");
+        oStep.style.display = "block";
+      }
+      if (oInp) oInp.value = "123456";
+      if (lMsg) {
+        lMsg.style.color = "#0fa968";
+        lMsg.textContent = "OTP 123456 sent.";
+      }
+    }
+
+    function gmBackToPhone() {
+      var pStep = document.getElementById("step-phone");
+      var oStep = document.getElementById("step-otp");
+      var lMsg = document.getElementById("login-msg");
+      if (oStep) {
+        oStep.classList.add("hide");
+        oStep.style.display = "none";
+      }
+      if (pStep) pStep.style.display = "block";
+      if (lMsg) lMsg.textContent = "";
+    }
+
+    document.addEventListener("click", function (e) {
+      var target = e.target ? e.target.closest("button") : null;
+      if (!target) return;
+      if (target.id === "send-otp-btn") {
+        e.preventDefault();
+        gmShowOtpStep();
+      } else if (target.id === "back-phone-btn") {
+        e.preventDefault();
+        gmBackToPhone();
+      } else if (target.id === "verify-otp-btn") {
+        e.preventDefault();
+        if (typeof verifyOtpNow === "function") verifyOtpNow();
+      }
+    });
+  </script>
+
+  <script>
     var curV = "Bike", curR = 7, curM = 25;
     var fareDelta = 0;
     var curPay = "Cash";
@@ -656,19 +710,6 @@
       }
       if (!found) ownerAccounts.unshift({ type: "Customer", name: customerName || "Passenger", phone: customerPhone, time: new Date().toLocaleString() });
       syncCloudAccounts();
-    }
-
-    function sendOtpNow() {
-      document.getElementById("step-phone").classList.add("hide");
-      document.getElementById("step-otp").classList.remove("hide");
-      document.getElementById("otp-inp").value = "123456";
-      document.getElementById("login-msg").textContent = "OTP 123456 sent.";
-    }
-
-    function backPhoneNow() {
-      document.getElementById("step-otp").classList.add("hide");
-      document.getElementById("step-phone").classList.remove("hide");
-      document.getElementById("login-msg").textContent = "";
     }
 
     function verifyOtpNow() {
@@ -966,9 +1007,6 @@
       document.getElementById("login-msg").textContent = "";
     }
 
-    document.getElementById("send-otp-btn").addEventListener("click", sendOtpNow);
-    document.getElementById("verify-otp-btn").addEventListener("click", verifyOtpNow);
-    document.getElementById("back-phone-btn").addEventListener("click", backPhoneNow);
     document.getElementById("btn-toggle-profile").addEventListener("click", toggleProfile);
     document.getElementById("btn-logout").addEventListener("click", logout);
     document.getElementById("btn-save-profile").addEventListener("click", saveProfileNow);
