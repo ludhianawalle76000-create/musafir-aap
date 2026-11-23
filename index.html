@@ -40,18 +40,17 @@
     .btn-soft { background: #edf0f7; color: #18182b; }
     .msg { margin-top: 10px; font-size: 12px; font-weight: 700; min-height: 16px; color: #0fa968; }
 
-    /* Hero Map Canvas */
     .hero-map-card { border-radius: 22px; overflow: hidden; margin-bottom: 14px; box-shadow: 0 10px 28px rgba(24, 24, 43, 0.09); border: 1px solid #dce1ed; background: #fff; }
     #main-hero-map { height: 210px; width: 100%; }
-    .map-caption { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: #18182b; background: #f8f9fc; }
+    .map-caption { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: #18182b; background: #f8f9fc; gap: 8px; }
 
-    /* Wallet Strip */
     .wallet-strip { display: flex; justify-content: space-between; align-items: center; background: linear-gradient(135deg, #18182b, #2b2d52); color: #fff; border-radius: 16px; padding: 14px; margin-bottom: 10px; }
     .w-bal { font-size: 24px; font-weight: 800; margin-top: 2px; }
     .grid5 { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
     .chip-btn { border: 1px solid #dce1ed; background: #f7f9fc; color: #18182b; border-radius: 10px; padding: 8px 4px; font-size: 12px; font-weight: 800; cursor: pointer; }
 
-    /* Vehicle List Rows */
+    .auto-dist-pill { margin-top: 10px; padding: 9px 12px; border-radius: 12px; background: #eefaf4; border: 1px solid #bcead4; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #0b7a4b; }
+
     .v-list { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
     .v-row { display: flex; justify-content: space-between; align-items: center; border: 1.5px solid #e3e7f0; border-radius: 14px; padding: 11px 13px; cursor: pointer; background: #fafbfe; }
     .v-row.active { border-color: #18182b; background: #f2f4fc; }
@@ -61,14 +60,12 @@
     .v-meta { font-size: 11px; color: #676e8a; margin-top: 2px; }
     .v-price { font-size: 16px; font-weight: 800; color: #18182b; }
 
-    /* Fare Adjuster Bar */
     .adjust-box { margin-top: 12px; padding: 12px; border-radius: 14px; background: #f6f8fc; border: 1px solid #e1e6f2; }
     .adjust-hd { display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 800; color: #474d6b; margin-bottom: 8px; }
     .adjust-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 5px; }
     .adj-btn { border: 1px solid #d5dbe8; background: #fff; color: #18182b; border-radius: 8px; padding: 7px 2px; font-size: 11px; font-weight: 800; cursor: pointer; }
     .adj-btn.on { background: #0fa968; color: #fff; border-color: #0fa968; }
 
-    /* Payment Pills */
     .pay-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; margin-top: 6px; }
     .p-pill { border: 1.5px solid #e3e7f0; border-radius: 11px; padding: 9px 6px; text-align: center; cursor: pointer; background: #fafbfe; }
     .p-pill.active { border-color: #0fa968; background: #edfaf4; }
@@ -82,7 +79,6 @@
     .summary-strip { margin-top: 12px; padding: 13px; border-radius: 14px; background: #18182b; color: #fff; display: flex; justify-content: space-between; align-items: center; }
     .sum-amt { font-size: 22px; font-weight: 800; color: #4ef0a8; }
 
-    /* Active Ride Card + 4-Digit PIN Boxes */
     .ride-item { border: 1.5px solid #e3e7f0; border-radius: 16px; padding: 13px; margin-top: 10px; background: #fcfdff; }
     .r-top { display: flex; justify-content: space-between; align-items: center; font-weight: 800; font-size: 14px; color: #18182b; }
     .r-badge { font-size: 11px; padding: 3px 9px; border-radius: 99px; background: #e1f7ed; color: #0b7a4b; font-weight: 800; }
@@ -95,7 +91,6 @@
     .live-map-el { height: 170px; width: 100%; }
     .live-map-ft { padding: 8px 10px; background: #f6f8fc; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; }
 
-    /* Cancel Modal & Full-Screen End Modal */
     .overlay { position: fixed; inset: 0; background: rgba(16, 18, 34, 0.72); z-index: 900; display: none; align-items: flex-end; justify-content: center; }
     .overlay.show { display: flex; }
     .modal-sheet { width: 100%; max-width: 490px; background: #fff; border-radius: 24px 24px 0 0; padding: 20px 18px 28px; max-height: 85vh; overflow-y: auto; }
@@ -118,7 +113,7 @@
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Ludhiana Mobility • v25</p>
+      <p>Ludhiana Mobility • v26</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -130,7 +125,6 @@
   </header>
 
   <div class="wrap">
-    <!-- Login Sheet -->
     <div id="login-card" class="sheet">
       <div class="sheet-handle"></div>
       <h2>Sign in to Go Musafir</h2>
@@ -149,7 +143,6 @@
       <div id="login-msg" class="msg"></div>
     </div>
 
-    <!-- Profile Sheet -->
     <div id="profile-card" class="sheet hide">
       <h2>Rider Profile</h2>
       <label for="p-name">Full Name</label>
@@ -161,16 +154,14 @@
       <div id="profile-msg" class="msg"></div>
     </div>
 
-    <!-- Hero Live Map -->
     <div id="hero-map-wrap" class="hero-map-card hide">
       <div id="main-hero-map"></div>
       <div class="map-caption">
-        <span>Ludhiana Live Zone • Threeke → Clock Tower</span>
-        <span class="mono" style="color:#0fa968;">GPS READY</span>
+        <span id="hero-route-lbl">Ludhiana Live Map • Auto Route</span>
+        <span class="mono" id="hero-dist-badge" style="color:#0fa968;">7.5 km</span>
       </div>
     </div>
 
-    <!-- Musafir Wallet Sheet -->
     <div id="wallet-card" class="sheet hide">
       <div class="wallet-strip">
         <div>
@@ -190,20 +181,36 @@
       <div id="wallet-msg" class="msg"></div>
     </div>
 
-    <!-- Booking Bottom-Sheet Style Card -->
     <div id="book-card" class="sheet hide">
       <div class="sheet-handle"></div>
       <h2 id="book-title">Where are you going?</h2>
-      <p class="sub">Ludhiana local rides • Auto Night 10 PM – 6 AM (+50%)</p>
+      <p class="sub">Select pickup & drop — map auto-calculates distance</p>
 
       <label for="pickup-inp">Pickup Location</label>
-      <input id="pickup-inp" type="text" placeholder="e.g., Threeke, Ludhiana" />
+      <input id="pickup-inp" type="text" list="ludhiana-places" placeholder="e.g., Threeke" oninput="onRouteInputChange()" onchange="onRouteInputChange()" />
 
       <label for="drop-inp">Drop Location</label>
-      <input id="drop-inp" type="text" placeholder="e.g., Clock Tower, Ludhiana" />
+      <input id="drop-inp" type="text" list="ludhiana-places" placeholder="e.g., Clock Tower" oninput="onRouteInputChange()" onchange="onRouteInputChange()" />
 
-      <label for="km-inp">Distance (km)</label>
-      <input id="km-inp" class="mono" type="number" step="0.5" min="1" value="10" oninput="resetAdjustAndCalc()" />
+      <datalist id="ludhiana-places">
+        <option value="Threeke"></option>
+        <option value="Sua Road"></option>
+        <option value="Clock Tower"></option>
+        <option value="Ferozepur Road"></option>
+        <option value="Gill Road"></option>
+        <option value="Sarabha Nagar"></option>
+        <option value="Model Town"></option>
+        <option value="Dugri"></option>
+        <option value="Jalandhar Bypass"></option>
+        <option value="PAU Ludhiana"></option>
+        <option value="Civil Lines"></option>
+        <option value="Haibowal"></option>
+      </datalist>
+
+      <div class="auto-dist-pill">
+        <span id="auto-dist-status">Map Route Distance (Auto)</span>
+        <span class="mono" id="auto-dist-val">7.5 km</span>
+      </div>
 
       <label>Select Ride</label>
       <div class="v-list">
@@ -212,25 +219,24 @@
             <div class="v-name">Musafir Bike <span class="v-tag">FASTEST</span></div>
             <div class="v-meta" id="m-bike">Quick bike rides • Min ₹25</div>
           </div>
-          <div class="v-price mono" id="p-bike">₹70</div>
+          <div class="v-price mono" id="p-bike">₹53</div>
         </div>
         <div class="v-row" data-v="E-Rickshaw" data-r="11" data-m="35" onclick="pickV(this)">
           <div class="v-left">
             <div class="v-name">E-Rickshaw</div>
             <div class="v-meta" id="m-rick">Doorstep local ride • Min ₹35</div>
           </div>
-          <div class="v-price mono" id="p-rick">₹110</div>
+          <div class="v-price mono" id="p-rick">₹83</div>
         </div>
         <div class="v-row" data-v="Cab" data-r="16" data-m="70" onclick="pickV(this)">
           <div class="v-left">
             <div class="v-name">Musafir Cab</div>
             <div class="v-meta" id="m-cab">Comfortable sedan • Min ₹70</div>
           </div>
-          <div class="v-price mono" id="p-cab">₹160</div>
+          <div class="v-price mono" id="p-cab">₹120</div>
         </div>
       </div>
 
-      <!-- Set a price that works for you -->
       <div class="adjust-box">
         <div class="adjust-hd">
           <span>ADJUST OFFER FARE</span>
@@ -277,17 +283,16 @@
 
       <div class="summary-strip">
         <div>
-          <div id="fare-detail" style="font-size:12px;font-weight:700;">Full Payment • Bike • 10 km • Cash</div>
+          <div id="fare-detail" style="font-size:12px;font-weight:700;">Full Payment • Bike • 7.5 km • Cash</div>
           <div style="font-size:11px;color:#9ea4c4;margin-top:2px;">Platform Charges</div>
         </div>
-        <div id="fare-total" class="sum-amt mono">₹70</div>
+        <div id="fare-total" class="sum-amt mono">₹53</div>
       </div>
 
-      <button type="button" class="btn btn-coral" id="book-cta-btn" onclick="bookRideNow()">Book Musafir Bike</button>
+      <button type="button" class="btn btn-coral" id="book-cta-btn" onclick="bookRideNow()">Book Bike • ₹53</button>
       <div id="book-msg" class="msg"></div>
     </div>
 
-    <!-- Active & Past Rides -->
     <div id="rides-card" class="sheet hide">
       <div style="display:flex;justify-content:space-between;align-items:center;">
         <h2 style="margin-bottom:0;">Your Rides</h2>
@@ -297,7 +302,6 @@
     </div>
   </div>
 
-  <!-- Cancel Reason Bottom Sheet -->
   <div id="cancel-modal" class="overlay">
     <div class="modal-sheet">
       <div class="sheet-handle"></div>
@@ -312,7 +316,6 @@
     </div>
   </div>
 
-  <!-- Full-Screen Trip Completed + Rating + Feedback + Block -->
   <div id="p-end-screen" class="full-end">
     <div>
       <span class="end-tag">GO MUSAFIR • TRIP COMPLETED</span>
@@ -357,11 +360,130 @@
     var currentEndIdx = -1;
     var cancelTargetIdx = -1;
     var heroMap = null;
+    var heroLine = null;
+    var heroStartDot = null;
+    var heroEndDot = null;
     var pMaps = {};
     var pTrackTimers = {};
+    var geocodeTimer = null;
 
-    var PICKUP_COORDS = { lat: 30.8615, lng: 75.8150 };
-    var DROP_COORDS = { lat: 30.9120, lng: 75.8540 };
+    var LUDHIANA_SPOTS = {
+      "threeke": { lat: 30.8615, lng: 75.8150 },
+      "sua road": { lat: 30.8640, lng: 75.8220 },
+      "clock tower": { lat: 30.9120, lng: 75.8540 },
+      "ferozepur road": { lat: 30.8910, lng: 75.8280 },
+      "gill road": { lat: 30.8790, lng: 75.8450 },
+      "sarabha nagar": { lat: 30.8880, lng: 75.8060 },
+      "model town": { lat: 30.8835, lng: 75.8390 },
+      "dugri": { lat: 30.8670, lng: 75.8420 },
+      "jalandhar bypass": { lat: 30.9350, lng: 75.8250 },
+      "pau ludhiana": { lat: 30.9010, lng: 75.8080 },
+      "civil lines": { lat: 30.9140, lng: 75.8380 },
+      "haibowal": { lat: 30.9230, lng: 75.8090 }
+    };
+
+    var pickupCoords = { lat: 30.8615, lng: 75.8150 };
+    var dropCoords = { lat: 30.9120, lng: 75.8540 };
+    var autoKm = 7.5;
+
+    function haversineRoadKm(a, b) {
+      var R = 6371;
+      var dLat = (b.lat - a.lat) * Math.PI / 180;
+      var dLng = (b.lng - a.lng) * Math.PI / 180;
+      var s1 = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(a.lat * Math.PI / 180) * Math.cos(b.lat * Math.PI / 180) *
+        Math.sin(dLng / 2) * Math.sin(dLng / 2);
+      var straight = R * 2 * Math.atan2(Math.sqrt(s1), Math.sqrt(1 - s1));
+      var roadDist = Math.max(1.0, Math.round(straight * 1.25 * 10) / 10);
+      return roadDist;
+    }
+
+    function lookupSpot(text) {
+      var k = String(text || "").trim().toLowerCase();
+      if (!k) return null;
+      if (LUDHIANA_SPOTS[k]) return LUDHIANA_SPOTS[k];
+      var keys = Object.keys(LUDHIANA_SPOTS);
+      for (var i = 0; i < keys.length; i++) {
+        if (k.indexOf(keys[i]) > -1 || keys[i].indexOf(k) > -1) {
+          return LUDHIANA_SPOTS[keys[i]];
+        }
+      }
+      return null;
+    }
+
+    function geocodePlace(query, cb) {
+      var localHit = lookupSpot(query);
+      if (localHit) { cb(localHit); return; }
+      var q = String(query || "").trim();
+      if (q.length < 3) { cb(null); return; }
+      fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(q + ", Ludhiana, Punjab"))
+        .then(function (res) { return res.json(); })
+        .then(function (arr) {
+          if (Array.isArray(arr) && arr.length > 0) {
+            cb({ lat: parseFloat(arr[0].lat), lng: parseFloat(arr[0].lon) });
+          } else {
+            cb(null);
+          }
+        })
+        .catch(function () { cb(null); });
+    }
+
+    function refreshHeroMapRoute() {
+      if (!heroMap || typeof L === "undefined") return;
+      if (heroLine) heroMap.removeLayer(heroLine);
+      if (heroStartDot) heroMap.removeLayer(heroStartDot);
+      if (heroEndDot) heroMap.removeLayer(heroEndDot);
+
+      heroLine = L.polyline([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { color: "#18182b", weight: 4 }).addTo(heroMap);
+      heroStartDot = L.circleMarker([pickupCoords.lat, pickupCoords.lng], { radius: 7, color: "#0fa968", fillOpacity: 1 }).addTo(heroMap);
+      heroEndDot = L.circleMarker([dropCoords.lat, dropCoords.lng], { radius: 7, color: "#ff5a36", fillOpacity: 1 }).addTo(heroMap);
+      heroMap.fitBounds([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { padding: [24, 24] });
+    }
+
+    function onRouteInputChange() {
+      var pTxt = document.getElementById("pickup-inp").value.trim();
+      var dTxt = document.getElementById("drop-inp").value.trim();
+
+      var pLocal = lookupSpot(pTxt);
+      var dLocal = lookupSpot(dTxt);
+      if (pLocal) pickupCoords = pLocal;
+      if (dLocal) dropCoords = dLocal;
+
+      autoKm = haversineRoadKm(pickupCoords, dropCoords);
+      document.getElementById("auto-dist-val").textContent = autoKm + " km";
+      document.getElementById("hero-dist-badge").textContent = autoKm + " km";
+      document.getElementById("hero-route-lbl").textContent = (pTxt || "Pickup") + " → " + (dTxt || "Drop");
+      refreshHeroMapRoute();
+      calcFareNow();
+
+      clearTimeout(geocodeTimer);
+      geocodeTimer = setTimeout(function () {
+        if (pTxt && !pLocal) {
+          geocodePlace(pTxt, function (pt) {
+            if (pt) {
+              pickupCoords = pt;
+              autoKm = haversineRoadKm(pickupCoords, dropCoords);
+              document.getElementById("auto-dist-val").textContent = autoKm + " km";
+              document.getElementById("hero-dist-badge").textContent = autoKm + " km";
+              refreshHeroMapRoute();
+              calcFareNow();
+            }
+          });
+        }
+        if (dTxt && !dLocal) {
+          geocodePlace(dTxt, function (pt) {
+            if (pt) {
+              dropCoords = pt;
+              autoKm = haversineRoadKm(pickupCoords, dropCoords);
+              document.getElementById("auto-dist-val").textContent = autoKm + " km";
+              document.getElementById("hero-dist-badge").textContent = autoKm + " km";
+              refreshHeroMapRoute();
+              calcFareNow();
+            }
+          });
+        }
+      }, 350);
+    }
 
     function isAutoNightHour() {
       var hr = new Date().getHours();
@@ -379,9 +501,7 @@
       if (heroMap) { heroMap.remove(); heroMap = null; }
       heroMap = L.map("main-hero-map", { zoomControl: false }).setView([30.886, 75.834], 12);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(heroMap);
-      L.polyline([[PICKUP_COORDS.lat, PICKUP_COORDS.lng], [DROP_COORDS.lat, DROP_COORDS.lng]], { color: "#18182b", weight: 4 }).addTo(heroMap);
-      L.circleMarker([PICKUP_COORDS.lat, PICKUP_COORDS.lng], { radius: 7, color: "#0fa968", fillOpacity: 1 }).addTo(heroMap);
-      L.circleMarker([DROP_COORDS.lat, DROP_COORDS.lng], { radius: 7, color: "#ff5a36", fillOpacity: 1 }).addTo(heroMap);
+      refreshHeroMapRoute();
     }
 
     function loadWallet() {
@@ -461,7 +581,7 @@
       document.getElementById("book-card").className = "sheet";
       document.getElementById("rides-card").className = "sheet";
       initHeroMap();
-      calcFareNow();
+      onRouteInputChange();
       drawRidesNow();
     }
 
@@ -501,14 +621,6 @@
       calcFareNow();
     }
 
-    function resetAdjustAndCalc() {
-      fareDelta = 0;
-      var adjs = document.querySelectorAll(".adj-btn");
-      for (var i = 0; i < adjs.length; i++) adjs[i].className = "adj-btn";
-      document.getElementById("adj-zero").className = "adj-btn on";
-      calcFareNow();
-    }
-
     function pickPay(el) {
       var pills = document.querySelectorAll(".p-pill");
       for (var i = 0; i < pills.length; i++) pills[i].className = "p-pill";
@@ -525,7 +637,7 @@
     function calcFareNow() {
       var nOn = isNightActive();
       var nMult = nOn ? 1.5 : 1.0;
-      var km = parseFloat(document.getElementById("km-inp").value) || 0;
+      var km = autoKm;
 
       var bikeFare = Math.max(Math.round(25 * nMult), Math.round(km * 7 * nMult));
       var rickFare = Math.max(Math.round(35 * nMult), Math.round(km * 11 * nMult));
@@ -546,6 +658,8 @@
       var baseTotal = Math.max(Math.round(curM * nMult), Math.round(km * curR * nMult));
       var finalTotal = Math.max(Math.round(curM * nMult), baseTotal + fareDelta);
 
+      document.getElementById("auto-dist-val").textContent = km + " km";
+      document.getElementById("hero-dist-badge").textContent = km + " km";
       document.getElementById("adj-label").textContent = fareDelta === 0 ? "Standard ₹0" : (fareDelta > 0 ? "+₹" + fareDelta : "-₹" + Math.abs(fareDelta));
       document.getElementById("fare-detail").textContent = "Full Payment • " + curV + " • " + km + " km • " + curPay;
       document.getElementById("fare-total").textContent = "₹" + finalTotal;
@@ -568,7 +682,7 @@
       loadWallet();
       var pickup = document.getElementById("pickup-inp").value.trim() || "Threeke, Ludhiana";
       var drop = document.getElementById("drop-inp").value.trim() || "Clock Tower, Ludhiana";
-      var km = parseFloat(document.getElementById("km-inp").value) || 1;
+      var km = autoKm;
       var nOn = isNightActive();
       var nMult = nOn ? 1.5 : 1.0;
       var baseTotal = Math.max(Math.round(curM * nMult), Math.round(km * curR * nMult));
@@ -593,8 +707,8 @@
         pickup: pickup,
         drop: drop,
         status: "Searching Driver",
-        riderLat: PICKUP_COORDS.lat,
-        riderLng: PICKUP_COORDS.lng,
+        riderLat: pickupCoords.lat,
+        riderLng: pickupCoords.lng,
         walletPaid: false,
         driverRating: 0,
         driverFeedback: "",
@@ -606,7 +720,7 @@
         passengerRatedPromptSeen: false
       });
       saveRides();
-      document.getElementById("book-msg").textContent = curV + " booked (" + curPay + ") • ₹" + total;
+      document.getElementById("book-msg").textContent = curV + " booked (" + km + " km • " + curPay + ") • ₹" + total;
       drawRidesNow();
     }
 
@@ -645,14 +759,14 @@
       if (pMaps[idx]) { pMaps[idx].remove(); delete pMaps[idx]; }
 
       var prog = statusProgress(rideObj.status || "Searching Driver");
-      var curLat = (typeof rideObj.riderLat === "number") ? rideObj.riderLat : (PICKUP_COORDS.lat + (DROP_COORDS.lat - PICKUP_COORDS.lat) * prog);
-      var curLng = (typeof rideObj.riderLng === "number") ? rideObj.riderLng : (PICKUP_COORDS.lng + (DROP_COORDS.lng - PICKUP_COORDS.lng) * prog);
+      var curLat = (typeof rideObj.riderLat === "number") ? rideObj.riderLat : (pickupCoords.lat + (dropCoords.lat - pickupCoords.lat) * prog);
+      var curLng = (typeof rideObj.riderLng === "number") ? rideObj.riderLng : (pickupCoords.lng + (dropCoords.lng - pickupCoords.lng) * prog);
 
       var map = L.map(elId, { zoomControl: false }).setView([curLat, curLng], 13);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(map);
-      L.polyline([[PICKUP_COORDS.lat, PICKUP_COORDS.lng], [DROP_COORDS.lat, DROP_COORDS.lng]], { color: "#18182b", weight: 4, dashArray: "6,6" }).addTo(map);
-      L.circleMarker([PICKUP_COORDS.lat, PICKUP_COORDS.lng], { radius: 6, color: "#0fa968", fillOpacity: 1 }).addTo(map);
-      L.circleMarker([DROP_COORDS.lat, DROP_COORDS.lng], { radius: 6, color: "#ff5a36", fillOpacity: 1 }).addTo(map);
+      L.polyline([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { color: "#18182b", weight: 4, dashArray: "6,6" }).addTo(map);
+      L.circleMarker([pickupCoords.lat, pickupCoords.lng], { radius: 6, color: "#0fa968", fillOpacity: 1 }).addTo(map);
+      L.circleMarker([dropCoords.lat, dropCoords.lng], { radius: 6, color: "#ff5a36", fillOpacity: 1 }).addTo(map);
       var riderMarker = L.circleMarker([curLat, curLng], { radius: 9, color: "#fff", weight: 2, fillColor: "#18182b", fillOpacity: 1 }).addTo(map);
       pMaps[idx] = { map: map, marker: riderMarker };
     }
@@ -679,8 +793,8 @@
       pTrackTimers[idx] = setInterval(function () {
         step += 1;
         var t = Math.min(1, step / 8);
-        var lat = PICKUP_COORDS.lat + (DROP_COORDS.lat - PICKUP_COORDS.lat) * t;
-        var lng = PICKUP_COORDS.lng + (DROP_COORDS.lng - PICKUP_COORDS.lng) * t;
+        var lat = pickupCoords.lat + (dropCoords.lat - pickupCoords.lat) * t;
+        var lng = pickupCoords.lng + (dropCoords.lng - pickupCoords.lng) * t;
         updatePos(lat, lng, t >= 1 ? "Reached Drop" : "Rider Moving Live");
         if (t >= 1) { clearInterval(pTrackTimers[idx]); delete pTrackTimers[idx]; }
       }, 650);
