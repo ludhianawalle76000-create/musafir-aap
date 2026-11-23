@@ -62,8 +62,12 @@
     .auto-dist-pill { margin-top: 10px; padding: 9px 12px; border-radius: 12px; background: #eefaf4; border: 1px solid #bcead4; display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 700; color: #0b7a4b; }
 
     .v-list { display: flex; flex-direction: column; gap: 8px; margin-top: 6px; }
-    .v-row { display: flex; justify-content: space-between; align-items: center; border: 1.5px solid #e3e7f0; border-radius: 14px; padding: 11px 13px; cursor: pointer; background: #fafbfe; }
+    .v-row { display: flex; justify-content: space-between; align-items: center; border: 1.5px solid #e3e7f0; border-radius: 14px; padding: 11px 13px; cursor: pointer; background: #fafbfe; gap: 10px; }
     .v-row.active { border-color: #18182b; background: #f2f4fc; }
+    .v-left-wrap { display: flex; align-items: center; gap: 11px; flex: 1; }
+    .v-icon-box { width: 44px; height: 44px; border-radius: 12px; background: #eef2fa; display: flex; align-items: center; justify-content: center; flex-shrink: 0; border: 1px solid #dce3f2; }
+    .v-row.active .v-icon-box { background: #18182b; border-color: #18182b; }
+    .v-row.active .v-icon-box svg { stroke: #4ef0a8; }
     .v-left { display: flex; flex-direction: column; }
     .v-name { font-size: 14px; font-weight: 800; color: #18182b; }
     .v-tag { display: inline-block; font-size: 10px; font-weight: 800; background: #e1f7ed; color: #0b7a4b; padding: 2px 6px; border-radius: 6px; margin-left: 6px; }
@@ -117,14 +121,14 @@
     .star-btn { border: 1.5px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); color: #fff; border-radius: 10px; padding: 10px 4px; font-size: 13px; font-weight: 800; cursor: pointer; }
     .star-btn.picked { background: #0fa968; border-color: #0fa968; }
     .end-actions { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .hide { display: none !important; }
+    .hide { display: none; }
   </style>
 </head>
 <body>
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Cloud Live • v40</p>
+      <p>Cloud Live • v41</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -262,23 +266,54 @@
       <label>Select Ride</label>
       <div class="v-list">
         <div class="v-row active" data-v="Bike" data-r="7" data-m="25">
-          <div class="v-left">
-            <div class="v-name">Musafir Bike <span class="v-tag">CITY & LOCAL</span></div>
-            <div class="v-meta" id="m-bike">Quick bike rides • Min ₹25</div>
+          <div class="v-left-wrap">
+            <div class="v-icon-box">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18182b" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="5.5" cy="17" r="3"></circle>
+                <circle cx="18.5" cy="17" r="3"></circle>
+                <path d="M12 17v-5l-3-3 4-3 2 3h2"></path>
+              </svg>
+            </div>
+            <div class="v-left">
+              <div class="v-name">Musafir Bike <span class="v-tag">CITY & LOCAL</span></div>
+              <div class="v-meta" id="m-bike">Quick bike rides • Min ₹25</div>
+            </div>
           </div>
           <div class="v-price mono" id="p-bike">₹53</div>
         </div>
+
         <div class="v-row" data-v="E-Rickshaw" data-r="11" data-m="35">
-          <div class="v-left">
-            <div class="v-name">E-Rickshaw</div>
-            <div class="v-meta" id="m-rick">Doorstep local ride • Min ₹35</div>
+          <div class="v-left-wrap">
+            <div class="v-icon-box">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18182b" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M4 15h14l2-5H6l-2 5z"></path>
+                <path d="M9 10V6h7l2 4"></path>
+                <circle cx="7.5" cy="17.5" r="2.2"></circle>
+                <circle cx="16.5" cy="17.5" r="2.2"></circle>
+              </svg>
+            </div>
+            <div class="v-left">
+              <div class="v-name">E-Rickshaw</div>
+              <div class="v-meta" id="m-rick">Doorstep local ride • Min ₹35</div>
+            </div>
           </div>
           <div class="v-price mono" id="p-rick">₹83</div>
         </div>
+
         <div class="v-row" data-v="Cab" data-r="16" data-m="70">
-          <div class="v-left">
-            <div class="v-name">Musafir Cab <span class="v-tag">ALL PUNJAB</span></div>
-            <div class="v-meta" id="m-cab">Local & Inter-District AC Cab • Min ₹70</div>
+          <div class="v-left-wrap">
+            <div class="v-icon-box">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#18182b" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 16l1.5-5h11L19 16"></path>
+                <rect x="4" y="14" width="16" height="4" rx="1.5"></rect>
+                <circle cx="7.5" cy="18.5" r="1.8"></circle>
+                <circle cx="16.5" cy="18.5" r="1.8"></circle>
+              </svg>
+            </div>
+            <div class="v-left">
+              <div class="v-name">Musafir Cab <span class="v-tag">ALL PUNJAB</span></div>
+              <div class="v-meta" id="m-cab">Local & Inter-District AC Cab • Min ₹70</div>
+            </div>
           </div>
           <div class="v-price mono" id="p-cab">₹120</div>
         </div>
@@ -433,82 +468,6 @@
   </div>
 
   <script>
-    function gmRevealBookingUi() {
-      var idsHide = ["login-card"];
-      var idsShow = ["hero-map-wrap", "wallet-card", "book-card", "rides-card"];
-      for (var i = 0; i < idsHide.length; i++) {
-        var elH = document.getElementById(idsHide[i]);
-        if (elH) {
-          elH.classList.add("hide");
-          elH.style.display = "none";
-        }
-      }
-      for (var j = 0; j < idsShow.length; j++) {
-        var elS = document.getElementById(idsShow[j]);
-        if (elS) {
-          elS.classList.remove("hide");
-          elS.style.display = "";
-        }
-      }
-      var hb = document.getElementById("hdr-btns");
-      if (hb) hb.style.display = "flex";
-    }
-
-    function gmShowOtpStep() {
-      var pStep = document.getElementById("step-phone");
-      var oStep = document.getElementById("step-otp");
-      var oInp = document.getElementById("otp-inp");
-      var lMsg = document.getElementById("login-msg");
-      if (pStep) {
-        pStep.classList.add("hide");
-        pStep.style.display = "none";
-      }
-      if (oStep) {
-        oStep.classList.remove("hide");
-        oStep.style.display = "block";
-      }
-      if (oInp) oInp.value = "123456";
-      if (lMsg) {
-        lMsg.style.color = "#0fa968";
-        lMsg.textContent = "OTP 123456 sent.";
-      }
-    }
-
-    function gmBackToPhone() {
-      var pStep = document.getElementById("step-phone");
-      var oStep = document.getElementById("step-otp");
-      var lMsg = document.getElementById("login-msg");
-      if (oStep) {
-        oStep.classList.add("hide");
-        oStep.style.display = "none";
-      }
-      if (pStep) {
-        pStep.classList.remove("hide");
-        pStep.style.display = "block";
-      }
-      if (lMsg) lMsg.textContent = "";
-    }
-
-    document.addEventListener("click", function (e) {
-      var target = e.target ? e.target.closest("button") : null;
-      if (!target) return;
-      if (target.id === "send-otp-btn") {
-        e.preventDefault();
-        gmShowOtpStep();
-      } else if (target.id === "back-phone-btn") {
-        e.preventDefault();
-        gmBackToPhone();
-      } else if (target.id === "verify-otp-btn") {
-        e.preventDefault();
-        gmRevealBookingUi();
-        if (typeof window.gmOnLoginSuccess === "function") {
-          try { window.gmOnLoginSuccess(); } catch (err) {}
-        }
-      }
-    });
-  </script>
-
-  <script>
     var curV = "Bike", curR = 7, curM = 25;
     var fareDelta = 0;
     var curPay = "Cash";
@@ -559,6 +518,22 @@
     var dropCoords = { lat: 30.9120, lng: 75.8540 };
     var routeCoords = null;
     var autoKm = 7.5;
+
+    function byId(id) { return document.getElementById(id); }
+
+    function showEl(id, displayVal) {
+      var el = byId(id);
+      if (!el) return;
+      el.classList.remove("hide");
+      el.style.display = displayVal || "block";
+    }
+
+    function hideEl(id) {
+      var el = byId(id);
+      if (!el) return;
+      el.classList.add("hide");
+      el.style.display = "none";
+    }
 
     function haversineRoadKm(a, b) {
       var R = 6371;
@@ -613,15 +588,15 @@
       var rLng = Number(lng.toFixed(4));
       if (mode === "pickup") {
         pickupCoords = { lat: rLat, lng: rLng };
-        document.getElementById("pickup-inp").value = "Pinned (" + rLat + ", " + rLng + ")";
-      } else if (mode === "drop") {
+        if (byId("pickup-inp")) byId("pickup-inp").value = "Pinned (" + rLat + ", " + rLng + ")";
+      } else {
         dropCoords = { lat: rLat, lng: rLng };
-        document.getElementById("drop-inp").value = "Pinned (" + rLat + ", " + rLng + ")";
+        if (byId("drop-inp")) byId("drop-inp").value = "Pinned (" + rLat + ", " + rLng + ")";
       }
       pinMode = null;
-      document.getElementById("btn-pin-pickup").className = "pin-action-btn";
-      document.getElementById("btn-pin-drop").className = "pin-action-btn";
-      document.getElementById("pin-mode-note").textContent = (mode === "pickup" ? "Pickup pin set!" : "Drop pin set!");
+      if (byId("btn-pin-pickup")) byId("btn-pin-pickup").className = "pin-action-btn";
+      if (byId("btn-pin-drop")) byId("btn-pin-drop").className = "pin-action-btn";
+      if (byId("pin-mode-note")) byId("pin-mode-note").textContent = (mode === "pickup" ? "Pickup pin set!" : "Drop pin set!");
       routeCoords = null;
       autoKm = haversineRoadKm(pickupCoords, dropCoords);
       refreshHeroMapRoute();
@@ -638,17 +613,17 @@
 
     function togglePinMode(mode) {
       pinMode = (pinMode === mode) ? null : mode;
-      document.getElementById("btn-pin-pickup").className = pinMode === "pickup" ? "pin-action-btn active" : "pin-action-btn";
-      document.getElementById("btn-pin-drop").className = pinMode === "drop" ? "pin-action-btn active" : "pin-action-btn";
-      document.getElementById("pin-mode-note").textContent = pinMode === "pickup"
-        ? "Zoom map & tap anywhere to set Pickup pin."
-        : (pinMode === "drop" ? "Zoom map & tap anywhere to set Drop pin." : "");
-      var mapCard = document.getElementById("hero-map-wrap");
+      if (byId("btn-pin-pickup")) byId("btn-pin-pickup").className = pinMode === "pickup" ? "pin-action-btn active" : "pin-action-btn";
+      if (byId("btn-pin-drop")) byId("btn-pin-drop").className = pinMode === "drop" ? "pin-action-btn active" : "pin-action-btn";
+      if (byId("pin-mode-note")) {
+        byId("pin-mode-note").textContent = pinMode === "pickup"
+          ? "Zoom map & tap anywhere to set Pickup pin."
+          : (pinMode === "drop" ? "Zoom map & tap anywhere to set Drop pin." : "");
+      }
+      var mapCard = byId("hero-map-wrap");
       if (pinMode && mapCard) {
         mapCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
-        setTimeout(function () {
-          if (heroMap) heroMap.invalidateSize();
-        }, 250);
+        setTimeout(function () { if (heroMap) heroMap.invalidateSize(); }, 250);
       }
     }
 
@@ -688,17 +663,17 @@
 
     function onRouteInputChange() {
       try {
-        var pTxt = document.getElementById("pickup-inp").value.trim();
-        var dTxt = document.getElementById("drop-inp").value.trim();
+        var pTxt = byId("pickup-inp") ? byId("pickup-inp").value.trim() : "";
+        var dTxt = byId("drop-inp") ? byId("drop-inp").value.trim() : "";
         var pLocal = lookupSpot(pTxt);
         var dLocal = lookupSpot(dTxt);
         if (pLocal) pickupCoords = pLocal;
         if (dLocal) dropCoords = dLocal;
         routeCoords = null;
         autoKm = haversineRoadKm(pickupCoords, dropCoords);
-        document.getElementById("auto-dist-val").textContent = autoKm + " km";
-        document.getElementById("hero-dist-badge").textContent = autoKm + " km";
-        document.getElementById("hero-route-lbl").textContent = (pTxt || "Pickup") + " → " + (dTxt || "Drop");
+        if (byId("auto-dist-val")) byId("auto-dist-val").textContent = autoKm + " km";
+        if (byId("hero-dist-badge")) byId("hero-dist-badge").textContent = autoKm + " km";
+        if (byId("hero-route-lbl")) byId("hero-route-lbl").textContent = (pTxt || "Pickup") + " → " + (dTxt || "Drop");
         refreshHeroMapRoute();
         calcFareNow();
 
@@ -709,8 +684,8 @@
               if (osrm && osrm.km) {
                 autoKm = osrm.km;
                 routeCoords = osrm.pts;
-                document.getElementById("auto-dist-val").textContent = autoKm + " km";
-                document.getElementById("hero-dist-badge").textContent = autoKm + " km";
+                if (byId("auto-dist-val")) byId("auto-dist-val").textContent = autoKm + " km";
+                if (byId("hero-dist-badge")) byId("hero-dist-badge").textContent = autoKm + " km";
                 refreshHeroMapRoute();
                 calcFareNow();
               }
@@ -729,42 +704,43 @@
 
     function initHeroMap() {
       try {
-        var el = document.getElementById("main-hero-map");
+        var el = byId("main-hero-map");
         if (!el || typeof L === "undefined") return;
         if (heroMap) { heroMap.remove(); heroMap = null; }
         heroMap = L.map("main-hero-map", { zoomControl: true }).setView([30.9010, 75.8573], 12);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(heroMap);
         heroMap.on("click", function (e) {
           if (!e || !e.latlng) return;
-          var targetMode = pinMode || "drop";
-          applyPinAtCoords(targetMode, e.latlng.lat, e.latlng.lng);
+          applyPinAtCoords(pinMode || "drop", e.latlng.lat, e.latlng.lng);
         });
         refreshHeroMapRoute();
-        setTimeout(function () { if (heroMap) heroMap.invalidateSize(); }, 120);
-        setTimeout(function () { if (heroMap) heroMap.invalidateSize(); }, 450);
+        setTimeout(function () { if (heroMap) heroMap.invalidateSize(); }, 150);
+        setTimeout(function () { if (heroMap) heroMap.invalidateSize(); }, 500);
       } catch (e) {}
     }
 
     function loadWallet() {
       try { var b = Number(localStorage.getItem("gm_customer_wallet_v1") || "0"); walletBalance = isNaN(b) ? 0 : Math.max(0, Math.round(b)); } catch (e) { walletBalance = 0; }
-      var el = document.getElementById("c-wallet-bal"); if (el) el.textContent = "₹" + walletBalance;
+      if (byId("c-wallet-bal")) byId("c-wallet-bal").textContent = "₹" + walletBalance;
     }
 
     function saveWallet() {
       try { localStorage.setItem("gm_customer_wallet_v1", String(walletBalance)); } catch (e) {}
-      var el = document.getElementById("c-wallet-bal"); if (el) el.textContent = "₹" + walletBalance;
+      if (byId("c-wallet-bal")) byId("c-wallet-bal").textContent = "₹" + walletBalance;
     }
 
     function addWalletMoney(amt) {
       loadWallet(); var n = Number(amt || 0); if (n <= 0) return;
       walletBalance += Math.round(n); saveWallet();
-      document.getElementById("wallet-msg").textContent = "₹" + Math.round(n) + " added to Musafir Wallet.";
+      if (byId("wallet-msg")) byId("wallet-msg").textContent = "₹" + Math.round(n) + " added to Musafir Wallet.";
     }
 
     function addCustomWalletMoney() {
-      var v = Number(document.getElementById("wallet-add-inp").value || 0);
-      if (v <= 0) { document.getElementById("wallet-msg").textContent = "Enter valid amount."; return; }
-      addWalletMoney(v); document.getElementById("wallet-add-inp").value = "";
+      var inp = byId("wallet-add-inp");
+      var v = inp ? Number(inp.value || 0) : 0;
+      if (v <= 0) { if (byId("wallet-msg")) byId("wallet-msg").textContent = "Enter valid amount."; return; }
+      addWalletMoney(v);
+      if (inp) inp.value = "";
     }
 
     function syncCloudRides() {
@@ -783,8 +759,9 @@
 
     function recordCustomerOwnerLog() {
       try {
-        customerPhone = (document.getElementById("phone-inp").value || "").trim() || customerPhone || "+918564885647";
-        var nEl = document.getElementById("p-name");
+        var phInp = byId("phone-inp");
+        customerPhone = (phInp && phInp.value.trim()) ? phInp.value.trim() : (customerPhone || "+918564885647");
+        var nEl = byId("p-name");
         if (nEl && nEl.value.trim()) customerName = nEl.value.trim();
         var found = false;
         for (var i = 0; i < ownerAccounts.length; i++) {
@@ -799,65 +776,96 @@
       } catch (e) {}
     }
 
-    window.gmOnLoginSuccess = function () {
+    function gmShowOtpStep() {
+      hideEl("step-phone");
+      showEl("step-otp", "block");
+      if (byId("otp-inp")) byId("otp-inp").value = "123456";
+      if (byId("login-msg")) {
+        byId("login-msg").style.color = "#0fa968";
+        byId("login-msg").textContent = "OTP 123456 sent.";
+      }
+    }
+
+    function gmBackToPhone() {
+      hideEl("step-otp");
+      showEl("step-phone", "block");
+      if (byId("login-msg")) byId("login-msg").textContent = "";
+    }
+
+    function gmCompleteLogin() {
+      hideEl("login-card");
+      showEl("hdr-btns", "flex");
+      showEl("hero-map-wrap", "block");
+      showEl("wallet-card", "block");
+      showEl("book-card", "block");
+      showEl("rides-card", "block");
+
       try { recordCustomerOwnerLog(); } catch (e) {}
       try { loadWallet(); } catch (e) {}
       try { calcFareNow(); } catch (e) {}
       try { drawRidesNow(); } catch (e) {}
       try { initHeroMap(); } catch (e) {}
       try { onRouteInputChange(); } catch (e) {}
-    };
+    }
 
     function toggleProfile() {
-      var pc = document.getElementById("profile-card");
-      pc.classList.toggle("hide");
+      var pc = byId("profile-card");
+      if (!pc) return;
+      if (pc.classList.contains("hide")) showEl("profile-card", "block");
+      else hideEl("profile-card");
     }
 
     function saveProfileNow() {
-      var n = document.getElementById("p-name").value.trim(); if (!n) return;
-      customerName = n; recordCustomerOwnerLog();
-      document.getElementById("book-title").textContent = "Hi " + n + ", where in Punjab?";
-      document.getElementById("profile-msg").textContent = "Profile saved!";
+      var nEl = byId("p-name");
+      var n = nEl ? nEl.value.trim() : "";
+      if (!n) return;
+      customerName = n;
+      recordCustomerOwnerLog();
+      if (byId("book-title")) byId("book-title").textContent = "Hi " + n + ", where in Punjab?";
+      if (byId("profile-msg")) byId("profile-msg").textContent = "Profile saved!";
     }
 
     function pickV(el) {
-      var rows = document.querySelectorAll(".v-row");
-      for (var i = 0; i < rows.length; i++) rows[i].className = "v-row";
-      el.className = "v-row active";
-      curV = el.getAttribute("data-v"); curR = Number(el.getAttribute("data-r")); curM = Number(el.getAttribute("data-m"));
+      document.querySelectorAll(".v-row").forEach(function (r) { r.classList.remove("active"); });
+      el.classList.add("active");
+      curV = el.getAttribute("data-v") || "Bike";
+      curR = Number(el.getAttribute("data-r") || 7);
+      curM = Number(el.getAttribute("data-m") || 25);
       fareDelta = 0;
-      var adjs = document.querySelectorAll(".adj-btn");
-      for (var j = 0; j < adjs.length; j++) adjs[j].className = "adj-btn";
-      document.getElementById("adj-zero").className = "adj-btn on";
+      document.querySelectorAll(".adj-btn").forEach(function (b) { b.classList.remove("on"); });
+      if (byId("adj-zero")) byId("adj-zero").classList.add("on");
       calcFareNow();
     }
 
     function setFareDelta(delta, btnEl) {
       fareDelta = Number(delta || 0);
-      var adjs = document.querySelectorAll(".adj-btn");
-      for (var i = 0; i < adjs.length; i++) adjs[i].className = "adj-btn";
-      if (btnEl) btnEl.className = "adj-btn on";
+      document.querySelectorAll(".adj-btn").forEach(function (b) { b.classList.remove("on"); });
+      if (btnEl) btnEl.classList.add("on");
       calcFareNow();
     }
 
     function openPaymentModal() {
       loadWallet();
-      document.getElementById("pay-modal-amt").textContent = document.getElementById("fare-total").textContent;
-      document.getElementById("pay-modal-wbal").textContent = "Balance ₹" + walletBalance;
-      var rows = document.querySelectorAll("#payment-modal .pay-opt-row");
-      for (var i = 0; i < rows.length; i++) rows[i].className = (rows[i].getAttribute("data-pm") === curPay) ? "pay-opt-row active" : "pay-opt-row";
-      document.getElementById("payment-modal").classList.add("show");
+      if (byId("pay-modal-amt") && byId("fare-total")) byId("pay-modal-amt").textContent = byId("fare-total").textContent;
+      if (byId("pay-modal-wbal")) byId("pay-modal-wbal").textContent = "Balance ₹" + walletBalance;
+      document.querySelectorAll("#payment-modal .pay-opt-row").forEach(function (row) {
+        if (row.getAttribute("data-pm") === curPay) row.classList.add("active");
+        else row.classList.remove("active");
+      });
+      if (byId("payment-modal")) byId("payment-modal").classList.add("show");
     }
 
-    function closePaymentModal() { document.getElementById("payment-modal").classList.remove("show"); }
+    function closePaymentModal() {
+      if (byId("payment-modal")) byId("payment-modal").classList.remove("show");
+    }
 
     function selectPaymentOption(el) {
       curPay = el.getAttribute("data-pm") || "Cash";
-      document.getElementById("selected-pay-lbl").textContent = curPay;
-      var rows = document.querySelectorAll("#payment-modal .pay-opt-row");
-      for (var i = 0; i < rows.length; i++) rows[i].className = "pay-opt-row";
-      el.className = "pay-opt-row active";
-      calcFareNow(); closePaymentModal();
+      if (byId("selected-pay-lbl")) byId("selected-pay-lbl").textContent = curPay;
+      document.querySelectorAll("#payment-modal .pay-opt-row").forEach(function (row) { row.classList.remove("active"); });
+      el.classList.add("active");
+      calcFareNow();
+      closePaymentModal();
     }
 
     function toggleNightNow() { nightManualOverride = !isNightActive(); calcFareNow(); }
@@ -868,40 +876,40 @@
       var rickFare = Math.max(Math.round(35 * nMult), Math.round(km * 11 * nMult));
       var cabFare = Math.max(Math.round(70 * nMult), Math.round(km * 16 * nMult));
 
-      document.getElementById("p-bike").textContent = "₹" + bikeFare;
-      document.getElementById("m-bike").textContent = "Quick bike rides • Min ₹" + Math.round(25 * nMult);
-      document.getElementById("p-rick").textContent = "₹" + rickFare;
-      document.getElementById("m-rick").textContent = "Doorstep local ride • Min ₹" + Math.round(35 * nMult);
-      document.getElementById("p-cab").textContent = "₹" + cabFare;
-      document.getElementById("m-cab").textContent = "Local & Inter-District AC Cab • Min ₹" + Math.round(70 * nMult);
+      if (byId("p-bike")) byId("p-bike").textContent = "₹" + bikeFare;
+      if (byId("m-bike")) byId("m-bike").textContent = "Quick bike rides • Min ₹" + Math.round(25 * nMult);
+      if (byId("p-rick")) byId("p-rick").textContent = "₹" + rickFare;
+      if (byId("m-rick")) byId("m-rick").textContent = "Doorstep local ride • Min ₹" + Math.round(35 * nMult);
+      if (byId("p-cab")) byId("p-cab").textContent = "₹" + cabFare;
+      if (byId("m-cab")) byId("m-cab").textContent = "Local & Inter-District AC Cab • Min ₹" + Math.round(70 * nMult);
 
-      var nr = document.getElementById("night-row");
-      nr.className = nOn ? "night-bar on" : "night-bar";
-      document.getElementById("night-txt").textContent = nOn ? "Night Fare Active (10 PM – 6 AM • +50%)" : "Night window: 10 PM – 6 AM (+50%)";
-      document.getElementById("btn-night").textContent = nOn ? "Day Fare" : "Test Night Fare";
+      var nr = byId("night-row");
+      if (nr) nr.className = nOn ? "night-bar on" : "night-bar";
+      if (byId("night-txt")) byId("night-txt").textContent = nOn ? "Night Fare Active (10 PM – 6 AM • +50%)" : "Night window: 10 PM – 6 AM (+50%)";
+      if (byId("btn-night")) byId("btn-night").textContent = nOn ? "Day Fare" : "Test Night Fare";
 
       var baseTotal = Math.max(Math.round(curM * nMult), Math.round(km * curR * nMult));
       var finalTotal = Math.max(Math.round(curM * nMult), baseTotal + fareDelta);
 
-      document.getElementById("auto-dist-val").textContent = km + " km";
-      document.getElementById("hero-dist-badge").textContent = km + " km";
-      document.getElementById("adj-label").textContent = fareDelta === 0 ? "Standard ₹0" : (fareDelta > 0 ? "+₹" + fareDelta : "-₹" + Math.abs(fareDelta));
-      document.getElementById("fare-detail").textContent = "Full Payment • " + curV + " • " + km + " km • " + curPay;
-      document.getElementById("fare-total").textContent = "₹" + finalTotal;
-      document.getElementById("book-cta-btn").textContent = "Book " + curV + " • ₹" + finalTotal;
+      if (byId("auto-dist-val")) byId("auto-dist-val").textContent = km + " km";
+      if (byId("hero-dist-badge")) byId("hero-dist-badge").textContent = km + " km";
+      if (byId("adj-label")) byId("adj-label").textContent = fareDelta === 0 ? "Standard ₹0" : (fareDelta > 0 ? "+₹" + fareDelta : "-₹" + Math.abs(fareDelta));
+      if (byId("fare-detail")) byId("fare-detail").textContent = "Full Payment • " + curV + " • " + km + " km • " + curPay;
+      if (byId("fare-total")) byId("fare-total").textContent = "₹" + finalTotal;
+      if (byId("book-cta-btn")) byId("book-cta-btn").textContent = "Book " + curV + " • ₹" + finalTotal;
     }
 
     function bookRideNow() {
       recordCustomerOwnerLog();
       loadWallet();
-      var pickup = document.getElementById("pickup-inp").value.trim() || "Threeke, Ludhiana";
-      var drop = document.getElementById("drop-inp").value.trim() || "Clock Tower, Ludhiana";
+      var pickup = (byId("pickup-inp") && byId("pickup-inp").value.trim()) || "Threeke, Ludhiana";
+      var drop = (byId("drop-inp") && byId("drop-inp").value.trim()) || "Clock Tower, Ludhiana";
       var km = autoKm, nOn = isNightActive(), nMult = nOn ? 1.5 : 1.0;
       var baseTotal = Math.max(Math.round(curM * nMult), Math.round(km * curR * nMult));
       var total = Math.max(Math.round(curM * nMult), baseTotal + fareDelta);
 
       if (curPay === "Wallet" && walletBalance < total) {
-        document.getElementById("book-msg").textContent = "Wallet balance kam hai. Pehle wallet mein money add karein.";
+        if (byId("book-msg")) byId("book-msg").textContent = "Wallet balance kam hai. Pehle wallet mein money add karein.";
         return;
       }
 
@@ -921,19 +929,20 @@
         ownerBlockedRole: "", passengerRatedPromptSeen: false
       });
       syncCloudRides();
-      document.getElementById("book-msg").textContent = curV + " booked (" + km + " km • " + curPay + ") • ₹" + total;
+      if (byId("book-msg")) byId("book-msg").textContent = curV + " booked (" + km + " km • " + curPay + ") • ₹" + total;
       drawRidesNow();
     }
 
-    function openCancelModal(idx) { cancelTargetIdx = idx; document.getElementById("cancel-modal").classList.add("show"); }
-    function closeCancelModal() { cancelTargetIdx = -1; document.getElementById("cancel-modal").classList.remove("show"); }
+    function openCancelModal(idx) { cancelTargetIdx = idx; if (byId("cancel-modal")) byId("cancel-modal").classList.add("show"); }
+    function closeCancelModal() { cancelTargetIdx = -1; if (byId("cancel-modal")) byId("cancel-modal").classList.remove("show"); }
 
     function confirmCancelRide(reason) {
       if (cancelTargetIdx !== -1 && rides[cancelTargetIdx]) {
         rides[cancelTargetIdx].status = "Cancelled (" + reason + ")";
         syncCloudRides();
       }
-      closeCancelModal(); drawRidesNow();
+      closeCancelModal();
+      drawRidesNow();
     }
 
     function statusProgress(st) {
@@ -946,7 +955,7 @@
 
     function initRideLiveMap(idx, rideObj) {
       try {
-        var elId = "p-live-map-" + idx, el = document.getElementById(elId);
+        var elId = "p-live-map-" + idx, el = byId(elId);
         if (!el || typeof L === "undefined") return;
         if (pMaps[idx]) { pMaps[idx].remove(); delete pMaps[idx]; }
         var aPt = { lat: rideObj.pLat || pickupCoords.lat, lng: rideObj.pLng || pickupCoords.lng };
@@ -965,7 +974,7 @@
     }
 
     function startLiveRiderWatch(idx) {
-      var stEl = document.getElementById("p-map-st-" + idx);
+      var stEl = byId("p-map-st-" + idx);
       if (pTrackTimers[idx]) { clearInterval(pTrackTimers[idx]); delete pTrackTimers[idx]; }
       var aPt = (pMaps[idx] && pMaps[idx].aPt) ? pMaps[idx].aPt : pickupCoords;
       var bPt = (pMaps[idx] && pMaps[idx].bPt) ? pMaps[idx].bPt : dropCoords;
@@ -988,51 +997,57 @@
       var r = rides[idx]; if (!r) return;
       currentEndIdx = idx;
       var pm = r.payMode || "Cash";
-      document.getElementById("p-end-amt").textContent = "₹" + (r.total || 0);
-      document.getElementById("p-end-route").textContent = (r.v || "Ride") + " • " + pm + " • " + (r.pickup || "Pickup") + " → " + (r.drop || "Drop") + " (" + (r.km || 0) + " km)";
-      document.getElementById("p-feedback-inp").value = r.driverFeedback || "";
-      var btns = document.querySelectorAll("#p-end-screen .star-btn");
-      for (var i = 0; i < btns.length; i++) btns[i].className = (i + 1 <= (r.driverRating || 0)) ? "star-btn picked" : "star-btn";
-      document.getElementById("p-block-btn").textContent = r.driverBlockedByCustomer ? "Unblock Driver" : "Block Driver";
-      document.getElementById("p-rate-msg").textContent = r.driverRating ? "Rated " + r.driverRating + " ★" : "Tap stars & add feedback";
-      document.getElementById("p-end-screen").classList.add("show");
+      if (byId("p-end-amt")) byId("p-end-amt").textContent = "₹" + (r.total || 0);
+      if (byId("p-end-route")) byId("p-end-route").textContent = (r.v || "Ride") + " • " + pm + " • " + (r.pickup || "Pickup") + " → " + (r.drop || "Drop") + " (" + (r.km || 0) + " km)";
+      if (byId("p-feedback-inp")) byId("p-feedback-inp").value = r.driverFeedback || "";
+      document.querySelectorAll("#p-end-screen .star-btn").forEach(function (btn, i) {
+        if (i + 1 <= (r.driverRating || 0)) btn.classList.add("picked");
+        else btn.classList.remove("picked");
+      });
+      if (byId("p-block-btn")) byId("p-block-btn").textContent = r.driverBlockedByCustomer ? "Unblock Driver" : "Block Driver";
+      if (byId("p-rate-msg")) byId("p-rate-msg").textContent = r.driverRating ? "Rated " + r.driverRating + " ★" : "Tap stars & add feedback";
+      if (byId("p-end-screen")) byId("p-end-screen").classList.add("show");
     }
 
     function setDriverRating(stars) {
       if (currentEndIdx !== -1 && rides[currentEndIdx]) {
         rides[currentEndIdx].driverRating = stars; rides[currentEndIdx].passengerRatedPromptSeen = true; syncCloudRides();
       }
-      var btns = document.querySelectorAll("#p-end-screen .star-btn");
-      for (var i = 0; i < btns.length; i++) btns[i].className = (i + 1 <= stars) ? "star-btn picked" : "star-btn";
-      document.getElementById("p-rate-msg").textContent = "Rated " + stars + " ★";
+      document.querySelectorAll("#p-end-screen .star-btn").forEach(function (btn, i) {
+        if (i + 1 <= stars) btn.classList.add("picked");
+        else btn.classList.remove("picked");
+      });
+      if (byId("p-rate-msg")) byId("p-rate-msg").textContent = "Rated " + stars + " ★";
     }
 
     function saveDriverFeedbackNow() {
-      var fb = document.getElementById("p-feedback-inp").value.trim();
+      var fbEl = byId("p-feedback-inp");
+      var fb = fbEl ? fbEl.value.trim() : "";
       if (currentEndIdx !== -1 && rides[currentEndIdx]) { rides[currentEndIdx].driverFeedback = fb; syncCloudRides(); }
-      document.getElementById("p-rate-msg").textContent = fb ? "Feedback saved" : "Tap stars & add feedback";
+      if (byId("p-rate-msg")) byId("p-rate-msg").textContent = fb ? "Feedback saved" : "Tap stars & add feedback";
     }
 
     function toggleBlockDriverNow() {
       if (currentEndIdx !== -1 && rides[currentEndIdx]) {
         var r = rides[currentEndIdx];
         r.driverBlockedByCustomer = !r.driverBlockedByCustomer; r.passengerRatedPromptSeen = true; syncCloudRides();
-        document.getElementById("p-block-btn").textContent = r.driverBlockedByCustomer ? "Unblock Driver" : "Block Driver";
-        document.getElementById("p-rate-msg").textContent = r.driverBlockedByCustomer ? "Driver blocked by customer" : "Driver unblocked";
+        if (byId("p-block-btn")) byId("p-block-btn").textContent = r.driverBlockedByCustomer ? "Unblock Driver" : "Block Driver";
+        if (byId("p-rate-msg")) byId("p-rate-msg").textContent = r.driverBlockedByCustomer ? "Driver blocked by customer" : "Driver unblocked";
       }
     }
 
     function closePassengerEndScreen() {
       saveDriverFeedbackNow();
       if (currentEndIdx !== -1 && rides[currentEndIdx]) { rides[currentEndIdx].passengerRatedPromptSeen = true; syncCloudRides(); }
-      document.getElementById("p-end-screen").classList.remove("show");
-      currentEndIdx = -1; drawRidesNow();
+      if (byId("p-end-screen")) byId("p-end-screen").classList.remove("show");
+      currentEndIdx = -1;
+      drawRidesNow();
     }
 
     function drawRidesNow() {
       try {
         loadWallet();
-        var box = document.getElementById("rides-list");
+        var box = byId("rides-list");
         if (!box) return;
         if (!rides.length) { box.innerHTML = "<p class='sub'>No rides yet.</p>"; return; }
         var html = "", showIdx = -1, changed = false;
@@ -1079,97 +1094,84 @@
     }
 
     function logout() {
-      document.getElementById("hdr-btns").style.display = "none";
-      document.getElementById("profile-card").classList.add("hide");
-      document.getElementById("hero-map-wrap").classList.add("hide");
-      document.getElementById("wallet-card").classList.add("hide");
-      document.getElementById("book-card").classList.add("hide");
-      document.getElementById("rides-card").classList.add("hide");
-      document.getElementById("step-otp").classList.add("hide");
-      document.getElementById("step-otp").style.display = "none";
-      document.getElementById("step-phone").classList.remove("hide");
-      document.getElementById("step-phone").style.display = "block";
-      var lc = document.getElementById("login-card");
-      lc.classList.remove("hide");
-      lc.style.display = "";
-      document.getElementById("login-msg").textContent = "";
+      hideEl("hdr-btns");
+      hideEl("profile-card");
+      hideEl("hero-map-wrap");
+      hideEl("wallet-card");
+      hideEl("book-card");
+      hideEl("rides-card");
+      hideEl("step-otp");
+      showEl("step-phone", "block");
+      showEl("login-card", "block");
+      if (byId("login-msg")) byId("login-msg").textContent = "";
     }
 
-    try {
-      document.getElementById("btn-toggle-profile").addEventListener("click", toggleProfile);
-      document.getElementById("btn-logout").addEventListener("click", logout);
-      document.getElementById("btn-save-profile").addEventListener("click", saveProfileNow);
-      document.getElementById("btn-close-profile").addEventListener("click", toggleProfile);
+    document.addEventListener("click", function (e) {
+      var t = e.target;
+      if (!t) return;
+      var btn = t.closest("button");
+      var vRow = t.closest(".v-row");
+      var payRow = t.closest("#payment-modal .pay-opt-row");
 
-      document.getElementById("btn-zoom-in").addEventListener("click", function () { zoomHeroMap(1); });
-      document.getElementById("btn-zoom-out").addEventListener("click", function () { zoomHeroMap(-1); });
-      document.getElementById("btn-zoom-fit").addEventListener("click", fitHeroMap);
-      document.getElementById("qzoom-in-btn").addEventListener("click", function () { zoomHeroMap(1); });
-      document.getElementById("qzoom-out-btn").addEventListener("click", function () { zoomHeroMap(-1); });
-      document.getElementById("qpin-pickup-btn").addEventListener("click", function () {
-        var c = heroMap ? heroMap.getCenter() : pickupCoords;
-        applyPinAtCoords("pickup", c.lat, c.lng);
-      });
-      document.getElementById("qpin-drop-btn").addEventListener("click", function () {
-        var c = heroMap ? heroMap.getCenter() : dropCoords;
-        applyPinAtCoords("drop", c.lat, c.lng);
-      });
+      if (btn) {
+        var id = btn.id;
+        if (id === "send-otp-btn") { e.preventDefault(); gmShowOtpStep(); return; }
+        if (id === "back-phone-btn") { e.preventDefault(); gmBackToPhone(); return; }
+        if (id === "verify-otp-btn") { e.preventDefault(); gmCompleteLogin(); return; }
+        if (id === "btn-toggle-profile" || id === "btn-close-profile") { toggleProfile(); return; }
+        if (id === "btn-logout") { logout(); return; }
+        if (id === "btn-save-profile") { saveProfileNow(); return; }
+        if (id === "btn-zoom-in" || id === "qzoom-in-btn") { zoomHeroMap(1); return; }
+        if (id === "btn-zoom-out" || id === "qzoom-out-btn") { zoomHeroMap(-1); return; }
+        if (id === "btn-zoom-fit") { fitHeroMap(); return; }
+        if (id === "qpin-pickup-btn") {
+          var cp = heroMap ? heroMap.getCenter() : pickupCoords;
+          applyPinAtCoords("pickup", cp.lat, cp.lng);
+          return;
+        }
+        if (id === "qpin-drop-btn") {
+          var cd = heroMap ? heroMap.getCenter() : dropCoords;
+          applyPinAtCoords("drop", cd.lat, cd.lng);
+          return;
+        }
+        if (btn.hasAttribute("data-wadd")) { addWalletMoney(Number(btn.getAttribute("data-wadd"))); return; }
+        if (id === "btn-wadd-custom") { addCustomWalletMoney(); return; }
+        if (id === "btn-pin-pickup") { togglePinMode("pickup"); return; }
+        if (id === "btn-pin-drop") { togglePinMode("drop"); return; }
+        if (btn.classList.contains("adj-btn")) { setFareDelta(Number(btn.getAttribute("data-delta")), btn); return; }
+        if (id === "btn-night") { toggleNightNow(); return; }
+        if (id === "book-cta-btn") { bookRideNow(); return; }
+        if (id === "btn-refresh-rides") { drawRidesNow(); return; }
+        if (id === "btn-close-pay") { closePaymentModal(); return; }
+        if (id === "btn-keep-ride") { closeCancelModal(); return; }
+        if (btn.hasAttribute("data-reason")) { confirmCancelRide(btn.getAttribute("data-reason")); return; }
+        if (btn.hasAttribute("data-open-end")) { openPassengerEndScreen(Number(btn.getAttribute("data-open-end"))); return; }
+        if (btn.hasAttribute("data-cancel-idx")) { openCancelModal(Number(btn.getAttribute("data-cancel-idx"))); return; }
+        if (btn.hasAttribute("data-track-idx")) { startLiveRiderWatch(Number(btn.getAttribute("data-track-idx"))); return; }
+        if (btn.hasAttribute("data-star")) { setDriverRating(Number(btn.getAttribute("data-star"))); return; }
+        if (id === "p-block-btn") { toggleBlockDriverNow(); return; }
+        if (id === "p-done-btn") { closePassengerEndScreen(); return; }
+      }
 
-      document.querySelectorAll("#wallet-card .chip-btn[data-wadd]").forEach(function (btn) {
-        btn.addEventListener("click", function () { addWalletMoney(Number(btn.getAttribute("data-wadd"))); });
-      });
-      document.getElementById("btn-wadd-custom").addEventListener("click", addCustomWalletMoney);
+      if (vRow) { pickV(vRow); return; }
+      if (payRow) { selectPaymentOption(payRow); return; }
+      if (t.closest("#open-pay-box")) { openPaymentModal(); }
+    });
 
-      document.getElementById("pickup-inp").addEventListener("input", onRouteInputChange);
-      document.getElementById("pickup-inp").addEventListener("change", onRouteInputChange);
-      document.getElementById("drop-inp").addEventListener("input", onRouteInputChange);
-      document.getElementById("drop-inp").addEventListener("change", onRouteInputChange);
-      document.getElementById("btn-pin-pickup").addEventListener("click", function () { togglePinMode("pickup"); });
-      document.getElementById("btn-pin-drop").addEventListener("click", function () { togglePinMode("drop"); });
+    document.addEventListener("input", function (e) {
+      var t = e.target;
+      if (!t) return;
+      if (t.id === "pickup-inp" || t.id === "drop-inp") onRouteInputChange();
+      if (t.id === "p-feedback-inp") saveDriverFeedbackNow();
+    });
 
-      document.querySelectorAll(".v-row").forEach(function (row) {
-        row.addEventListener("click", function () { pickV(row); });
-      });
-      document.querySelectorAll(".adj-btn").forEach(function (btn) {
-        btn.addEventListener("click", function () { setFareDelta(Number(btn.getAttribute("data-delta")), btn); });
-      });
+    document.addEventListener("change", function (e) {
+      var t = e.target;
+      if (t && (t.id === "pickup-inp" || t.id === "drop-inp")) onRouteInputChange();
+    });
 
-      document.getElementById("open-pay-box").addEventListener("click", openPaymentModal);
-      document.getElementById("btn-close-pay").addEventListener("click", closePaymentModal);
-      document.querySelectorAll("#payment-modal .pay-opt-row").forEach(function (row) {
-        row.addEventListener("click", function () { selectPaymentOption(row); });
-      });
-
-      document.getElementById("btn-night").addEventListener("click", toggleNightNow);
-      document.getElementById("book-cta-btn").addEventListener("click", bookRideNow);
-      document.getElementById("btn-refresh-rides").addEventListener("click", drawRidesNow);
-
-      document.getElementById("rides-list").addEventListener("click", function (e) {
-        var openEndBtn = e.target.closest("[data-open-end]");
-        if (openEndBtn) { openPassengerEndScreen(Number(openEndBtn.getAttribute("data-open-end"))); return; }
-        var cancelBtn = e.target.closest("[data-cancel-idx]");
-        if (cancelBtn) { openCancelModal(Number(cancelBtn.getAttribute("data-cancel-idx"))); return; }
-        var trackBtn = e.target.closest("[data-track-idx]");
-        if (trackBtn) { startLiveRiderWatch(Number(trackBtn.getAttribute("data-track-idx"))); }
-      });
-
-      document.querySelectorAll("#cancel-modal .reason-btn").forEach(function (btn) {
-        btn.addEventListener("click", function () { confirmCancelRide(btn.getAttribute("data-reason")); });
-      });
-      document.getElementById("btn-keep-ride").addEventListener("click", closeCancelModal);
-
-      document.querySelectorAll("#p-end-screen .star-btn").forEach(function (btn) {
-        btn.addEventListener("click", function () { setDriverRating(Number(btn.getAttribute("data-star"))); });
-      });
-      document.getElementById("p-feedback-inp").addEventListener("input", saveDriverFeedbackNow);
-      document.getElementById("p-block-btn").addEventListener("click", toggleBlockDriverNow);
-      document.getElementById("p-done-btn").addEventListener("click", closePassengerEndScreen);
-
-      var s = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]");
-      if (Array.isArray(s)) rides = s;
-      var a = JSON.parse(localStorage.getItem("gm_owner_accounts_v1") || "[]");
-      if (Array.isArray(a)) ownerAccounts = a;
-    } catch (e) {}
+    try { var s = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]"); if (Array.isArray(s)) rides = s; } catch (e) {}
+    try { var a = JSON.parse(localStorage.getItem("gm_owner_accounts_v1") || "[]"); if (Array.isArray(a)) ownerAccounts = a; } catch (e) {}
   </script>
 
   <script type="module">
@@ -1215,3 +1217,4 @@
   </script>
 </body>
 </html>
+
