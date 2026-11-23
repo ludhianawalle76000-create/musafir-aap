@@ -91,7 +91,7 @@
     .nav-tab { border: none; background: none; color: #676e8a; font-size: 11px; font-weight: 800; padding: 6px 14px; border-radius: 12px; cursor: pointer; }
     .nav-tab.active { background: #18182b; color: #fff; }
 
-    .full-end { position: fixed; inset: 0; background: #18182b; z-index: 999; display: none; flex-direction: column; justify-content: space-between; padding: 22px 18px; color: #fff; overflow-y: auto; }
+    .full-end { position: fixed; inset: 0; background: #18182b; z-index: 9999; display: none; flex-direction: column; justify-content: space-between; padding: 22px 18px; color: #fff; overflow-y: auto; }
     .full-end.show { display: flex; }
     .end-tag { display: inline-block; background: rgba(255,255,255,0.14); padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 800; }
     .end-card { margin-top: 14px; background: #fff; color: #18182b; border-radius: 20px; padding: 18px; text-align: center; }
@@ -108,7 +108,7 @@
   <header>
     <div>
       <h1>Go Musafir Partner</h1>
-      <p>All Punjab Captain & Admin • v28</p>
+      <p>All Punjab Captain & Admin • v29</p>
     </div>
     <div class="hdr-right">
       <button type="button" id="duty-btn" class="duty-pill hide" onclick="dToggleDutyNow()">OFF DUTY</button>
@@ -513,7 +513,7 @@
     }
 
     function isOnlinePaymentMode(pm) {
-      return pm === "UPI" || pm === "Wallet" || pm === "Credit Card" || pm === "Debit Card";
+      return pm === "UPI" || pm === "Wallet" || pm === "Amazon Pay" || pm === "Airtel Pay" || pm === "Jio Pay" || pm === "Direct Bank App" || pm === "Card" || pm === "Credit Card" || pm === "Debit Card";
     }
 
     function syncWalletsFromCompletedRides() {
@@ -791,23 +791,25 @@
     }
 
     function initDriverNavMap(idx, rideObj) {
-      var elId = "d-nav-map-" + idx;
-      var el = document.getElementById(elId);
-      if (!el || typeof L === "undefined") return;
-      if (dMaps[idx]) { dMaps[idx].remove(); delete dMaps[idx]; }
+      try {
+        var elId = "d-nav-map-" + idx;
+        var el = document.getElementById(elId);
+        if (!el || typeof L === "undefined") return;
+        if (dMaps[idx]) { dMaps[idx].remove(); delete dMaps[idx]; }
 
-      var aPt = { lat: rideObj.pLat || DEFAULT_PICKUP.lat, lng: rideObj.pLng || DEFAULT_PICKUP.lng };
-      var bPt = { lat: rideObj.dLat || DEFAULT_DROP.lat, lng: rideObj.dLng || DEFAULT_DROP.lng };
-      var curLat = (typeof rideObj.riderLat === "number") ? rideObj.riderLat : aPt.lat;
-      var curLng = (typeof rideObj.riderLng === "number") ? rideObj.riderLng : aPt.lng;
+        var aPt = { lat: rideObj.pLat || DEFAULT_PICKUP.lat, lng: rideObj.pLng || DEFAULT_PICKUP.lng };
+        var bPt = { lat: rideObj.dLat || DEFAULT_DROP.lat, lng: rideObj.dLng || DEFAULT_DROP.lng };
+        var curLat = (typeof rideObj.riderLat === "number") ? rideObj.riderLat : aPt.lat;
+        var curLng = (typeof rideObj.riderLng === "number") ? rideObj.riderLng : aPt.lng;
 
-      var map = L.map(elId, { zoomControl: false }).setView([curLat, curLng], 10);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(map);
-      L.polyline([[aPt.lat, aPt.lng], [bPt.lat, bPt.lng]], { color: "#3b4cca", weight: 4 }).addTo(map);
-      L.circleMarker([aPt.lat, aPt.lng], { radius: 6, color: "#0fa968", fillOpacity: 1 }).addTo(map);
-      L.circleMarker([bPt.lat, bPt.lng], { radius: 6, color: "#ff5a36", fillOpacity: 1 }).addTo(map);
-      var marker = L.circleMarker([curLat, curLng], { radius: 9, color: "#fff", weight: 2, fillColor: "#18182b", fillOpacity: 1 }).addTo(map);
-      dMaps[idx] = { map: map, marker: marker, aPt: aPt, bPt: bPt };
+        var map = L.map(elId, { zoomControl: false }).setView([curLat, curLng], 10);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(map);
+        L.polyline([[aPt.lat, aPt.lng], [bPt.lat, bPt.lng]], { color: "#3b4cca", weight: 4 }).addTo(map);
+        L.circleMarker([aPt.lat, aPt.lng], { radius: 6, color: "#0fa968", fillOpacity: 1 }).addTo(map);
+        L.circleMarker([bPt.lat, bPt.lng], { radius: 6, color: "#ff5a36", fillOpacity: 1 }).addTo(map);
+        var marker = L.circleMarker([curLat, curLng], { radius: 9, color: "#fff", weight: 2, fillColor: "#18182b", fillOpacity: 1 }).addTo(map);
+        dMaps[idx] = { map: map, marker: marker, aPt: aPt, bPt: bPt };
+      } catch (e) {}
     }
 
     function startDriverNavigation(idx) {
@@ -963,9 +965,8 @@
       r.passengerRatedPromptSeen = false;
       saveRides();
       syncWalletsFromCompletedRides();
-      document.getElementById("d-rides-msg").textContent = "Trip Completed (" + r.km + " km • ₹" + driverRideFare(r) + ").";
-      renderDriverRides();
       openDriverEndScreen(idx);
+      renderDriverRides();
     }
 
     function renderDriverRides() {
