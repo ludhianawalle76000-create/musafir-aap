@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Go Musafir — All Punjab Partner & Admin</title>
+  <title>Go Musafir Partner — Driver App</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@600;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
@@ -14,793 +14,418 @@
     body { background: #eef1f6; color: #161829; padding-bottom: 84px; }
     .mono { font-family: 'JetBrains Mono', monospace; }
 
-    header { background: #18182b; color: #fff; padding: 12px 14px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 60; gap: 8px; }
-    header h1 { font-size: 16px; font-weight: 800; letter-spacing: -0.3px; }
-    header p { font-size: 10px; color: #9ea4c4; }
-    .hdr-right { display: flex; align-items: center; gap: 6px; }
-    .hdr-link { background: #292a45; color: #fff; text-decoration: none; border: 1px solid #3f426b; padding: 6px 10px; border-radius: 10px; font-size: 11px; font-weight: 800; }
-    .duty-pill { border: none; border-radius: 999px; padding: 7px 12px; font-size: 11px; font-weight: 800; cursor: pointer; background: #36395c; color: #cfd5ee; }
-    .duty-pill.on { background: #0fa968; color: #fff; }
+    header { background: #18182b; color: #fff; padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 60; }
+    header h1 { font-size: 17px; font-weight: 800; letter-spacing: -0.3px; }
+    header p { font-size: 11px; color: #9ea4c4; }
+    .hdr-right { display: flex; align-items: center; gap: 8px; }
+    .duty-btn { border: none; border-radius: 999px; padding: 7px 12px; font-size: 11px; font-weight: 800; cursor: pointer; background: #0fa968; color: #fff; }
+    .duty-btn.off { background: #ff5a36; color: #fff; }
+    .hdr-link { background: #292a45; color: #fff; text-decoration: none; border: 1px solid #3f426b; padding: 7px 11px; border-radius: 10px; font-size: 12px; font-weight: 700; }
 
-    .wrap { max-width: 510px; margin: 12px auto; padding: 0 12px; }
+    .wrap { max-width: 490px; margin: 14px auto; padding: 0 12px; }
     .sheet { background: #fff; border-radius: 22px; padding: 18px; margin-bottom: 14px; box-shadow: 0 10px 28px rgba(24, 24, 43, 0.07); border: 1px solid #e3e7f0; }
     h2 { font-size: 18px; font-weight: 800; color: #18182b; margin-bottom: 4px; letter-spacing: -0.3px; }
     .sub { font-size: 12px; color: #676e8a; margin-bottom: 12px; }
-    label { display: block; font-size: 11px; font-weight: 800; color: #474d6b; text-transform: uppercase; letter-spacing: 0.4px; margin: 11px 0 5px; }
-    input, select, textarea { width: 100%; padding: 11px 13px; border: 1.5px solid #dce1ed; border-radius: 12px; font-size: 14px; background: #f9fafd; color: #161829; }
-    textarea { min-height: 62px; resize: vertical; }
+    label { display: block; font-size: 11px; font-weight: 800; color: #474d6b; text-transform: uppercase; letter-spacing: 0.4px; margin: 12px 0 5px; }
+    input, textarea, select { width: 100%; padding: 12px 13px; border: 1.5px solid #dce1ed; border-radius: 12px; font-size: 14px; background: #f9fafd; color: #161829; }
+    input:focus, textarea:focus, select:focus { outline: none; border-color: #18182b; background: #fff; }
 
-    .btn { width: 100%; border: none; border-radius: 14px; padding: 12px; font-size: 13px; font-weight: 800; cursor: pointer; margin-top: 10px; }
+    .btn { width: 100%; border: none; border-radius: 12px; padding: 12px; font-size: 13px; font-weight: 800; cursor: pointer; transition: transform 0.1s; }
+    .btn:active { transform: scale(0.99); }
     .btn-primary { background: #18182b; color: #fff; }
     .btn-mint { background: #0fa968; color: #fff; }
     .btn-coral { background: #ff5a36; color: #fff; }
-    .btn-indigo { background: #3b4cca; color: #fff; }
+    .btn-indigo { background: #3444b8; color: #fff; }
     .btn-soft { background: #edf0f7; color: #18182b; }
-    .btn-danger-outline { background: #fff5f5; color: #b81d24; border: 1.5px solid #f5c2c4; }
-    .msg { margin-top: 8px; font-size: 12px; font-weight: 700; min-height: 16px; color: #0fa968; }
 
-    .earn-bar { background: linear-gradient(135deg, #18182b, #2a2d52); color: #fff; border-radius: 18px; padding: 14px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
-    .goto-bar { background: #f6f8fc; border: 1px solid #e1e6f2; border-radius: 14px; padding: 10px 12px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .ride-card { border: 1.5px solid #e3e7f0; border-radius: 18px; padding: 14px; margin-top: 12px; background: #fff; box-shadow: 0 6px 18px rgba(24, 24, 43, 0.04); }
+    .rc-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+    .rc-title { font-size: 13px; font-weight: 800; color: #18182b; }
+    .rc-badge { font-size: 11px; padding: 3px 9px; border-radius: 999px; background: #e1f7ed; color: #0b7a4b; font-weight: 800; }
+    .rc-route { font-size: 12px; color: #474d6b; margin-top: 4px; font-weight: 600; }
 
-    .ride-box { border: 1.5px solid #e3e7f0; border-radius: 16px; padding: 13px; margin-top: 10px; background: #fcfdff; }
-    .ride-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
-    .ride-info { font-weight: 800; color: #18182b; font-size: 15px; }
-    .ride-st { font-size: 11px; font-weight: 800; color: #0b7a4b; background: #e1f7ed; padding: 3px 9px; border-radius: 99px; }
-    .blk-pill { display: inline-block; margin-top: 6px; padding: 3px 8px; border-radius: 7px; background: #ffe8e8; color: #b81d24; font-weight: 800; font-size: 11px; }
-    .otp-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; align-items: center; }
-    .otp-inp { margin-top: 0 !important; padding: 10px !important; font-size: 13px !important; }
-    .otp-btn { margin-top: 0 !important; padding: 11px !important; }
-    .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .mini-btn { background: #fff; border: 1px solid #cfd6e6; color: #18182b; padding: 6px 10px; border-radius: 8px; font-size: 11px; font-weight: 800; cursor: pointer; text-decoration: none; display: inline-block; }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 10px; }
+    .pin-start-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; align-items: center; }
 
-    .nav-wrap { margin-top: 10px; border-radius: 12px; overflow: hidden; border: 1px solid #dce1ed; background: #f6f8fc; }
-    .nav-map { height: 170px; width: 100%; }
-    .nav-bar { padding: 8px 10px; display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; font-size: 11px; font-weight: 700; }
+    .nav-box { margin-top: 10px; border-radius: 14px; overflow: hidden; border: 1.5px solid #dce1ed; background: #f8f9fc; }
+    .nav-map-el { height: 185px; width: 100%; background: #e8eef7; }
+    .nav-ft { padding: 9px 10px; display: flex; justify-content: space-between; align-items: center; gap: 6px; flex-wrap: wrap; background: #f4f6fb; border-top: 1px solid #e3e7f0; }
+    .nav-lbl { font-size: 11px; font-weight: 800; color: #18182b; }
+    .nav-btns { display: flex; gap: 6px; }
+    .nav-mini { background: #fff; border: 1.5px solid #cfd6e6; color: #18182b; padding: 6px 10px; border-radius: 9px; font-size: 11px; font-weight: 800; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
+    .nav-mini:hover { background: #18182b; color: #fff; border-color: #18182b; }
 
-    .prof-banner { height: 92px; border-radius: 16px; background: linear-gradient(120deg, #ff7e36, #18182b); position: relative; margin-bottom: 34px; }
-    .prof-avatar { width: 66px; height: 66px; border-radius: 50%; background: #18182b; color: #fff; border: 4px solid #fff; display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; position: absolute; bottom: -28px; left: 50%; transform: translateX(-50%); }
-    .stats-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; padding: 12px 0; border-top: 1px solid #edf0f7; border-bottom: 1px solid #edf0f7; margin: 12px 0; }
-    .stat-v { font-size: 16px; font-weight: 800; color: #18182b; }
-    .stat-l { font-size: 10px; font-weight: 800; color: #676e8a; margin-top: 2px; }
+    .wallet-box { background: linear-gradient(135deg, #18182b, #2b2d52); color: #fff; border-radius: 16px; padding: 16px; margin-bottom: 12px; }
+    .w-amt { font-size: 26px; font-weight: 800; color: #4ef0a8; margin-top: 4px; }
 
-    .menu-row { width: 100%; background: #f8f9fc; border: 1px solid #e3e7f0; border-radius: 14px; padding: 13px 14px; margin-top: 8px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; text-align: left; }
-    .menu-title { font-size: 13px; font-weight: 800; color: #18182b; }
-    .menu-sub { font-size: 11px; color: #676e8a; margin-top: 2px; }
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: #ffffff;
+      border-top: 1px solid #dce1ed;
+      padding: 8px 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      z-index: 500;
+      box-shadow: 0 -4px 16px rgba(24, 24, 43, 0.08);
+    }
+    .bottom-nav button,
+    .nav-tab-btn {
+      flex: 1;
+      background: #f3f5fa;
+      color: #18182b;
+      border: 1.5px solid #d5dbe8;
+      border-radius: 12px;
+      padding: 10px 8px;
+      font-size: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s ease;
+    }
+    .bottom-nav button.active,
+    .nav-tab-btn.active {
+      background: #18182b;
+      color: #ffffff;
+      border-color: #18182b;
+      box-shadow: 0 4px 10px rgba(24, 24, 43, 0.2);
+    }
 
-    .id-card-box { border: 1.5px solid #dce1ed; border-radius: 18px; overflow: hidden; margin-top: 10px; }
-    .id-card-top { background: linear-gradient(135deg, #0fa968, #18182b); color: #fff; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
-    .id-badge { background: #fff; color: #0fa968; padding: 4px 10px; border-radius: 99px; font-size: 11px; font-weight: 800; }
-    .id-badge.pend { color: #ff5a36; }
-    .id-card-body { padding: 14px; background: #fff; }
-    .id-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
-
-    .doc-item { display: flex; justify-content: space-between; align-items: center; padding: 11px 12px; border: 1px solid #e3e7f0; border-radius: 12px; margin-top: 8px; background: #fafbfe; }
-    .doc-st { font-size: 11px; font-weight: 800; padding: 3px 8px; border-radius: 8px; }
-    .doc-ok { background: #e1f7ed; color: #0b7a4b; }
-    .doc-inc { background: #fff1eb; color: #b52d0f; }
-
-    .wallet-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 8px; }
-    .w-box { background: #18182b; color: #fff; border-radius: 14px; padding: 12px; }
-    .w-lbl { font-size: 10px; font-weight: 700; color: #9ea4c4; text-transform: uppercase; }
-    .w-val { font-size: 20px; font-weight: 800; color: #4ef0a8; margin-top: 3px; }
-    .log-item { font-size: 11px; padding: 8px 0; border-top: 1px dashed #d5dbe8; display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
-
-    .bottom-nav { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; border-top: 1px solid #dce1ed; display: none; justify-content: space-around; padding: 8px 6px; z-index: 70; }
-    .bottom-nav.show { display: flex; }
-    .nav-tab { border: none; background: none; color: #676e8a; font-size: 11px; font-weight: 800; padding: 6px 14px; border-radius: 12px; cursor: pointer; }
-    .nav-tab.active { background: #18182b; color: #fff; }
-
-    .full-end { position: fixed; inset: 0; background: #18182b; z-index: 9999; display: none; flex-direction: column; justify-content: space-between; padding: 22px 18px; color: #fff; overflow-y: auto; }
-    .full-end.show { display: flex; }
-    .end-tag { display: inline-block; background: rgba(255,255,255,0.14); padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 800; }
-    .end-card { margin-top: 14px; background: #fff; color: #18182b; border-radius: 20px; padding: 18px; text-align: center; }
-    .end-amt { font-size: 38px; font-weight: 800; color: #0fa968; margin: 4px 0; }
-    .rate-panel { margin-top: 14px; background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.18); border-radius: 18px; padding: 14px; }
-    .star-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 10px; }
-    .star-btn { border: 1.5px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); color: #fff; border-radius: 10px; padding: 10px 4px; font-size: 13px; font-weight: 800; cursor: pointer; }
-    .star-btn.picked { background: #0fa968; border-color: #0fa968; }
-    .end-actions { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .hide { display: none; }
+    .msg { margin-top: 8px; font-size: 12px; font-weight: 700; color: #0fa968; min-height: 16px; }
+    .hide { display: none !important; }
   </style>
 </head>
 <body>
   <header>
     <div>
       <h1>Go Musafir Partner</h1>
-      <p>Cloud Live • v30</p>
+      <p>Cloud Live • v31</p>
     </div>
     <div class="hdr-right">
-      <button type="button" id="duty-btn" class="duty-pill hide" onclick="dToggleDutyNow()">OFF DUTY</button>
+      <button type="button" id="duty-toggle-btn" class="duty-btn" onclick="toggleDuty()">ON DUTY</button>
       <a class="hdr-link" href="index.html">Passenger</a>
     </div>
   </header>
 
   <div class="wrap">
-    <div id="drv-login" class="sheet">
-      <h2>Partner Login</h2>
-      <p class="sub">Sign in with OTP to operate across all 23 districts of Punjab.</p>
-      <div id="d-phone-step">
-        <label for="d-phone">Mobile Number</label>
-        <input id="d-phone" type="tel" value="+919779176000" />
-        <button type="button" class="btn btn-primary" onclick="dSendOtpNow()">Send OTP</button>
-      </div>
-      <div id="d-otp-step" class="hide">
-        <label for="d-otp">Enter OTP</label>
-        <input id="d-otp" class="mono" type="text" maxlength="6" value="123456" />
-        <button type="button" class="btn btn-mint" onclick="dVerifyOtpNow()">Verify & Continue</button>
-      </div>
-      <div id="d-login-msg" class="msg"></div>
-    </div>
-
-    <div id="tab-home" class="hide">
-      <div class="earn-bar">
-        <div>
-          <div style="font-size:10px;font-weight:800;color:#9ea4c4;letter-spacing:0.5px;">TODAY'S EARNINGS</div>
-          <div id="today-earn-val" class="mono" style="font-size:24px;font-weight:800;color:#4ef0a8;">₹0</div>
-        </div>
-        <div style="text-align:right;">
-          <div id="home-service-pill" style="font-size:11px;font-weight:800;background:#292a45;padding:5px 10px;border-radius:99px;">Musafir Cab</div>
-          <div id="home-verify-txt" style="font-size:10px;color:#ffb49e;margin-top:4px;">Pending Verification</div>
-        </div>
-      </div>
-
-      <div class="goto-bar">
-        <div style="flex:1;">
-          <div style="font-size:11px;font-weight:800;color:#18182b;">Punjab District / Go-To Filter</div>
-          <select id="district-filter" style="margin-top:4px;padding:7px 9px;font-size:12px;" onchange="renderDriverRides()">
-            <option value="">All Punjab (23 Districts)</option>
-            <option value="Ludhiana">Ludhiana</option>
-            <option value="Amritsar">Amritsar</option>
-            <option value="Barnala">Barnala</option>
-            <option value="Bathinda">Bathinda</option>
-            <option value="Faridkot">Faridkot</option>
-            <option value="Fatehgarh Sahib">Fatehgarh Sahib</option>
-            <option value="Fazilka">Fazilka</option>
-            <option value="Ferozepur">Ferozepur</option>
-            <option value="Gurdaspur">Gurdaspur</option>
-            <option value="Hoshiarpur">Hoshiarpur</option>
-            <option value="Jalandhar">Jalandhar</option>
-            <option value="Kapurthala">Kapurthala</option>
-            <option value="Malerkotla">Malerkotla</option>
-            <option value="Mansa">Mansa</option>
-            <option value="Moga">Moga</option>
-            <option value="Mohali">Mohali (SAS Nagar)</option>
-            <option value="Pathankot">Pathankot</option>
-            <option value="Patiala">Patiala</option>
-            <option value="Rupnagar">Rupnagar (Ropar)</option>
-            <option value="Sangrur">Sangrur</option>
-            <option value="SBS Nagar">SBS Nagar (Nawanshahr)</option>
-            <option value="Sri Muktsar Sahib">Sri Muktsar Sahib</option>
-            <option value="Tarn Taran">Tarn Taran</option>
-          </select>
-        </div>
-      </div>
-
+    <!-- HOME TAB -->
+    <div id="tab-home">
       <div class="sheet">
         <div style="display:flex;justify-content:space-between;align-items:center;">
-          <h2 style="margin-bottom:0;">All Punjab Ride Requests</h2>
-          <button type="button" class="mini-btn" onclick="renderDriverRides()">Refresh</button>
+          <div>
+            <h2 style="margin-bottom:2px;">Live Ride Requests</h2>
+            <p class="sub" style="margin-bottom:0;">Accept rides, verify 4-digit PIN & navigate across Punjab.</p>
+          </div>
+          <button type="button" class="nav-mini" onclick="renderDriverRides()">Refresh</button>
         </div>
-        <div id="d-rides-msg" class="msg"></div>
-        <div id="d-rides-list"></div>
+        <div id="driver-rides-list"></div>
       </div>
     </div>
 
+    <!-- ORDERS & WALLET TAB -->
     <div id="tab-orders" class="hide">
       <div class="sheet">
-        <h2>Earnings & Weekly Wallet</h2>
-        <p class="sub">Day: 15% owner share • Night (10 PM–6 AM): 40% owner share + 25% extra driver night fare</p>
-        <div class="wallet-grid">
-          <div class="w-box">
-            <div class="w-lbl">Driver Weekly Wallet</div>
-            <div id="d-wallet-bal" class="w-val mono">₹0</div>
-          </div>
-          <div class="w-box">
-            <div class="w-lbl">Owner Commission</div>
-            <div id="owner-comm-bal" class="w-val mono">₹0</div>
-          </div>
+        <h2>Driver Wallet & Earnings</h2>
+        <p class="sub">Track completed trips and wallet balance.</p>
+        <div class="wallet-box">
+          <div style="font-size:11px;font-weight:800;color:#9ea4c4;letter-spacing:0.5px;">PARTNER EARNINGS WALLET</div>
+          <div id="d-wallet-bal" class="w-amt mono">₹0</div>
         </div>
-        <button type="button" class="btn btn-coral" onclick="settleWeeklyDriverPayout()">Mark Weekly Payout Paid</button>
-        <div id="payout-msg" class="msg"></div>
-      </div>
-
-      <div class="sheet">
-        <h2>Main Admin / App Owner Control</h2>
-        <p class="sub">All Punjab customer & partner accounts, numbers, and block controls</p>
-        <label for="owner-target-id" style="margin-top:0;">Ride / User ID</label>
-        <input id="owner-target-id" class="mono" type="text" placeholder="e.g., GM452" />
-        <div class="row2">
-          <button type="button" class="btn btn-coral" onclick="ownerToggleBlock('Customer')">Block/Unblock Customer</button>
-          <button type="button" class="btn btn-primary" onclick="ownerToggleBlock('Driver')">Block/Unblock Driver</button>
-        </div>
-        <div id="owner-msg" class="msg"></div>
-        <div id="owner-accounts-box" style="margin-top:8px;"></div>
+        <div id="completed-orders-list"></div>
       </div>
     </div>
 
+    <!-- MY PROFILE TAB -->
     <div id="tab-profile" class="hide">
       <div class="sheet">
-        <div class="prof-banner">
-          <div class="prof-avatar" id="prof-initials">HS</div>
-        </div>
-        <div style="text-align:center;">
-          <h2 id="prof-display-name">HARVINDER SINGH</h2>
-          <div id="prof-sub-badge" style="font-size:11px;font-weight:800;color:#ff5a36;">Pending Verification • All Punjab</div>
-        </div>
+        <h2>Partner Profile</h2>
+        <p class="sub">Update your name, vehicle number & category.</p>
 
-        <div class="stats-row">
-          <div>
-            <div class="stat-v mono" id="stat-rating">5.0 ★</div>
-            <div class="stat-l">RATING</div>
-          </div>
-          <div>
-            <div class="stat-v mono" id="stat-orders">0</div>
-            <div class="stat-l">ORDERS</div>
-          </div>
-          <div>
-            <div class="stat-v mono">5.0</div>
-            <div class="stat-l">YEARS</div>
-          </div>
-        </div>
+        <label for="d-name">Driver Name</label>
+        <input id="d-name" type="text" placeholder="e.g., Harvinder Singh" />
 
-        <button type="button" class="menu-row" onclick="openProfileSub('perf')">
-          <div><div class="menu-title">Performance</div><div class="menu-sub">Average rating, cancellations & completion %</div></div>
-          <span style="font-weight:800;">›</span>
-        </button>
+        <label for="d-phone">Mobile Number</label>
+        <input id="d-phone" type="tel" value="+918564885647" />
 
-        <button type="button" class="menu-row" onclick="openProfileSub('info')">
-          <div><div class="menu-title">Profile Info</div><div class="menu-sub">Name, registered number, gender, DOB & languages</div></div>
-          <span style="font-weight:800;">›</span>
-        </button>
+        <label for="d-vehicle">Vehicle Type</label>
+        <select id="d-vehicle">
+          <option value="Bike">Musafir Bike</option>
+          <option value="E-Rickshaw">E-Rickshaw</option>
+          <option value="Cab">Musafir Cab</option>
+        </select>
 
-        <button type="button" class="menu-row" onclick="openProfileSub('idcard')">
-          <div><div class="menu-title">Go Musafir ID Card</div><div class="menu-sub">Captain digital ID, license validity & declaration</div></div>
-          <span style="font-weight:800;">›</span>
-        </button>
+        <label for="d-plate">Vehicle Number</label>
+        <input id="d-plate" type="text" placeholder="e.g., PB 10 XX 1234" />
 
-        <button type="button" class="menu-row" onclick="openProfileSub('docs')">
-          <div><div class="menu-title">Documents (RC, DL, PAN, All Punjab Permit)</div><div class="menu-sub">DL, RC, Road Tax, Aadhaar, PAN, Permit, Insurance, Fitness</div></div>
-          <span style="font-weight:800;">›</span>
-        </button>
-
-        <button type="button" class="menu-row" onclick="openProfileSub('lang')">
-          <div><div class="menu-title">Language Settings</div><div class="menu-sub">App Language & Notification Language</div></div>
-          <span style="font-weight:800;">›</span>
-        </button>
-
-        <button type="button" class="btn btn-soft" style="margin-top:14px;" onclick="driverLogout()">Logout</button>
-        <button type="button" class="btn btn-danger-outline" onclick="deleteDriverAccount()">Delete Account</button>
-      </div>
-
-      <div id="sub-perf" class="sheet hide">
-        <div class="ride-top"><h2 style="margin-bottom:0;">My Performance</h2><button type="button" class="mini-btn" onclick="closeProfileSub()">Back</button></div>
-        <div class="doc-item"><div><div class="menu-title">Average Rating (Last 2 Weeks)</div></div><span class="doc-st doc-ok mono">5.0 ★</span></div>
-        <div class="doc-item"><div><div class="menu-title">Cancellations (Last 2 Weeks)</div></div><span class="doc-st doc-ok mono">0</span></div>
-        <div class="doc-item"><div><div class="menu-title">Completion Percent</div></div><span class="doc-st doc-ok mono">100%</span></div>
-      </div>
-
-      <div id="sub-info" class="sheet hide">
-        <div class="ride-top"><h2 style="margin-bottom:0;">Profile Info</h2><button type="button" class="mini-btn" onclick="closeProfileSub()">Back</button></div>
-        <label for="d-name">Full Name</label><input id="d-name" type="text" value="HARVINDER SINGH" />
-        <label for="d-reg-num">Registered Number</label><input id="d-reg-num" type="tel" value="+919779176000" />
-        <label for="d-gender">Gender</label><select id="d-gender"><option value="Male" selected>Male</option><option value="Female">Female</option></select>
-        <label for="d-dob">Date of Birth</label><input id="d-dob" type="text" value="27 September, 1992" />
-        <label for="d-langs">Languages I Speak</label><input id="d-langs" type="text" value="Punjabi, Hindi, English" />
-        <button type="button" class="btn btn-primary" onclick="saveProfileInfo()">Save Profile Info</button>
-        <div id="info-msg" class="msg"></div>
-      </div>
-
-      <div id="sub-idcard" class="sheet hide">
-        <div class="ride-top"><h2 style="margin-bottom:0;">Go Musafir ID Card</h2><button type="button" class="mini-btn" onclick="closeProfileSub()">Back</button></div>
-        <div class="id-card-box">
-          <div class="id-card-top">
-            <div><div style="font-size:11px;font-weight:800;opacity:0.85;">GO MUSAFIR ALL PUNJAB</div><div style="font-size:16px;font-weight:800;">Captain ID</div></div>
-            <span id="id-status-pill" class="id-badge pend">Pending</span>
-          </div>
-          <div class="id-card-body">
-            <div style="font-size:16px;font-weight:800;color:#18182b;" id="id-card-name">HARVINDER SINGH</div>
-            <div class="id-grid">
-              <div><div style="font-size:10px;font-weight:800;color:#676e8a;">MOBILE NUMBER</div><div class="mono" style="font-size:12px;font-weight:800;" id="id-card-phone">+91 9779176000</div></div>
-              <div><div style="font-size:10px;font-weight:800;color:#676e8a;">VEHICLE</div><div class="mono" style="font-size:12px;font-weight:800;" id="id-card-veh">PB10XX1234</div></div>
-              <div><div style="font-size:10px;font-weight:800;color:#676e8a;">LICENSE NUMBER</div><div class="mono" style="font-size:12px;font-weight:800;" id="id-card-dl">PB1020150343578</div></div>
-              <div><div style="font-size:10px;font-weight:800;color:#676e8a;">PERMIT ZONE</div><div class="mono" style="font-size:12px;font-weight:800;">ALL PUNJAB</div></div>
-            </div>
-            <button type="button" class="btn btn-soft" onclick="shareIdCard()">Share ID Card</button>
-            <div id="id-share-msg" class="msg" style="text-align:center;"></div>
-          </div>
-        </div>
-      </div>
-
-      <div id="sub-docs" class="sheet hide">
-        <div class="ride-top"><h2 style="margin-bottom:0;">Documents</h2><button type="button" class="mini-btn" onclick="closeProfileSub()">Back</button></div>
-        <label for="d-vehicle">Service / Vehicle Type</label>
-        <select id="d-vehicle" onchange="syncServiceLabels()"><option value="Cab" selected>Musafir Cab (All Punjab)</option><option value="Bike">Musafir Bike</option><option value="E-Rickshaw">E-Rickshaw</option></select>
-        <label for="d-vno">Vehicle RC Number (PB01–PB91)</label><input id="d-vno" class="mono" type="text" value="PB10XX1234" />
-        <label for="d-dl">Driving License Number</label><input id="d-dl" class="mono" type="text" value="PB1020150343578" />
-        <label for="d-id">Aadhaar / PAN Reference</label><input id="d-id" type="text" placeholder="e.g., Aadhaar & PAN verified" />
-        <div class="doc-item"><span class="menu-title">Driving License</span><span class="doc-st doc-ok">Uploaded</span></div>
-        <div class="doc-item"><span class="menu-title">Car / Vehicle RC</span><span class="doc-st doc-ok">Uploaded</span></div>
-        <div class="doc-item" onclick="markRoadTaxDone()" style="cursor:pointer;"><div><div class="menu-title">Road Tax</div><div class="menu-sub">Tap to mark completed</div></div><span id="road-tax-st" class="doc-st doc-inc">Incomplete ›</span></div>
-        <div class="doc-item"><span class="menu-title">Aadhaar</span><span class="doc-st doc-ok">Uploaded</span></div>
-        <div class="doc-item"><span class="menu-title">PAN</span><span class="doc-st doc-ok">Uploaded</span></div>
-        <div class="doc-item"><span class="menu-title">All Punjab Commercial Permit</span><span class="doc-st doc-ok">Uploaded</span></div>
-        <div class="doc-item"><span class="menu-title">Vehicle Insurance</span><span class="doc-st doc-ok">Uploaded</span></div>
-        <div class="doc-item"><span class="menu-title">Fitness Certificate</span><span class="doc-st doc-ok">Uploaded</span></div>
-        <button type="button" class="btn btn-primary" onclick="dSaveDocsNow()">Submit Documents</button>
-        <button type="button" class="btn btn-mint" onclick="dVerifyDocsNow()">Admin Check: Mark Approved</button>
-        <div id="d-doc-msg" class="msg"></div>
-      </div>
-
-      <div id="sub-lang" class="sheet hide">
-        <div class="ride-top"><h2 style="margin-bottom:0;">Language Settings</h2><button type="button" class="mini-btn" onclick="closeProfileSub()">Back</button></div>
-        <label for="app-lang-sel">App Language</label>
-        <select id="app-lang-sel"><option value="Punjabi">ਪੰਜਾਬੀ (Punjabi)</option><option value="English">English</option><option value="Hindi">हिन्दी (Hindi)</option></select>
-        <label for="notif-lang-sel">Notification Language</label>
-        <select id="notif-lang-sel"><option value="Punjabi">ਪੰਜਾਬੀ (Punjabi)</option><option value="English">English</option><option value="Hindi">हिन्दी (Hindi)</option></select>
-        <button type="button" class="btn btn-primary" onclick="saveLanguagePrefs()">Save Language Settings</button>
-        <div id="lang-msg" class="msg"></div>
+        <button type="button" class="btn btn-primary" style="margin-top:14px;" onclick="saveDriverProfile()">Save Profile</button>
+        <div id="d-profile-msg" class="msg"></div>
       </div>
     </div>
   </div>
 
-  <nav id="bottom-nav" class="bottom-nav">
-    <button type="button" class="nav-tab active" id="nav-home" onclick="switchDriverTab('home')">Home</button>
-    <button type="button" class="nav-tab" id="nav-orders" onclick="switchDriverTab('orders')">Orders & Wallet</button>
-    <button type="button" class="nav-tab" id="nav-profile" onclick="switchDriverTab('profile')">My Profile</button>
+  <!-- BOTTOM NAVIGATION (ALL BOXED) -->
+  <nav class="bottom-nav" aria-label="Driver Navigation">
+    <button type="button" id="nav-home" class="nav-tab-btn active" onclick="switchDriverTab('home')">Home</button>
+    <button type="button" id="nav-orders" class="nav-tab-btn" onclick="switchDriverTab('orders')">Orders & Wallet</button>
+    <button type="button" id="nav-profile" class="nav-tab-btn" onclick="switchDriverTab('profile')">My Profile</button>
   </nav>
 
-  <div id="d-end-screen" class="full-end">
-    <div>
-      <span class="end-tag">GO MUSAFIR • TRIP COMPLETED</span>
-      <div class="end-card">
-        <div style="font-size:11px;font-weight:800;color:#676e8a;text-transform:uppercase;">Total Trip Amount</div>
-        <div id="d-end-amt" class="end-amt mono">₹0</div>
-        <div style="font-size:12px;font-weight:800;color:#ff5a36;">Platform Charges</div>
-        <div id="d-end-km" class="mono" style="margin-top:8px;font-size:13px;color:#18182b;font-weight:800;">0 km</div>
-      </div>
-      <div class="rate-panel">
-        <div style="font-size:14px;font-weight:800;text-align:center;">Rate Customer & Behavior Feedback</div>
-        <div class="star-row">
-          <button type="button" class="star-btn" onclick="setCustomerRating(1)">1 ★</button>
-          <button type="button" class="star-btn" onclick="setCustomerRating(2)">2 ★</button>
-          <button type="button" class="star-btn" onclick="setCustomerRating(3)">3 ★</button>
-          <button type="button" class="star-btn" onclick="setCustomerRating(4)">4 ★</button>
-          <button type="button" class="star-btn" onclick="setCustomerRating(5)">5 ★</button>
-        </div>
-        <label style="color:#cfd5ee;" for="d-feedback-inp">Customer Behavior Feedback</label>
-        <textarea id="d-feedback-inp" placeholder="Write feedback about customer behavior or trip..." oninput="saveCustomerFeedbackNow()"></textarea>
-        <div id="d-rate-msg" style="margin-top:8px;font-size:12px;font-weight:700;color:#4ef0a8;text-align:center;">Tap stars & add feedback</div>
-      </div>
-    </div>
-    <div class="end-actions">
-      <button type="button" class="btn btn-coral" style="margin-top:0;" id="d-block-btn" onclick="toggleBlockCustomerNow()">Block Customer</button>
-      <button type="button" class="btn btn-mint" style="margin-top:0;" onclick="closeDriverEndScreen()">Done</button>
-    </div>
-  </div>
+  <script>
+    var rides = [];
+    var onDuty = true;
+    var dMaps = {};
+
+    function dEl(id) { return document.getElementById(id); }
+
+    function switchDriverTab(tab) {
+      ["home", "orders", "profile"].forEach(function (t) {
+        var sec = dEl("tab-" + t);
+        var btn = dEl("nav-" + t);
+        if (sec) {
+          if (t === tab) sec.classList.remove("hide");
+          else sec.classList.add("hide");
+        }
+        if (btn) {
+          if (t === tab) btn.classList.add("active");
+          else btn.classList.remove("active");
+        }
+      });
+      if (tab === "home") {
+        renderDriverRides();
+      } else if (tab === "orders") {
+        renderOrdersAndWallet();
+      }
+    }
+
+    function toggleDuty() {
+      onDuty = !onDuty;
+      var btn = dEl("duty-toggle-btn");
+      if (!btn) return;
+      if (onDuty) {
+        btn.textContent = "ON DUTY";
+        btn.classList.remove("off");
+      } else {
+        btn.textContent = "OFF DUTY";
+        btn.classList.add("off");
+      }
+    }
+
+    function syncRides() {
+      try { localStorage.setItem("gm_shared_rides_v1", JSON.stringify(rides)); } catch (e) {}
+      if (typeof window.gmPushRidesToCloud === "function") {
+        try { window.gmPushRidesToCloud(rides); } catch (e) {}
+      }
+    }
+
+    function acceptRide(idx) {
+      if (!rides[idx]) return;
+      rides[idx].status = "Accepted";
+      syncRides();
+      renderDriverRides();
+    }
+
+    function arriveAtPickup(idx) {
+      if (!rides[idx]) return;
+      rides[idx].status = "Arrived at Customer Location";
+      syncRides();
+      renderDriverRides();
+    }
+
+    function startRideWithPin(idx) {
+      var r = rides[idx];
+      if (!r) return;
+      var inp = dEl("pin-inp-" + idx);
+      var entered = inp ? inp.value.trim() : "";
+      var expected = String(r.rideOtp || r.pin || "");
+      if (!expected || entered === expected) {
+        r.status = "Ride Started";
+        syncRides();
+        renderDriverRides();
+      } else {
+        alert("Wrong 4-Digit PIN! Passenger se sahi PIN confirm karein.");
+      }
+    }
+
+    function completeTrip(idx) {
+      if (!rides[idx]) return;
+      rides[idx].status = "Completed";
+      syncRides();
+      renderDriverRides();
+      renderOrdersAndWallet();
+    }
+
+    function initDriverRideMap(idx, r) {
+      try {
+        var elId = "d-nav-map-" + idx;
+        var el = dEl(elId);
+        if (!el || typeof L === "undefined") return;
+        if (dMaps[idx]) { dMaps[idx].remove(); delete dMaps[idx]; }
+
+        var pLat = typeof r.pLat === "number" ? r.pLat : 30.8615;
+        var pLng = typeof r.pLng === "number" ? r.pLng : 75.8150;
+        var dLat = typeof r.dLat === "number" ? r.dLat : 30.9120;
+        var dLng = typeof r.dLng === "number" ? r.dLng : 75.8540;
+
+        var map = L.map(elId, { zoomControl: true }).setView([pLat, pLng], 12);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+          maxZoom: 19,
+          attribution: "&copy; OSM"
+        }).addTo(map);
+        L.polyline([[pLat, pLng], [dLat, dLng]], { color: "#18182b", weight: 4 }).addTo(map);
+        L.circleMarker([pLat, pLng], { radius: 7, color: "#0fa968", fillColor: "#0fa968", fillOpacity: 1 }).addTo(map);
+        L.circleMarker([dLat, dLng], { radius: 7, color: "#ff5a36", fillColor: "#ff5a36", fillOpacity: 1 }).addTo(map);
+        map.fitBounds([[pLat, pLng], [dLat, dLng]], { padding: [20, 20] });
+        dMaps[idx] = map;
+      } catch (e) {}
+    }
+
+    function renderDriverRides() {
+      var box = dEl("driver-rides-list");
+      if (!box) return;
+      if (!rides.length) {
+        box.innerHTML = "<p class='sub' style='margin-top:12px;'>Abhi koi live ride request nahi hai.</p>";
+        return;
+      }
+
+      var html = "";
+      for (var i = 0; i < rides.length; i++) {
+        var r = rides[i] || {};
+        var st = String(r.status || "Searching Driver");
+        var pLat = typeof r.pLat === "number" ? r.pLat : 30.8615;
+        var pLng = typeof r.pLng === "number" ? r.pLng : 75.8150;
+        var gMapsUrl = "https://www.google.com/maps/dir/?api=1&destination=" + pLat + "," + pLng;
+
+        html += '<div class="ride-card">' +
+          '<div class="rc-top">' +
+            '<div class="rc-title mono">' + (r.km || 0) + ' km • ₹' + (r.total || 0) + ' • ' + (r.payMode || "Cash") + '</div>' +
+            '<span class="rc-badge">' + st + '</span>' +
+          '</div>' +
+          '<div class="rc-route">' + (r.pickup || "Pickup") + ' → ' + (r.drop || "Drop") + '</div>' +
+          '<div class="grid2">' +
+            '<button type="button" class="btn btn-coral" onclick="acceptRide(' + i + ')">Accept Ride</button>' +
+            '<button type="button" class="btn btn-indigo" onclick="arriveAtPickup(' + i + ')">Arrived at Pickup</button>' +
+          '</div>' +
+          '<div class="pin-start-row">' +
+            '<input id="pin-inp-' + i + '" class="mono" type="text" maxlength="4" placeholder="4-Digit PIN" />' +
+            '<button type="button" class="btn btn-mint" onclick="startRideWithPin(' + i + ')">Start Ride</button>' +
+          '</div>' +
+          '<button type="button" class="btn btn-primary" style="margin-top:8px;" onclick="completeTrip(' + i + ')">Complete Trip</button>' +
+          '<div class="nav-box">' +
+            '<div id="d-nav-map-' + i + '" class="nav-map-el"></div>' +
+            '<div class="nav-ft">' +
+              '<span class="nav-lbl">All Punjab Live Navigation</span>' +
+              '<div class="nav-btns">' +
+                '<button type="button" class="nav-mini" onclick="initDriverRideMap(' + i + ', rides[' + i + '])">Navigate on Map</button>' +
+                '<a class="nav-mini" href="' + gMapsUrl + '" target="_blank" rel="noopener">Google Maps</a>' +
+              '</div>' +
+            '</div>' +
+          '</div>' +
+        '</div>';
+      }
+
+      box.innerHTML = html;
+      for (var m = 0; m < rides.length; m++) {
+        initDriverRideMap(m, rides[m] || {});
+      }
+    }
+
+    function renderOrdersAndWallet() {
+      var listEl = dEl("completed-orders-list");
+      var balEl = dEl("d-wallet-bal");
+      var earned = 0;
+      var html = "";
+
+      for (var i = 0; i < rides.length; i++) {
+        var r = rides[i] || {};
+        if (String(r.status || "").toLowerCase().indexOf("complet") !== -1) {
+          earned += Number(r.total || 0);
+          html += '<div class="ride-card">' +
+            '<div class="rc-top">' +
+              '<span class="rc-title">' + (r.v || "Ride") + ' • <span class="mono">₹' + (r.total || 0) + '</span></span>' +
+              '<span class="rc-badge">Completed</span>' +
+            '</div>' +
+            '<div class="rc-route">' + (r.pickup || "Pickup") + ' → ' + (r.drop || "Drop") + '</div>' +
+          '</div>';
+        }
+      }
+
+      if (balEl) balEl.textContent = "₹" + earned;
+      if (listEl) {
+        listEl.innerHTML = html || "<p class='sub'>Abhi koi completed order nahi hai.</p>";
+      }
+    }
+
+    function saveDriverProfile() {
+      try {
+        var prof = {
+          name: dEl("d-name") ? dEl("d-name").value.trim() : "",
+          phone: dEl("d-phone") ? dEl("d-phone").value.trim() : "",
+          vehicle: dEl("d-vehicle") ? dEl("d-vehicle").value : "Bike",
+          plate: dEl("d-plate") ? dEl("d-plate").value.trim() : ""
+        };
+        localStorage.setItem("gm_driver_profile_v1", JSON.stringify(prof));
+        if (dEl("d-profile-msg")) dEl("d-profile-msg").textContent = "Profile saved!";
+      } catch (e) {}
+    }
+
+    function loadDriverProfile() {
+      try {
+        var raw = localStorage.getItem("gm_driver_profile_v1");
+        if (!raw) return;
+        var prof = JSON.parse(raw);
+        if (dEl("d-name") && prof.name) dEl("d-name").value = prof.name;
+        if (dEl("d-phone") && prof.phone) dEl("d-phone").value = prof.phone;
+        if (dEl("d-vehicle") && prof.vehicle) dEl("d-vehicle").value = prof.vehicle;
+        if (dEl("d-plate") && prof.plate) dEl("d-plate").value = prof.plate;
+      } catch (e) {}
+    }
+
+    try {
+      var saved = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]");
+      if (Array.isArray(saved)) rides = saved;
+    } catch (e) {}
+
+    window.addEventListener("DOMContentLoaded", function () {
+      loadDriverProfile();
+      renderDriverRides();
+      renderOrdersAndWallet();
+    });
+  </script>
 
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-    var firebaseConfig = {
-      apiKey: "AIzaSyC0OP0etTxACa4fMAxbhz_fjDv00-syZfws",
-      authDomain: "musafir-2016d.firebaseapp.com",
-      projectId: "musafir-2016d",
-      storageBucket: "musafir-2016d.firebasestorage.app",
-      messagingSenderId: "649368739510",
-      appId: "1:649368739510:web:6bfcfecd5d663d9430d017"
-    };
+    try {
+      var firebaseConfig = {
+        apiKey: "AIzaSyC0OP0etTxACa4fMAxbhz_fjDv00-syZfws",
+        authDomain: "musafir-2016d.firebaseapp.com",
+        projectId: "musafir-2016d",
+        storageBucket: "musafir-2016d.firebasestorage.app",
+        messagingSenderId: "649368739510",
+        appId: "1:649368739510:web:6bfcfecd5d663d9430d017"
+      };
+      var app = initializeApp(firebaseConfig);
+      var db = getFirestore(app);
+      var ridesDocRef = doc(db, "gm_cloud", "shared_rides");
 
-    var app = initializeApp(firebaseConfig);
-    var db = getFirestore(app);
-    var ridesDocRef = doc(db, "gm_cloud", "shared_rides");
-    var accountsDocRef = doc(db, "gm_cloud", "owner_accounts");
+      window.gmPushRidesToCloud = function (list) {
+        setDoc(ridesDocRef, { list: list, updatedAt: Date.now() }).catch(function () {});
+      };
 
-    var isVerified = false, isOnline = false;
-    var activeRides = [], ownerAccounts = [];
-    var driverWallet = 0, ownerCommission = 0, currentDriverEndIdx = -1;
-    var dMaps = {}, dNavTimers = {};
-    var DEFAULT_PICKUP = { lat: 30.8615, lng: 75.8150 }, DEFAULT_DROP = { lat: 30.9120, lng: 75.8540 };
-
-    function isAutoNightHour() { var hr = new Date().getHours(); return (hr >= 22 || hr < 6); }
-    function isNightRide(r) { return (r.isNight !== undefined) ? Boolean(r.isNight) : isAutoNightHour(); }
-
-    function driverRideFare(r) {
-      var baseTotal = Number(r.total || 0);
-      if (isNightRide(r)) return Math.round(Math.round(baseTotal * 0.60) * 1.25);
-      return Math.round(baseTotal * 0.85);
-    }
-
-    function ownerRideShare(r) {
-      var baseTotal = Number(r.total || 0);
-      return isNightRide(r) ? Math.round(baseTotal * 0.40) : Math.round(baseTotal * 0.15);
-    }
-
-    function isOnlinePaymentMode(pm) {
-      return pm === "UPI" || pm === "Wallet" || pm === "Amazon Pay" || pm === "Airtel Pay" || pm === "Jio Pay" || pm === "Direct Bank App" || pm === "Card" || pm === "Credit Card" || pm === "Debit Card";
-    }
-
-    function syncWalletsFromCompletedRides() {
-      var dBal = 0, oComm = 0, todayEarn = 0, compCount = 0;
-      for (var i = 0; i < activeRides.length; i++) {
-        var r = activeRides[i];
-        if (String(r.status || "").toLowerCase().indexOf("complet") === -1) continue;
-        compCount++;
-        var df = driverRideFare(r);
-        todayEarn += df;
-        oComm += ownerRideShare(r);
-        if (isOnlinePaymentMode(r.payMode || "Cash") && !r.weeklySettled) dBal += df;
-      }
-      driverWallet = dBal; ownerCommission = oComm;
-      if (document.getElementById("d-wallet-bal")) document.getElementById("d-wallet-bal").textContent = "₹" + driverWallet;
-      if (document.getElementById("owner-comm-bal")) document.getElementById("owner-comm-bal").textContent = "₹" + ownerCommission;
-      if (document.getElementById("today-earn-val")) document.getElementById("today-earn-val").textContent = "₹" + todayEarn;
-      if (document.getElementById("stat-orders")) document.getElementById("stat-orders").textContent = String(compCount);
-    }
-
-    function syncCloudRides() {
-      try { localStorage.setItem("gm_shared_rides_v1", JSON.stringify(activeRides)); } catch (e) {}
-      setDoc(ridesDocRef, { list: activeRides, updatedAt: Date.now() }).catch(function () {});
-    }
-
-    function syncCloudAccounts() {
-      try { localStorage.setItem("gm_owner_accounts_v1", JSON.stringify(ownerAccounts)); } catch (e) {}
-      setDoc(accountsDocRef, { list: ownerAccounts, updatedAt: Date.now() }).catch(function () {});
-    }
-
-    function settleWeeklyDriverPayout() {
-      for (var i = 0; i < activeRides.length; i++) {
-        var r = activeRides[i];
-        if (String(r.status || "").toLowerCase().indexOf("complet") > -1 && isOnlinePaymentMode(r.payMode || "Cash")) r.weeklySettled = true;
-      }
-      syncCloudRides(); syncWalletsFromCompletedRides();
-      document.getElementById("payout-msg").textContent = "Weekly online payout settled.";
-    }
-
-    function recordDriverOwnerLog() {
-      var phone = (document.getElementById("d-phone").value || "").trim() || "+919779176000";
-      var name = (document.getElementById("d-name").value || "").trim() || "HARVINDER SINGH";
-      var vType = (document.getElementById("d-vehicle").value || "").trim() || "Cab";
-      var vNo = (document.getElementById("d-vno").value || "").trim() || "PB10XX1234";
-      var dlNo = (document.getElementById("d-dl").value || "").trim() || "PB1020150343578";
-      var idRef = (document.getElementById("d-id").value || "").trim() || "-";
-      var found = false;
-      for (var i = 0; i < ownerAccounts.length; i++) {
-        if (ownerAccounts[i].type === "Driver" && ownerAccounts[i].phone === phone) {
-          ownerAccounts[i].name = name; ownerAccounts[i].vehicle = vType; ownerAccounts[i].vno = vNo;
-          ownerAccounts[i].dl = dlNo; ownerAccounts[i].idRef = idRef; ownerAccounts[i].verified = isVerified;
-          ownerAccounts[i].lastSeen = new Date().toLocaleString(); found = true;
+      onSnapshot(ridesDocRef, function (snap) {
+        if (snap.exists() && Array.isArray(snap.data().list)) {
+          rides = snap.data().list;
+          try { localStorage.setItem("gm_shared_rides_v1", JSON.stringify(rides)); } catch (e) {}
+          renderDriverRides();
+          renderOrdersAndWallet();
         }
-      }
-      if (!found) ownerAccounts.unshift({ type: "Driver", name: name, phone: phone, vehicle: vType, vno: vNo, dl: dlNo, idRef: idRef, verified: isVerified, blocked: false, time: new Date().toLocaleString() });
-      syncCloudAccounts(); renderOwnerAccounts();
-    }
-
-    function ownerToggleBlock(role) {
-      var inp = document.getElementById("owner-target-id");
-      var targetId = inp ? inp.value.trim() : "";
-      if (!targetId && activeRides.length) targetId = activeRides[0].id || "";
-      if (!targetId) { document.getElementById("owner-msg").textContent = "Enter Ride / User ID."; return; }
-      for (var i = 0; i < activeRides.length; i++) {
-        if (activeRides[i].id === targetId) activeRides[i].ownerBlockedRole = activeRides[i].ownerBlockedRole === role ? "" : role;
-      }
-      syncCloudRides(); if (inp) inp.value = "";
-      document.getElementById("owner-msg").textContent = "Owner updated " + role + " block status for " + targetId + ".";
-      renderDriverRides();
-    }
-
-    function toggleAccountBlockOwner(idx) {
-      if (!ownerAccounts[idx]) return;
-      ownerAccounts[idx].blocked = !ownerAccounts[idx].blocked;
-      syncCloudAccounts(); renderOwnerAccounts();
-    }
-
-    function renderOwnerAccounts() {
-      var box = document.getElementById("owner-accounts-box");
-      if (!box) return;
-      if (!ownerAccounts.length) { box.innerHTML = "<div class='log-item'><span>No account logs yet.</span></div>"; return; }
-      var html = "";
-      for (var i = 0; i < ownerAccounts.length; i++) {
-        var a = ownerAccounts[i];
-        var detail = a.type === "Driver"
-          ? a.name + " • " + a.phone + " • " + (a.vehicle || "") + " • " + (a.vno || "") + " • DL:" + (a.dl || "")
-          : a.name + " • " + a.phone;
-        html += "<div class='log-item'><span><strong>[" + a.type + "]</strong> " + detail + " (" + (a.blocked ? "Blocked" : "Active") + ")</span>" +
-          '<button type="button" class="mini-btn" onclick="toggleAccountBlockOwner(' + i + ')">' + (a.blocked ? "Unblock" : "Block") + '</button></div>';
-      }
-      box.innerHTML = html;
-    }
-
-    function dSendOtpNow() {
-      document.getElementById("d-phone-step").className = "hide";
-      document.getElementById("d-otp-step").className = "";
-      document.getElementById("d-otp").value = "123456";
-      document.getElementById("d-login-msg").textContent = "OTP 123456 ready.";
-    }
-
-    function dVerifyOtpNow() {
-      var ph = document.getElementById("d-phone").value.trim() || "+919779176000";
-      document.getElementById("d-reg-num").value = ph;
-      document.getElementById("id-card-phone").textContent = ph;
-      recordDriverOwnerLog();
-      document.getElementById("drv-login").className = "sheet hide";
-      document.getElementById("duty-btn").className = "duty-pill";
-      document.getElementById("bottom-nav").className = "bottom-nav show";
-      switchDriverTab("home"); renderOwnerAccounts(); renderDriverRides();
-    }
-
-    function switchDriverTab(tab) {
-      document.getElementById("tab-home").className = tab === "home" ? "" : "hide";
-      document.getElementById("tab-orders").className = tab === "orders" ? "" : "hide";
-      document.getElementById("tab-profile").className = tab === "profile" ? "" : "hide";
-      document.getElementById("nav-home").className = tab === "home" ? "nav-tab active" : "nav-tab";
-      document.getElementById("nav-orders").className = tab === "orders" ? "nav-tab active" : "nav-tab";
-      document.getElementById("nav-profile").className = tab === "profile" ? "nav-tab active" : "nav-tab";
-      if (tab === "home") renderDriverRides();
-      if (tab === "orders") { syncWalletsFromCompletedRides(); renderOwnerAccounts(); }
-    }
-
-    function openProfileSub(sub) { closeProfileSub(); var el = document.getElementById("sub-" + sub); if (el) el.className = "sheet"; }
-    function closeProfileSub() { ["perf", "info", "idcard", "docs", "lang"].forEach(function (k) { var el = document.getElementById("sub-" + k); if (el) el.className = "sheet hide"; }); }
-
-    function saveProfileInfo() {
-      var nm = document.getElementById("d-name").value.trim() || "HARVINDER SINGH";
-      var ph = document.getElementById("d-reg-num").value.trim() || "+919779176000";
-      document.getElementById("d-phone").value = ph;
-      document.getElementById("prof-display-name").textContent = nm.toUpperCase();
-      document.getElementById("id-card-name").textContent = nm.toUpperCase();
-      document.getElementById("id-card-phone").textContent = ph;
-      var parts = nm.split(" ");
-      document.getElementById("prof-initials").textContent = (parts[0][0] || "H") + (parts[1] ? parts[1][0] : "S");
-      recordDriverOwnerLog();
-      document.getElementById("info-msg").textContent = "Profile Info updated!";
-    }
-
-    function shareIdCard() { document.getElementById("id-share-msg").textContent = "Captain ID Card ready to share!"; }
-    function markRoadTaxDone() { var st = document.getElementById("road-tax-st"); st.className = "doc-st doc-ok"; st.textContent = "Uploaded"; }
-    function syncServiceLabels() { var v = document.getElementById("d-vehicle").value; document.getElementById("home-service-pill").textContent = v === "Cab" ? "Musafir Cab" : (v === "E-Rickshaw" ? "E-Rickshaw" : "Musafir Bike"); }
-    function saveLanguagePrefs() { document.getElementById("lang-msg").textContent = "Saved: App (" + document.getElementById("app-lang-sel").value + "), Notifications (" + document.getElementById("notif-lang-sel").value + ")."; }
-
-    function dSaveDocsNow() {
-      var name = document.getElementById("d-name").value.trim(), vno = document.getElementById("d-vno").value.trim(), dl = document.getElementById("d-dl").value.trim();
-      if (!name || !vno || !dl) { document.getElementById("d-doc-msg").textContent = "Please fill Name, Vehicle Number, and DL Number."; return; }
-      isVerified = false; document.getElementById("id-card-veh").textContent = vno; document.getElementById("id-card-dl").textContent = dl;
-      updateVerifyUI(); recordDriverOwnerLog(); document.getElementById("d-doc-msg").textContent = "Documents submitted! Pending Verification.";
-    }
-
-    function dVerifyDocsNow() {
-      isVerified = true;
-      document.getElementById("id-card-veh").textContent = document.getElementById("d-vno").value.trim() || "PB10XX1234";
-      document.getElementById("id-card-dl").textContent = document.getElementById("d-dl").value.trim() || "PB1020150343578";
-      updateVerifyUI(); recordDriverOwnerLog();
-      document.getElementById("d-doc-msg").textContent = "Captain Approved! You can now go ON DUTY across All Punjab.";
-      renderDriverRides();
-    }
-
-    function updateVerifyUI() {
-      var idPill = document.getElementById("id-status-pill"), hTxt = document.getElementById("home-verify-txt"), pSub = document.getElementById("prof-sub-badge");
-      if (isVerified) {
-        idPill.className = "id-badge"; idPill.textContent = "Approved";
-        hTxt.style.color = "#4ef0a8"; hTxt.textContent = "Approved • All Punjab";
-        pSub.style.color = "#0fa968"; pSub.textContent = "Approved Captain • All Punjab";
-      } else {
-        idPill.className = "id-badge pend"; idPill.textContent = "Pending";
-        hTxt.style.color = "#ffb49e"; hTxt.textContent = "Pending Verification";
-        pSub.style.color = "#ff5a36"; pSub.textContent = "Pending Verification • All Punjab";
-      }
-    }
-
-    function dToggleDutyNow() {
-      if (!isVerified && !isOnline) {
-        document.getElementById("d-rides-msg").textContent = "Pehle My Profile → Documents mein Admin Check: Mark Approved dabayein.";
-        switchDriverTab("profile"); openProfileSub("docs"); return;
-      }
-      isOnline = !isOnline;
-      var btn = document.getElementById("duty-btn");
-      btn.textContent = isOnline ? "ON DUTY" : "OFF DUTY";
-      btn.className = isOnline ? "duty-pill on" : "duty-pill";
-      document.getElementById("d-rides-msg").textContent = isOnline ? "You are ON DUTY across All Punjab." : "You are OFF DUTY.";
-      renderDriverRides();
-    }
-
-    function driverLogout() {
-      isOnline = false;
-      ["duty-btn", "bottom-nav", "tab-home", "tab-orders", "tab-profile", "d-otp-step"].forEach(function (id) {
-        var el = document.getElementById(id); if (el) el.className = id === "bottom-nav" ? "bottom-nav" : "hide";
       });
-      document.getElementById("d-phone-step").className = "";
-      document.getElementById("drv-login").className = "sheet";
-    }
-
-    function deleteDriverAccount() { if (confirm("Are you sure you want to delete this partner session?")) driverLogout(); }
-
-    function initDriverNavMap(idx, rideObj) {
-      try {
-        var elId = "d-nav-map-" + idx, el = document.getElementById(elId);
-        if (!el || typeof L === "undefined") return;
-        if (dMaps[idx]) { dMaps[idx].remove(); delete dMaps[idx]; }
-        var aPt = { lat: rideObj.pLat || DEFAULT_PICKUP.lat, lng: rideObj.pLng || DEFAULT_PICKUP.lng };
-        var bPt = { lat: rideObj.dLat || DEFAULT_DROP.lat, lng: rideObj.dLng || DEFAULT_DROP.lng };
-        var curLat = (typeof rideObj.riderLat === "number") ? rideObj.riderLat : aPt.lat;
-        var curLng = (typeof rideObj.riderLng === "number") ? rideObj.riderLng : aPt.lng;
-        var map = L.map(elId, { zoomControl: false }).setView([curLat, curLng], 10);
-        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(map);
-        L.polyline([[aPt.lat, aPt.lng], [bPt.lat, bPt.lng]], { color: "#3b4cca", weight: 4 }).addTo(map);
-        L.circleMarker([aPt.lat, aPt.lng], { radius: 6, color: "#0fa968", fillOpacity: 1 }).addTo(map);
-        L.circleMarker([bPt.lat, bPt.lng], { radius: 6, color: "#ff5a36", fillOpacity: 1 }).addTo(map);
-        var marker = L.circleMarker([curLat, curLng], { radius: 9, color: "#fff", weight: 2, fillColor: "#18182b", fillOpacity: 1 }).addTo(map);
-        dMaps[idx] = { map: map, marker: marker, aPt: aPt, bPt: bPt };
-      } catch (e) {}
-    }
-
-    function startDriverNavigation(idx) {
-      var r = activeRides[idx]; if (!r) return;
-      var stEl = document.getElementById("d-nav-st-" + idx);
-      if (dNavTimers[idx]) { clearInterval(dNavTimers[idx]); delete dNavTimers[idx]; }
-      var aPt = { lat: r.pLat || DEFAULT_PICKUP.lat, lng: r.pLng || DEFAULT_PICKUP.lng };
-      var bPt = { lat: r.dLat || DEFAULT_DROP.lat, lng: r.dLng || DEFAULT_DROP.lng };
-      var targetLat = (r.status === "Ride Started") ? bPt.lat : aPt.lat;
-      var targetLng = (r.status === "Ride Started") ? bPt.lng : aPt.lng;
-      var startLat = (typeof r.riderLat === "number") ? r.riderLat : aPt.lat;
-      var startLng = (typeof r.riderLng === "number") ? r.riderLng : aPt.lng;
-
-      function pushPos(lat, lng, msg) {
-        r.riderLat = lat; r.riderLng = lng; syncCloudRides();
-        if (dMaps[idx] && dMaps[idx].marker && dMaps[idx].map) { dMaps[idx].marker.setLatLng([lat, lng]); dMaps[idx].map.panTo([lat, lng]); }
-        if (stEl) stEl.textContent = msg + " (" + lat.toFixed(4) + ", " + lng.toFixed(4) + ")";
-      }
-
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (pos) { pushPos(pos.coords.latitude, pos.coords.longitude, "Navigating GPS"); }, function () {});
-      }
-      var step = 0;
-      dNavTimers[idx] = setInterval(function () {
-        step++; var t = Math.min(1, step / 8);
-        pushPos(startLat + (targetLat - startLat) * t, startLng + (targetLng - startLng) * t, t >= 1 ? "Arrived at Target" : "Navigating Live");
-        if (t >= 1) { clearInterval(dNavTimers[idx]); delete dNavTimers[idx]; }
-      }, 650);
-    }
-
-    function dAcceptRide(idx) {
-      if (!isVerified) { document.getElementById("d-rides-msg").textContent = "Pehle Documents approve karein."; return; }
-      var r = activeRides[idx]; if (!r) return;
-      if (r.customerBlockedByDriver || r.ownerBlockedRole) { document.getElementById("d-rides-msg").textContent = "Ride blocked."; return; }
-      r.status = "Accepted"; syncCloudRides();
-      document.getElementById("d-rides-msg").textContent = "Ride Accepted (" + r.km + " km • ₹" + driverRideFare(r) + ").";
-      renderDriverRides();
-    }
-
-    function dArrivedRide(idx) {
-      if (!isVerified) { document.getElementById("d-rides-msg").textContent = "Pehle Documents approve karein."; return; }
-      var r = activeRides[idx]; if (!r) return;
-      r.status = "Arrived at Customer Location"; r.riderLat = r.pLat || DEFAULT_PICKUP.lat; r.riderLng = r.pLng || DEFAULT_PICKUP.lng;
-      syncCloudRides();
-      document.getElementById("d-rides-msg").textContent = "Arrived at Pickup (" + r.km + " km • ₹" + driverRideFare(r) + ").";
-      renderDriverRides();
-    }
-
-    function dStartRide(idx) {
-      if (!isVerified) { document.getElementById("d-rides-msg").textContent = "Pehle Documents approve karein."; return; }
-      var r = activeRides[idx]; if (!r) return;
-      var inp = document.getElementById("d-otp-" + idx);
-      var enteredOtp = inp ? inp.value.trim() : "";
-      if (!r.rideOtp || enteredOtp === String(r.rideOtp)) {
-        r.status = "Ride Started"; syncCloudRides();
-        document.getElementById("d-rides-msg").textContent = "Ride Started (" + r.km + " km • ₹" + driverRideFare(r) + ").";
-        renderDriverRides();
-      } else {
-        document.getElementById("d-rides-msg").textContent = "Galat Customer PIN! Passenger app mein 4-digit PIN check karein.";
-      }
-    }
-
-    function highlightDriverStars(stars) {
-      var btns = document.querySelectorAll("#d-end-screen .star-btn");
-      for (var i = 0; i < btns.length; i++) btns[i].className = (i + 1 <= stars) ? "star-btn picked" : "star-btn";
-    }
-
-    function openDriverEndScreen(idx) {
-      var r = activeRides[idx]; if (!r) return;
-      currentDriverEndIdx = idx;
-      document.getElementById("d-end-amt").textContent = "₹" + driverRideFare(r);
-      document.getElementById("d-end-km").textContent = (r.km || 0) + " km • " + (r.payMode || "Cash");
-      document.getElementById("d-feedback-inp").value = r.customerFeedback || "";
-      highlightDriverStars(r.customerRating || 0);
-      document.getElementById("d-block-btn").textContent = r.customerBlockedByDriver ? "Unblock Customer" : "Block Customer";
-      document.getElementById("d-rate-msg").textContent = r.customerRating ? "Rated " + r.customerRating + " ★" : "Tap stars & add feedback";
-      document.getElementById("d-end-screen").className = "full-end show";
-    }
-
-    function setCustomerRating(stars) {
-      if (currentDriverEndIdx > -1 && activeRides[currentDriverEndIdx]) { activeRides[currentDriverEndIdx].customerRating = stars; syncCloudRides(); }
-      highlightDriverStars(stars); document.getElementById("d-rate-msg").textContent = "Rated " + stars + " ★";
-    }
-
-    function saveCustomerFeedbackNow() {
-      var fb = document.getElementById("d-feedback-inp").value.trim();
-      if (currentDriverEndIdx > -1 && activeRides[currentDriverEndIdx]) { activeRides[currentDriverEndIdx].customerFeedback = fb; syncCloudRides(); }
-      document.getElementById("d-rate-msg").textContent = fb ? "Feedback saved" : "Tap stars & add feedback";
-    }
-
-    function toggleBlockCustomerNow() {
-      if (currentDriverEndIdx > -1 && activeRides[currentDriverEndIdx]) {
-        var r = activeRides[currentDriverEndIdx];
-        r.customerBlockedByDriver = !r.customerBlockedByDriver; syncCloudRides();
-        document.getElementById("d-block-btn").textContent = r.customerBlockedByDriver ? "Unblock Customer" : "Block Customer";
-        document.getElementById("d-rate-msg").textContent = r.customerBlockedByDriver ? "Customer blocked by driver" : "Customer unblocked";
-      }
-    }
-
-    function closeDriverEndScreen() { saveCustomerFeedbackNow(); document.getElementById("d-end-screen").className = "full-end"; currentDriverEndIdx = -1; renderDriverRides(); }
-
-    function dCompleteRide(idx) {
-      if (!isVerified) { document.getElementById("d-rides-msg").textContent = "Pehle Documents approve karein."; return; }
-      var r = activeRides[idx]; if (!r) return;
-      r.status = "Completed"; r.riderLat = r.dLat || DEFAULT_DROP.lat; r.riderLng = r.dLng || DEFAULT_DROP.lng; r.passengerRatedPromptSeen = false;
-      syncCloudRides(); syncWalletsFromCompletedRides(); openDriverEndScreen(idx); renderDriverRides();
-    }
-
-    function renderDriverRides() {
-      var box = document.getElementById("d-rides-list");
-      if (!box) return;
-      syncWalletsFromCompletedRides();
-      if (!activeRides.length) { box.innerHTML = "<p class='sub'>No rides available across Punjab yet.</p>"; return; }
-      var distFilter = (document.getElementById("district-filter").value || "").trim().toLowerCase();
-      var html = "", shownCount = 0;
-      for (var i = 0; i < activeRides.length; i++) {
-        var r = activeRides[i];
-        if (distFilter && String((r.pickup || "") + " " + (r.drop || "")).toLowerCase().indexOf(distFilter) === -1) continue;
-        shownCount++;
-        var st = r.status || "Available", pm = r.payMode || "Cash", dAmt = driverRideFare(r);
-        var blkTag = r.customerBlockedByDriver ? "<div class='blk-pill'>Blocked by Driver</div>" : (r.ownerBlockedRole ? "<div class='blk-pill'>Blocked by Owner (" + r.ownerBlockedRole + ")</div>" : "");
-        var btns = isOnline
-          ? "<div class='row2'><button type='button' class='btn btn-coral' onclick='dAcceptRide(" + i + ")'>Accept Ride</button><button type='button' class='btn btn-indigo' onclick='dArrivedRide(" + i + ")'>Arrived at Pickup</button></div>" +
-            "<div class='otp-row'><input type='text' maxlength='4' id='d-otp-" + i + "' class='otp-inp mono' placeholder='4-Digit PIN' /><button type='button' class='btn btn-mint otp-btn' onclick='dStartRide(" + i + ")'>Start Ride</button></div>" +
-            '<button type="button" class="btn btn-primary" onclick="dCompleteRide(' + i + ')">Complete Trip</button>'
-          : "";
-        var fbNote = r.customerFeedback
-          ? "<div style='font-size:11px;color:#474d6b;margin-top:6px;'>Customer Feedback: " + r.customerFeedback + (r.customerRating ? " (" + r.customerRating + " ★)" : "") + "</div>"
-          : (r.customerRating ? "<div style='font-size:11px;color:#474d6b;margin-top:6px;'>Customer Rating: " + r.customerRating + " ★</div>" : "");
-        var gmapsUrl = "https://www.google.com/maps/dir/?api=1&destination=" + (r.dLat || DEFAULT_DROP.lat) + "," + (r.dLng || DEFAULT_DROP.lng);
-
-        html += "<div class='ride-box'><div class='ride-top'><span class='ride-info'><span class='mono'>" + r.km + " km</span> • <span class='mono'>₹" + dAmt + "</span> • " + pm + "</span><span class='ride-st'>" + st + "</span></div>" +
-          "<div style='font-size:12px;color:#474d6b;margin-top:4px;'>" + (r.pickup || "Pickup") + " → " + (r.drop || "Drop") + "</div>" +
-          blkTag + fbNote + btns +
-          "<div class='nav-wrap'><div id='d-nav-map-" + i + "' class='nav-map'></div><div class='nav-bar'><span id='d-nav-st-" + i + "'>All Punjab Live Navigation</span><div style='display:flex;gap:6px;'><button type='button' class='mini-btn' onclick='startDriverNavigation(" + i + ")'>Navigate on Map</button><a class='mini-btn' target='_blank' rel='noopener' href='" + gmapsUrl + "'>Google Maps</a></div></div></div></div>";
-      }
-      box.innerHTML = shownCount ? html : "<p class='sub'>No rides matching selected Punjab district.</p>";
-      for (var m = 0; m < activeRides.length; m++) initDriverNavMap(m, activeRides[m] || {});
-    }
-
-    window.dSendOtpNow = dSendOtpNow; window.dVerifyOtpNow = dVerifyOtpNow; window.dToggleDutyNow = dToggleDutyNow;
-    window.switchDriverTab = switchDriverTab; window.openProfileSub = openProfileSub; window.closeProfileSub = closeProfileSub;
-    window.saveProfileInfo = saveProfileInfo; window.shareIdCard = shareIdCard; window.markRoadTaxDone = markRoadTaxDone;
-    window.syncServiceLabels = syncServiceLabels; window.saveLanguagePrefs = saveLanguagePrefs;
-    window.dSaveDocsNow = dSaveDocsNow; window.dVerifyDocsNow = dVerifyDocsNow;
-    window.settleWeeklyDriverPayout = settleWeeklyDriverPayout; window.ownerToggleBlock = ownerToggleBlock;
-    window.toggleAccountBlockOwner = toggleAccountBlockOwner; window.renderDriverRides = renderDriverRides;
-    window.startDriverNavigation = startDriverNavigation; window.dAcceptRide = dAcceptRide; window.dArrivedRide = dArrivedRide;
-    window.dStartRide = dStartRide; window.dCompleteRide = dCompleteRide; window.setCustomerRating = setCustomerRating;
-    window.saveCustomerFeedbackNow = saveCustomerFeedbackNow; window.toggleBlockCustomerNow = toggleBlockCustomerNow;
-    window.closeDriverEndScreen = closeDriverEndScreen; window.driverLogout = driverLogout; window.deleteDriverAccount = deleteDriverAccount;
-
-    try { var s = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]"); if (Array.isArray(s)) activeRides = s; } catch (e) {}
-    try { var a = JSON.parse(localStorage.getItem("gm_owner_accounts_v1") || "[]"); if (Array.isArray(a)) ownerAccounts = a; } catch (e) {}
-
-    onSnapshot(ridesDocRef, function (snap) {
-      if (snap.exists() && Array.isArray(snap.data().list)) {
-        activeRides = snap.data().list;
-        try { localStorage.setItem("gm_shared_rides_v1", JSON.stringify(activeRides)); } catch (e) {}
-        renderDriverRides();
-      }
-    });
-
-    onSnapshot(accountsDocRef, function (snap) {
-      if (snap.exists() && Array.isArray(snap.data().list)) {
-        ownerAccounts = snap.data().list;
-        try { localStorage.setItem("gm_owner_accounts_v1", JSON.stringify(ownerAccounts)); } catch (e) {}
-        renderOwnerAccounts();
-      }
-    });
+    } catch (e) {}
   </script>
 </body>
 </html>
