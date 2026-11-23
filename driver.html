@@ -29,6 +29,7 @@
     label { display: block; font-size: 11px; font-weight: 800; color: #474d6b; text-transform: uppercase; letter-spacing: 0.4px; margin: 12px 0 5px; }
     input, textarea, select { width: 100%; padding: 12px 13px; border: 1.5px solid #dce1ed; border-radius: 12px; font-size: 14px; background: #f9fafd; color: #161829; }
     input:focus, textarea:focus, select:focus { outline: none; border-color: #18182b; background: #fff; }
+    textarea { min-height: 66px; resize: vertical; }
 
     .btn { width: 100%; border: none; border-radius: 12px; padding: 12px; font-size: 13px; font-weight: 800; cursor: pointer; transition: transform 0.1s; }
     .btn:active { transform: scale(0.99); }
@@ -95,6 +96,18 @@
       box-shadow: 0 4px 10px rgba(24, 24, 43, 0.2);
     }
 
+    .full-end { position: fixed; inset: 0; background: #18182b; z-index: 999; display: none; flex-direction: column; justify-content: space-between; padding: 22px 18px; color: #fff; overflow-y: auto; }
+    .full-end.show { display: flex; }
+    .end-tag { display: inline-block; background: rgba(255,255,255,0.14); padding: 6px 12px; border-radius: 999px; font-size: 11px; font-weight: 800; }
+    .end-card { margin-top: 14px; background: #fff; color: #18182b; border-radius: 20px; padding: 18px; text-align: center; }
+    .end-amt { font-size: 38px; font-weight: 800; color: #0fa968; margin: 4px 0; }
+    .rate-panel { margin-top: 14px; background: rgba(255,255,255,0.09); border: 1px solid rgba(255,255,255,0.18); border-radius: 18px; padding: 14px; }
+    .star-row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; margin-top: 10px; }
+    .star-btn { border: 1.5px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); color: #fff; border-radius: 10px; padding: 10px 4px; font-size: 13px; font-weight: 800; cursor: pointer; }
+    .star-btn.picked { background: #0fa968; border-color: #0fa968; }
+    .end-actions { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .blk-tag { display: inline-block; margin-top: 6px; padding: 3px 8px; border-radius: 7px; background: #ffe8e8; color: #b81d24; font-size: 11px; font-weight: 800; }
+
     .msg { margin-top: 8px; font-size: 12px; font-weight: 700; color: #0fa968; min-height: 16px; }
     .hide { display: none !important; }
   </style>
@@ -103,7 +116,7 @@
   <header>
     <div>
       <h1>Go Musafir Partner</h1>
-      <p>Cloud Live • v31</p>
+      <p>Cloud Live • v33</p>
     </div>
     <div class="hdr-right">
       <button type="button" id="duty-toggle-btn" class="duty-btn" onclick="toggleDuty()">ON DUTY</button>
@@ -162,8 +175,42 @@
         <input id="d-plate" type="text" placeholder="e.g., PB 10 XX 1234" />
 
         <button type="button" class="btn btn-primary" style="margin-top:14px;" onclick="saveDriverProfile()">Save Profile</button>
+        <button type="button" class="btn btn-coral" style="margin-top:10px;" onclick="logoutDriver()">Log Out</button>
         <div id="d-profile-msg" class="msg"></div>
       </div>
+    </div>
+  </div>
+
+  <!-- DRIVER TRIP COMPLETION SCREEN -->
+  <div id="d-end-screen" class="full-end">
+    <div>
+      <span class="end-tag">GO MUSAFIR PARTNER • TRIP COMPLETED</span>
+      <div class="end-card">
+        <div style="font-size:11px;font-weight:800;color:#676e8a;text-transform:uppercase;">Total Trip Amount</div>
+        <div id="d-end-amt" class="end-amt mono">₹0</div>
+        <div style="font-size:12px;font-weight:800;color:#ff5a36;">Platform Charges</div>
+        <div id="d-end-route" style="margin-top:6px;font-size:12px;color:#474d6b;font-weight:600;"></div>
+      </div>
+
+      <div class="rate-panel">
+        <div style="font-size:14px;font-weight:800;text-align:center;">Rate Passenger & Behavior Feedback</div>
+        <div class="star-row">
+          <button type="button" class="star-btn" onclick="setCustomerRating(1)">1 ★</button>
+          <button type="button" class="star-btn" onclick="setCustomerRating(2)">2 ★</button>
+          <button type="button" class="star-btn" onclick="setCustomerRating(3)">3 ★</button>
+          <button type="button" class="star-btn" onclick="setCustomerRating(4)">4 ★</button>
+          <button type="button" class="star-btn" onclick="setCustomerRating(5)">5 ★</button>
+        </div>
+
+        <label style="color:#cfd5ee;" for="d-feedback-inp">Passenger Behavior Feedback</label>
+        <textarea id="d-feedback-inp" placeholder="Share feedback about passenger behavior or trip..." oninput="saveCustomerFeedbackNow()"></textarea>
+        <div id="d-rate-msg" style="margin-top:8px;font-size:12px;font-weight:700;color:#4ef0a8;text-align:center;">Tap stars & add feedback</div>
+      </div>
+    </div>
+
+    <div class="end-actions">
+      <button type="button" class="btn btn-coral" style="margin-top:0;" id="d-block-btn" onclick="toggleBlockCustomerNow()">Block Passenger</button>
+      <button type="button" class="btn btn-mint" style="margin-top:0;" id="d-done-btn" onclick="closeDriverEndScreen()">Done</button>
     </div>
   </div>
 
@@ -178,6 +225,7 @@
     var rides = [];
     var onDuty = true;
     var dMaps = {};
+    var currentDriverEndIdx = -1;
 
     function dEl(id) { return document.getElementById(id); }
 
@@ -256,6 +304,71 @@
       syncRides();
       renderDriverRides();
       renderOrdersAndWallet();
+      openDriverEndScreen(idx);
+    }
+
+    function openDriverEndScreen(idx) {
+      try {
+        var r = rides[idx];
+        if (!r) return;
+        currentDriverEndIdx = idx;
+        var pm = r.payMode || "Cash";
+        if (dEl("d-end-amt")) dEl("d-end-amt").textContent = "₹" + (r.total || 0);
+        if (dEl("d-end-route")) dEl("d-end-route").textContent = (r.v || "Ride") + " • " + pm + " • " + (r.pickup || "Pickup") + " -> " + (r.drop || "Drop") + " (" + (r.km || 0) + " km)";
+        if (dEl("d-feedback-inp")) dEl("d-feedback-inp").value = r.customerFeedback || "";
+        document.querySelectorAll("#d-end-screen .star-btn").forEach(function (btn, i) {
+          if (i + 1 <= (r.customerRating || 0)) btn.classList.add("picked");
+          else btn.classList.remove("picked");
+        });
+        if (dEl("d-block-btn")) dEl("d-block-btn").textContent = r.customerBlockedByDriver ? "Unblock Passenger" : "Block Passenger";
+        if (dEl("d-rate-msg")) dEl("d-rate-msg").textContent = r.customerRating ? "Rated " + r.customerRating + " ★" : "Tap stars & add feedback";
+        if (dEl("d-end-screen")) dEl("d-end-screen").classList.add("show");
+      } catch (e) {}
+    }
+
+    function setCustomerRating(stars) {
+      if (currentDriverEndIdx !== -1 && rides[currentDriverEndIdx]) {
+        rides[currentDriverEndIdx].customerRating = stars;
+        rides[currentDriverEndIdx].driverRatedPromptSeen = true;
+        syncRides();
+      }
+      document.querySelectorAll("#d-end-screen .star-btn").forEach(function (btn, i) {
+        if (i + 1 <= stars) btn.classList.add("picked");
+        else btn.classList.remove("picked");
+      });
+      if (dEl("d-rate-msg")) dEl("d-rate-msg").textContent = "Rated " + stars + " ★";
+    }
+
+    function saveCustomerFeedbackNow() {
+      var fb = dEl("d-feedback-inp") ? dEl("d-feedback-inp").value.trim() : "";
+      if (currentDriverEndIdx !== -1 && rides[currentDriverEndIdx]) {
+        rides[currentDriverEndIdx].customerFeedback = fb;
+        syncRides();
+      }
+      if (dEl("d-rate-msg")) dEl("d-rate-msg").textContent = fb ? "Feedback saved" : "Tap stars & add feedback";
+    }
+
+    function toggleBlockCustomerNow() {
+      if (currentDriverEndIdx !== -1 && rides[currentDriverEndIdx]) {
+        var r = rides[currentDriverEndIdx];
+        r.customerBlockedByDriver = !r.customerBlockedByDriver;
+        r.driverRatedPromptSeen = true;
+        syncRides();
+        if (dEl("d-block-btn")) dEl("d-block-btn").textContent = r.customerBlockedByDriver ? "Unblock Passenger" : "Block Passenger";
+        if (dEl("d-rate-msg")) dEl("d-rate-msg").textContent = r.customerBlockedByDriver ? "Passenger blocked by driver" : "Passenger unblocked";
+      }
+    }
+
+    function closeDriverEndScreen() {
+      saveCustomerFeedbackNow();
+      if (currentDriverEndIdx !== -1 && rides[currentDriverEndIdx]) {
+        rides[currentDriverEndIdx].driverRatedPromptSeen = true;
+        syncRides();
+      }
+      if (dEl("d-end-screen")) dEl("d-end-screen").classList.remove("show");
+      currentDriverEndIdx = -1;
+      renderDriverRides();
+      renderOrdersAndWallet();
     }
 
     function initDriverRideMap(idx, r) {
@@ -286,18 +399,28 @@
     function renderDriverRides() {
       var box = dEl("driver-rides-list");
       if (!box) return;
-      if (!rides.length) {
-        box.innerHTML = "<p class='sub' style='margin-top:12px;'>Abhi koi live ride request nahi hai.</p>";
-        return;
-      }
 
       var html = "";
+      var activeIndices = [];
+
       for (var i = 0; i < rides.length; i++) {
         var r = rides[i] || {};
         var st = String(r.status || "Searching Driver");
+        if (st.toLowerCase().indexOf("complet") !== -1) {
+          continue;
+        }
+
+        activeIndices.push(i);
         var pLat = typeof r.pLat === "number" ? r.pLat : 30.8615;
         var pLng = typeof r.pLng === "number" ? r.pLng : 75.8150;
         var gMapsUrl = "https://www.google.com/maps/dir/?api=1&destination=" + pLat + "," + pLng;
+
+        var fbLine = r.customerFeedback
+          ? '<div style="color:#474d6b;font-size:11px;margin-top:6px;">Passenger Feedback: ' + r.customerFeedback + (r.customerRating ? ' (' + r.customerRating + ' ★)' : '') + '</div>'
+          : (r.customerRating ? '<div style="color:#474d6b;font-size:11px;margin-top:6px;">Passenger Rating: ' + r.customerRating + ' ★</div>' : '');
+        var blkTag = r.customerBlockedByDriver
+          ? '<div class="blk-tag">Blocked by Driver</div>'
+          : (r.ownerBlockedRole ? '<div class="blk-tag">Blocked by Owner</div>' : '');
 
         html += '<div class="ride-card">' +
           '<div class="rc-top">' +
@@ -305,6 +428,7 @@
             '<span class="rc-badge">' + st + '</span>' +
           '</div>' +
           '<div class="rc-route">' + (r.pickup || "Pickup") + ' → ' + (r.drop || "Drop") + '</div>' +
+          blkTag + fbLine +
           '<div class="grid2">' +
             '<button type="button" class="btn btn-coral" onclick="acceptRide(' + i + ')">Accept Ride</button>' +
             '<button type="button" class="btn btn-indigo" onclick="arriveAtPickup(' + i + ')">Arrived at Pickup</button>' +
@@ -327,9 +451,15 @@
         '</div>';
       }
 
+      if (!activeIndices.length) {
+        box.innerHTML = "<p class='sub' style='margin-top:12px;'>Abhi koi live ride request nahi hai.</p>";
+        return;
+      }
+
       box.innerHTML = html;
-      for (var m = 0; m < rides.length; m++) {
-        initDriverRideMap(m, rides[m] || {});
+      for (var m = 0; m < activeIndices.length; m++) {
+        var rIdx = activeIndices[m];
+        initDriverRideMap(rIdx, rides[rIdx] || {});
       }
     }
 
@@ -343,12 +473,14 @@
         var r = rides[i] || {};
         if (String(r.status || "").toLowerCase().indexOf("complet") !== -1) {
           earned += Number(r.total || 0);
+          var ratingInfo = r.customerRating ? ' • ' + r.customerRating + ' ★' : '';
           html += '<div class="ride-card">' +
             '<div class="rc-top">' +
-              '<span class="rc-title">' + (r.v || "Ride") + ' • <span class="mono">₹' + (r.total || 0) + '</span></span>' +
+              '<span class="rc-title">' + (r.v || "Ride") + ' • <span class="mono">₹' + (r.total || 0) + '</span>' + ratingInfo + '</span>' +
               '<span class="rc-badge">Completed</span>' +
             '</div>' +
             '<div class="rc-route">' + (r.pickup || "Pickup") + ' → ' + (r.drop || "Drop") + '</div>' +
+            '<button type="button" class="btn btn-soft" style="margin-top:10px;" onclick="openDriverEndScreen(' + i + ')">Rate, Feedback & Block Passenger</button>' +
           '</div>';
         }
       }
@@ -370,6 +502,13 @@
         localStorage.setItem("gm_driver_profile_v1", JSON.stringify(prof));
         if (dEl("d-profile-msg")) dEl("d-profile-msg").textContent = "Profile saved!";
       } catch (e) {}
+    }
+
+    function logoutDriver() {
+      try {
+        localStorage.removeItem("gm_driver_profile_v1");
+      } catch (e) {}
+      location.reload();
     }
 
     function loadDriverProfile() {
