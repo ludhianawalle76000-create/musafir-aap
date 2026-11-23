@@ -119,7 +119,7 @@
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Cloud Live • v32</p>
+      <p>Cloud Live • v33</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -415,6 +415,40 @@
   </div>
 
   <script>
+    function sendOtpNow() {
+      var phoneStep = document.getElementById("step-phone");
+      var otpStep = document.getElementById("step-otp");
+      var otpInp = document.getElementById("otp-inp");
+      var msgEl = document.getElementById("login-msg");
+      if (phoneStep) phoneStep.style.display = "none";
+      if (otpStep) {
+        otpStep.classList.remove("hide");
+        otpStep.style.display = "block";
+      }
+      if (otpInp) {
+        otpInp.value = "123456";
+      }
+      if (msgEl) {
+        msgEl.textContent = "OTP 123456 sent.";
+      }
+    }
+
+    function backPhoneNow() {
+      var phoneStep = document.getElementById("step-phone");
+      var otpStep = document.getElementById("step-otp");
+      var msgEl = document.getElementById("login-msg");
+      if (otpStep) {
+        otpStep.classList.add("hide");
+        otpStep.style.display = "none";
+      }
+      if (phoneStep) {
+        phoneStep.style.display = "block";
+      }
+      if (msgEl) {
+        msgEl.textContent = "";
+      }
+    }
+
     var curV = "Bike", curR = 7, curM = 25;
     var fareDelta = 0;
     var curPay = "Cash";
@@ -483,7 +517,7 @@
       if (PUNJAB_PLACES_DB[k]) return PUNJAB_PLACES_DB[k];
       var keys = Object.keys(PUNJAB_PLACES_DB);
       for (var i = 0; i < keys.length; i++) {
-        if (k.indexOf(keys[i]) > -1 || keys[i].indexOf(k) > -1) return PUNJAB_PLACES_DB[keys[i]];
+        if (k.indexOf(keys[i]) !== -1 || keys[i].indexOf(k) !== -1) return PUNJAB_PLACES_DB[keys[i]];
       }
       return null;
     }
@@ -575,7 +609,10 @@
       }, 300);
     }
 
-    function isAutoNightHour() { var hr = new Date().getHours(); return (hr >= 22 || hr < 6); }
+    function isAutoNightHour() {
+      var hr = new Date().getHours();
+      return (hr >= 22 || hr <= 5);
+    }
     function isNightActive() { return nightManualOverride !== null ? nightManualOverride : isAutoNightHour(); }
 
     function initHeroMap() {
@@ -658,83 +695,21 @@
       syncCloudAccounts();
     }
 
-    function sendOtpNow() {
-      try {
-        var phoneStep = document.getElementById("step-phone");
-        var otpStep = document.getElementById("step-otp");
-        var otpInp = document.getElementById("otp-inp");
-        var msgEl = document.getElementById("login-msg");
-        if (phoneStep) phoneStep.classList.add("hide");
-        if (otpStep) otpStep.classList.remove("hide");
-        if (otpInp) {
-          otpInp.value = "123456";
-          otpInp.focus();
-        }
-        if (msgEl) msgEl.textContent = "OTP 123456 sent.";
-      } catch (e) {
-        var msgFallback = document.getElementById("login-msg");
-        if (msgFallback) msgFallback.textContent = "OTP: 123456";
-      }
-    }
-
-    function backPhoneNow() {
-      try {
-        var phoneStep = document.getElementById("step-phone");
-        var otpStep = document.getElementById("step-otp");
-        var msgEl = document.getElementById("login-msg");
-        if (otpStep) otpStep.classList.add("hide");
-        if (phoneStep) phoneStep.classList.remove("hide");
-        if (msgEl) msgEl.textContent = "";
-      } catch (e) {}
-    }
-
     function verifyOtpNow() {
-      try {
-        recordCustomerOwnerLog();
-        loadWallet();
-        var loginCard = document.getElementById("login-card");
-        var hdrBtns = document.getElementById("hdr-btns");
-        var heroWrap = document.getElementById("hero-map-wrap");
-        var walletCard = document.getElementById("wallet-card");
-        var bookCard = document.getElementById("book-card");
-        var ridesCard = document.getElementById("rides-card");
-        if (loginCard) loginCard.classList.add("hide");
-        if (hdrBtns) hdrBtns.style.display = "flex";
-        if (heroWrap) heroWrap.classList.remove("hide");
-        if (walletCard) walletCard.classList.remove("hide");
-        if (bookCard) bookCard.classList.remove("hide");
-        if (ridesCard) ridesCard.classList.remove("hide");
-        initHeroMap();
-        onRouteInputChange();
-        drawRidesNow();
-      } catch (e) {}
+      recordCustomerOwnerLog();
+      loadWallet();
+      document.getElementById("login-card").className = "sheet hide";
+      document.getElementById("hdr-btns").style.display = "flex";
+      document.getElementById("hero-map-wrap").className = "hero-map-card";
+      document.getElementById("wallet-card").className = "sheet";
+      document.getElementById("book-card").className = "sheet";
+      document.getElementById("rides-card").className = "sheet";
+      initHeroMap();
+      onRouteInputChange();
+      drawRidesNow();
     }
 
-    document.addEventListener("DOMContentLoaded", function () {
-      var sendBtn = document.getElementById("send-otp-btn");
-      if (sendBtn) {
-        sendBtn.addEventListener("click", function (ev) {
-          ev.preventDefault();
-          sendOtpNow();
-        });
-      }
-      var verifyBtn = document.getElementById("verify-otp-btn");
-      if (verifyBtn) {
-        verifyBtn.addEventListener("click", function (ev) {
-          ev.preventDefault();
-          verifyOtpNow();
-        });
-      }
-      var backBtn = document.getElementById("back-phone-btn");
-      if (backBtn) {
-        backBtn.addEventListener("click", function (ev) {
-          ev.preventDefault();
-          backPhoneNow();
-        });
-      }
-    });
-
-    function toggleProfile() { var pc = document.getElementById("profile-card"); pc.className = pc.className.indexOf("hide") > -1 ? "sheet" : "sheet hide"; }
+    function toggleProfile() { var pc = document.getElementById("profile-card"); pc.className = pc.className.indexOf("hide") !== -1 ? "sheet" : "sheet hide"; }
 
     function saveProfileNow() {
       var n = document.getElementById("p-name").value.trim(); if (!n) return;
@@ -850,7 +825,7 @@
     function closeCancelModal() { cancelTargetIdx = -1; document.getElementById("cancel-modal").className = "overlay"; }
 
     function confirmCancelRide(reason) {
-      if (cancelTargetIdx > -1 && rides[cancelTargetIdx]) {
+      if (cancelTargetIdx !== -1 && rides[cancelTargetIdx]) {
         rides[cancelTargetIdx].status = "Cancelled (" + reason + ")";
         syncCloudRides();
       }
@@ -920,7 +895,7 @@
     }
 
     function setDriverRating(stars) {
-      if (currentEndIdx > -1 && rides[currentEndIdx]) {
+      if (currentEndIdx !== -1 && rides[currentEndIdx]) {
         rides[currentEndIdx].driverRating = stars; rides[currentEndIdx].passengerRatedPromptSeen = true; syncCloudRides();
       }
       var btns = document.querySelectorAll("#p-end-screen .star-btn");
@@ -930,12 +905,12 @@
 
     function saveDriverFeedbackNow() {
       var fb = document.getElementById("p-feedback-inp").value.trim();
-      if (currentEndIdx > -1 && rides[currentEndIdx]) { rides[currentEndIdx].driverFeedback = fb; syncCloudRides(); }
+      if (currentEndIdx !== -1 && rides[currentEndIdx]) { rides[currentEndIdx].driverFeedback = fb; syncCloudRides(); }
       document.getElementById("p-rate-msg").textContent = fb ? "Feedback saved" : "Tap stars & add feedback";
     }
 
     function toggleBlockDriverNow() {
-      if (currentEndIdx > -1 && rides[currentEndIdx]) {
+      if (currentEndIdx !== -1 && rides[currentEndIdx]) {
         var r = rides[currentEndIdx];
         r.driverBlockedByCustomer = !r.driverBlockedByCustomer; r.passengerRatedPromptSeen = true; syncCloudRides();
         document.getElementById("p-block-btn").textContent = r.driverBlockedByCustomer ? "Unblock Driver" : "Block Driver";
@@ -945,7 +920,7 @@
 
     function closePassengerEndScreen() {
       saveDriverFeedbackNow();
-      if (currentEndIdx > -1 && rides[currentEndIdx]) { rides[currentEndIdx].passengerRatedPromptSeen = true; syncCloudRides(); }
+      if (currentEndIdx !== -1 && rides[currentEndIdx]) { rides[currentEndIdx].passengerRatedPromptSeen = true; syncCloudRides(); }
       document.getElementById("p-end-screen").className = "full-end";
       currentEndIdx = -1; drawRidesNow();
     }
@@ -960,7 +935,7 @@
         var r = rides[i] || {};
         if (!r.rideOtp) { r.rideOtp = String(Math.floor(1000 + Math.random() * 9000)); changed = true; }
         var st = String(r.status || "Searching Driver"), pm = r.payMode || "Cash";
-        var isComp = st.toLowerCase().indexOf("complet") > -1, isCanc = st.toLowerCase().indexOf("cancel") > -1;
+        var isComp = st.toLowerCase().indexOf("complet") !== -1, isCanc = st.toLowerCase().indexOf("cancel") !== -1;
         if (isComp && pm === "Wallet" && !r.walletPaid) {
           var amt = Number(r.total || 0);
           if (walletBalance >= amt) { walletBalance -= amt; r.walletPaid = true; changed = true; saveWallet(); }
@@ -987,7 +962,7 @@
       if (changed) syncCloudRides();
       box.innerHTML = html;
       for (var m = 0; m < rides.length; m++) initRideLiveMap(m, rides[m] || {});
-      if (showIdx > -1) openPassengerEndScreen(showIdx);
+      if (showIdx !== -1) openPassengerEndScreen(showIdx);
     }
 
     function logout() {
@@ -998,7 +973,8 @@
       document.getElementById("book-card").className = "sheet hide";
       document.getElementById("rides-card").className = "sheet hide";
       document.getElementById("step-otp").className = "hide";
-      document.getElementById("step-phone").className = "";
+      document.getElementById("step-otp").style.display = "none";
+      document.getElementById("step-phone").style.display = "block";
       document.getElementById("login-card").className = "sheet";
       document.getElementById("login-msg").textContent = "";
     }
