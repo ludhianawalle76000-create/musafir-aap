@@ -119,7 +119,7 @@
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>All Punjab Mobility • v29</p>
+      <p>Cloud Live • v30</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -174,7 +174,7 @@
           <div style="font-size:10px;font-weight:800;letter-spacing:0.6px;color:#9ea4c4;">MUSAFIR WALLET</div>
           <div id="c-wallet-bal" class="w-bal mono">₹0</div>
         </div>
-        <div style="text-align:right;font-size:11px;color:#4ef0a8;font-weight:700;">All Punjab Instant Pay</div>
+        <div style="text-align:right;font-size:11px;color:#4ef0a8;font-weight:700;">Cloud Synced</div>
       </div>
       <div class="grid5">
         <button type="button" class="chip-btn mono" onclick="addWalletMoney(50)">+₹50</button>
@@ -234,9 +234,6 @@
         <option value="Phagwara"></option>
         <option value="Khanna"></option>
         <option value="Jagraon"></option>
-        <option value="Batala"></option>
-        <option value="Abohar"></option>
-        <option value="Rajpura"></option>
       </datalist>
 
       <div class="auto-dist-pill">
@@ -319,7 +316,6 @@
     </div>
   </div>
 
-  <!-- Payments Bottom Sheet (Wallets, UPI & Direct Bank Apps, Card, Cash) -->
   <div id="payment-modal" class="overlay">
     <div class="modal-sheet">
       <div class="sheet-handle"></div>
@@ -372,7 +368,6 @@
     </div>
   </div>
 
-  <!-- Cancel Reason Modal -->
   <div id="cancel-modal" class="overlay">
     <div class="modal-sheet">
       <div class="sheet-handle"></div>
@@ -387,7 +382,6 @@
     </div>
   </div>
 
-  <!-- Full-Screen Trip Completed + Rating + Feedback + Block -->
   <div id="p-end-screen" class="full-end">
     <div>
       <span class="end-tag">GO MUSAFIR • TRIP COMPLETED</span>
@@ -420,25 +414,38 @@
     </div>
   </div>
 
-  <script>
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    var firebaseConfig = {
+      apiKey: "AIzaSyC0OP0etTxACa4fMAxbhz_fjDv00-syZfws",
+      authDomain: "musafir-2016d.firebaseapp.com",
+      projectId: "musafir-2016d",
+      storageBucket: "musafir-2016d.firebasestorage.app",
+      messagingSenderId: "649368739510",
+      appId: "1:649368739510:web:6bfcfecd5d663d9430d017"
+    };
+
+    var app = initializeApp(firebaseConfig);
+    var db = getFirestore(app);
+    var ridesDocRef = doc(db, "gm_cloud", "shared_rides");
+    var accountsDocRef = doc(db, "gm_cloud", "owner_accounts");
+
     var curV = "Bike", curR = 7, curM = 25;
     var fareDelta = 0;
     var curPay = "Cash";
-    var pinMode = null; // "pickup" or "drop" or null
+    var pinMode = null;
     var nightManualOverride = null;
     var customerPhone = "";
     var customerName = "";
     var walletBalance = 0;
     var rides = [];
+    var ownerAccounts = [];
     var currentEndIdx = -1;
     var cancelTargetIdx = -1;
-    var heroMap = null;
-    var heroLine = null;
-    var heroStartDot = null;
-    var heroEndDot = null;
-    var pMaps = {};
-    var pTrackTimers = {};
-    var routeFetchTimer = null;
+    var heroMap = null, heroLine = null, heroStartDot = null, heroEndDot = null;
+    var pMaps = {}, pTrackTimers = {}, routeFetchTimer = null;
 
     var PUNJAB_PLACES_DB = {
       "threeke": { lat: 30.8615, lng: 75.8150 },
@@ -493,9 +500,7 @@
       if (PUNJAB_PLACES_DB[k]) return PUNJAB_PLACES_DB[k];
       var keys = Object.keys(PUNJAB_PLACES_DB);
       for (var i = 0; i < keys.length; i++) {
-        if (k.indexOf(keys[i]) > -1 || keys[i].indexOf(k) > -1) {
-          return PUNJAB_PLACES_DB[keys[i]];
-        }
+        if (k.indexOf(keys[i]) > -1 || keys[i].indexOf(k) > -1) return PUNJAB_PLACES_DB[keys[i]];
       }
       return null;
     }
@@ -506,51 +511,33 @@
       var q = String(query || "").trim();
       if (q.length < 3) { cb(null); return; }
       fetch("https://nominatim.openstreetmap.org/search?format=json&limit=1&q=" + encodeURIComponent(q + ", Punjab, India"))
-        .then(function (res) { return res.json(); })
-        .then(function (arr) {
-          if (Array.isArray(arr) && arr.length > 0) {
-            cb({ lat: parseFloat(arr[0].lat), lng: parseFloat(arr[0].lon) });
-          } else {
-            cb(null);
-          }
-        })
+        .then(function (r) { return r.json(); })
+        .then(function (arr) { cb(Array.isArray(arr) && arr.length > 0 ? { lat: parseFloat(arr[0].lat), lng: parseFloat(arr[0].lon) } : null); })
         .catch(function () { cb(null); });
     }
 
     function fetchOsrmRoadRoute(a, b, cb) {
-      var url = "https://router.project-osrm.org/route/v1/driving/" +
-        a.lng + "," + a.lat + ";" + b.lng + "," + b.lat + "?overview=full&geometries=geojson";
+      var url = "https://router.project-osrm.org/route/v1/driving/" + a.lng + "," + a.lat + ";" + b.lng + "," + b.lat + "?overview=full&geometries=geojson";
       fetch(url)
-        .then(function (res) { return res.json(); })
+        .then(function (r) { return r.json(); })
         .then(function (data) {
           if (data && data.routes && data.routes.length > 0) {
             var rt = data.routes[0];
             var km = Math.max(1.0, Math.round((rt.distance / 1000) * 10) / 10);
-            var pts = (rt.geometry && Array.isArray(rt.geometry.coordinates))
-              ? rt.geometry.coordinates.map(function (c) { return [c[1], c[0]]; })
-              : null;
+            var pts = (rt.geometry && Array.isArray(rt.geometry.coordinates)) ? rt.geometry.coordinates.map(function (c) { return [c[1], c[0]]; }) : null;
             cb({ km: km, pts: pts });
-          } else {
-            cb(null);
-          }
+          } else cb(null);
         })
         .catch(function () { cb(null); });
     }
 
     function togglePinMode(mode) {
       pinMode = (pinMode === mode) ? null : mode;
-      var bP = document.getElementById("btn-pin-pickup");
-      var bD = document.getElementById("btn-pin-drop");
-      var note = document.getElementById("pin-mode-note");
-      bP.className = pinMode === "pickup" ? "pin-action-btn active" : "pin-action-btn";
-      bD.className = pinMode === "drop" ? "pin-action-btn active" : "pin-action-btn";
-      if (pinMode === "pickup") {
-        note.textContent = "Tap anywhere on the map above to set Pickup pin.";
-      } else if (pinMode === "drop") {
-        note.textContent = "Tap anywhere on the map above to set Drop pin.";
-      } else {
-        note.textContent = "";
-      }
+      document.getElementById("btn-pin-pickup").className = pinMode === "pickup" ? "pin-action-btn active" : "pin-action-btn";
+      document.getElementById("btn-pin-drop").className = pinMode === "drop" ? "pin-action-btn active" : "pin-action-btn";
+      document.getElementById("pin-mode-note").textContent = pinMode === "pickup"
+        ? "Tap map above to set Pickup pin."
+        : (pinMode === "drop" ? "Tap map above to set Drop pin." : "");
       var mapCard = document.getElementById("hero-map-wrap");
       if (pinMode && mapCard) mapCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
     }
@@ -560,11 +547,7 @@
       if (heroLine) heroMap.removeLayer(heroLine);
       if (heroStartDot) heroMap.removeLayer(heroStartDot);
       if (heroEndDot) heroMap.removeLayer(heroEndDot);
-
-      var linePts = (Array.isArray(routeCoords) && routeCoords.length > 1)
-        ? routeCoords
-        : [[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]];
-
+      var linePts = (Array.isArray(routeCoords) && routeCoords.length > 1) ? routeCoords : [[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]];
       heroLine = L.polyline(linePts, { color: "#18182b", weight: 4 }).addTo(heroMap);
       heroStartDot = L.circleMarker([pickupCoords.lat, pickupCoords.lng], { radius: 7, color: "#0fa968", fillOpacity: 1 }).addTo(heroMap);
       heroEndDot = L.circleMarker([dropCoords.lat, dropCoords.lng], { radius: 7, color: "#ff5a36", fillOpacity: 1 }).addTo(heroMap);
@@ -574,13 +557,11 @@
     function onRouteInputChange() {
       var pTxt = document.getElementById("pickup-inp").value.trim();
       var dTxt = document.getElementById("drop-inp").value.trim();
-
       var pLocal = lookupSpot(pTxt);
       var dLocal = lookupSpot(dTxt);
       if (pLocal) pickupCoords = pLocal;
       if (dLocal) dropCoords = dLocal;
       routeCoords = null;
-
       autoKm = haversineRoadKm(pickupCoords, dropCoords);
       document.getElementById("auto-dist-val").textContent = autoKm + " km";
       document.getElementById("hero-dist-badge").textContent = autoKm + " km";
@@ -602,37 +583,15 @@
             }
           });
         }
-
         var pending = 0;
-        if (pTxt && !pLocal) {
-          pending += 1;
-          geocodePlace(pTxt, function (pt) {
-            if (pt) pickupCoords = pt;
-            pending -= 1;
-            if (pending === 0) afterCoordsReady();
-          });
-        }
-        if (dTxt && !dLocal) {
-          pending += 1;
-          geocodePlace(dTxt, function (pt) {
-            if (pt) dropCoords = pt;
-            pending -= 1;
-            if (pending === 0) afterCoordsReady();
-          });
-        }
-        if (pending === 0) afterCoordsReady();
+        if (pTxt && !pLocal) { pending++; geocodePlace(pTxt, function (pt) { if (pt) pickupCoords = pt; pending--; if (!pending) afterCoordsReady(); }); }
+        if (dTxt && !dLocal) { pending++; geocodePlace(dTxt, function (pt) { if (pt) dropCoords = pt; pending--; if (!pending) afterCoordsReady(); }); }
+        if (!pending) afterCoordsReady();
       }, 300);
     }
 
-    function isAutoNightHour() {
-      var hr = new Date().getHours();
-      return (hr >= 22 || hr < 6);
-    }
-
-    function isNightActive() {
-      if (nightManualOverride !== null) return nightManualOverride;
-      return isAutoNightHour();
-    }
+    function isAutoNightHour() { var hr = new Date().getHours(); return (hr >= 22 || hr < 6); }
+    function isNightActive() { return nightManualOverride !== null ? nightManualOverride : isAutoNightHour(); }
 
     function initHeroMap() {
       var el = document.getElementById("main-hero-map");
@@ -640,18 +599,11 @@
       if (heroMap) { heroMap.remove(); heroMap = null; }
       heroMap = L.map("main-hero-map", { zoomControl: false }).setView([30.9010, 75.8573], 11);
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(heroMap);
-
       heroMap.on("click", function (e) {
         if (!pinMode || !e || !e.latlng) return;
-        var lat = Number(e.latlng.lat.toFixed(4));
-        var lng = Number(e.latlng.lng.toFixed(4));
-        if (pinMode === "pickup") {
-          pickupCoords = { lat: lat, lng: lng };
-          document.getElementById("pickup-inp").value = "Pinned (" + lat + ", " + lng + ")";
-        } else if (pinMode === "drop") {
-          dropCoords = { lat: lat, lng: lng };
-          document.getElementById("drop-inp").value = "Pinned (" + lat + ", " + lng + ")";
-        }
+        var lat = Number(e.latlng.lat.toFixed(4)), lng = Number(e.latlng.lng.toFixed(4));
+        if (pinMode === "pickup") { pickupCoords = { lat: lat, lng: lng }; document.getElementById("pickup-inp").value = "Pinned (" + lat + ", " + lng + ")"; }
+        else if (pinMode === "drop") { dropCoords = { lat: lat, lng: lng }; document.getElementById("drop-inp").value = "Pinned (" + lat + ", " + lng + ")"; }
         pinMode = null;
         document.getElementById("btn-pin-pickup").className = "pin-action-btn";
         document.getElementById("btn-pin-drop").className = "pin-action-btn";
@@ -661,70 +613,58 @@
         refreshHeroMapRoute();
         calcFareNow();
         fetchOsrmRoadRoute(pickupCoords, dropCoords, function (osrm) {
-          if (osrm && osrm.km) {
-            autoKm = osrm.km;
-            routeCoords = osrm.pts;
-            refreshHeroMapRoute();
-            calcFareNow();
-          }
+          if (osrm && osrm.km) { autoKm = osrm.km; routeCoords = osrm.pts; refreshHeroMapRoute(); calcFareNow(); }
         });
       });
-
       refreshHeroMapRoute();
     }
 
     function loadWallet() {
-      try {
-        var b = Number(localStorage.getItem("gm_customer_wallet_v1") || "0");
-        walletBalance = isNaN(b) ? 0 : Math.max(0, Math.round(b));
-      } catch (e) { walletBalance = 0; }
-      var el = document.getElementById("c-wallet-bal");
-      if (el) el.textContent = "₹" + walletBalance;
+      try { var b = Number(localStorage.getItem("gm_customer_wallet_v1") || "0"); walletBalance = isNaN(b) ? 0 : Math.max(0, Math.round(b)); } catch (e) { walletBalance = 0; }
+      var el = document.getElementById("c-wallet-bal"); if (el) el.textContent = "₹" + walletBalance;
     }
 
     function saveWallet() {
       try { localStorage.setItem("gm_customer_wallet_v1", String(walletBalance)); } catch (e) {}
-      var el = document.getElementById("c-wallet-bal");
-      if (el) el.textContent = "₹" + walletBalance;
+      var el = document.getElementById("c-wallet-bal"); if (el) el.textContent = "₹" + walletBalance;
     }
 
     function addWalletMoney(amt) {
-      loadWallet();
-      var n = Number(amt || 0);
-      if (n <= 0) return;
-      walletBalance += Math.round(n);
-      saveWallet();
+      loadWallet(); var n = Number(amt || 0); if (n <= 0) return;
+      walletBalance += Math.round(n); saveWallet();
       document.getElementById("wallet-msg").textContent = "₹" + Math.round(n) + " added to Musafir Wallet.";
     }
 
     function addCustomWalletMoney() {
       var v = Number(document.getElementById("wallet-add-inp").value || 0);
       if (v <= 0) { document.getElementById("wallet-msg").textContent = "Enter valid amount."; return; }
-      addWalletMoney(v);
-      document.getElementById("wallet-add-inp").value = "";
+      addWalletMoney(v); document.getElementById("wallet-add-inp").value = "";
+    }
+
+    function syncCloudRides() {
+      try { localStorage.setItem("gm_shared_rides_v1", JSON.stringify(rides)); } catch (e) {}
+      setDoc(ridesDocRef, { list: rides, updatedAt: Date.now() }).catch(function () {});
+    }
+
+    function syncCloudAccounts() {
+      try { localStorage.setItem("gm_owner_accounts_v1", JSON.stringify(ownerAccounts)); } catch (e) {}
+      setDoc(accountsDocRef, { list: ownerAccounts, updatedAt: Date.now() }).catch(function () {});
     }
 
     function recordCustomerOwnerLog() {
-      var pEl = document.getElementById("phone-inp");
-      customerPhone = (pEl && pEl.value ? pEl.value.trim() : "") || customerPhone || "+918564885647";
+      customerPhone = (document.getElementById("phone-inp").value || "").trim() || customerPhone || "+918564885647";
       var nEl = document.getElementById("p-name");
       if (nEl && nEl.value.trim()) customerName = nEl.value.trim();
-      try {
-        var logs = JSON.parse(localStorage.getItem("gm_owner_accounts_v1") || "[]");
-        if (!Array.isArray(logs)) logs = [];
-        var found = false;
-        for (var i = 0; i < logs.length; i++) {
-          if (logs[i].type === "Customer" && logs[i].phone === customerPhone) {
-            if (customerName) logs[i].name = customerName;
-            logs[i].lastSeen = new Date().toLocaleString();
-            found = true;
-          }
+      var found = false;
+      for (var i = 0; i < ownerAccounts.length; i++) {
+        if (ownerAccounts[i].type === "Customer" && ownerAccounts[i].phone === customerPhone) {
+          if (customerName) ownerAccounts[i].name = customerName;
+          ownerAccounts[i].lastSeen = new Date().toLocaleString();
+          found = true;
         }
-        if (!found) {
-          logs.unshift({ type: "Customer", name: customerName || "Passenger", phone: customerPhone, time: new Date().toLocaleString() });
-        }
-        localStorage.setItem("gm_owner_accounts_v1", JSON.stringify(logs));
-      } catch (e) {}
+      }
+      if (!found) ownerAccounts.unshift({ type: "Customer", name: customerName || "Passenger", phone: customerPhone, time: new Date().toLocaleString() });
+      syncCloudAccounts();
     }
 
     function sendOtpNow() {
@@ -754,16 +694,11 @@
       drawRidesNow();
     }
 
-    function toggleProfile() {
-      var pc = document.getElementById("profile-card");
-      pc.className = pc.className.indexOf("hide") > -1 ? "sheet" : "sheet hide";
-    }
+    function toggleProfile() { var pc = document.getElementById("profile-card"); pc.className = pc.className.indexOf("hide") > -1 ? "sheet" : "sheet hide"; }
 
     function saveProfileNow() {
-      var n = document.getElementById("p-name").value.trim();
-      if (!n) return;
-      customerName = n;
-      recordCustomerOwnerLog();
+      var n = document.getElementById("p-name").value.trim(); if (!n) return;
+      customerName = n; recordCustomerOwnerLog();
       document.getElementById("book-title").textContent = "Hi " + n + ", where in Punjab?";
       document.getElementById("profile-msg").textContent = "Profile saved!";
     }
@@ -772,9 +707,7 @@
       var rows = document.querySelectorAll(".v-row");
       for (var i = 0; i < rows.length; i++) rows[i].className = "v-row";
       el.className = "v-row active";
-      curV = el.getAttribute("data-v");
-      curR = Number(el.getAttribute("data-r"));
-      curM = Number(el.getAttribute("data-m"));
+      curV = el.getAttribute("data-v"); curR = Number(el.getAttribute("data-r")); curM = Number(el.getAttribute("data-m"));
       fareDelta = 0;
       var adjs = document.querySelectorAll(".adj-btn");
       for (var j = 0; j < adjs.length; j++) adjs[j].className = "adj-btn";
@@ -795,15 +728,11 @@
       document.getElementById("pay-modal-amt").textContent = document.getElementById("fare-total").textContent;
       document.getElementById("pay-modal-wbal").textContent = "Balance ₹" + walletBalance;
       var rows = document.querySelectorAll("#payment-modal .pay-opt-row");
-      for (var i = 0; i < rows.length; i++) {
-        rows[i].className = (rows[i].getAttribute("data-pm") === curPay) ? "pay-opt-row active" : "pay-opt-row";
-      }
+      for (var i = 0; i < rows.length; i++) rows[i].className = (rows[i].getAttribute("data-pm") === curPay) ? "pay-opt-row active" : "pay-opt-row";
       document.getElementById("payment-modal").className = "overlay show";
     }
 
-    function closePaymentModal() {
-      document.getElementById("payment-modal").className = "overlay";
-    }
+    function closePaymentModal() { document.getElementById("payment-modal").className = "overlay"; }
 
     function selectPaymentOption(el) {
       curPay = el.getAttribute("data-pm") || "Cash";
@@ -811,20 +740,13 @@
       var rows = document.querySelectorAll("#payment-modal .pay-opt-row");
       for (var i = 0; i < rows.length; i++) rows[i].className = "pay-opt-row";
       el.className = "pay-opt-row active";
-      calcFareNow();
-      closePaymentModal();
+      calcFareNow(); closePaymentModal();
     }
 
-    function toggleNightNow() {
-      nightManualOverride = !isNightActive();
-      calcFareNow();
-    }
+    function toggleNightNow() { nightManualOverride = !isNightActive(); calcFareNow(); }
 
     function calcFareNow() {
-      var nOn = isNightActive();
-      var nMult = nOn ? 1.5 : 1.0;
-      var km = autoKm;
-
+      var nOn = isNightActive(), nMult = nOn ? 1.5 : 1.0, km = autoKm;
       var bikeFare = Math.max(Math.round(25 * nMult), Math.round(km * 7 * nMult));
       var rickFare = Math.max(Math.round(35 * nMult), Math.round(km * 11 * nMult));
       var cabFare = Math.max(Math.round(70 * nMult), Math.round(km * 16 * nMult));
@@ -852,25 +774,12 @@
       document.getElementById("book-cta-btn").textContent = "Book " + curV + " • ₹" + finalTotal;
     }
 
-    function loadRides() {
-      try {
-        var s = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]");
-        rides = Array.isArray(s) ? s : [];
-      } catch (e) { rides = []; }
-    }
-
-    function saveRides() {
-      try { localStorage.setItem("gm_shared_rides_v1", JSON.stringify(rides)); } catch (e) {}
-    }
-
     function bookRideNow() {
       recordCustomerOwnerLog();
       loadWallet();
       var pickup = document.getElementById("pickup-inp").value.trim() || "Threeke, Ludhiana";
       var drop = document.getElementById("drop-inp").value.trim() || "Clock Tower, Ludhiana";
-      var km = autoKm;
-      var nOn = isNightActive();
-      var nMult = nOn ? 1.5 : 1.0;
+      var km = autoKm, nOn = isNightActive(), nMult = nOn ? 1.5 : 1.0;
       var baseTotal = Math.max(Math.round(curM * nMult), Math.round(km * curR * nMult));
       var total = Math.max(Math.round(curM * nMult), baseTotal + fareDelta);
 
@@ -879,59 +788,33 @@
         return;
       }
 
-      loadRides();
       rides.unshift({
         id: "GM" + Math.floor(100 + Math.random() * 900),
         rideOtp: String(Math.floor(1000 + Math.random() * 9000)),
         customerPhone: customerPhone || "+918564885647",
         customerName: customerName || "Passenger",
-        v: curV,
-        payMode: curPay,
-        km: km,
-        total: total,
-        isNight: nOn,
-        pickup: pickup,
-        drop: drop,
-        pLat: pickupCoords.lat,
-        pLng: pickupCoords.lng,
-        dLat: dropCoords.lat,
-        dLng: dropCoords.lng,
-        status: "Searching Driver",
-        riderLat: pickupCoords.lat,
-        riderLng: pickupCoords.lng,
-        walletPaid: false,
-        driverRating: 0,
-        driverFeedback: "",
-        driverBlockedByCustomer: false,
-        customerRating: 0,
-        customerFeedback: "",
-        customerBlockedByDriver: false,
-        ownerBlockedRole: "",
-        passengerRatedPromptSeen: false
+        v: curV, payMode: curPay, km: km, total: total, isNight: nOn,
+        pickup: pickup, drop: drop,
+        pLat: pickupCoords.lat, pLng: pickupCoords.lng, dLat: dropCoords.lat, dLng: dropCoords.lng,
+        status: "Searching Driver", riderLat: pickupCoords.lat, riderLng: pickupCoords.lng,
+        walletPaid: false, driverRating: 0, driverFeedback: "", driverBlockedByCustomer: false,
+        customerRating: 0, customerFeedback: "", customerBlockedByDriver: false,
+        ownerBlockedRole: "", passengerRatedPromptSeen: false
       });
-      saveRides();
-      document.getElementById("book-msg").textContent = curV + " booked (" + km + " km • " + curPay + ") • ₹" + total;
+      syncCloudRides();
+      document.getElementById("book-msg").textContent = curV + " booked & synced to cloud (" + km + " km • " + curPay + ") • ₹" + total;
       drawRidesNow();
     }
 
-    function openCancelModal(idx) {
-      cancelTargetIdx = idx;
-      document.getElementById("cancel-modal").className = "overlay show";
-    }
-
-    function closeCancelModal() {
-      cancelTargetIdx = -1;
-      document.getElementById("cancel-modal").className = "overlay";
-    }
+    function openCancelModal(idx) { cancelTargetIdx = idx; document.getElementById("cancel-modal").className = "overlay show"; }
+    function closeCancelModal() { cancelTargetIdx = -1; document.getElementById("cancel-modal").className = "overlay"; }
 
     function confirmCancelRide(reason) {
-      loadRides();
       if (cancelTargetIdx > -1 && rides[cancelTargetIdx]) {
         rides[cancelTargetIdx].status = "Cancelled (" + reason + ")";
-        saveRides();
+        syncCloudRides();
       }
-      closeCancelModal();
-      drawRidesNow();
+      closeCancelModal(); drawRidesNow();
     }
 
     function statusProgress(st) {
@@ -943,24 +826,23 @@
     }
 
     function initRideLiveMap(idx, rideObj) {
-      var elId = "p-live-map-" + idx;
-      var el = document.getElementById(elId);
-      if (!el || typeof L === "undefined") return;
-      if (pMaps[idx]) { pMaps[idx].remove(); delete pMaps[idx]; }
-
-      var aPt = { lat: rideObj.pLat || pickupCoords.lat, lng: rideObj.pLng || pickupCoords.lng };
-      var bPt = { lat: rideObj.dLat || dropCoords.lat, lng: rideObj.dLng || dropCoords.lng };
-      var prog = statusProgress(rideObj.status || "Searching Driver");
-      var curLat = (typeof rideObj.riderLat === "number") ? rideObj.riderLat : (aPt.lat + (bPt.lat - aPt.lat) * prog);
-      var curLng = (typeof rideObj.riderLng === "number") ? rideObj.riderLng : (aPt.lng + (bPt.lng - aPt.lng) * prog);
-
-      var map = L.map(elId, { zoomControl: false }).setView([curLat, curLng], 10);
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(map);
-      L.polyline([[aPt.lat, aPt.lng], [bPt.lat, bPt.lng]], { color: "#18182b", weight: 4, dashArray: "6,6" }).addTo(map);
-      L.circleMarker([aPt.lat, aPt.lng], { radius: 6, color: "#0fa968", fillOpacity: 1 }).addTo(map);
-      L.circleMarker([bPt.lat, bPt.lng], { radius: 6, color: "#ff5a36", fillOpacity: 1 }).addTo(map);
-      var riderMarker = L.circleMarker([curLat, curLng], { radius: 9, color: "#fff", weight: 2, fillColor: "#18182b", fillOpacity: 1 }).addTo(map);
-      pMaps[idx] = { map: map, marker: riderMarker, aPt: aPt, bPt: bPt };
+      try {
+        var elId = "p-live-map-" + idx, el = document.getElementById(elId);
+        if (!el || typeof L === "undefined") return;
+        if (pMaps[idx]) { pMaps[idx].remove(); delete pMaps[idx]; }
+        var aPt = { lat: rideObj.pLat || pickupCoords.lat, lng: rideObj.pLng || pickupCoords.lng };
+        var bPt = { lat: rideObj.dLat || dropCoords.lat, lng: rideObj.dLng || dropCoords.lng };
+        var prog = statusProgress(rideObj.status || "Searching Driver");
+        var curLat = (typeof rideObj.riderLat === "number") ? rideObj.riderLat : (aPt.lat + (bPt.lat - aPt.lat) * prog);
+        var curLng = (typeof rideObj.riderLng === "number") ? rideObj.riderLng : (aPt.lng + (bPt.lng - aPt.lng) * prog);
+        var map = L.map(elId, { zoomControl: false }).setView([curLat, curLng], 10);
+        L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(map);
+        L.polyline([[aPt.lat, aPt.lng], [bPt.lat, bPt.lng]], { color: "#18182b", weight: 4, dashArray: "6,6" }).addTo(map);
+        L.circleMarker([aPt.lat, aPt.lng], { radius: 6, color: "#0fa968", fillOpacity: 1 }).addTo(map);
+        L.circleMarker([bPt.lat, bPt.lng], { radius: 6, color: "#ff5a36", fillOpacity: 1 }).addTo(map);
+        var riderMarker = L.circleMarker([curLat, curLng], { radius: 9, color: "#fff", weight: 2, fillColor: "#18182b", fillOpacity: 1 }).addTo(map);
+        pMaps[idx] = { map: map, marker: riderMarker, aPt: aPt, bPt: bPt };
+      } catch (e) {}
     }
 
     function startLiveRiderWatch(idx) {
@@ -968,36 +850,23 @@
       if (pTrackTimers[idx]) { clearInterval(pTrackTimers[idx]); delete pTrackTimers[idx]; }
       var aPt = (pMaps[idx] && pMaps[idx].aPt) ? pMaps[idx].aPt : pickupCoords;
       var bPt = (pMaps[idx] && pMaps[idx].bPt) ? pMaps[idx].bPt : dropCoords;
-
       function updatePos(lat, lng, label) {
-        if (pMaps[idx] && pMaps[idx].marker && pMaps[idx].map) {
-          pMaps[idx].marker.setLatLng([lat, lng]);
-          pMaps[idx].map.panTo([lat, lng]);
-        }
+        if (pMaps[idx] && pMaps[idx].marker && pMaps[idx].map) { pMaps[idx].marker.setLatLng([lat, lng]); pMaps[idx].map.panTo([lat, lng]); }
         if (stEl) stEl.textContent = label + " (" + lat.toFixed(4) + ", " + lng.toFixed(4) + ")";
       }
-
       if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function (pos) {
-          updatePos(pos.coords.latitude, pos.coords.longitude, "Live GPS");
-        }, function () {});
+        navigator.geolocation.getCurrentPosition(function (pos) { updatePos(pos.coords.latitude, pos.coords.longitude, "Live GPS"); }, function () {});
       }
-
       var step = 0;
       pTrackTimers[idx] = setInterval(function () {
-        step += 1;
-        var t = Math.min(1, step / 8);
-        var lat = aPt.lat + (bPt.lat - aPt.lat) * t;
-        var lng = aPt.lng + (bPt.lng - aPt.lng) * t;
-        updatePos(lat, lng, t >= 1 ? "Reached Drop" : "Rider Moving Live");
+        step += 1; var t = Math.min(1, step / 8);
+        updatePos(aPt.lat + (bPt.lat - aPt.lat) * t, aPt.lng + (bPt.lng - aPt.lng) * t, t >= 1 ? "Reached Drop" : "Rider Moving Live");
         if (t >= 1) { clearInterval(pTrackTimers[idx]); delete pTrackTimers[idx]; }
       }, 650);
     }
 
     function openPassengerEndScreen(idx) {
-      loadRides();
-      var r = rides[idx];
-      if (!r) return;
+      var r = rides[idx]; if (!r) return;
       currentEndIdx = idx;
       var pm = r.payMode || "Cash";
       document.getElementById("p-end-amt").textContent = "₹" + (r.total || 0);
@@ -1011,11 +880,8 @@
     }
 
     function setDriverRating(stars) {
-      loadRides();
       if (currentEndIdx > -1 && rides[currentEndIdx]) {
-        rides[currentEndIdx].driverRating = stars;
-        rides[currentEndIdx].passengerRatedPromptSeen = true;
-        saveRides();
+        rides[currentEndIdx].driverRating = stars; rides[currentEndIdx].passengerRatedPromptSeen = true; syncCloudRides();
       }
       var btns = document.querySelectorAll("#p-end-screen .star-btn");
       for (var i = 0; i < btns.length; i++) btns[i].className = (i + 1 <= stars) ? "star-btn picked" : "star-btn";
@@ -1023,22 +889,15 @@
     }
 
     function saveDriverFeedbackNow() {
-      loadRides();
       var fb = document.getElementById("p-feedback-inp").value.trim();
-      if (currentEndIdx > -1 && rides[currentEndIdx]) {
-        rides[currentEndIdx].driverFeedback = fb;
-        saveRides();
-      }
+      if (currentEndIdx > -1 && rides[currentEndIdx]) { rides[currentEndIdx].driverFeedback = fb; syncCloudRides(); }
       document.getElementById("p-rate-msg").textContent = fb ? "Feedback saved" : "Tap stars & add feedback";
     }
 
     function toggleBlockDriverNow() {
-      loadRides();
       if (currentEndIdx > -1 && rides[currentEndIdx]) {
         var r = rides[currentEndIdx];
-        r.driverBlockedByCustomer = !r.driverBlockedByCustomer;
-        r.passengerRatedPromptSeen = true;
-        saveRides();
+        r.driverBlockedByCustomer = !r.driverBlockedByCustomer; r.passengerRatedPromptSeen = true; syncCloudRides();
         document.getElementById("p-block-btn").textContent = r.driverBlockedByCustomer ? "Unblock Driver" : "Block Driver";
         document.getElementById("p-rate-msg").textContent = r.driverBlockedByCustomer ? "Driver blocked by customer" : "Driver unblocked";
       }
@@ -1046,86 +905,48 @@
 
     function closePassengerEndScreen() {
       saveDriverFeedbackNow();
-      loadRides();
-      if (currentEndIdx > -1 && rides[currentEndIdx]) {
-        rides[currentEndIdx].passengerRatedPromptSeen = true;
-        saveRides();
-      }
+      if (currentEndIdx > -1 && rides[currentEndIdx]) { rides[currentEndIdx].passengerRatedPromptSeen = true; syncCloudRides(); }
       document.getElementById("p-end-screen").className = "full-end";
-      currentEndIdx = -1;
-      drawRidesNow();
+      currentEndIdx = -1; drawRidesNow();
     }
 
     function drawRidesNow() {
-      loadRides();
       loadWallet();
       var box = document.getElementById("rides-list");
+      if (!box) return;
       if (!rides.length) { box.innerHTML = "<p class='sub'>No rides yet.</p>"; return; }
-      var html = "";
-      var showIdx = -1;
+      var html = "", showIdx = -1, changed = false;
       for (var i = 0; i < rides.length; i++) {
         var r = rides[i] || {};
-        if (!r.rideOtp) r.rideOtp = String(Math.floor(1000 + Math.random() * 9000));
-        var st = String(r.status || "Searching Driver");
-        var pm = r.payMode || "Cash";
-        var isComp = st.toLowerCase().indexOf("complet") > -1;
-        var isCanc = st.toLowerCase().indexOf("cancel") > -1;
-
+        if (!r.rideOtp) { r.rideOtp = String(Math.floor(1000 + Math.random() * 9000)); changed = true; }
+        var st = String(r.status || "Searching Driver"), pm = r.payMode || "Cash";
+        var isComp = st.toLowerCase().indexOf("complet") > -1, isCanc = st.toLowerCase().indexOf("cancel") > -1;
         if (isComp && pm === "Wallet" && !r.walletPaid) {
           var amt = Number(r.total || 0);
-          if (walletBalance >= amt) { walletBalance -= amt; r.walletPaid = true; saveWallet(); }
+          if (walletBalance >= amt) { walletBalance -= amt; r.walletPaid = true; changed = true; saveWallet(); }
         }
-
         if (isComp && !r.passengerRatedPromptSeen && showIdx === -1) showIdx = i;
-
         var dStr = String(r.rideOtp).padStart(4, "0");
         var pinHtml = (!isComp && !isCanc)
-          ? "<div class='pin-row'>" +
-              "<span style='font-size:11px;font-weight:800;color:#474d6b;'>START RIDE PIN</span>" +
-              "<div class='pin-digits mono'>" +
-                "<span class='pin-box'>" + dStr[0] + "</span>" +
-                "<span class='pin-box'>" + dStr[1] + "</span>" +
-                "<span class='pin-box'>" + dStr[2] + "</span>" +
-                "<span class='pin-box'>" + dStr[3] + "</span>" +
-              "</div>" +
-            "</div>"
+          ? "<div class='pin-row'><span style='font-size:11px;font-weight:800;color:#474d6b;'>START RIDE PIN</span><div class='pin-digits mono'><span class='pin-box'>" + dStr[0] + "</span><span class='pin-box'>" + dStr[1] + "</span><span class='pin-box'>" + dStr[2] + "</span><span class='pin-box'>" + dStr[3] + "</span></div></div>"
           : "";
-
         var fbLine = r.driverFeedback
           ? "<div style='color:#474d6b;font-size:11px;margin-top:6px;'>Feedback: " + r.driverFeedback + (r.driverRating ? " (" + r.driverRating + " ★)" : "") + "</div>"
           : (r.driverRating ? "<div style='color:#474d6b;font-size:11px;margin-top:6px;'>Rating: " + r.driverRating + " ★</div>" : "");
-
-        var blkTag = r.driverBlockedByCustomer
-          ? "<div class='blk-tag'>Blocked by Customer</div>"
-          : (r.ownerBlockedRole ? "<div class='blk-tag'>Blocked by Owner</div>" : "");
-
-        var actionHtml = isComp
-          ? '<button type="button" class="btn btn-primary" onclick="openPassengerEndScreen(' + i + ')">Rate, Feedback & Block</button>'
+        var blkTag = r.driverBlockedByCustomer ? "<div class='blk-tag'>Blocked by Customer</div>" : (r.ownerBlockedRole ? "<div class='blk-tag'>Blocked by Owner</div>" : "");
+        var actionHtml = isComp ? '<button type="button" class="btn btn-primary" onclick="openPassengerEndScreen(' + i + ')">Rate, Feedback & Block</button>'
           : (!isCanc ? '<button type="button" class="btn btn-soft" onclick="openCancelModal(' + i + ')">Cancel Ride</button>' : "");
 
-        html += "<div class='ride-item'>" +
-          "<div class='r-top'><span>" + (r.v || "Ride") + " • <span class='mono'>₹" + (r.total || 0) + "</span> • " + pm + "</span><span class='r-badge'>" + st + "</span></div>" +
+        html += "<div class='ride-item'><div class='r-top'><span>" + (r.v || "Ride") + " • <span class='mono'>₹" + (r.total || 0) + "</span> • " + pm + "</span><span class='r-badge'>" + st + "</span></div>" +
           "<div style='font-size:12px;color:#474d6b;margin-top:4px;'>" + (r.pickup || "Pickup") + " → " + (r.drop || "Drop") + " (<span class='mono'>" + (r.km || 0) + " km</span>)</div>" +
           "<div style='font-size:11px;color:#676e8a;margin-top:2px;'>Platform Charges</div>" +
-          pinHtml +
-          blkTag +
-          fbLine +
-          "<div class='live-map-box'>" +
-            "<div id='p-live-map-" + i + "' class='live-map-el'></div>" +
-            "<div class='live-map-ft'>" +
-              "<span id='p-map-st-" + i + "'>Rider Live Map • " + st + "</span>" +
-              '<button type="button" class="mini-btn" onclick="startLiveRiderWatch(' + i + ')">Track Rider</button>' +
-            "</div>" +
-          "</div>" +
-          actionHtml +
-          "</div>";
+          pinHtml + blkTag + fbLine +
+          "<div class='live-map-box'><div id='p-live-map-" + i + "' class='live-map-el'></div><div class='live-map-ft'><span id='p-map-st-" + i + "'>Rider Live Map • " + st + "</span><button type="button" class="mini-btn" onclick="startLiveRiderWatch(' + i + ')">Track Rider</button></div></div>" +
+          actionHtml + "</div>";
       }
-      saveRides();
+      if (changed) syncCloudRides();
       box.innerHTML = html;
-
-      for (var m = 0; m < rides.length; m++) {
-        initRideLiveMap(m, rides[m] || {});
-      }
+      for (var m = 0; m < rides.length; m++) initRideLiveMap(m, rides[m] || {});
       if (showIdx > -1) openPassengerEndScreen(showIdx);
     }
 
@@ -1141,6 +962,37 @@
       document.getElementById("login-card").className = "sheet";
       document.getElementById("login-msg").textContent = "";
     }
+
+    window.sendOtpNow = sendOtpNow; window.backPhoneNow = backPhoneNow; window.verifyOtpNow = verifyOtpNow;
+    window.toggleProfile = toggleProfile; window.saveProfileNow = saveProfileNow;
+    window.addWalletMoney = addWalletMoney; window.addCustomWalletMoney = addCustomWalletMoney;
+    window.togglePinMode = togglePinMode; window.onRouteInputChange = onRouteInputChange;
+    window.pickV = pickV; window.setFareDelta = setFareDelta; window.openPaymentModal = openPaymentModal;
+    window.closePaymentModal = closePaymentModal; window.selectPaymentOption = selectPaymentOption;
+    window.toggleNightNow = toggleNightNow; window.bookRideNow = bookRideNow;
+    window.openCancelModal = openCancelModal; window.closeCancelModal = closeCancelModal; window.confirmCancelRide = confirmCancelRide;
+    window.startLiveRiderWatch = startLiveRiderWatch; window.openPassengerEndScreen = openPassengerEndScreen;
+    window.setDriverRating = setDriverRating; window.saveDriverFeedbackNow = saveDriverFeedbackNow;
+    window.toggleBlockDriverNow = toggleBlockDriverNow; window.closePassengerEndScreen = closePassengerEndScreen;
+    window.drawRidesNow = drawRidesNow; window.logout = logout;
+
+    try { var s = JSON.parse(localStorage.getItem("gm_shared_rides_v1") || "[]"); if (Array.isArray(s)) rides = s; } catch (e) {}
+    try { var a = JSON.parse(localStorage.getItem("gm_owner_accounts_v1") || "[]"); if (Array.isArray(a)) ownerAccounts = a; } catch (e) {}
+
+    onSnapshot(ridesDocRef, function (snap) {
+      if (snap.exists() && Array.isArray(snap.data().list)) {
+        rides = snap.data().list;
+        try { localStorage.setItem("gm_shared_rides_v1", JSON.stringify(rides)); } catch (e) {}
+        drawRidesNow();
+      }
+    });
+
+    onSnapshot(accountsDocRef, function (snap) {
+      if (snap.exists() && Array.isArray(snap.data().list)) {
+        ownerAccounts = snap.data().list;
+        try { localStorage.setItem("gm_owner_accounts_v1", JSON.stringify(ownerAccounts)); } catch (e) {}
+      }
+    });
   </script>
 </body>
 </html>
