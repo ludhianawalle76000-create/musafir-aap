@@ -50,7 +50,6 @@
     #main-hero-map { height: 255px; width: 100%; background: #e3e8f2; }
     .map-zoom-dock { position: absolute; right: 10px; top: 10px; z-index: 420; display: flex; flex-direction: column; gap: 6px; }
     .z-btn { width: 36px; height: 36px; border-radius: 10px; border: 1.5px solid #18182b; background: rgba(255, 255, 255, 0.95); color: #18182b; font-size: 16px; font-weight: 800; cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(24, 24, 43, 0.16); }
-    .z-btn:active { background: #18182b; color: #fff; }
     .map-caption { padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; font-size: 11px; font-weight: 700; color: #18182b; background: #f8f9fc; gap: 8px; flex-wrap: wrap; }
     .map-quick-bar { padding: 8px 14px 12px; display: flex; gap: 6px; flex-wrap: wrap; background: #f8f9fc; border-top: 1px solid #e6ebf5; }
 
@@ -121,14 +120,14 @@
     .star-btn { border: 1.5px solid rgba(255,255,255,0.3); background: rgba(255,255,255,0.08); color: #fff; border-radius: 10px; padding: 10px 4px; font-size: 13px; font-weight: 800; cursor: pointer; }
     .star-btn.picked { background: #0fa968; border-color: #0fa968; }
     .end-actions { margin-top: 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
-    .hide { display: none !important; }
+    .hide { display: none; }
   </style>
 </head>
 <body>
   <header>
     <div>
       <h1>Go Musafir</h1>
-      <p>Cloud Live • v42</p>
+      <p>Cloud Live • v43</p>
     </div>
     <div class="hdr-right">
       <a class="hdr-link" href="driver.html">Driver App</a>
@@ -147,13 +146,13 @@
       <div id="step-phone">
         <label for="phone-inp">Mobile Number</label>
         <input id="phone-inp" type="tel" value="+918564885647" />
-        <button type="button" id="send-otp-btn" class="btn btn-primary" onclick="gmShowOtpStep()">Send OTP</button>
+        <button type="button" id="send-otp-btn" class="btn btn-primary">Send OTP</button>
       </div>
       <div id="step-otp" class="hide">
         <label for="otp-inp">Enter 6-Digit OTP</label>
         <input id="otp-inp" class="mono" type="text" maxlength="6" value="123456" />
-        <button type="button" id="verify-otp-btn" class="btn btn-mint" onclick="gmCompleteLogin()">Verify & Continue</button>
-        <button type="button" id="back-phone-btn" class="btn btn-soft" onclick="gmBackToPhone()">Change Number</button>
+        <button type="button" id="verify-otp-btn" class="btn btn-mint">Verify & Continue</button>
+        <button type="button" id="back-phone-btn" class="btn btn-soft">Change Number</button>
       </div>
       <div id="login-msg" class="msg"></div>
     </div>
@@ -468,76 +467,59 @@
   </div>
 
   <script>
-    function gmShowOtpStep() {
-      var pStep = document.getElementById("step-phone");
-      var oStep = document.getElementById("step-otp");
-      var oInp = document.getElementById("otp-inp");
-      var lMsg = document.getElementById("login-msg");
-      if (pStep) {
-        pStep.classList.add("hide");
-        pStep.style.display = "none";
-      }
-      if (oStep) {
-        oStep.classList.remove("hide");
-        oStep.style.display = "block";
-      }
-      if (oInp) oInp.value = "123456";
-      if (lMsg) {
-        lMsg.style.color = "#0fa968";
-        lMsg.textContent = "OTP 123456 sent.";
+    function byId(id) { return document.getElementById(id); }
+
+    function setHidden(id, hideIt, displayMode) {
+      var el = byId(id);
+      if (!el) return;
+      if (hideIt) {
+        el.classList.add("hide");
+        el.style.display = "none";
+      } else {
+        el.classList.remove("hide");
+        el.style.display = displayMode || "block";
       }
     }
 
-    function gmBackToPhone() {
-      var pStep = document.getElementById("step-phone");
-      var oStep = document.getElementById("step-otp");
-      var lMsg = document.getElementById("login-msg");
-      if (oStep) {
-        oStep.classList.add("hide");
-        oStep.style.display = "none";
+    function sendOtpNow() {
+      setHidden("step-phone", true);
+      setHidden("step-otp", false, "block");
+      if (byId("otp-inp")) byId("otp-inp").value = "123456";
+      if (byId("login-msg")) {
+        byId("login-msg").style.color = "#0fa968";
+        byId("login-msg").textContent = "OTP 123456 sent.";
       }
-      if (pStep) {
-        pStep.classList.remove("hide");
-        pStep.style.display = "block";
-      }
-      if (lMsg) lMsg.textContent = "";
     }
 
-    function gmCompleteLogin() {
-      var lCard = document.getElementById("login-card");
-      if (lCard) {
-        lCard.classList.add("hide");
-        lCard.style.display = "none";
-      }
-      var showIds = ["hero-map-wrap", "wallet-card", "book-card", "rides-card"];
-      for (var i = 0; i < showIds.length; i++) {
-        var el = document.getElementById(showIds[i]);
-        if (el) {
-          el.classList.remove("hide");
-          el.style.display = "block";
-        }
-      }
-      var hb = document.getElementById("hdr-btns");
-      if (hb) hb.style.display = "flex";
-      if (typeof window.gmAfterLoginInit === "function") {
-        try { window.gmAfterLoginInit(); } catch (e) {}
+    function backPhoneNow() {
+      setHidden("step-otp", true);
+      setHidden("step-phone", false, "block");
+      if (byId("login-msg")) byId("login-msg").textContent = "";
+    }
+
+    function verifyOtpNow() {
+      setHidden("login-card", true);
+      setHidden("hdr-btns", false, "flex");
+      setHidden("hero-map-wrap", false, "block");
+      setHidden("wallet-card", false, "block");
+      setHidden("book-card", false, "block");
+      setHidden("rides-card", false, "block");
+      if (typeof window.gmAfterLogin === "function") {
+        try { window.gmAfterLogin(); } catch (e) {}
       }
     }
+
+    if (byId("send-otp-btn")) byId("send-otp-btn").addEventListener("click", sendOtpNow);
+    if (byId("verify-otp-btn")) byId("verify-otp-btn").addEventListener("click", verifyOtpNow);
+    if (byId("back-phone-btn")) byId("back-phone-btn").addEventListener("click", backPhoneNow);
   </script>
 
   <script>
     var curV = "Bike", curR = 7, curM = 25;
-    var fareDelta = 0;
-    var curPay = "Cash";
-    var pinMode = null;
-    var nightManualOverride = null;
-    var customerPhone = "";
-    var customerName = "";
-    var walletBalance = 0;
-    var rides = [];
-    var ownerAccounts = [];
-    var currentEndIdx = -1;
-    var cancelTargetIdx = -1;
+    var fareDelta = 0, curPay = "Cash", pinMode = null, nightManualOverride = null;
+    var customerPhone = "", customerName = "", walletBalance = 0;
+    var rides = [], ownerAccounts = [];
+    var currentEndIdx = -1, cancelTargetIdx = -1;
     var heroMap = null, heroLine = null, heroStartDot = null, heroEndDot = null;
     var pMaps = {}, pTrackTimers = {}, routeFetchTimer = null;
 
@@ -574,20 +556,12 @@
 
     var pickupCoords = { lat: 30.8615, lng: 75.8150 };
     var dropCoords = { lat: 30.9120, lng: 75.8540 };
-    var routeCoords = null;
-    var autoKm = 7.5;
-
-    function byId(id) { return document.getElementById(id); }
+    var routeCoords = null, autoKm = 7.5;
 
     function haversineRoadKm(a, b) {
-      var R = 6371;
-      var dLat = (b.lat - a.lat) * Math.PI / 180;
-      var dLng = (b.lng - a.lng) * Math.PI / 180;
-      var s1 = Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(a.lat * Math.PI / 180) * Math.cos(b.lat * Math.PI / 180) *
-        Math.sin(dLng / 2) * Math.sin(dLng / 2);
-      var straight = R * 2 * Math.atan2(Math.sqrt(s1), Math.sqrt(1 - s1));
-      return Math.max(1.0, Math.round(straight * 1.18 * 10) / 10);
+      var R = 6371, dLat = (b.lat - a.lat) * Math.PI / 180, dLng = (b.lng - a.lng) * Math.PI / 180;
+      var s1 = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(a.lat * Math.PI / 180) * Math.cos(b.lat * Math.PI / 180) * Math.sin(dLng / 2) * Math.sin(dLng / 2);
+      return Math.max(1.0, Math.round(R * 2 * Math.atan2(Math.sqrt(s1), Math.sqrt(1 - s1)) * 1.18 * 10) / 10);
     }
 
     function lookupSpot(text) {
@@ -628,30 +602,18 @@
     }
 
     function applyPinAtCoords(mode, lat, lng) {
-      var rLat = Number(lat.toFixed(4));
-      var rLng = Number(lng.toFixed(4));
-      if (mode === "pickup") {
-        pickupCoords = { lat: rLat, lng: rLng };
-        if (byId("pickup-inp")) byId("pickup-inp").value = "Pinned (" + rLat + ", " + rLng + ")";
-      } else {
-        dropCoords = { lat: rLat, lng: rLng };
-        if (byId("drop-inp")) byId("drop-inp").value = "Pinned (" + rLat + ", " + rLng + ")";
-      }
+      var rLat = Number(lat.toFixed(4)), rLng = Number(lng.toFixed(4));
+      if (mode === "pickup") { pickupCoords = { lat: rLat, lng: rLng }; if (byId("pickup-inp")) byId("pickup-inp").value = "Pinned (" + rLat + ", " + rLng + ")"; }
+      else { dropCoords = { lat: rLat, lng: rLng }; if (byId("drop-inp")) byId("drop-inp").value = "Pinned (" + rLat + ", " + rLng + ")"; }
       pinMode = null;
       if (byId("btn-pin-pickup")) byId("btn-pin-pickup").className = "pin-action-btn";
       if (byId("btn-pin-drop")) byId("btn-pin-drop").className = "pin-action-btn";
       if (byId("pin-mode-note")) byId("pin-mode-note").textContent = (mode === "pickup" ? "Pickup pin set!" : "Drop pin set!");
       routeCoords = null;
       autoKm = haversineRoadKm(pickupCoords, dropCoords);
-      refreshHeroMapRoute();
-      calcFareNow();
+      refreshHeroMapRoute(); calcFareNow();
       fetchOsrmRoadRoute(pickupCoords, dropCoords, function (osrm) {
-        if (osrm && osrm.km) {
-          autoKm = osrm.km;
-          routeCoords = osrm.pts;
-          refreshHeroMapRoute();
-          calcFareNow();
-        }
+        if (osrm && osrm.km) { autoKm = osrm.km; routeCoords = osrm.pts; refreshHeroMapRoute(); calcFareNow(); }
       });
     }
 
@@ -659,35 +621,19 @@
       pinMode = (pinMode === mode) ? null : mode;
       if (byId("btn-pin-pickup")) byId("btn-pin-pickup").className = pinMode === "pickup" ? "pin-action-btn active" : "pin-action-btn";
       if (byId("btn-pin-drop")) byId("btn-pin-drop").className = pinMode === "drop" ? "pin-action-btn active" : "pin-action-btn";
-      if (byId("pin-mode-note")) {
-        byId("pin-mode-note").textContent = pinMode === "pickup"
-          ? "Zoom map & tap anywhere to set Pickup pin."
-          : (pinMode === "drop" ? "Zoom map & tap anywhere to set Drop pin." : "");
-      }
-      var mapCard = byId("hero-map-wrap");
-      if (pinMode && mapCard) {
-        mapCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+      if (byId("pin-mode-note")) byId("pin-mode-note").textContent = pinMode === "pickup" ? "Zoom map & tap anywhere to set Pickup pin." : (pinMode === "drop" ? "Zoom map & tap anywhere to set Drop pin." : "");
+      if (pinMode && byId("hero-map-wrap")) {
+        byId("hero-map-wrap").scrollIntoView({ behavior: "smooth", block: "nearest" });
         setTimeout(function () { if (heroMap) heroMap.invalidateSize(); }, 250);
       }
     }
 
     function zoomHeroMap(delta) {
-      try {
-        if (!heroMap) initHeroMap();
-        if (!heroMap) return;
-        heroMap.invalidateSize();
-        if (delta > 0) heroMap.zoomIn();
-        else heroMap.zoomOut();
-      } catch (e) {}
+      try { if (!heroMap) initHeroMap(); if (!heroMap) return; heroMap.invalidateSize(); if (delta > 0) heroMap.zoomIn(); else heroMap.zoomOut(); } catch (e) {}
     }
 
     function fitHeroMap() {
-      try {
-        if (!heroMap) initHeroMap();
-        if (!heroMap) return;
-        heroMap.invalidateSize();
-        heroMap.fitBounds([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { padding: [24, 24] });
-      } catch (e) {}
+      try { if (!heroMap) initHeroMap(); if (!heroMap) return; heroMap.invalidateSize(); heroMap.fitBounds([[pickupCoords.lat, pickupCoords.lng], [dropCoords.lat, dropCoords.lng]], { padding: [24, 24] }); } catch (e) {}
     }
 
     function refreshHeroMapRoute() {
@@ -709,8 +655,7 @@
       try {
         var pTxt = byId("pickup-inp") ? byId("pickup-inp").value.trim() : "";
         var dTxt = byId("drop-inp") ? byId("drop-inp").value.trim() : "";
-        var pLocal = lookupSpot(pTxt);
-        var dLocal = lookupSpot(dTxt);
+        var pLocal = lookupSpot(pTxt), dLocal = lookupSpot(dTxt);
         if (pLocal) pickupCoords = pLocal;
         if (dLocal) dropCoords = dLocal;
         routeCoords = null;
@@ -718,20 +663,16 @@
         if (byId("auto-dist-val")) byId("auto-dist-val").textContent = autoKm + " km";
         if (byId("hero-dist-badge")) byId("hero-dist-badge").textContent = autoKm + " km";
         if (byId("hero-route-lbl")) byId("hero-route-lbl").textContent = (pTxt || "Pickup") + " → " + (dTxt || "Drop");
-        refreshHeroMapRoute();
-        calcFareNow();
-
+        refreshHeroMapRoute(); calcFareNow();
         clearTimeout(routeFetchTimer);
         routeFetchTimer = setTimeout(function () {
           function afterCoordsReady() {
             fetchOsrmRoadRoute(pickupCoords, dropCoords, function (osrm) {
               if (osrm && osrm.km) {
-                autoKm = osrm.km;
-                routeCoords = osrm.pts;
+                autoKm = osrm.km; routeCoords = osrm.pts;
                 if (byId("auto-dist-val")) byId("auto-dist-val").textContent = autoKm + " km";
                 if (byId("hero-dist-badge")) byId("hero-dist-badge").textContent = autoKm + " km";
-                refreshHeroMapRoute();
-                calcFareNow();
+                refreshHeroMapRoute(); calcFareNow();
               }
             });
           }
@@ -753,10 +694,7 @@
         if (heroMap) { heroMap.remove(); heroMap = null; }
         heroMap = L.map("main-hero-map", { zoomControl: true }).setView([30.9010, 75.8573], 12);
         L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", { maxZoom: 19, attribution: "© OSM" }).addTo(heroMap);
-        heroMap.on("click", function (e) {
-          if (!e || !e.latlng) return;
-          applyPinAtCoords(pinMode || "drop", e.latlng.lat, e.latlng.lng);
-        });
+        heroMap.on("click", function (e) { if (e && e.latlng) applyPinAtCoords(pinMode || "drop", e.latlng.lat, e.latlng.lng); });
         refreshHeroMapRoute();
         setTimeout(function () { if (heroMap) heroMap.invalidateSize(); }, 150);
         setTimeout(function () { if (heroMap) heroMap.invalidateSize(); }, 500);
@@ -780,25 +718,19 @@
     }
 
     function addCustomWalletMoney() {
-      var inp = byId("wallet-add-inp");
-      var v = inp ? Number(inp.value || 0) : 0;
+      var inp = byId("wallet-add-inp"), v = inp ? Number(inp.value || 0) : 0;
       if (v <= 0) { if (byId("wallet-msg")) byId("wallet-msg").textContent = "Enter valid amount."; return; }
-      addWalletMoney(v);
-      if (inp) inp.value = "";
+      addWalletMoney(v); if (inp) inp.value = "";
     }
 
     function syncCloudRides() {
       try { localStorage.setItem("gm_shared_rides_v1", JSON.stringify(rides)); } catch (e) {}
-      if (typeof window.gmPushRidesToCloud === "function") {
-        try { window.gmPushRidesToCloud(rides); } catch (e) {}
-      }
+      if (typeof window.gmPushRidesToCloud === "function") { try { window.gmPushRidesToCloud(rides); } catch (e) {} }
     }
 
     function syncCloudAccounts() {
       try { localStorage.setItem("gm_owner_accounts_v1", JSON.stringify(ownerAccounts)); } catch (e) {}
-      if (typeof window.gmPushAccountsToCloud === "function") {
-        try { window.gmPushAccountsToCloud(ownerAccounts); } catch (e) {}
-      }
+      if (typeof window.gmPushAccountsToCloud === "function") { try { window.gmPushAccountsToCloud(ownerAccounts); } catch (e) {} }
     }
 
     function recordCustomerOwnerLog() {
@@ -811,8 +743,7 @@
         for (var i = 0; i < ownerAccounts.length; i++) {
           if (ownerAccounts[i].type === "Customer" && ownerAccounts[i].phone === customerPhone) {
             if (customerName) ownerAccounts[i].name = customerName;
-            ownerAccounts[i].lastSeen = new Date().toLocaleString();
-            found = true;
+            ownerAccounts[i].lastSeen = new Date().toLocaleString(); found = true;
           }
         }
         if (!found) ownerAccounts.unshift({ type: "Customer", name: customerName || "Passenger", phone: customerPhone, time: new Date().toLocaleString() });
@@ -820,7 +751,7 @@
       } catch (e) {}
     }
 
-    window.gmAfterLoginInit = function () {
+    window.gmAfterLogin = function () {
       try { recordCustomerOwnerLog(); } catch (e) {}
       try { loadWallet(); } catch (e) {}
       try { calcFareNow(); } catch (e) {}
@@ -830,18 +761,13 @@
     };
 
     function toggleProfile() {
-      var pc = byId("profile-card");
-      if (!pc) return;
-      pc.classList.toggle("hide");
-      pc.style.display = pc.classList.contains("hide") ? "none" : "block";
+      var pc = byId("profile-card"); if (!pc) return;
+      if (pc.classList.contains("hide")) setHidden("profile-card", false, "block"); else setHidden("profile-card", true);
     }
 
     function saveProfileNow() {
-      var nEl = byId("p-name");
-      var n = nEl ? nEl.value.trim() : "";
-      if (!n) return;
-      customerName = n;
-      recordCustomerOwnerLog();
+      var n = byId("p-name") ? byId("p-name").value.trim() : ""; if (!n) return;
+      customerName = n; recordCustomerOwnerLog();
       if (byId("book-title")) byId("book-title").textContent = "Hi " + n + ", where in Punjab?";
       if (byId("profile-msg")) byId("profile-msg").textContent = "Profile saved!";
     }
@@ -849,9 +775,7 @@
     function pickV(el) {
       document.querySelectorAll(".v-row").forEach(function (r) { r.classList.remove("active"); });
       el.classList.add("active");
-      curV = el.getAttribute("data-v") || "Bike";
-      curR = Number(el.getAttribute("data-r") || 7);
-      curM = Number(el.getAttribute("data-m") || 25);
+      curV = el.getAttribute("data-v") || "Bike"; curR = Number(el.getAttribute("data-r") || 7); curM = Number(el.getAttribute("data-m") || 25);
       fareDelta = 0;
       document.querySelectorAll(".adj-btn").forEach(function (b) { b.classList.remove("on"); });
       if (byId("adj-zero")) byId("adj-zero").classList.add("on");
@@ -870,23 +794,19 @@
       if (byId("pay-modal-amt") && byId("fare-total")) byId("pay-modal-amt").textContent = byId("fare-total").textContent;
       if (byId("pay-modal-wbal")) byId("pay-modal-wbal").textContent = "Balance ₹" + walletBalance;
       document.querySelectorAll("#payment-modal .pay-opt-row").forEach(function (row) {
-        if (row.getAttribute("data-pm") === curPay) row.classList.add("active");
-        else row.classList.remove("active");
+        if (row.getAttribute("data-pm") === curPay) row.classList.add("active"); else row.classList.remove("active");
       });
       if (byId("payment-modal")) byId("payment-modal").classList.add("show");
     }
 
-    function closePaymentModal() {
-      if (byId("payment-modal")) byId("payment-modal").classList.remove("show");
-    }
+    function closePaymentModal() { if (byId("payment-modal")) byId("payment-modal").classList.remove("show"); }
 
     function selectPaymentOption(el) {
       curPay = el.getAttribute("data-pm") || "Cash";
       if (byId("selected-pay-lbl")) byId("selected-pay-lbl").textContent = curPay;
       document.querySelectorAll("#payment-modal .pay-opt-row").forEach(function (row) { row.classList.remove("active"); });
       el.classList.add("active");
-      calcFareNow();
-      closePaymentModal();
+      calcFareNow(); closePaymentModal();
     }
 
     function toggleNightNow() { nightManualOverride = !isNightActive(); calcFareNow(); }
@@ -921,8 +841,7 @@
     }
 
     function bookRideNow() {
-      recordCustomerOwnerLog();
-      loadWallet();
+      recordCustomerOwnerLog(); loadWallet();
       var pickup = (byId("pickup-inp") && byId("pickup-inp").value.trim()) || "Threeke, Ludhiana";
       var drop = (byId("drop-inp") && byId("drop-inp").value.trim()) || "Clock Tower, Ludhiana";
       var km = autoKm, nOn = isNightActive(), nMult = nOn ? 1.5 : 1.0;
@@ -937,10 +856,8 @@
       var generatedPin = String(Math.floor(1000 + Math.random() * 9000));
       rides.unshift({
         id: "GM" + Math.floor(100 + Math.random() * 900),
-        rideOtp: generatedPin,
-        pin: generatedPin,
-        customerPhone: customerPhone || "+918564885647",
-        customerName: customerName || "Passenger",
+        rideOtp: generatedPin, pin: generatedPin,
+        customerPhone: customerPhone || "+918564885647", customerName: customerName || "Passenger",
         v: curV, payMode: curPay, km: km, total: total, isNight: nOn,
         pickup: pickup, drop: drop,
         pLat: pickupCoords.lat, pLng: pickupCoords.lng, dLat: dropCoords.lat, dLng: dropCoords.lng,
@@ -958,12 +875,8 @@
     function closeCancelModal() { cancelTargetIdx = -1; if (byId("cancel-modal")) byId("cancel-modal").classList.remove("show"); }
 
     function confirmCancelRide(reason) {
-      if (cancelTargetIdx !== -1 && rides[cancelTargetIdx]) {
-        rides[cancelTargetIdx].status = "Cancelled (" + reason + ")";
-        syncCloudRides();
-      }
-      closeCancelModal();
-      drawRidesNow();
+      if (cancelTargetIdx !== -1 && rides[cancelTargetIdx]) { rides[cancelTargetIdx].status = "Cancelled (" + reason + ")"; syncCloudRides(); }
+      closeCancelModal(); drawRidesNow();
     }
 
     function statusProgress(st) {
@@ -1016,14 +929,12 @@
 
     function openPassengerEndScreen(idx) {
       var r = rides[idx]; if (!r) return;
-      currentEndIdx = idx;
-      var pm = r.payMode || "Cash";
+      currentEndIdx = idx; var pm = r.payMode || "Cash";
       if (byId("p-end-amt")) byId("p-end-amt").textContent = "₹" + (r.total || 0);
       if (byId("p-end-route")) byId("p-end-route").textContent = (r.v || "Ride") + " • " + pm + " • " + (r.pickup || "Pickup") + " → " + (r.drop || "Drop") + " (" + (r.km || 0) + " km)";
       if (byId("p-feedback-inp")) byId("p-feedback-inp").value = r.driverFeedback || "";
       document.querySelectorAll("#p-end-screen .star-btn").forEach(function (btn, i) {
-        if (i + 1 <= (r.driverRating || 0)) btn.classList.add("picked");
-        else btn.classList.remove("picked");
+        if (i + 1 <= (r.driverRating || 0)) btn.classList.add("picked"); else btn.classList.remove("picked");
       });
       if (byId("p-block-btn")) byId("p-block-btn").textContent = r.driverBlockedByCustomer ? "Unblock Driver" : "Block Driver";
       if (byId("p-rate-msg")) byId("p-rate-msg").textContent = r.driverRating ? "Rated " + r.driverRating + " ★" : "Tap stars & add feedback";
@@ -1031,27 +942,20 @@
     }
 
     function setDriverRating(stars) {
-      if (currentEndIdx !== -1 && rides[currentEndIdx]) {
-        rides[currentEndIdx].driverRating = stars; rides[currentEndIdx].passengerRatedPromptSeen = true; syncCloudRides();
-      }
-      document.querySelectorAll("#p-end-screen .star-btn").forEach(function (btn, i) {
-        if (i + 1 <= stars) btn.classList.add("picked");
-        else btn.classList.remove("picked");
-      });
+      if (currentEndIdx !== -1 && rides[currentEndIdx]) { rides[currentEndIdx].driverRating = stars; rides[currentEndIdx].passengerRatedPromptSeen = true; syncCloudRides(); }
+      document.querySelectorAll("#p-end-screen .star-btn").forEach(function (btn, i) { if (i + 1 <= stars) btn.classList.add("picked"); else btn.classList.remove("picked"); });
       if (byId("p-rate-msg")) byId("p-rate-msg").textContent = "Rated " + stars + " ★";
     }
 
     function saveDriverFeedbackNow() {
-      var fbEl = byId("p-feedback-inp");
-      var fb = fbEl ? fbEl.value.trim() : "";
+      var fb = byId("p-feedback-inp") ? byId("p-feedback-inp").value.trim() : "";
       if (currentEndIdx !== -1 && rides[currentEndIdx]) { rides[currentEndIdx].driverFeedback = fb; syncCloudRides(); }
       if (byId("p-rate-msg")) byId("p-rate-msg").textContent = fb ? "Feedback saved" : "Tap stars & add feedback";
     }
 
     function toggleBlockDriverNow() {
       if (currentEndIdx !== -1 && rides[currentEndIdx]) {
-        var r = rides[currentEndIdx];
-        r.driverBlockedByCustomer = !r.driverBlockedByCustomer; r.passengerRatedPromptSeen = true; syncCloudRides();
+        var r = rides[currentEndIdx]; r.driverBlockedByCustomer = !r.driverBlockedByCustomer; r.passengerRatedPromptSeen = true; syncCloudRides();
         if (byId("p-block-btn")) byId("p-block-btn").textContent = r.driverBlockedByCustomer ? "Unblock Driver" : "Block Driver";
         if (byId("p-rate-msg")) byId("p-rate-msg").textContent = r.driverBlockedByCustomer ? "Driver blocked by customer" : "Driver unblocked";
       }
@@ -1061,26 +965,19 @@
       saveDriverFeedbackNow();
       if (currentEndIdx !== -1 && rides[currentEndIdx]) { rides[currentEndIdx].passengerRatedPromptSeen = true; syncCloudRides(); }
       if (byId("p-end-screen")) byId("p-end-screen").classList.remove("show");
-      currentEndIdx = -1;
-      drawRidesNow();
+      currentEndIdx = -1; drawRidesNow();
     }
 
     function drawRidesNow() {
       try {
         loadWallet();
-        var box = byId("rides-list");
-        if (!box) return;
+        var box = byId("rides-list"); if (!box) return;
         if (!rides.length) { box.innerHTML = "<p class='sub'>No rides yet.</p>"; return; }
         var html = "", showIdx = -1, changed = false;
         for (var i = 0; i < rides.length; i++) {
           var r = rides[i] || {};
           var rawPin = r.rideOtp || r.pin;
-          if (!rawPin) {
-            rawPin = String(Math.floor(1000 + Math.random() * 9000));
-            r.rideOtp = rawPin;
-            r.pin = rawPin;
-            changed = true;
-          }
+          if (!rawPin) { rawPin = String(Math.floor(1000 + Math.random() * 9000)); r.rideOtp = rawPin; r.pin = rawPin; changed = true; }
           var st = String(r.status || "Searching Driver"), pm = r.payMode || "Cash";
           var isComp = st.toLowerCase().indexOf("complet") !== -1, isCanc = st.toLowerCase().indexOf("cancel") !== -1;
           if (isComp && pm === "Wallet" && !r.walletPaid) {
@@ -1089,16 +986,10 @@
           }
           if (isComp && !r.passengerRatedPromptSeen && showIdx === -1) showIdx = i;
           var dStr = String(rawPin).padStart(4, "0");
-          var pinHtml = (!isComp && !isCanc)
-            ? "<div class='pin-row'><span style='font-size:11px;font-weight:800;color:#474d6b;'>START RIDE PIN</span><div class='pin-digits mono'><span class='pin-box'>" + dStr[0] + "</span><span class='pin-box'>" + dStr[1] + "</span><span class='pin-box'>" + dStr[2] + "</span><span class='pin-box'>" + dStr[3] + "</span></div></div>"
-            : "";
-          var fbLine = r.driverFeedback
-            ? "<div style='color:#474d6b;font-size:11px;margin-top:6px;'>Feedback: " + r.driverFeedback + (r.driverRating ? " (" + r.driverRating + " ★)" : "") + "</div>"
-            : (r.driverRating ? "<div style='color:#474d6b;font-size:11px;margin-top:6px;'>Rating: " + r.driverRating + " ★</div>" : "");
+          var pinHtml = (!isComp && !isCanc) ? "<div class='pin-row'><span style='font-size:11px;font-weight:800;color:#474d6b;'>START RIDE PIN</span><div class='pin-digits mono'><span class='pin-box'>" + dStr[0] + "</span><span class='pin-box'>" + dStr[1] + "</span><span class='pin-box'>" + dStr[2] + "</span><span class='pin-box'>" + dStr[3] + "</span></div></div>" : "";
+          var fbLine = r.driverFeedback ? "<div style='color:#474d6b;font-size:11px;margin-top:6px;'>Feedback: " + r.driverFeedback + (r.driverRating ? " (" + r.driverRating + " ★)" : "") + "</div>" : (r.driverRating ? "<div style='color:#474d6b;font-size:11px;margin-top:6px;'>Rating: " + r.driverRating + " ★</div>" : "");
           var blkTag = r.driverBlockedByCustomer ? "<div class='blk-tag'>Blocked by Customer</div>" : (r.ownerBlockedRole ? "<div class='blk-tag'>Blocked by Owner</div>" : "");
-          var actionHtml = isComp
-            ? '<button type="button" class="btn btn-primary" data-open-end="' + i + '">Rate, Feedback & Block</button>'
-            : (!isCanc ? '<button type="button" class="btn btn-soft" data-cancel-idx="' + i + '">Cancel Ride</button>' : "");
+          var actionHtml = isComp ? '<button type="button" class="btn btn-primary" data-open-end="' + i + '">Rate, Feedback & Block</button>' : (!isCanc ? '<button type="button" class="btn btn-soft" data-cancel-idx="' + i + '">Cancel Ride</button>' : "");
 
           html += "<div class='ride-item'><div class='r-top'><span>" + (r.v || "Ride") + " • <span class='mono'>₹" + (r.total || 0) + "</span> • " + pm + "</span><span class='r-badge'>" + st + "</span></div>" +
             "<div style='font-size:12px;color:#474d6b;margin-top:4px;'>" + (r.pickup || "Pickup") + " → " + (r.drop || "Drop") + " (<span class='mono'>" + (r.km || 0) + " km</span>)</div>" +
@@ -1115,44 +1006,27 @@
     }
 
     function logout() {
-      if (byId("hdr-btns")) byId("hdr-btns").style.display = "none";
-      ["profile-card", "hero-map-wrap", "wallet-card", "book-card", "rides-card"].forEach(function (id) {
-        if (byId(id)) { byId(id).classList.add("hide"); byId(id).style.display = "none"; }
-      });
-      if (byId("step-otp")) { byId("step-otp").classList.add("hide"); byId("step-otp").style.display = "none"; }
-      if (byId("step-phone")) { byId("step-phone").classList.remove("hide"); byId("step-phone").style.display = "block"; }
-      if (byId("login-card")) { byId("login-card").classList.remove("hide"); byId("login-card").style.display = "block"; }
+      setHidden("hdr-btns", true);
+      ["profile-card", "hero-map-wrap", "wallet-card", "book-card", "rides-card"].forEach(function (id) { setHidden(id, true); });
+      setHidden("step-otp", true);
+      setHidden("step-phone", false, "block");
+      setHidden("login-card", false, "block");
       if (byId("login-msg")) byId("login-msg").textContent = "";
     }
 
     document.addEventListener("click", function (e) {
-      var t = e.target;
-      if (!t) return;
-      var btn = t.closest("button");
-      var vRow = t.closest(".v-row");
-      var payRow = t.closest("#payment-modal .pay-opt-row");
-
+      var t = e.target; if (!t) return;
+      var btn = t.closest("button"), vRow = t.closest(".v-row"), payRow = t.closest("#payment-modal .pay-opt-row");
       if (btn) {
         var id = btn.id;
-        if (id === "send-otp-btn") { e.preventDefault(); gmShowOtpStep(); return; }
-        if (id === "back-phone-btn") { e.preventDefault(); gmBackToPhone(); return; }
-        if (id === "verify-otp-btn") { e.preventDefault(); gmCompleteLogin(); return; }
         if (id === "btn-toggle-profile" || id === "btn-close-profile") { toggleProfile(); return; }
         if (id === "btn-logout") { logout(); return; }
         if (id === "btn-save-profile") { saveProfileNow(); return; }
         if (id === "btn-zoom-in" || id === "qzoom-in-btn") { zoomHeroMap(1); return; }
         if (id === "btn-zoom-out" || id === "qzoom-out-btn") { zoomHeroMap(-1); return; }
         if (id === "btn-zoom-fit") { fitHeroMap(); return; }
-        if (id === "qpin-pickup-btn") {
-          var cp = heroMap ? heroMap.getCenter() : pickupCoords;
-          applyPinAtCoords("pickup", cp.lat, cp.lng);
-          return;
-        }
-        if (id === "qpin-drop-btn") {
-          var cd = heroMap ? heroMap.getCenter() : dropCoords;
-          applyPinAtCoords("drop", cd.lat, cd.lng);
-          return;
-        }
+        if (id === "qpin-pickup-btn") { var cp = heroMap ? heroMap.getCenter() : pickupCoords; applyPinAtCoords("pickup", cp.lat, cp.lng); return; }
+        if (id === "qpin-drop-btn") { var cd = heroMap ? heroMap.getCenter() : dropCoords; applyPinAtCoords("drop", cd.lat, cd.lng); return; }
         if (btn.hasAttribute("data-wadd")) { addWalletMoney(Number(btn.getAttribute("data-wadd"))); return; }
         if (id === "btn-wadd-custom") { addCustomWalletMoney(); return; }
         if (id === "btn-pin-pickup") { togglePinMode("pickup"); return; }
@@ -1171,15 +1045,13 @@
         if (id === "p-block-btn") { toggleBlockDriverNow(); return; }
         if (id === "p-done-btn") { closePassengerEndScreen(); return; }
       }
-
       if (vRow) { pickV(vRow); return; }
       if (payRow) { selectPaymentOption(payRow); return; }
       if (t.closest("#open-pay-box")) { openPaymentModal(); }
     });
 
     document.addEventListener("input", function (e) {
-      var t = e.target;
-      if (!t) return;
+      var t = e.target; if (!t) return;
       if (t.id === "pickup-inp" || t.id === "drop-inp") onRouteInputChange();
       if (t.id === "p-feedback-inp") saveDriverFeedbackNow();
     });
@@ -1211,12 +1083,8 @@
       var ridesDocRef = doc(db, "gm_cloud", "shared_rides");
       var accountsDocRef = doc(db, "gm_cloud", "owner_accounts");
 
-      window.gmPushRidesToCloud = function (list) {
-        setDoc(ridesDocRef, { list: list, updatedAt: Date.now() }).catch(function () {});
-      };
-      window.gmPushAccountsToCloud = function (list) {
-        setDoc(accountsDocRef, { list: list, updatedAt: Date.now() }).catch(function () {});
-      };
+      window.gmPushRidesToCloud = function (list) { setDoc(ridesDocRef, { list: list, updatedAt: Date.now() }).catch(function () {}); };
+      window.gmPushAccountsToCloud = function (list) { setDoc(accountsDocRef, { list: list, updatedAt: Date.now() }).catch(function () {}); };
 
       onSnapshot(ridesDocRef, function (snap) {
         if (snap.exists() && Array.isArray(snap.data().list)) {
