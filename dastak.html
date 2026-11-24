@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Dastak — Nearby Connections</title>
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
   <style>
     :root {
       --bg: #050914;
@@ -1068,7 +1069,7 @@
     <button class="close-btn" style="margin-top:14px;">Close</button>
   </div>
 
-  <!-- MEMBERSHIP PLANS MODAL (Xtra / Unlimited / Edge) -->
+  <!-- MEMBERSHIP PLANS MODAL (Xtra / Unlimited / Edge + Payment Gateway) -->
   <div class="modal" id="payModal">
     <div class="modal-header">
       <strong>Dastak Membership Plans</strong>
@@ -1107,8 +1108,8 @@
         <input type="text" id="payDetailInput" placeholder="yourname@okaxis" />
       </div>
 
-      <button class="btn btn-xtra" style="width:100%;" id="payActionBtn" onclick="activateCheckoutPlan()">
-        Continue · ₹250 (1 Week)
+      <button class="btn btn-xtra" style="width:100%;" id="payActionBtn" onclick="startPaymentGateway()">
+        Continue · ₹250 (Xtra · 1 Week)
       </button>
     </div>
   </div>
@@ -1195,7 +1196,8 @@
           verificationStatus: remote.verificationStatus || window.userAccount.verificationStatus,
           planType: plan,
           hasWeeklyPlan: plan !== "free",
-          paymentMethod: remote.paymentMethod || window.userAccount.paymentMethod
+          paymentMethod: remote.paymentMethod || window.userAccount.paymentMethod,
+          lastPaymentRef: remote.lastPaymentRef || window.userAccount.lastPaymentRef || ""
         };
         window.saveAccount(true);
         if (window.activeChatUser) {
@@ -1236,6 +1238,7 @@
           planType: plan,
           hasWeeklyPlan: plan !== "free",
           paymentMethod: accountObj.paymentMethod || "UPI",
+          lastPaymentRef: accountObj.lastPaymentRef || "",
           lat: typeof coords.lat === "number" ? coords.lat : null,
           lng: typeof coords.lng === "number" ? coords.lng : null,
           lastSeen: Date.now(),
@@ -1317,6 +1320,8 @@
   <!-- APP LOGIC -->
   <script>
     const OWNER_PIN = "1234";
+    // Apni Razorpay Key ID yahan daalein (e.g. "rzp_live_xxxxxxxxxxxx"). Khali rehne par test/demo activation chalega.
+    const RAZORPAY_KEY_ID = "";
 
     const PLANS_CATALOG = {
       free: {
@@ -1327,6 +1332,7 @@
         limit: 40,
         canDeleteMsg: true,
         priceText: "Free",
+        amountInr: 0,
         nextOwnerPlan: "xtra_1w"
       },
       xtra_1w: {
@@ -1337,6 +1343,7 @@
         limit: 600,
         canDeleteMsg: true,
         priceText: "₹250",
+        amountInr: 250,
         nextOwnerPlan: "unlimited_1w"
       },
       xtra_1m: {
@@ -1347,6 +1354,7 @@
         limit: 600,
         canDeleteMsg: true,
         priceText: "₹365",
+        amountInr: 365,
         nextOwnerPlan: "unlimited_1w"
       },
       xtra_3m: {
@@ -1357,6 +1365,7 @@
         limit: 600,
         canDeleteMsg: true,
         priceText: "₹730",
+        amountInr: 730,
         nextOwnerPlan: "unlimited_1w"
       },
       xtra_12m: {
@@ -1367,6 +1376,7 @@
         limit: 600,
         canDeleteMsg: true,
         priceText: "₹1,825",
+        amountInr: 1825,
         nextOwnerPlan: "unlimited_1w"
       },
       unlimited_1w: {
@@ -1377,6 +1387,7 @@
         limit: 9999,
         canDeleteMsg: true,
         priceText: "₹492",
+        amountInr: 492,
         nextOwnerPlan: "edge_1w"
       },
       unlimited_1m: {
@@ -1387,6 +1398,7 @@
         limit: 9999,
         canDeleteMsg: true,
         priceText: "₹820",
+        amountInr: 820,
         nextOwnerPlan: "edge_1w"
       },
       edge_1w: {
@@ -1397,6 +1409,7 @@
         limit: 9999,
         canDeleteMsg: true,
         priceText: "₹7,800",
+        amountInr: 7800,
         nextOwnerPlan: "free"
       },
       edge_1m: {
@@ -1407,6 +1420,7 @@
         limit: 9999,
         canDeleteMsg: true,
         priceText: "₹13,300",
+        amountInr: 13300,
         nextOwnerPlan: "free"
       }
     };
@@ -1584,7 +1598,8 @@
       blockedIds: Array.isArray(savedAcc.blockedIds) ? savedAcc.blockedIds : [],
       planType: initialPlan,
       hasWeeklyPlan: initialPlan !== "free",
-      paymentMethod: savedAcc.paymentMethod || "UPI"
+      paymentMethod: savedAcc.paymentMethod || "UPI",
+      lastPaymentRef: savedAcc.lastPaymentRef || ""
     };
 
     window.chats = JSON.parse(localStorage.getItem("dastak_chats_v1") || "{}");
@@ -1699,16 +1714,55 @@
       actionBtn.innerText = `Continue · ${selectedPlan.priceText} (${selectedPlan.label})`;
     }
 
-    function activateCheckoutPlan() {
-      const selectedPlan = PLANS_CATALOG[activeCheckoutPlanKey] || PLANS_CATALOG.xtra_1w;
+    function finalizePlanActivation(selectedPlan, paymentRef) {
       window.userAccount.planType = selectedPlan.id;
       window.userAccount.hasWeeklyPlan = selectedPlan.id !== "free";
       window.userAccount.paymentMethod = selectedPayMethod;
+      window.userAccount.lastPaymentRef = paymentRef;
       window.saveAccount();
       closeModal("payModal");
       renderGrid();
       window.renderMessages();
-      alert(`${selectedPlan.label} (${selectedPlan.priceText} via ${selectedPayMethod}) active ho gaya hai!`);
+      alert(`${selectedPlan.label} (${selectedPlan.priceText}) active ho gaya hai! Ref: ${paymentRef}`);
+    }
+
+    function startPaymentGateway() {
+      const selectedPlan = PLANS_CATALOG[activeCheckoutPlanKey] || PLANS_CATALOG.xtra_1w;
+      const detailVal = (document.getElementById("payDetailInput")?.value || "").trim();
+
+      // Agar asli Razorpay Key set hai toh Razorpay Checkout kholega
+      if (RAZORPAY_KEY_ID && typeof window.Razorpay === "function") {
+        const options = {
+          key: RAZORPAY_KEY_ID,
+          amount: selectedPlan.amountInr * 100,
+          currency: "INR",
+          name: "Dastak",
+          description: selectedPlan.label,
+          prefill: {
+            name: window.userAccount.name || "Preet"
+          },
+          notes: {
+            planId: selectedPlan.id,
+            method: selectedPayMethod,
+            handle: detailVal
+          },
+          theme: { color: "#06b6d4" },
+          handler: function(response) {
+            const refId = response.razorpay_payment_id || ("rzp_" + Date.now());
+            finalizePlanActivation(selectedPlan, refId);
+          }
+        };
+        const rzp = new window.Razorpay(options);
+        rzp.on("payment.failed", function(resp) {
+          alert("Payment fail ho gaya: " + (resp.error?.description || "Try again"));
+        });
+        rzp.open();
+        return;
+      }
+
+      // Key set na ho toh test/demo payment flow se turant unlock hota hai
+      const demoRef = "TEST_PAY_" + Math.random().toString(36).slice(2, 8).toUpperCase();
+      finalizePlanActivation(selectedPlan, demoRef);
     }
 
     function renderGrid() {
@@ -2295,6 +2349,7 @@
             <strong>User ID:</strong> ${u.uid || "local"}<br/>
             <strong>Age / Vibe:</strong> ${u.age || "—"} yrs · ${u.tag || "—"}<br/>
             <strong>GPS Coords:</strong> ${gpsText}<br/>
+            <strong>Payment Ref:</strong> ${u.lastPaymentRef || "None"}<br/>
             <strong>ID Type:</strong> ${u.idType || "Aadhaar Card"}<br/>
             <strong>ID Ref:</strong> ${u.idNumber || "Not entered"}<br/>
             <strong>Status:</strong> ${u.verificationStatus || "Pending"}<br/>
@@ -2374,3 +2429,4 @@
   </script>
 </body>
 </html>
+
