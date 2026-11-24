@@ -530,6 +530,14 @@
     .msg.them { background: var(--surface-2); border-bottom-left-radius: 4px; }
     .msg.me { background: var(--accent-grad); color: #04131c; font-weight: 600; border-bottom-right-radius: 4px; }
 
+    .msg.unsent-msg {
+      background: rgba(148, 163, 184, 0.14);
+      color: var(--muted);
+      font-style: italic;
+      font-weight: 500;
+      border: 1px dashed rgba(148, 163, 184, 0.35);
+    }
+
     .msg.media-bubble {
       padding: 6px;
       background: var(--surface-2);
@@ -603,6 +611,50 @@
     }
 
     .msg-del-btn.locked { color: var(--muted); }
+
+    /* Custom Delete Options Sheet */
+    .delete-sheet-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(2, 6, 15, 0.72);
+      z-index: 70;
+      display: none;
+      align-items: flex-end;
+      justify-content: center;
+      padding: 14px;
+    }
+
+    .delete-sheet-backdrop.open { display: flex; }
+
+    .delete-sheet-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .del-option-btn {
+      width: 100%;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 12px 14px;
+      border-radius: 12px;
+      font-size: 0.86rem;
+      font-weight: 700;
+      text-align: left;
+      cursor: pointer;
+    }
+
+    .del-option-btn.danger-opt {
+      color: var(--danger);
+      border-color: rgba(251, 113, 133, 0.35);
+    }
 
     .attach-tray {
       display: none;
@@ -1063,6 +1115,22 @@
     </div>
   </div>
 
+  <!-- DELETE OPTIONS BOTTOM SHEET (For Me / Unsend / Both Sides) -->
+  <div class="delete-sheet-backdrop" id="deleteSheet" onclick="if(event.target.id==='deleteSheet') closeDeleteSheet()">
+    <div class="delete-sheet-card">
+      <div style="font-size:0.88rem; font-weight:800; color:var(--accent); padding:2px 4px;">Message Delete Options</div>
+      <button class="del-option-btn" onclick="executeDeleteAction('me')">
+        🗑️ Sirf mere liye delete karein (Delete for me)
+      </button>
+      <button class="del-option-btn danger-opt" onclick="executeDeleteAction('both')">
+        ↩️ Unsend / Dono taraf se delete karein (Delete for everyone)
+      </button>
+      <button class="btn btn-secondary" style="padding:10px; font-size:0.84rem;" onclick="closeDeleteSheet()">
+        Cancel
+      </button>
+    </div>
+  </div>
+
   <!-- PHOTO FULLSCREEN VIEW -->
   <div class="photo-lightbox" id="photoLightbox" onclick="this.classList.remove('open')">
     <img id="lightboxImg" src="" alt="Preview" />
@@ -1320,7 +1388,6 @@
   <!-- APP LOGIC -->
   <script>
     const OWNER_PIN = "1234";
-    // Apni Razorpay Key ID yahan daalein (e.g. "rzp_live_xxxxxxxxxxxx"). Khali rehne par test/demo activation chalega.
     const RAZORPAY_KEY_ID = "";
 
     const PLANS_CATALOG = {
@@ -1438,7 +1505,7 @@
         bullets: [
           "Access up to <strong>600 local profiles</strong>",
           "Share and view photos & albums",
-          "No 3rd party ads + instant message delete"
+          "No 3rd party ads + instant message delete & unsend"
         ]
       },
       unlimited: {
@@ -1604,6 +1671,7 @@
 
     window.chats = JSON.parse(localStorage.getItem("dastak_chats_v1") || "{}");
     window.activeChatUser = null;
+    let pendingDeleteIndex = null;
     let selectedPayMethod = "UPI";
     let activeCheckoutTier = "xtra";
     let activeCheckoutPlanKey = "xtra_1w";
@@ -1730,7 +1798,6 @@
       const selectedPlan = PLANS_CATALOG[activeCheckoutPlanKey] || PLANS_CATALOG.xtra_1w;
       const detailVal = (document.getElementById("payDetailInput")?.value || "").trim();
 
-      // Agar asli Razorpay Key set hai toh Razorpay Checkout kholega
       if (RAZORPAY_KEY_ID && typeof window.Razorpay === "function") {
         const options = {
           key: RAZORPAY_KEY_ID,
@@ -1760,7 +1827,6 @@
         return;
       }
 
-      // Key set na ho toh test/demo payment flow se turant unlock hota hai
       const demoRef = "TEST_PAY_" + Math.random().toString(36).slice(2, 8).toUpperCase();
       finalizePlanActivation(selectedPlan, demoRef);
     }
@@ -1988,6 +2054,7 @@
 
     function closeChatModal() {
       closeAttachTray();
+      closeDeleteSheet();
       if (window.dastakCloud && window.dastakCloud.threadUnsub) {
         window.dastakCloud.threadUnsub();
         window.dastakCloud.threadUnsub = null;
@@ -2136,13 +2203,18 @@
       const canDelete = getActivePlanInfo().canDeleteMsg;
 
       list.forEach((m, idx) => {
+        if (m.deletedForMe) return;
+
         const wrap = document.createElement("div");
         wrap.className = `msg-wrap ${m.sender}`;
 
         const bubble = document.createElement("div");
         const msgType = m.type || "text";
 
-        if (msgType === "image" && m.mediaUrl) {
+        if (m.deletedForEveryone) {
+          bubble.className = `msg ${m.sender} unsent-msg`;
+          bubble.innerText = "🚫 This message was unsent";
+        } else if (msgType === "image" && m.mediaUrl) {
           bubble.className = `msg ${m.sender} media-bubble`;
           bubble.innerHTML = `<img class="chat-media-img" src="${m.mediaUrl}" alt="Photo" onclick="openLightbox('${m.mediaUrl}')" />`;
         } else if (msgType === "video") {
@@ -2167,11 +2239,11 @@
 
         wrap.appendChild(bubble);
 
-        if (m.sender === "me") {
+        if (m.sender === "me" && !m.deletedForEveryone) {
           const delBtn = document.createElement("button");
           delBtn.className = `msg-del-btn ${canDelete ? "" : "locked"}`;
           delBtn.innerText = canDelete ? "🗑️ Delete" : "🔒 Delete (Paid)";
-          delBtn.onclick = () => deleteSentMessage(idx);
+          delBtn.onclick = () => openDeleteOptions(idx);
           wrap.appendChild(delBtn);
         }
 
@@ -2181,7 +2253,7 @@
       box.scrollTop = box.scrollHeight;
     };
 
-    function deleteSentMessage(msgIndex) {
+    function openDeleteOptions(msgIndex) {
       if (!window.activeChatUser) return;
 
       if (!getActivePlanInfo().canDeleteMsg) {
@@ -2191,13 +2263,36 @@
         return;
       }
 
-      if (confirm("Kya aap is sent item ko delete karna chahte hain?")) {
-        const pid = window.activeChatUser.id;
-        window.chats[pid].splice(msgIndex, 1);
-        commitChatChange(pid);
-        window.renderMessages();
-        renderInbox();
+      pendingDeleteIndex = msgIndex;
+      document.getElementById("deleteSheet").classList.add("open");
+    }
+
+    function closeDeleteSheet() {
+      pendingDeleteIndex = null;
+      document.getElementById("deleteSheet").classList.remove("open");
+    }
+
+    function executeDeleteAction(mode) {
+      if (!window.activeChatUser || pendingDeleteIndex === null) return;
+      const pid = window.activeChatUser.id;
+      const idx = pendingDeleteIndex;
+      const arr = window.chats[pid] || [];
+      const targetMsg = arr[idx];
+      closeDeleteSheet();
+
+      if (!targetMsg) return;
+
+      if (mode === "me") {
+        targetMsg.deletedForMe = true;
+      } else if (mode === "both") {
+        targetMsg.deletedForEveryone = true;
+        targetMsg.text = "🚫 This message was unsent";
+        targetMsg.mediaUrl = "";
       }
+
+      commitChatChange(pid);
+      window.renderMessages();
+      renderInbox();
     }
 
     function sendMessage() {
@@ -2230,9 +2325,11 @@
       ids.forEach(id => {
         const u = profilesPool.find(x => x.id === id);
         if (!u) return;
-        const msgArr = window.chats[id] || [];
+        const msgArr = (window.chats[id] || []).filter(m => !m.deletedForMe);
         const lastObj = msgArr.length ? msgArr[msgArr.length - 1] : null;
-        const lastMsg = lastObj ? lastObj.text : "Message deleted";
+        const lastMsg = lastObj
+          ? (lastObj.deletedForEveryone ? "🚫 This message was unsent" : lastObj.text)
+          : "No messages";
         const row = document.createElement("div");
         row.className = "inbox-row";
         row.onclick = () => startChat(id);
@@ -2429,4 +2526,3 @@
   </script>
 </body>
 </html>
-
