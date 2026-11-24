@@ -236,6 +236,7 @@
 
     .tile.is-online { border-color: rgba(34, 211, 238, 0.35); }
     .tile.is-locked { border-color: rgba(250, 204, 21, 0.35); }
+    .tile.is-live-user { border-color: rgba(74, 222, 128, 0.55); }
 
     .tile img {
       width: 100%;
@@ -262,6 +263,12 @@
       border-radius: 6px;
       border: 1px solid rgba(34, 211, 238, 0.4);
       z-index: 2;
+    }
+
+    .tile-badge.live-tag {
+      background: rgba(74, 222, 128, 0.18);
+      color: #4ade80;
+      border-color: rgba(74, 222, 128, 0.5);
     }
 
     .tile-badge.xtra-tag {
@@ -599,24 +606,8 @@
       border-radius: 8px;
     }
 
-    .msg-meta-row {
-      margin-top: 4px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .msg-tick {
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      color: var(--muted);
-    }
-
-    .msg-tick.delivered { color: #cbd5e1; }
-    .msg-tick.seen { color: #38bdf8; }
-
     .msg-del-btn {
+      margin-top: 4px;
       background: none;
       border: none;
       font-size: 0.7rem;
@@ -628,12 +619,11 @@
 
     .msg-del-btn.locked { color: var(--muted); }
 
-    /* Custom Delete Options Sheet */
     .delete-sheet-backdrop {
       position: fixed;
       inset: 0;
-      background: rgba(2, 6, 15, 0.75);
-      z-index: 95;
+      background: rgba(2, 6, 15, 0.72);
+      z-index: 70;
       display: none;
       align-items: flex-end;
       justify-content: center;
@@ -1131,7 +1121,7 @@
     </div>
   </div>
 
-  <!-- DELETE OPTIONS BOTTOM SHEET (For Me / Unsend / Both Sides) -->
+  <!-- DELETE OPTIONS BOTTOM SHEET -->
   <div class="delete-sheet-backdrop" id="deleteSheet" onclick="if(event.target.id==='deleteSheet') closeDeleteSheet()">
     <div class="delete-sheet-card">
       <div style="font-size:0.88rem; font-weight:800; color:var(--accent); padding:2px 4px;">Message Delete Options</div>
@@ -1153,7 +1143,7 @@
     <button class="close-btn" style="margin-top:14px;">Close</button>
   </div>
 
-  <!-- MEMBERSHIP PLANS MODAL (Xtra / Unlimited / Edge + Payment Gateway) -->
+  <!-- MEMBERSHIP PLANS MODAL -->
   <div class="modal" id="payModal">
     <div class="modal-header">
       <strong>Dastak Membership Plans</strong>
@@ -1224,7 +1214,7 @@
     </div>
   </div>
 
-  <!-- FIREBASE SDK (FIRESTORE REALTIME SYNC) -->
+  <!-- FIREBASE SDK (FIRESTORE REALTIME SYNC + TWO-WAY CHAT) -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
@@ -1262,6 +1252,10 @@
       localStorage.setItem("dastak_uid_v1", clientUid);
     }
     window.dastakCloud.uid = clientUid;
+
+    function getSharedThreadId(peerKey) {
+      return [String(clientUid), String(peerKey)].sort().join("__");
+    }
 
     const myDocRef = doc(db, "dastak_users", clientUid);
     onSnapshot(myDocRef, (snap) => {
@@ -1301,6 +1295,9 @@
         list.push({ uid: d.id, ...d.data() });
       });
       window.dastakCloud.allUsers = list;
+      if (typeof window.rebuildNearbyCatalog === "function") {
+        window.rebuildNearbyCatalog();
+      }
       if (document.getElementById("ownerModal").classList.contains("open")) {
         window.renderOwnerPanel();
       }
@@ -1356,22 +1353,24 @@
       }
     };
 
-    window.subscribeChatThread = function(peerId) {
+    window.subscribeChatThread = function(peerKey) {
       if (window.dastakCloud.threadUnsub) {
         window.dastakCloud.threadUnsub();
         window.dastakCloud.threadUnsub = null;
       }
-      const threadId = `${clientUid}__peer_${peerId}`;
-      const threadRef = doc(db, "dastak_chats", threadId);
+      const threadId = getSharedThreadId(peerKey);
+      const threadRef = doc(db, "dastak_threads", threadId);
 
       window.dastakCloud.threadUnsub = onSnapshot(threadRef, (snap) => {
         if (snap.exists()) {
           const data = snap.data();
           if (Array.isArray(data.messages)) {
-            window.chats[peerId] = data.messages;
+            window.chats[peerKey] = data.messages.map(msg => ({
+              ...msg,
+              sender: msg.senderUid === clientUid ? "me" : "them"
+            }));
             window.saveChats();
-            if (window.activeChatUser && window.activeChatUser.id === peerId) {
-              window.markThreadAsSeen(peerId);
+            if (window.activeChatUser && String(window.activeChatUser.id) === String(peerKey)) {
               window.renderMessages();
             }
           }
@@ -1379,18 +1378,35 @@
       });
     };
 
-    window.syncChatThreadToCloud = async function(peerId, messagesArr) {
+    window.syncChatThreadToCloud = async function(peerKey, messagesArr) {
       try {
-        const threadId = `${clientUid}__peer_${peerId}`;
+        const threadId = getSharedThreadId(peerKey);
+        const participants = [String(clientUid), String(peerKey)].sort();
         const safeMessages = messagesArr.map(m => {
-          if (m.type === "video" && m.mediaUrl && m.mediaUrl.startsWith("blob:")) {
-            return { ...m, mediaUrl: "" };
+          const base = {
+            senderUid: m.senderUid || (m.sender === "me" ? clientUid : String(peerKey)),
+            sender: m.sender === "me" ? "me" : "them",
+            type: m.type || "text",
+            text: m.deletedForEveryone ? "🚫 This message was unsent" : (m.text || ""),
+            deletedForEveryone: Boolean(m.deletedForEveryone),
+            deletedForMe: Boolean(m.deletedForMe)
+          };
+          if (m.type === "image" && m.mediaUrl && !m.deletedForEveryone) {
+            base.mediaUrl = m.mediaUrl;
           }
-          return m;
+          if (m.type === "location") {
+            base.lat = m.lat;
+            base.lng = m.lng;
+            base.label = m.label || "Shared Location";
+          }
+          if (m.type === "video") {
+            base.fileName = m.fileName || "Video";
+          }
+          return base;
         });
-        await setDoc(doc(db, "dastak_chats", threadId), {
-          uid: clientUid,
-          peerId,
+
+        await setDoc(doc(db, "dastak_threads", threadId), {
+          participants,
           messages: safeMessages,
           updatedAt: serverTimestamp()
         }, { merge: true });
@@ -1398,6 +1414,13 @@
         console.warn("Firestore chat sync error:", err);
       }
     };
+
+    // Periodic heartbeat to keep online status accurate
+    setInterval(() => {
+      if (document.visibilityState === "visible" && typeof window.syncUserToCloud === "function") {
+        window.syncUserToCloud(window.userAccount);
+      }
+    }, 45000);
 
     window.syncUserToCloud(window.userAccount);
   </script>
@@ -1522,7 +1545,7 @@
         bullets: [
           "Access up to <strong>600 local profiles</strong>",
           "Share and view photos & albums",
-          "No 3rd party ads + instant message delete & unsend"
+          "No 3rd party ads + delete for me & unsend"
         ]
       },
       unlimited: {
@@ -1583,7 +1606,7 @@
       return Number((R * c).toFixed(1));
     }
 
-    const profilesPool = Array.from({ length: 600 }, (_, idx) => {
+    const demoProfiles = Array.from({ length: 600 }, (_, idx) => {
       const i = idx + 1;
       const isXtra = i > 40;
       const radialKm = !isXtra ? 0.3 + idx * 0.23 : 10.2 + (idx - 40) * 0.07;
@@ -1595,13 +1618,14 @@
       const dist = Number(radialKm.toFixed(1));
 
       return {
-        id: i,
+        id: `demo_${i}`,
         name: namesList[idx % namesList.length],
         age: 19 + (i % 24),
         lat,
         lng,
         dist,
         isXtra,
+        isLiveUser: false,
         online: i % 2 === 0,
         verified: i % 3 !== 0,
         tag: tagsList[idx % tagsList.length],
@@ -1610,16 +1634,53 @@
       };
     });
 
-    function recalculateProfileDistances() {
+    let profilesPool = [...demoProfiles];
+
+    window.rebuildNearbyCatalog = function() {
       const center = window.userCoords && typeof window.userCoords.lat === "number"
         ? window.userCoords
         : BASE_CENTER;
 
-      profilesPool.forEach((p) => {
-        p.dist = computeDistanceKm(center.lat, center.lng, p.lat, p.lng);
-        p.bio = `Around ${p.dist} km away. Looking for ${p.tag.toLowerCase()} and genuine people.`;
+      const myUid = window.dastakCloud?.uid || "";
+      const cloudUsers = (window.dastakCloud?.allUsers || []).filter(u => u.uid && u.uid !== myUid);
+
+      const mappedLiveUsers = cloudUsers.map((u, idx) => {
+        const hasCoords = typeof u.lat === "number" && typeof u.lng === "number";
+        const dist = hasCoords
+          ? computeDistanceKm(center.lat, center.lng, u.lat, u.lng)
+          : Number((0.4 + idx * 0.6).toFixed(1));
+        const isOnline = typeof u.lastSeen === "number" ? (Date.now() - u.lastSeen < 180000) : true;
+        const tag = u.tag || tagsList[idx % tagsList.length];
+
+        return {
+          id: u.uid,
+          name: u.name || "Dastak Member",
+          age: Number(u.age) || 26,
+          lat: hasCoords ? u.lat : center.lat,
+          lng: hasCoords ? u.lng : center.lng,
+          dist,
+          isXtra: false,
+          isLiveUser: true,
+          online: isOnline,
+          verified: u.verificationStatus === "Verified",
+          tag,
+          bio: `Live member · ${dist} km away · ${tag}.`,
+          img: u.selfiePhoto || samplePhotos[idx % samplePhotos.length]
+        };
       });
-    }
+
+      const updatedDemo = demoProfiles.map((p) => {
+        const dist = computeDistanceKm(center.lat, center.lng, p.lat, p.lng);
+        return {
+          ...p,
+          dist,
+          bio: `Around ${dist} km away. Looking for ${p.tag.toLowerCase()} and genuine people.`
+        };
+      });
+
+      profilesPool = [...mappedLiveUsers, ...updatedDemo];
+      renderGrid();
+    };
 
     function updateGpsBadge(text, isLive = false) {
       const btn = document.getElementById("gpsStatusBtn");
@@ -1631,9 +1692,8 @@
 
     window.requestLiveGPS = function(showAlertOnFail = false) {
       if (!navigator.geolocation) {
-        recalculateProfileDistances();
+        window.rebuildNearbyCatalog();
         updateGpsBadge("📍 GPS: Default", false);
-        renderGrid();
         return;
       }
 
@@ -1645,17 +1705,15 @@
             lng: Number(pos.coords.longitude.toFixed(5))
           };
           try { localStorage.setItem("dastak_coords_v1", JSON.stringify(window.userCoords)); } catch (e) {}
-          recalculateProfileDistances();
+          window.rebuildNearbyCatalog();
           updateGpsBadge("📍 GPS: Live", true);
-          renderGrid();
           if (typeof window.syncUserToCloud === "function") {
             window.syncUserToCloud(window.userAccount);
           }
         },
         () => {
-          recalculateProfileDistances();
+          window.rebuildNearbyCatalog();
           updateGpsBadge("📍 GPS: Tap", false);
-          renderGrid();
           if (showAlertOnFail) {
             alert("Live GPS permission allow karein taaki asli km distance calculate ho sake.");
           }
@@ -1919,18 +1977,24 @@
 
     function createTile(user, isLocked) {
       const div = document.createElement("div");
-      div.className = `tile ${user.online ? "is-online" : ""} ${isLocked ? "is-locked" : ""}`;
+      div.className = `tile ${user.online ? "is-online" : ""} ${isLocked ? "is-locked" : ""} ${user.isLiveUser ? "is-live-user" : ""}`;
       div.onclick = () => isLocked ? openPayModal() : handleProfileClick(user);
+
+      const topBadge = isLocked
+        ? `<div class="tile-badge xtra-tag">Xtra</div>`
+        : (user.isLiveUser
+            ? `<div class="tile-badge live-tag">● LIVE</div>`
+            : (user.verified ? `<div class="tile-badge">✓ ID</div>` : ""));
 
       div.innerHTML = `
         <img src="${user.img}" alt="${user.name}" loading="lazy" />
+        ${topBadge}
         ${isLocked
-          ? `<div class="tile-badge xtra-tag">Xtra</div>
-             <div class="lock-center">
+          ? `<div class="lock-center">
                <div class="lock-icon-circle">🔒</div>
                <div class="lock-label">Unlock ₹250</div>
              </div>`
-          : `${user.verified ? `<div class="tile-badge">✓ ID</div>` : ""}`
+          : ""
         }
         <div class="tile-overlay">
           <div class="tile-name">
@@ -2013,14 +2077,15 @@
           <span class="badge">${user.online ? "● Online Now" : "Offline"}</span>
           <span class="badge">📍 ${user.dist} km away</span>
           <span class="badge">${user.tag}</span>
+          ${user.isLiveUser ? `<span class="badge" style="color:var(--online);">● Live User</span>` : ""}
           ${user.verified ? `<span class="badge" style="color:var(--online);">✓ ID Verified</span>` : ""}
         </div>
         <p style="margin-top: 8px; line-height: 1.55; color: #cbd5e1; font-size:0.92rem;">${user.bio}</p>
         <div class="action-row">
-          <button class="btn btn-secondary" onclick="sendWave(${user.id}, '${user.name}')">👋 Dastak / Wave</button>
-          <button class="btn btn-primary" onclick="startChat(${user.id})">💬 Chat</button>
+          <button class="btn btn-secondary" onclick="sendWave('${user.id}', '${user.name.replace(/'/g, "\\'")}')">👋 Dastak / Wave</button>
+          <button class="btn btn-primary" onclick="startChat('${user.id}')">💬 Chat</button>
         </div>
-        <button class="btn btn-danger" style="width:100%; margin-top:12px;" onclick="blockUser(${user.id}, '${user.name}')">
+        <button class="btn btn-danger" style="width:100%; margin-top:12px;" onclick="blockUser('${user.id}', '${user.name.replace(/'/g, "\\'")}')">
           🚫 Block / Report User
         </button>
       `;
@@ -2034,60 +2099,15 @@
       }
     }
 
-    window.markThreadAsSeen = function(peerId) {
-      const list = window.chats[peerId] || [];
-      let changed = false;
-      list.forEach(m => {
-        if (m.sender === "me" && m.receipt !== "seen") {
-          m.receipt = "seen";
-          changed = true;
-        }
-      });
-      if (changed) commitChatChange(peerId);
-    };
-
-    function scheduleOutgoingReceiptProgress(peerId, msgId) {
-      setTimeout(() => {
-        const list = window.chats[peerId] || [];
-        const item = list.find(m => m.msgId === msgId);
-        if (item && item.receipt === "sent") {
-          item.receipt = "delivered";
-          commitChatChange(peerId);
-          if (window.activeChatUser && window.activeChatUser.id === peerId) {
-            window.renderMessages();
-          }
-        }
-      }, 900);
-
-      setTimeout(() => {
-        const list = window.chats[peerId] || [];
-        const item = list.find(m => m.msgId === msgId);
-        if (item && item.receipt !== "seen") {
-          item.receipt = "seen";
-          commitChatChange(peerId);
-          if (window.activeChatUser && window.activeChatUser.id === peerId) {
-            window.renderMessages();
-          }
-        }
-      }, 2200);
-    }
-
-    function appendOutgoingMessage(peerId, payload) {
-      if (!window.chats[peerId]) window.chats[peerId] = [];
-      const msgId = "m_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6);
-      window.chats[peerId].push({
-        sender: "me",
-        msgId,
-        receipt: "sent",
-        ...payload
-      });
-      commitChatChange(peerId);
-      window.renderMessages();
-      scheduleOutgoingReceiptProgress(peerId, msgId);
-    }
-
     function sendWave(id, name) {
-      appendOutgoingMessage(id, { type: "text", text: "👋 Dastak! Sent a wave." });
+      if (!window.chats[id]) window.chats[id] = [];
+      window.chats[id].push({
+        senderUid: window.dastakCloud?.uid || "local",
+        sender: "me",
+        type: "text",
+        text: "👋 Dastak! Sent a wave."
+      });
+      commitChatChange(id);
       alert(`${name} ko Dastak / Wave bhej diya gaya hai!`);
     }
 
@@ -2104,13 +2124,18 @@
     function startChat(userId) {
       closeModal("profileModal");
       closeAttachTray();
-      window.activeChatUser = profilesPool.find(u => u.id === userId);
+      window.activeChatUser = profilesPool.find(u => String(u.id) === String(userId));
+      if (!window.activeChatUser) return;
+
       document.getElementById("chatWithTitle").innerText = window.activeChatUser.name;
       if (!window.chats[userId]) {
-        window.chats[userId] = [{ sender: "them", type: "text", text: `Hey! Main aas-paas hi hoon (${window.activeChatUser.dist} km).` }];
+        window.chats[userId] = [{
+          senderUid: String(userId),
+          sender: "them",
+          type: "text",
+          text: `Hey! Main aas-paas hi hoon (${window.activeChatUser.dist} km).`
+        }];
         commitChatChange(userId);
-      } else {
-        window.markThreadAsSeen(userId);
       }
       if (typeof window.subscribeChatThread === "function") {
         window.subscribeChatThread(userId);
@@ -2183,2614 +2208,15 @@
           canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
           const compressedData = canvas.toDataURL("image/jpeg", 0.68);
 
-          appendOutgoingMessage(window.activeChatUser.id, {
+          window.chats[window.activeChatUser.id].push({
+            senderUid: window.dastakCloud?.uid || "local",
+            sender: "me",
             type: "image",
             mediaUrl: compressedData,
             text: "📷 Photo"
           });
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function handleChatVideo(event) {
-      const file = event.target.files[0];
-      event.target.value = "";
-      if (!file || !window.activeChatUser) return;
-
-      const videoUrl = URL.createObjectURL(file);
-      appendOutgoingMessage(window.activeChatUser.id, {
-        type: "video",
-        mediaUrl: videoUrl,
-        fileName: file.name || "Video",
-        text: "🎥 Video"
-      });
-    }
-
-    function sendChatLocation() {
-      if (!checkVerifiedForSend() || !window.activeChatUser) return;
-      closeAttachTray();
-
-      if (!navigator.geolocation) {
-        pushLocationMessage("30.89270", "75.79240", "Demo Location (Ludhiana)");
-        return;
-      }
-
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const lat = pos.coords.latitude.toFixed(5);
-          const lng = pos.coords.longitude.toFixed(5);
-          pushLocationMessage(lat, lng, "My Live Location");
-        },
-        () => {
-          if (confirm("Phone ki GPS location permission nahi mili. Kya aap test ke liye Ludhiana ki demo location bhejna chahenge?")) {
-            pushLocationMessage("30.89270", "75.79240", "Demo Location (Ludhiana)");
-          }
-        },
-        { enableHighAccuracy: true, timeout: 8000 }
-      );
-    }
-
-    function pushLocationMessage(lat, lng, label) {
-      appendOutgoingMessage(window.activeChatUser.id, {
-        type: "location",
-        lat,
-        lng,
-        label,
-        text: `📍 ${label}`
-      });
-    }
-
-    function openLightbox(src) {
-      document.getElementById("lightboxImg").src = src;
-      document.getElementById("photoLightbox").classList.add("open");
-    }
-
-    function callNotice(type) {
-      if (window.userAccount.verificationStatus !== "Verified") {
-        alert(`${type} call start karne ke liye Owner verification approve hona zaroori hai.`);
-        return;
-      }
-      alert(`${type} calling feature WebRTC/Agora connect hone ke baad live hoga.`);
-    }
-
-    function getTickMarkup(msg) {
-      const r = msg.receipt || "seen";
-      if (r === "seen") {
-        return `<span class="msg-tick seen" title="Seen">✓✓ Seen</span>`;
-      }
-      if (r === "delivered") {
-        return `<span class="msg-tick delivered" title="Delivered">✓✓</span>`;
-      }
-      return `<span class="msg-tick" title="Sent">✓</span>`;
-    }
-
-    window.renderMessages = function() {
-      if (!window.activeChatUser) return;
-      const box = document.getElementById("chatMessages");
-      box.innerHTML = "";
-      const list = window.chats[window.activeChatUser.id] || [];
-      const canDelete = getActivePlanInfo().canDeleteMsg;
-
-      list.forEach((m, idx) => {
-        if (m.deletedForMe) return;
-
-        const wrap = document.createElement("div");
-        wrap.className = `msg-wrap ${m.sender}`;
-
-        const bubble = document.createElement("div");
-        const msgType = m.type || "text";
-
-        if (m.deletedForEveryone) {
-          bubble.className = `msg ${m.sender} unsent-msg`;
-          bubble.innerText = "🚫 This message was unsent";
-        } else if (msgType === "image" && m.mediaUrl) {
-          bubble.className = `msg ${m.sender} media-bubble`;
-          bubble.innerHTML = `<img class="chat-media-img" src="${m.mediaUrl}" alt="Photo" onclick="openLightbox('${m.mediaUrl}')" />`;
-        } else if (msgType === "video") {
-          bubble.className = `msg ${m.sender} media-bubble`;
-          bubble.innerHTML = m.mediaUrl
-            ? `<video class="chat-media-vid" controls playsinline src="${m.mediaUrl}"></video><div style="font-size:0.7rem; color:var(--muted); padding:4px 4px 1px;">🎥 ${m.fileName || "Video"}</div>`
-            : `<div style="padding:6px 8px; font-size:0.82rem;">🎥 ${m.fileName || "Video shared"}</div>`;
-        } else if (msgType === "location") {
-          const mapsLink = `https://www.google.com/maps?q=${m.lat},${m.lng}`;
-          bubble.className = `msg ${m.sender} media-bubble`;
-          bubble.innerHTML = `
-            <div class="loc-card">
-              <div class="loc-title">📍 ${m.label || "Shared Location"}</div>
-              <div class="loc-coords">Lat: ${m.lat}, Lng: ${m.lng}</div>
-              <a class="loc-open-link" href="${mapsLink}" target="_blank" rel="noopener noreferrer">Open in Google Maps ↗</a>
-            </div>
-          `;
-        } else {
-          bubble.className = `msg ${m.sender}`;
-          bubble.innerText = m.text;
-        }
-
-        wrap.appendChild(bubble);
-
-        if (m.sender === "me") {
-          const metaRow = document.createElement("div");
-          metaRow.className = "msg-meta-row";
-          metaRow.innerHTML = getTickMarkup(m);
-
-          if (!m.deletedForEveryone) {
-            const delBtn = document.createElement("button");
-            delBtn.className = `msg-del-btn ${canDelete ? "" : "locked"}`;
-            delBtn.innerText = canDelete ? "🗑️ Delete" : "🔒 Delete (Paid)";
-            delBtn.onclick = () => openDeleteOptions(idx);
-            metaRow.appendChild(delBtn);
-          }
-
-          wrap.appendChild(metaRow);
-        }
-
-        box.appendChild(wrap);
-      });
-
-      box.scrollTop = box.scrollHeight;
-    };
-
-    function openDeleteOptions(msgIndex) {
-      if (!window.activeChatUser) return;
-
-      if (!getActivePlanInfo().canDeleteMsg) {
-        if (confirm("Sent message delete karne ke liye paid plan chahiye. Kya aap plans dekhna chahte hain?")) {
-          openPayModal();
-        }
-        return;
-      }
-
-      pendingDeleteIndex = msgIndex;
-      document.getElementById("deleteSheet").classList.add("open");
-    }
-
-    function closeDeleteSheet() {
-      pendingDeleteIndex = null;
-      document.getElementById("deleteSheet").classList.remove("open");
-    }
-
-    function executeDeleteAction(mode) {
-      if (!window.activeChatUser || pendingDeleteIndex === null) return;
-      const pid = window.activeChatUser.id;
-      const idx = pendingDeleteIndex;
-      const arr = window.chats[pid] || [];
-      const targetMsg = arr[idx];
-      closeDeleteSheet();
-
-      if (!targetMsg) return;
-
-      if (mode === "me") {
-        targetMsg.deletedForMe = true;
-      } else if (mode === "both") {
-        targetMsg.deletedForEveryone = true;
-        targetMsg.text = "🚫 This message was unsent";
-        targetMsg.mediaUrl = "";
-      }
-
-      commitChatChange(pid);
-      window.renderMessages();
-      renderInbox();
-    }
-
-    function sendMessage() {
-      if (!checkVerifiedForSend()) return;
-      const input = document.getElementById("msgInput");
-      const text = input.value.trim();
-      if (!text || !window.activeChatUser) return;
-
-      input.value = "";
-      appendOutgoingMessage(window.activeChatUser.id, { type: "text", text });
-    }
-
-    function renderInbox() {
-      const canSend = window.userAccount.verificationStatus === "Verified";
-      document.getElementById("chatLockNotice").style.display = canSend ? "none" : "block";
-
-      const list = document.getElementById("inboxList");
-      list.innerHTML = "";
-      const ids = Object.keys(window.chats).map(Number).filter(id => !(window.userAccount.blockedIds || []).includes(id));
-
-      if (ids.length === 0) {
-        list.innerHTML = `<div class="card-box" style="color:var(--muted); font-size:0.86rem;">Abhi koi chat nahi hai. Nearby tab mein kisi bhi profile par tap karein.</div>`;
-        return;
-      }
-
-      ids.forEach(id => {
-        const u = profilesPool.find(x => x.id === id);
-        if (!u) return;
-        const msgArr = (window.chats[id] || []).filter(m => !m.deletedForMe);
-        const lastObj = msgArr.length ? msgArr[msgArr.length - 1] : null;
-        const lastMsg = lastObj
-          ? (lastObj.deletedForEveryone ? "🚫 This message was unsent" : lastObj.text)
-          : "No messages";
-        const row = document.createElement("div");
-        row.className = "inbox-row";
-        row.onclick = () => startChat(id);
-        row.innerHTML = `
-          <img src="${u.img}" alt="${u.name}" />
-          <div>
-            <strong>${u.name}</strong>
-            <div style="font-size:0.8rem; color:var(--muted); margin-top:3px;">${lastMsg}</div>
-          </div>
-        `;
-        list.appendChild(row);
-      });
-    }
-
-    function handlePhotoUpload(event, fieldName) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement("canvas");
-          const maxW = 300;
-          const scale = Math.min(1, maxW / img.width);
-          canvas.width = img.width * scale;
-          canvas.height = img.height * scale;
-          canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
-          window.userAccount[fieldName] = canvas.toDataURL("image/jpeg", 0.6);
-          window.saveAccount();
-        };
-        img.src = e.target.result;
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function submitVerification() {
-      window.userAccount.name = document.getElementById("myName").value.trim() || "User";
-      window.userAccount.age = Number(document.getElementById("myAge").value) || 25;
-      window.userAccount.tag = document.getElementById("myTag").value;
-      window.userAccount.idType = document.getElementById("idType").value;
-      window.userAccount.idNumber = document.getElementById("idNumber").value.trim();
-      window.userAccount.verificationStatus = "Pending";
-      window.saveAccount();
-      alert("Verification aur profile details Firestore mein submit ho gayi hain! Status Pending hai — Owner ke approve karte hi messaging unlock ho jayegi.");
-    }
-
-    function selectPayMethod(method) {
-      selectedPayMethod = method;
-      document.getElementById("opt-upi").classList.toggle("selected", method === "UPI");
-      document.getElementById("opt-card").classList.toggle("selected", method !== "UPI");
-      document.getElementById("opt-upi").querySelector("span:last-child").innerText = method === "UPI" ? "●" : "○";
-      document.getElementById("opt-card").querySelector("span:last-child").innerText = method !== "UPI" ? "●" : "○";
-      document.getElementById("payInputLabel").innerText = method === "UPI" ? "Enter UPI ID" : "Card Number (Demo)";
-      document.getElementById("payDetailInput").placeholder = method === "UPI" ? "yourname@okaxis" : "XXXX XXXX XXXX 4242";
-    }
-
-    function openPayModal() {
-      const current = getActivePlanInfo();
-      if (current.tier && current.tier !== "free") {
-        activeCheckoutTier = current.tier;
-        activeCheckoutPlanKey = current.id;
-      } else {
-        activeCheckoutTier = "xtra";
-        activeCheckoutPlanKey = "xtra_1w";
-      }
-      renderCheckoutModal();
-      document.getElementById("payModal").classList.add("open");
-    }
-
-    function openOwnerLogin() {
-      const pin = prompt("Owner PIN enter karein (Default: 1234):");
-      if (pin !== OWNER_PIN) {
-        alert("Galat PIN!");
-        return;
-      }
-      window.renderOwnerPanel();
-      document.getElementById("ownerModal").classList.add("open");
-    }
-
-    window.renderOwnerPanel = function() {
-      const cloudList = (window.dastakCloud && window.dastakCloud.allUsers && window.dastakCloud.allUsers.length > 0)
-        ? window.dastakCloud.allUsers
-        : [{ uid: window.dastakCloud?.uid || "local", ...window.userAccount }];
-
-      const activePlan = getActivePlanInfo();
-      document.getElementById("statTotalUsers").innerText = String(cloudList.length);
-      document.getElementById("statStatus").innerText = window.userAccount.verificationStatus;
-      document.getElementById("statPaid").innerText = activePlan.priceText;
-
-      const container = document.getElementById("ownerUsersContainer");
-      container.innerHTML = "";
-
-      cloudList.forEach((u) => {
-        const uPlanKey = PLANS_CATALOG[u.planType] ? u.planType : (u.hasWeeklyPlan ? "xtra_1w" : "free");
-        const uPlan = PLANS_CATALOG[uPlanKey] || PLANS_CATALOG.free;
-        const nextPlan = PLANS_CATALOG[uPlan.nextOwnerPlan] || PLANS_CATALOG.xtra_1w;
-        const gpsText = (typeof u.lat === "number" && typeof u.lng === "number")
-          ? `${u.lat}, ${u.lng}`
-          : "Not synced yet";
-
-        const selfieHtml = u.selfiePhoto
-          ? `<img src="${u.selfiePhoto}" alt="Selfie" />`
-          : `<div style="height:120px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.75rem;">No Selfie</div>`;
-
-        const idHtml = u.idPhoto
-          ? `<img src="${u.idPhoto}" alt="ID Doc" />`
-          : `<div style="height:120px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.75rem;">No ID Photo</div>`;
-
-        const card = document.createElement("div");
-        card.className = "card-box";
-        card.innerHTML = `
-          <h4 style="margin-bottom:8px; color:var(--accent);">KYC Request · ${u.name || "User"}</h4>
-          <p style="font-size:0.82rem; line-height:1.55; color:#e2e8f0;">
-            <strong>User ID:</strong> ${u.uid || "local"}<br/>
-            <strong>Age / Vibe:</strong> ${u.age || "—"} yrs · ${u.tag || "—"}<br/>
-            <strong>GPS Coords:</strong> ${gpsText}<br/>
-            <strong>Payment Ref:</strong> ${u.lastPaymentRef || "None"}<br/>
-            <strong>ID Type:</strong> ${u.idType || "Aadhaar Card"}<br/>
-            <strong>ID Ref:</strong> ${u.idNumber || "Not entered"}<br/>
-            <strong>Status:</strong> ${u.verificationStatus || "Pending"}<br/>
-            <strong>Plan:</strong> ${uPlan.label} (${uPlan.priceText})
-          </p>
-          <div class="kyc-preview-grid">
-            <div class="kyc-preview-box">
-              <div style="font-size:0.72rem; color:var(--muted);">Live Selfie</div>
-              ${selfieHtml}
-            </div>
-            <div class="kyc-preview-box">
-              <div style="font-size:0.72rem; color:var(--muted);">Indian ID</div>
-              ${idHtml}
-            </div>
-          </div>
-          <div class="action-row">
-            <button class="btn btn-success" onclick="handleOwnerAction('${u.uid || "local"}', 'Verified')">✓ Approve</button>
-            <button class="btn btn-danger" onclick="handleOwnerAction('${u.uid || "local"}', 'Rejected')">✕ Reject</button>
-          </div>
-          <button class="btn btn-secondary" style="width:100%; margin-top:10px;" onclick="handleOwnerPlanCycle('${u.uid || "local"}', '${nextPlan.id}')">
-            Cycle Plan → ${nextPlan.label} (${nextPlan.priceText})
-          </button>
-        `;
-        container.appendChild(card);
-      });
-    };
-
-    window.handleOwnerAction = function(targetUid, newStatus) {
-      if (targetUid === (window.dastakCloud?.uid || "local")) {
-        window.userAccount.verificationStatus = newStatus;
-        window.saveAccount(true);
-      }
-      if (typeof window.setCloudUserStatus === "function" && targetUid !== "local") {
-        window.setCloudUserStatus(targetUid, newStatus);
-      }
-      window.renderOwnerPanel();
-      alert(`Status updated to ${newStatus}`);
-    };
-
-    window.handleOwnerPlanCycle = function(targetUid, nextPlanKey) {
-      const validPlan = PLANS_CATALOG[nextPlanKey] ? nextPlanKey : "free";
-      if (targetUid === (window.dastakCloud?.uid || "local")) {
-        window.userAccount.planType = validPlan;
-        window.userAccount.hasWeeklyPlan = validPlan !== "free";
-        window.saveAccount(true);
-      }
-      if (typeof window.setCloudUserPlan === "function" && targetUid !== "local") {
-        window.setCloudUserPlan(targetUid, validPlan);
-      }
-      renderGrid();
-      window.renderMessages();
-      window.renderOwnerPanel();
-    };
-
-    function switchTab(tab, btn) {
-      document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
-      document.getElementById("tab-nearby").style.display = tab === "nearby" ? "block" : "none";
-      document.getElementById("nearbyStickyControls").style.display = tab === "nearby" ? "block" : "none";
-      document.getElementById("tab-chats").classList.toggle("active", tab === "chats");
-      document.getElementById("tab-me").classList.toggle("active", tab === "me");
-      if (tab === "chats") renderInbox();
-    }
-
-    function closeModal(id) { document.getElementById(id).classList.remove("open"); }
-
-    document.getElementById("myName").value = window.userAccount.name;
-    document.getElementById("myAge").value = window.userAccount.age;
-    document.getElementById("myTag").value = window.userAccount.tag;
-    document.getElementById("idType").value = window.userAccount.idType;
-    document.getElementById("idNumber").value = window.userAccount.idNumber;
-
-    recalculateProfileDistances();
-    updateTopUI();
-    renderGrid();
-    window.requestLiveGPS(false);
-  </script>
-</body>
-</html>
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Dastak — Nearby Connections</title>
-  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
-  <style>
-    :root {
-      --bg: #050914;
-      --surface: #0d1526;
-      --surface-2: #162238;
-      --border: rgba(148, 163, 184, 0.16);
-      --accent: #22d3ee;
-      --accent-grad: linear-gradient(135deg, #38bdf8 0%, #06b6d4 52%, #14b8a6 100%);
-      --xtra-grad: linear-gradient(135deg, #facc15 0%, #eab308 100%);
-      --unlim-grad: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
-      --edge-grad: linear-gradient(135deg, #f59e0b 0%, #f43f5e 100%);
-      --online: #4ade80;
-      --danger: #fb7185;
-      --warn: #fb923c;
-      --text: #f1f5f9;
-      --muted: #94a3b8;
-    }
-
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-      -webkit-tap-highlight-color: transparent;
-    }
-
-    body {
-      background: radial-gradient(circle at top right, rgba(6, 182, 212, 0.1), transparent 40%), var(--bg);
-      color: var(--text);
-      padding-bottom: 92px;
-      min-height: 100vh;
-    }
-
-    .top-sticky {
-      position: sticky;
-      top: 0;
-      z-index: 25;
-      background: rgba(5, 9, 20, 0.92);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
-      border-bottom: 1px solid var(--border);
-    }
-
-    header {
-      padding: 11px 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .brand-wrap {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .brand-logo {
-      width: 30px;
-      height: 30px;
-      border-radius: 9px;
-      background: var(--accent-grad);
-      color: #04131c;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 900;
-      font-size: 1rem;
-      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
-    }
-
-    .brand-text {
-      font-size: 1.18rem;
-      font-weight: 800;
-      letter-spacing: 0.4px;
-      background: linear-gradient(to right, #ffffff 30%, #67e8f9 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .xtra-pill-btn {
-      background: var(--xtra-grad);
-      color: #090d16;
-      border: none;
-      padding: 5px 10px;
-      border-radius: 999px;
-      font-size: 0.72rem;
-      font-weight: 900;
-      cursor: pointer;
-      letter-spacing: 0.3px;
-    }
-
-    .status-pill {
-      font-size: 0.7rem;
-      padding: 4px 8px;
-      border-radius: 999px;
-      font-weight: 700;
-      background: rgba(251, 146, 60, 0.14);
-      color: var(--warn);
-      border: 1px solid rgba(251, 146, 60, 0.38);
-    }
-
-    .status-pill.verified {
-      background: rgba(74, 222, 128, 0.14);
-      color: var(--online);
-      border-color: rgba(74, 222, 128, 0.38);
-    }
-
-    .status-pill.rejected {
-      background: rgba(251, 113, 133, 0.14);
-      color: var(--danger);
-      border-color: rgba(251, 113, 133, 0.38);
-    }
-
-    .owner-btn {
-      background: var(--surface-2);
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 5px 9px;
-      border-radius: 8px;
-      font-size: 0.72rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .subbar-wrap { border-top: 1px solid rgba(148, 163, 184, 0.1); }
-
-    .quota-strip {
-      padding: 6px 14px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.74rem;
-      color: var(--muted);
-      background: rgba(13, 21, 38, 0.65);
-      gap: 8px;
-    }
-
-    .quota-strip strong { color: var(--text); }
-
-    .gps-pill-btn {
-      background: rgba(34, 211, 238, 0.14);
-      color: var(--accent);
-      border: 1px solid rgba(34, 211, 238, 0.38);
-      padding: 3px 8px;
-      border-radius: 999px;
-      font-size: 0.68rem;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .filters-bar {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      padding: 8px 12px 10px;
-      overflow-x: auto;
-      scrollbar-width: none;
-    }
-    .filters-bar::-webkit-scrollbar { display: none; }
-
-    .filter-open-btn {
-      background: var(--surface-2);
-      color: var(--accent);
-      border: 1px solid rgba(34, 211, 238, 0.45);
-      padding: 6px 12px;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 800;
-      cursor: pointer;
-      white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .chip {
-      background: var(--surface);
-      color: var(--muted);
-      border: 1px solid var(--border);
-      padding: 6px 13px;
-      border-radius: 999px;
-      font-size: 0.78rem;
-      font-weight: 600;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-
-    .chip.active {
-      background: var(--accent-grad);
-      color: #04131c;
-      font-weight: 800;
-      border-color: transparent;
-    }
-
-    .chip.xtra-chip {
-      border-color: rgba(250, 204, 21, 0.45);
-      color: #fde047;
-    }
-
-    .chip.xtra-chip.active {
-      background: var(--xtra-grad);
-      color: #090d16;
-    }
-
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
-      padding: 8px 8px 12px;
-    }
-
-    .tile {
-      position: relative;
-      aspect-ratio: 1 / 1.22;
-      background: var(--surface);
-      border-radius: 13px;
-      overflow: hidden;
-      cursor: pointer;
-      border: 1px solid var(--border);
-    }
-
-    .tile.is-online { border-color: rgba(34, 211, 238, 0.35); }
-    .tile.is-locked { border-color: rgba(250, 204, 21, 0.35); }
-
-    .tile img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .tile.is-locked img {
-      filter: blur(8px) brightness(0.65);
-      transform: scale(1.08);
-    }
-
-    .tile-badge {
-      position: absolute;
-      top: 6px;
-      right: 6px;
-      background: rgba(5, 9, 20, 0.78);
-      backdrop-filter: blur(6px);
-      color: var(--accent);
-      font-size: 0.62rem;
-      font-weight: 700;
-      padding: 2px 6px;
-      border-radius: 6px;
-      border: 1px solid rgba(34, 211, 238, 0.4);
-      z-index: 2;
-    }
-
-    .tile-badge.xtra-tag {
-      background: var(--xtra-grad);
-      color: #090d16;
-      border: none;
-      font-weight: 900;
-    }
-
-    .lock-center {
-      position: absolute;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 4px;
-      z-index: 2;
-      text-align: center;
-      padding: 6px;
-    }
-
-    .lock-icon-circle {
-      width: 34px;
-      height: 34px;
-      border-radius: 50%;
-      background: rgba(5, 9, 20, 0.82);
-      border: 1px solid rgba(250, 204, 21, 0.65);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 0.95rem;
-    }
-
-    .lock-label {
-      font-size: 0.66rem;
-      font-weight: 800;
-      color: #fef08a;
-      text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
-    }
-
-    .tile-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(5, 9, 20, 0.95) 8%, rgba(5, 9, 20, 0.2) 45%, transparent 65%);
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding: 8px;
-    }
-
-    .status-dot {
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      display: inline-block;
-      margin-right: 4px;
-      vertical-align: middle;
-    }
-
-    .online { background: var(--online); box-shadow: 0 0 7px var(--online); }
-    .offline { background: #64748b; }
-
-    .tile-name {
-      font-size: 0.8rem;
-      font-weight: 700;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .tile-dist { font-size: 0.68rem; color: #cbd5e1; margin-top: 1px; }
-
-    .grid-banner {
-      grid-column: 1 / -1;
-      background: linear-gradient(135deg, rgba(250, 204, 21, 0.14) 0%, rgba(6, 182, 212, 0.12) 100%);
-      border: 1px solid rgba(250, 204, 21, 0.42);
-      border-radius: 16px;
-      padding: 15px;
-      margin: 6px 0;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .grid-banner h4 { font-size: 0.92rem; color: #fef9c3; margin-bottom: 3px; }
-    .grid-banner p { font-size: 0.76rem; color: #cbd5e1; line-height: 1.4; }
-    .load-more-wrap { grid-column: 1 / -1; padding: 8px 0 12px; text-align: center; }
-
-    nav {
-      position: fixed;
-      bottom: 12px;
-      left: 14px;
-      right: 14px;
-      background: rgba(13, 21, 38, 0.94);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(34, 211, 238, 0.18);
-      border-radius: 20px;
-      display: flex;
-      justify-content: space-around;
-      padding: 8px 6px;
-      z-index: 30;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
-    }
-
-    .nav-btn {
-      background: none;
-      border: none;
-      color: var(--muted);
-      font-size: 0.72rem;
-      font-weight: 600;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 4px;
-      padding: 4px 12px;
-      border-radius: 12px;
-    }
-
-    .nav-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
-    .nav-btn.active { color: var(--accent); background: rgba(34, 211, 238, 0.12); }
-
-    .section-view { display: none; padding: 16px; }
-    .section-view.active { display: block; }
-    .section-title { font-size: 1.15rem; font-weight: 800; margin-bottom: 12px; }
-
-    .card-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 15px;
-      margin-bottom: 14px;
-    }
-
-    .lock-banner {
-      background: rgba(251, 146, 60, 0.1);
-      border: 1px solid rgba(251, 146, 60, 0.35);
-      color: #fed7aa;
-      padding: 12px 14px;
-      border-radius: 12px;
-      font-size: 0.83rem;
-      line-height: 1.48;
-      margin-bottom: 12px;
-    }
-
-    .modal {
-      position: fixed;
-      inset: 0;
-      background: var(--bg);
-      z-index: 50;
-      display: none;
-      flex-direction: column;
-    }
-
-    .modal.open { display: flex; }
-
-    .modal-header {
-      padding: 14px 16px;
-      background: rgba(13, 21, 38, 0.96);
-      border-bottom: 1px solid var(--border);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .close-btn {
-      background: var(--surface-2);
-      color: var(--text);
-      border: 1px solid var(--border);
-      padding: 7px 13px;
-      border-radius: 10px;
-      font-size: 0.8rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .modal-body { padding: 16px; overflow-y: auto; flex: 1; }
-
-    .profile-hero {
-      width: 100%;
-      height: 310px;
-      object-fit: cover;
-      border-radius: 18px;
-      margin-bottom: 14px;
-      border: 1px solid var(--border);
-    }
-
-    .badge {
-      display: inline-block;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      padding: 5px 11px;
-      border-radius: 999px;
-      font-size: 0.76rem;
-      margin: 4px 5px 10px 0;
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
-
-    .btn {
-      padding: 13px;
-      border: none;
-      border-radius: 12px;
-      font-weight: 800;
-      font-size: 0.9rem;
-      cursor: pointer;
-    }
-
-    .btn-primary { background: var(--accent-grad); color: #04131c; }
-    .btn-xtra { background: var(--xtra-grad); color: #090d16; }
-    .btn-unlim { background: var(--unlim-grad); color: #04131c; }
-    .btn-edge { background: var(--edge-grad); color: #16060b; }
-    .btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
-    .btn-success { background: var(--online); color: #052e16; }
-    .btn-danger {
-      background: rgba(251, 113, 133, 0.12);
-      color: var(--danger);
-      border: 1px solid rgba(251, 113, 133, 0.45);
-    }
-
-    .range-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.84rem; }
-    .range-val { color: var(--accent); font-weight: 800; }
-    input[type="range"] { width: 100%; accent-color: #22d3ee; margin-bottom: 14px; }
-
-    .toggle-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 12px 14px;
-      border-radius: 12px;
-      margin-bottom: 10px;
-      font-size: 0.88rem;
-      font-weight: 600;
-    }
-
-    .toggle-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: #22d3ee; }
-
-    .chat-messages {
-      flex: 1;
-      padding: 14px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .msg-wrap { display: flex; flex-direction: column; max-width: 82%; }
-    .msg-wrap.them { align-self: flex-start; align-items: flex-start; }
-    .msg-wrap.me { align-self: flex-end; align-items: flex-end; }
-
-    .msg {
-      padding: 10px 13px;
-      border-radius: 16px;
-      font-size: 0.9rem;
-      line-height: 1.45;
-      word-break: break-word;
-    }
-
-    .msg.them { background: var(--surface-2); border-bottom-left-radius: 4px; }
-    .msg.me { background: var(--accent-grad); color: #04131c; font-weight: 600; border-bottom-right-radius: 4px; }
-
-    .msg.unsent-msg {
-      background: rgba(148, 163, 184, 0.14);
-      color: var(--muted);
-      font-style: italic;
-      font-weight: 500;
-      border: 1px dashed rgba(148, 163, 184, 0.35);
-    }
-
-    .msg.media-bubble {
-      padding: 6px;
-      background: var(--surface-2);
-      border: 1px solid rgba(34, 211, 238, 0.35);
-      color: var(--text);
-    }
-
-    .chat-media-img {
-      width: 220px;
-      max-width: 100%;
-      max-height: 260px;
-      object-fit: cover;
-      border-radius: 11px;
-      display: block;
-      cursor: pointer;
-    }
-
-    .chat-media-vid {
-      width: 230px;
-      max-width: 100%;
-      max-height: 260px;
-      border-radius: 11px;
-      display: block;
-      background: #000;
-    }
-
-    .loc-card {
-      width: 225px;
-      max-width: 100%;
-      background: #0b1426;
-      border-radius: 11px;
-      padding: 11px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
-    }
-
-    .loc-title {
-      font-size: 0.85rem;
-      font-weight: 800;
-      color: var(--accent);
-      display: flex;
-      align-items: center;
-      gap: 5px;
-    }
-
-    .loc-coords { font-size: 0.72rem; color: var(--muted); }
-
-    .loc-open-link {
-      display: inline-block;
-      margin-top: 3px;
-      text-align: center;
-      background: var(--accent-grad);
-      color: #04131c;
-      text-decoration: none;
-      font-weight: 800;
-      font-size: 0.78rem;
-      padding: 7px 10px;
-      border-radius: 8px;
-    }
-
-    .msg-meta-row {
-      margin-top: 4px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    .msg-tick {
-      font-size: 0.72rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      color: var(--muted);
-    }
-
-    .msg-tick.delivered { color: #cbd5e1; }
-    .msg-tick.seen { color: #38bdf8; }
-
-    .msg-del-btn {
-      background: none;
-      border: none;
-      font-size: 0.7rem;
-      font-weight: 700;
-      cursor: pointer;
-      padding: 2px 4px;
-      color: var(--danger);
-    }
-
-    .msg-del-btn.locked { color: var(--muted); }
-
-    /* Custom Delete Options Sheet */
-    .delete-sheet-backdrop {
-      position: fixed;
-      inset: 0;
-      background: rgba(2, 6, 15, 0.75);
-      z-index: 95;
-      display: none;
-      align-items: flex-end;
-      justify-content: center;
-      padding: 14px;
-    }
-
-    .delete-sheet-backdrop.open { display: flex; }
-
-    .delete-sheet-card {
-      width: 100%;
-      max-width: 440px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 14px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .del-option-btn {
-      width: 100%;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 12px 14px;
-      border-radius: 12px;
-      font-size: 0.86rem;
-      font-weight: 700;
-      text-align: left;
-      cursor: pointer;
-    }
-
-    .del-option-btn.danger-opt {
-      color: var(--danger);
-      border-color: rgba(251, 113, 133, 0.35);
-    }
-
-    .attach-tray {
-      display: none;
-      background: var(--surface);
-      border-top: 1px solid rgba(34, 211, 238, 0.25);
-      padding: 12px 14px;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 10px;
-    }
-
-    .attach-tray.open { display: grid; }
-
-    .attach-item {
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px 8px;
-      color: var(--text);
-      font-size: 0.78rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .attach-icon {
-      width: 38px;
-      height: 38px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 1.15rem;
-    }
-
-    .ico-photo { background: rgba(56, 189, 248, 0.18); color: #38bdf8; }
-    .ico-video { background: rgba(167, 139, 250, 0.18); color: #a78bfa; }
-    .ico-loc { background: rgba(74, 222, 128, 0.18); color: #4ade80; }
-
-    .chat-input-bar {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 10px 12px;
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-    }
-
-    .attach-toggle-btn {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background: var(--surface-2);
-      border: 1px solid rgba(34, 211, 238, 0.4);
-      color: var(--accent);
-      font-size: 1.35rem;
-      font-weight: 700;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-      transition: transform 0.2s ease;
-    }
-
-    .attach-toggle-btn.active {
-      background: var(--accent-grad);
-      color: #04131c;
-      transform: rotate(45deg);
-    }
-
-    .chat-input-bar input {
-      flex: 1;
-      background: var(--surface-2);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 10px 14px;
-      border-radius: 999px;
-      outline: none;
-      font-size: 0.9rem;
-      min-width: 0;
-    }
-
-    .photo-lightbox {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.95);
-      z-index: 80;
-      display: none;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      padding: 16px;
-    }
-    .photo-lightbox.open { display: flex; }
-    .photo-lightbox img { max-width: 100%; max-height: 82vh; border-radius: 12px; }
-
-    .form-group { margin-bottom: 13px; }
-    .form-group label { display: block; font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; font-weight: 600; }
-    .form-group input, .form-group select {
-      width: 100%;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      color: var(--text);
-      padding: 11px 12px;
-      border-radius: 10px;
-      font-size: 0.9rem;
-      outline: none;
-    }
-
-    .tier-tabs {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-
-    .tier-tab-btn {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 10px 8px;
-      border-radius: 12px;
-      font-size: 0.82rem;
-      font-weight: 800;
-      cursor: pointer;
-    }
-
-    .tier-tab-btn.active.t-xtra {
-      background: var(--xtra-grad);
-      color: #090d16;
-      border-color: transparent;
-    }
-
-    .tier-tab-btn.active.t-unlimited {
-      background: var(--unlim-grad);
-      color: #04131c;
-      border-color: transparent;
-    }
-
-    .tier-tab-btn.active.t-edge {
-      background: var(--edge-grad);
-      color: #16060b;
-      border-color: transparent;
-    }
-
-    .duration-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 10px;
-      margin-bottom: 14px;
-    }
-
-    .duration-box {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px;
-      cursor: pointer;
-      text-align: left;
-    }
-
-    .duration-box.selected {
-      border-color: #facc15;
-      background: rgba(250, 204, 21, 0.08);
-    }
-
-    .duration-box .d-title { font-size: 0.78rem; color: var(--muted); font-weight: 700; }
-    .duration-box .d-price { font-size: 1.15rem; font-weight: 900; margin: 3px 0; }
-    .duration-box .d-sub { font-size: 0.7rem; color: var(--accent); font-weight: 700; }
-
-    .plan-detail-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 15px;
-      margin-bottom: 14px;
-    }
-
-    .plan-detail-card ul {
-      padding-left: 18px;
-      font-size: 0.82rem;
-      line-height: 1.65;
-      color: #e2e8f0;
-      margin-top: 8px;
-    }
-
-    .pay-option {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 14px;
-      border-radius: 14px;
-      margin-bottom: 10px;
-      cursor: pointer;
-    }
-
-    .pay-option.selected { border-color: var(--accent); background: rgba(34, 211, 238, 0.08); }
-
-    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-bottom: 14px; }
-    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px 8px; text-align: center; }
-    .stat-num { font-size: 1.15rem; font-weight: 800; color: var(--accent); }
-    .stat-label { font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
-
-    .kyc-preview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 12px 0; }
-    .kyc-preview-box { background: var(--bg); border: 1px solid var(--border); border-radius: 12px; padding: 8px; text-align: center; }
-    .kyc-preview-box img { width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-top: 6px; }
-
-    .inbox-row {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      padding: 12px;
-      border-radius: 14px;
-      margin-bottom: 10px;
-      cursor: pointer;
-    }
-
-    .inbox-row img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; border: 2px solid var(--accent); }
-  </style>
-</head>
-<body>
-
-  <!-- STICKY HEADER + FILTERS -->
-  <div class="top-sticky">
-    <header>
-      <div class="brand-wrap">
-        <div class="brand-logo">D</div>
-        <div class="brand-text">Dastak</div>
-      </div>
-      <div class="header-right">
-        <button class="xtra-pill-btn" id="headerXtraBtn" onclick="openPayModal()">Xtra</button>
-        <span id="headerStatusBadge" class="status-pill">Pending</span>
-        <button class="owner-btn" onclick="openOwnerLogin()">Owner</button>
-      </div>
-    </header>
-
-    <div class="subbar-wrap" id="nearbyStickyControls">
-      <div class="quota-strip">
-        <div>Viewed: <strong id="freeCounter">0 / 40</strong> · Range: <strong id="rangeLabel">≤10 km</strong></div>
-        <div style="display:flex; align-items:center; gap:6px;">
-          <button class="gps-pill-btn" id="gpsStatusBtn" onclick="requestLiveGPS(true)">📍 GPS: Syncing</button>
-          <span id="planStatusText" style="color:var(--accent); font-weight:700;">Free</span>
-        </div>
-      </div>
-      <div class="filters-bar">
-        <button class="filter-open-btn" id="openFilterBtn" onclick="openFilterModal()">⚙ Filters</button>
-        <button class="chip active" onclick="setQuickFilter('all', this)">All Nearby</button>
-        <button class="chip" onclick="setQuickFilter('online', this)">● Online</button>
-        <button class="chip" onclick="setQuickFilter('verified', this)">✓ ID Verified</button>
-        <button class="chip" onclick="setQuickFilter('under5', this)">≤ 5 km</button>
-        <button class="chip xtra-chip" onclick="setQuickFilter('xtra', this)">Xtra (600)</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- NEARBY TAB -->
-  <div id="tab-nearby">
-    <div class="grid" id="userGrid"></div>
-  </div>
-
-  <!-- CHATS TAB -->
-  <div id="tab-chats" class="section-view">
-    <div class="section-title">Messages</div>
-    <div id="chatLockNotice" class="lock-banner" style="display:none;">
-      🔒 <strong>Messaging Locked (Status: Pending):</strong> Aap Dastak ke baaki sabhi features use kar sakte hain. Message, photo, video ya location bhejne ke liye Owner approval zaroori hai.
-    </div>
-    <div id="inboxList"></div>
-  </div>
-
-  <!-- VERIFY / PROFILE TAB -->
-  <div id="tab-me" class="section-view">
-    <div class="section-title">My Profile & Verification</div>
-
-    <div class="card-box">
-      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <strong>Account Verification & Live GPS</strong>
-        <span id="profileStatusBadge" class="status-pill">Pending</span>
-      </div>
-      <p style="font-size:0.82rem; color:var(--muted); line-height:1.5; margin-bottom:14px;">
-        Apni live selfie aur Indian ID upload karein. Status Pending hone par bhi aap poori app use kar sakte hain—sirf messaging Owner approval ke baad khulti hai.
-      </p>
-
-      <div class="form-group">
-        <label>Display Name</label>
-        <input type="text" id="myName" value="Preet" />
-      </div>
-      <div class="form-group">
-        <label>Age</label>
-        <input type="number" id="myAge" min="18" max="75" value="34" />
-      </div>
-      <div class="form-group">
-        <label>Vibe / Looking For</label>
-        <select id="myTag">
-          <option value="Coffee & Drives">Coffee & Drives</option>
-          <option value="Hangout">Hangout</option>
-          <option value="Late Night Chat">Late Night Chat</option>
-          <option value="Friendship">Friendship</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>Indian ID Type</label>
-        <select id="idType">
-          <option value="Aadhaar Card">Aadhaar Card</option>
-          <option value="PAN Card">PAN Card</option>
-          <option value="Driving Licence">Driving Licence</option>
-          <option value="Voter ID">Voter ID</option>
-        </select>
-      </div>
-      <div class="form-group">
-        <label>ID Reference / Last 4 Digits</label>
-        <input type="text" id="idNumber" placeholder="e.g. XXXX-XXXX-1234" />
-      </div>
-      <div class="form-group">
-        <label>Live Face Selfie</label>
-        <input type="file" id="selfieInput" accept="image/*" capture="user" onchange="handlePhotoUpload(event, 'selfiePhoto')" />
-      </div>
-      <div class="form-group">
-        <label>Indian ID Document Photo</label>
-        <input type="file" id="idDocInput" accept="image/*" onchange="handlePhotoUpload(event, 'idPhoto')" />
-      </div>
-
-      <button class="btn btn-primary" style="width:100%;" onclick="submitVerification()">
-        Submit for Owner Approval
-      </button>
-    </div>
-  </div>
-
-  <!-- BOTTOM NAV -->
-  <nav>
-    <button class="nav-btn active" onclick="switchTab('nearby', this)">
-      <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>
-      Nearby
-    </button>
-    <button class="nav-btn" onclick="openPayModal()">
-      <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
-      Plans
-    </button>
-    <button class="nav-btn" onclick="switchTab('chats', this)">
-      <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      Chats
-    </button>
-    <button class="nav-btn" onclick="switchTab('me', this)">
-      <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-      Verify / Me
-    </button>
-  </nav>
-
-  <!-- FULL FILTER MODAL -->
-  <div class="modal" id="filterModal">
-    <div class="modal-header">
-      <strong>Search Filters</strong>
-      <button class="close-btn" onclick="closeModal('filterModal')">Close</button>
-    </div>
-    <div class="modal-body">
-      <div class="card-box">
-        <div class="range-row">
-          <span>Max Distance</span>
-          <span class="range-val" id="distValText">50 km</span>
-        </div>
-        <input type="range" id="filterDist" min="2" max="50" value="50" oninput="document.getElementById('distValText').innerText = this.value + ' km'" />
-
-        <div class="range-row">
-          <span>Minimum Age</span>
-          <span class="range-val" id="minAgeText">18 yrs</span>
-        </div>
-        <input type="range" id="filterMinAge" min="18" max="50" value="18" oninput="document.getElementById('minAgeText').innerText = this.value + ' yrs'" />
-
-        <div class="range-row">
-          <span>Maximum Age</span>
-          <span class="range-val" id="maxAgeText">50 yrs</span>
-        </div>
-        <input type="range" id="filterMaxAge" min="18" max="60" value="50" oninput="document.getElementById('maxAgeText').innerText = this.value + ' yrs'" />
-      </div>
-
-      <label class="toggle-row">
-        <span>● Online Now Only</span>
-        <input type="checkbox" id="filterOnlineOnly" />
-      </label>
-
-      <label class="toggle-row">
-        <span>✓ ID Verified Profiles Only</span>
-        <input type="checkbox" id="filterVerifiedOnly" />
-      </label>
-
-      <div class="card-box" style="margin-top:10px;">
-        <div class="form-group" style="margin-bottom:0;">
-          <label>Looking For / Vibe</label>
-          <select id="filterTag">
-            <option value="all">All Vibes</option>
-            <option value="Coffee & Drives">Coffee & Drives</option>
-            <option value="Hangout">Hangout</option>
-            <option value="Late Night Chat">Late Night Chat</option>
-            <option value="Friendship">Friendship</option>
-          </select>
-        </div>
-      </div>
-
-      <div class="action-row">
-        <button class="btn btn-secondary" onclick="resetFilters()">Reset All</button>
-        <button class="btn btn-primary" onclick="applyFilters()">Apply Filters</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- PROFILE MODAL -->
-  <div class="modal" id="profileModal">
-    <div class="modal-header">
-      <strong id="modalTitle">Profile</strong>
-      <button class="close-btn" onclick="closeModal('profileModal')">Close</button>
-    </div>
-    <div class="modal-body" id="profileContent"></div>
-  </div>
-
-  <!-- CHAT MODAL -->
-  <div class="modal" id="chatModal">
-    <div class="modal-header">
-      <strong id="chatWithTitle">Chat</strong>
-      <div style="display:flex; gap:8px;">
-        <button class="close-btn" onclick="callNotice('Voice')">📞</button>
-        <button class="close-btn" onclick="callNotice('Video')">🎥</button>
-        <button class="close-btn" onclick="closeChatModal()">Back</button>
-      </div>
-    </div>
-    <div class="chat-messages" id="chatMessages" onclick="closeAttachTray()"></div>
-    <div id="modalChatLock" class="lock-banner" style="margin: 0 12px 10px; display:none;">
-      🔒 Status <strong>Pending</strong> hai — message, photo, video ya location bhejne ke liye Owner approval ka intezaar karein.
-    </div>
-
-    <div class="attach-tray" id="attachTray">
-      <button class="attach-item" onclick="triggerChatPhoto()">
-        <span class="attach-icon ico-photo">📷</span>
-        <span>Photo</span>
-      </button>
-      <button class="attach-item" onclick="triggerChatVideo()">
-        <span class="attach-icon ico-video">🎥</span>
-        <span>Video</span>
-      </button>
-      <button class="attach-item" onclick="sendChatLocation()">
-        <span class="attach-icon ico-loc">📍</span>
-        <span>Location</span>
-      </button>
-    </div>
-
-    <input type="file" id="chatPhotoInput" accept="image/*" style="display:none;" onchange="handleChatPhoto(event)" />
-    <input type="file" id="chatVideoInput" accept="video/*" style="display:none;" onchange="handleChatVideo(event)" />
-
-    <div class="chat-input-bar">
-      <button class="attach-toggle-btn" id="attachToggleBtn" onclick="toggleAttachTray()" title="Attach Photo, Video or Location">+</button>
-      <input type="text" id="msgInput" placeholder="Write a message..." onfocus="closeAttachTray()" onkeypress="if(event.key==='Enter') sendMessage()" />
-      <button class="btn btn-primary" style="padding: 9px 16px; border-radius: 999px;" onclick="sendMessage()">Send</button>
-    </div>
-  </div>
-
-  <!-- DELETE OPTIONS BOTTOM SHEET (For Me / Unsend / Both Sides) -->
-  <div class="delete-sheet-backdrop" id="deleteSheet" onclick="if(event.target.id==='deleteSheet') closeDeleteSheet()">
-    <div class="delete-sheet-card">
-      <div style="font-size:0.88rem; font-weight:800; color:var(--accent); padding:2px 4px;">Message Delete Options</div>
-      <button class="del-option-btn" onclick="executeDeleteAction('me')">
-        🗑️ Sirf mere liye delete karein (Delete for me)
-      </button>
-      <button class="del-option-btn danger-opt" onclick="executeDeleteAction('both')">
-        ↩️ Unsend / Dono taraf se delete karein (Delete for everyone)
-      </button>
-      <button class="btn btn-secondary" style="padding:10px; font-size:0.84rem;" onclick="closeDeleteSheet()">
-        Cancel
-      </button>
-    </div>
-  </div>
-
-  <!-- PHOTO FULLSCREEN VIEW -->
-  <div class="photo-lightbox" id="photoLightbox" onclick="this.classList.remove('open')">
-    <img id="lightboxImg" src="" alt="Preview" />
-    <button class="close-btn" style="margin-top:14px;">Close</button>
-  </div>
-
-  <!-- MEMBERSHIP PLANS MODAL (Xtra / Unlimited / Edge + Payment Gateway) -->
-  <div class="modal" id="payModal">
-    <div class="modal-header">
-      <strong>Dastak Membership Plans</strong>
-      <button class="close-btn" onclick="closeModal('payModal')">Close</button>
-    </div>
-    <div class="modal-body">
-
-      <div class="tier-tabs">
-        <button class="tier-tab-btn t-xtra active" id="tabTier-xtra" onclick="switchCheckoutTier('xtra')">Xtra</button>
-        <button class="tier-tab-btn t-unlimited" id="tabTier-unlimited" onclick="switchCheckoutTier('unlimited')">Unlimited</button>
-        <button class="tier-tab-btn t-edge" id="tabTier-edge" onclick="switchCheckoutTier('edge')">Edge</button>
-      </div>
-
-      <div class="duration-grid" id="durationOptionsGrid"></div>
-
-      <div class="plan-detail-card" id="tierFeaturesBox"></div>
-
-      <div class="pay-option selected" id="opt-upi" onclick="selectPayMethod('UPI')">
-        <div>
-          <strong>UPI Payment</strong>
-          <div style="font-size:0.76rem; color:var(--muted);">GPay, PhonePe, Paytm, BHIM</div>
-        </div>
-        <span style="color:var(--accent); font-size:1.1rem;">●</span>
-      </div>
-
-      <div class="pay-option" id="opt-card" onclick="selectPayMethod('Debit / Credit Card')">
-        <div>
-          <strong>Debit / Credit Card</strong>
-          <div style="font-size:0.76rem; color:var(--muted);">Visa, Mastercard, RuPay</div>
-        </div>
-        <span style="color:var(--muted); font-size:1.1rem;">○</span>
-      </div>
-
-      <div class="form-group" style="margin-top:12px;">
-        <label id="payInputLabel">Enter UPI ID</label>
-        <input type="text" id="payDetailInput" placeholder="yourname@okaxis" />
-      </div>
-
-      <button class="btn btn-xtra" style="width:100%;" id="payActionBtn" onclick="startPaymentGateway()">
-        Continue · ₹250 (Xtra · 1 Week)
-      </button>
-    </div>
-  </div>
-
-  <!-- OWNER PANEL MODAL -->
-  <div class="modal" id="ownerModal">
-    <div class="modal-header">
-      <strong>Dastak Owner Panel</strong>
-      <button class="close-btn" onclick="closeModal('ownerModal')">Close</button>
-    </div>
-    <div class="modal-body">
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="stat-num" id="statTotalUsers">1</div>
-          <div class="stat-label">Active Users</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num" id="statStatus">Pending</div>
-          <div class="stat-label">KYC Status</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-num" id="statPaid">Free</div>
-          <div class="stat-label">Plan</div>
-        </div>
-      </div>
-
-      <div id="ownerUsersContainer"></div>
-    </div>
-  </div>
-
-  <!-- FIREBASE SDK (FIRESTORE REALTIME SYNC) -->
-  <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-    import {
-      getFirestore, doc, setDoc, getDoc, collection, onSnapshot, serverTimestamp
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
-
-    const firebaseConfig = {
-      apiKey: "AIzaSyAm_D-wWy8dMqWxAHNC_aNjZfRRX42ghIc",
-      authDomain: "dastak-233e3.firebaseapp.com",
-      projectId: "dastak-233e3",
-      storageBucket: "dastak-233e3.firebasestorage.app",
-      messagingSenderId: "210382075917",
-      appId: "1:210382075917:web:fe7779abee78d4ec183d44",
-      measurementId: "G-SY9MY3LZCL"
-    };
-
-    const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app);
-
-    window.dastakCloud = {
-      db,
-      doc,
-      setDoc,
-      getDoc,
-      collection,
-      onSnapshot,
-      serverTimestamp,
-      allUsers: [],
-      threadUnsub: null
-    };
-
-    let clientUid = localStorage.getItem("dastak_uid_v1");
-    if (!clientUid) {
-      clientUid = "user_" + Math.random().toString(36).slice(2, 10);
-      localStorage.setItem("dastak_uid_v1", clientUid);
-    }
-    window.dastakCloud.uid = clientUid;
-
-    const myDocRef = doc(db, "dastak_users", clientUid);
-    onSnapshot(myDocRef, (snap) => {
-      if (snap.exists()) {
-        const remote = snap.data();
-        const plan = remote.planType || (remote.hasWeeklyPlan ? "xtra_1w" : "free");
-        window.userAccount = {
-          ...window.userAccount,
-          name: remote.name ?? window.userAccount.name,
-          age: remote.age ?? window.userAccount.age,
-          tag: remote.tag ?? window.userAccount.tag,
-          idType: remote.idType ?? window.userAccount.idType,
-          idNumber: remote.idNumber ?? window.userAccount.idNumber,
-          selfiePhoto: remote.selfiePhoto || window.userAccount.selfiePhoto,
-          idPhoto: remote.idPhoto || window.userAccount.idPhoto,
-          verificationStatus: remote.verificationStatus || window.userAccount.verificationStatus,
-          planType: plan,
-          hasWeeklyPlan: plan !== "free",
-          paymentMethod: remote.paymentMethod || window.userAccount.paymentMethod,
-          lastPaymentRef: remote.lastPaymentRef || window.userAccount.lastPaymentRef || ""
-        };
-        window.saveAccount(true);
-        if (window.activeChatUser) {
-          const canSend = window.userAccount.verificationStatus === "Verified";
-          document.getElementById("modalChatLock").style.display = canSend ? "none" : "block";
+          commitChatChange(window.activeChatUser.id);
           window.renderMessages();
-        }
-        if (document.getElementById("ownerModal").classList.contains("open")) {
-          window.renderOwnerPanel();
-        }
-      }
-    });
-
-    onSnapshot(collection(db, "dastak_users"), (querySnapshot) => {
-      const list = [];
-      querySnapshot.forEach((d) => {
-        list.push({ uid: d.id, ...d.data() });
-      });
-      window.dastakCloud.allUsers = list;
-      if (document.getElementById("ownerModal").classList.contains("open")) {
-        window.renderOwnerPanel();
-      }
-    });
-
-    window.syncUserToCloud = async function(accountObj) {
-      try {
-        const plan = accountObj.planType || (accountObj.hasWeeklyPlan ? "xtra_1w" : "free");
-        const coords = window.userCoords || {};
-        await setDoc(doc(db, "dastak_users", clientUid), {
-          name: accountObj.name || "User",
-          age: Number(accountObj.age) || 25,
-          tag: accountObj.tag || "Hangout",
-          idType: accountObj.idType || "Aadhaar Card",
-          idNumber: accountObj.idNumber || "",
-          selfiePhoto: accountObj.selfiePhoto || "",
-          idPhoto: accountObj.idPhoto || "",
-          verificationStatus: accountObj.verificationStatus || "Pending",
-          planType: plan,
-          hasWeeklyPlan: plan !== "free",
-          paymentMethod: accountObj.paymentMethod || "UPI",
-          lastPaymentRef: accountObj.lastPaymentRef || "",
-          lat: typeof coords.lat === "number" ? coords.lat : null,
-          lng: typeof coords.lng === "number" ? coords.lng : null,
-          lastSeen: Date.now(),
-          updatedAt: serverTimestamp()
-        }, { merge: true });
-      } catch (err) {
-        console.warn("Firestore user sync skipped/offline:", err);
-      }
-    };
-
-    window.setCloudUserStatus = async function(targetUid, newStatus) {
-      try {
-        await setDoc(doc(db, "dastak_users", targetUid), {
-          verificationStatus: newStatus,
-          updatedAt: serverTimestamp()
-        }, { merge: true });
-      } catch (err) {
-        console.warn("Firestore status update error:", err);
-      }
-    };
-
-    window.setCloudUserPlan = async function(targetUid, nextPlan) {
-      try {
-        await setDoc(doc(db, "dastak_users", targetUid), {
-          planType: nextPlan,
-          hasWeeklyPlan: nextPlan !== "free",
-          updatedAt: serverTimestamp()
-        }, { merge: true });
-      } catch (err) {
-        console.warn("Firestore plan update error:", err);
-      }
-    };
-
-    window.subscribeChatThread = function(peerId) {
-      if (window.dastakCloud.threadUnsub) {
-        window.dastakCloud.threadUnsub();
-        window.dastakCloud.threadUnsub = null;
-      }
-      const threadId = `${clientUid}__peer_${peerId}`;
-      const threadRef = doc(db, "dastak_chats", threadId);
-
-      window.dastakCloud.threadUnsub = onSnapshot(threadRef, (snap) => {
-        if (snap.exists()) {
-          const data = snap.data();
-          if (Array.isArray(data.messages)) {
-            window.chats[peerId] = data.messages;
-            window.saveChats();
-            if (window.activeChatUser && window.activeChatUser.id === peerId) {
-              window.markThreadAsSeen(peerId);
-              window.renderMessages();
-            }
-          }
-        }
-      });
-    };
-
-    window.syncChatThreadToCloud = async function(peerId, messagesArr) {
-      try {
-        const threadId = `${clientUid}__peer_${peerId}`;
-        const safeMessages = messagesArr.map(m => {
-          if (m.type === "video" && m.mediaUrl && m.mediaUrl.startsWith("blob:")) {
-            return { ...m, mediaUrl: "" };
-          }
-          return m;
-        });
-        await setDoc(doc(db, "dastak_chats", threadId), {
-          uid: clientUid,
-          peerId,
-          messages: safeMessages,
-          updatedAt: serverTimestamp()
-        }, { merge: true });
-      } catch (err) {
-        console.warn("Firestore chat sync error:", err);
-      }
-    };
-
-    window.syncUserToCloud(window.userAccount);
-  </script>
-
-  <!-- APP LOGIC -->
-  <script>
-    const OWNER_PIN = "1234";
-    const RAZORPAY_KEY_ID = "";
-
-    const PLANS_CATALOG = {
-      free: {
-        id: "free",
-        tier: "free",
-        label: "Free",
-        shortBadge: "Xtra",
-        limit: 40,
-        canDeleteMsg: true,
-        priceText: "Free",
-        amountInr: 0,
-        nextOwnerPlan: "xtra_1w"
-      },
-      xtra_1w: {
-        id: "xtra_1w",
-        tier: "xtra",
-        label: "Xtra · 1 Week",
-        shortBadge: "Xtra",
-        limit: 600,
-        canDeleteMsg: true,
-        priceText: "₹250",
-        amountInr: 250,
-        nextOwnerPlan: "unlimited_1w"
-      },
-      xtra_1m: {
-        id: "xtra_1m",
-        tier: "xtra",
-        label: "Xtra · 1 Month",
-        shortBadge: "Xtra",
-        limit: 600,
-        canDeleteMsg: true,
-        priceText: "₹365",
-        amountInr: 365,
-        nextOwnerPlan: "unlimited_1w"
-      },
-      xtra_3m: {
-        id: "xtra_3m",
-        tier: "xtra",
-        label: "Xtra · 3 Months",
-        shortBadge: "Xtra",
-        limit: 600,
-        canDeleteMsg: true,
-        priceText: "₹730",
-        amountInr: 730,
-        nextOwnerPlan: "unlimited_1w"
-      },
-      xtra_12m: {
-        id: "xtra_12m",
-        tier: "xtra",
-        label: "Xtra · 12 Months",
-        shortBadge: "Xtra",
-        limit: 600,
-        canDeleteMsg: true,
-        priceText: "₹1,825",
-        amountInr: 1825,
-        nextOwnerPlan: "unlimited_1w"
-      },
-      unlimited_1w: {
-        id: "unlimited_1w",
-        tier: "unlimited",
-        label: "Unlimited · 1 Week",
-        shortBadge: "Unlimited",
-        limit: 9999,
-        canDeleteMsg: true,
-        priceText: "₹492",
-        amountInr: 492,
-        nextOwnerPlan: "edge_1w"
-      },
-      unlimited_1m: {
-        id: "unlimited_1m",
-        tier: "unlimited",
-        label: "Unlimited · 1 Month",
-        shortBadge: "Unlimited",
-        limit: 9999,
-        canDeleteMsg: true,
-        priceText: "₹820",
-        amountInr: 820,
-        nextOwnerPlan: "edge_1w"
-      },
-      edge_1w: {
-        id: "edge_1w",
-        tier: "edge",
-        label: "Edge · 1 Week",
-        shortBadge: "Edge",
-        limit: 9999,
-        canDeleteMsg: true,
-        priceText: "₹7,800",
-        amountInr: 7800,
-        nextOwnerPlan: "free"
-      },
-      edge_1m: {
-        id: "edge_1m",
-        tier: "edge",
-        label: "Edge · 1 Month",
-        shortBadge: "Edge",
-        limit: 9999,
-        canDeleteMsg: true,
-        priceText: "₹13,300",
-        amountInr: 13300,
-        nextOwnerPlan: "free"
-      }
-    };
-
-    const TIER_DETAILS = {
-      xtra: {
-        heading: "Xtra · Find More Faster",
-        btnClass: "btn-xtra",
-        durations: [
-          { key: "xtra_1w", title: "1 WEEK", price: "₹250", sub: "₹35.72 / day" },
-          { key: "xtra_1m", title: "1 MONTH", price: "₹365", sub: "Save 66%" },
-          { key: "xtra_3m", title: "3 MONTHS", price: "₹730", sub: "Save 77%" },
-          { key: "xtra_12m", title: "12 MONTHS", price: "₹1,825", sub: "Save 86%" }
-        ],
-        bullets: [
-          "Access up to <strong>600 local profiles</strong>",
-          "Share and view photos & albums",
-          "No 3rd party ads + instant message delete & unsend"
-        ]
-      },
-      unlimited: {
-        heading: "Unlimited · No More Boundaries",
-        btnClass: "btn-unlim",
-        durations: [
-          { key: "unlimited_1w", title: "1 WEEK", price: "₹492", sub: "₹70.29 / day" },
-          { key: "unlimited_1m", title: "1 MONTH", price: "₹820", sub: "Save 61%" }
-        ],
-        bullets: [
-          "<strong>Unlimited profiles</strong> unlocked in grid",
-          "See who's interested & viewed your profile",
-          "Incognito / discreet browsing mode"
-        ]
-      },
-      edge: {
-        heading: "Edge · More Action, Less Effort",
-        btnClass: "btn-edge",
-        durations: [
-          { key: "edge_1w", title: "1 WEEK", price: "₹7,800", sub: "Priority Edge Pass" },
-          { key: "edge_1m", title: "1 MONTH", price: "₹13,300", sub: "Save 60%" }
-        ],
-        bullets: [
-          "Priority visibility & faster nearby matching",
-          "Full <strong>Unlimited</strong> access + priority support",
-          "Complete chat & media controls"
-        ]
-      }
-    };
-
-    const samplePhotos = [
-      "https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?w=400&q=75",
-      "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&q=75",
-      "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&q=75",
-      "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&q=75",
-      "https://images.unsplash.com/photo-1492562080023-ab3db95bfbce?w=400&q=75",
-      "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=400&q=75",
-      "https://images.unsplash.com/photo-1504257432389-52343af06ae3?w=400&q=75",
-      "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=75"
-    ];
-
-    const namesList = ["Aarav", "Kabir", "Rohan", "Dev", "Ishaan", "Vikram", "Arjun", "Reyansh", "Karan", "Vihaan", "Siddharth", "Yash", "Manav", "Nikhil", "Raghav"];
-    const tagsList = ["Coffee & Drives", "Hangout", "Late Night Chat", "Friendship"];
-
-    const BASE_CENTER = { lat: 30.9010, lng: 75.8573 };
-    window.userCoords = JSON.parse(localStorage.getItem("dastak_coords_v1") || "null");
-
-    function computeDistanceKm(lat1, lon1, lat2, lon2) {
-      const toRad = (v) => (v * Math.PI) / 180;
-      const R = 6371;
-      const dLat = toRad(lat2 - lat1);
-      const dLon = toRad(lon2 - lon1);
-      const a =
-        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
-        Math.sin(dLon / 2) * Math.sin(dLon / 2);
-      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-      return Number((R * c).toFixed(1));
-    }
-
-    const profilesPool = Array.from({ length: 600 }, (_, idx) => {
-      const i = idx + 1;
-      const isXtra = i > 40;
-      const radialKm = !isXtra ? 0.3 + idx * 0.23 : 10.2 + (idx - 40) * 0.07;
-      const angle = (idx * 2.39996) % (Math.PI * 2);
-      const latOffset = (radialKm / 111.32) * Math.cos(angle);
-      const lngOffset = (radialKm / (111.32 * Math.cos((BASE_CENTER.lat * Math.PI) / 180))) * Math.sin(angle);
-      const lat = Number((BASE_CENTER.lat + latOffset).toFixed(5));
-      const lng = Number((BASE_CENTER.lng + lngOffset).toFixed(5));
-      const dist = Number(radialKm.toFixed(1));
-
-      return {
-        id: i,
-        name: namesList[idx % namesList.length],
-        age: 19 + (i % 24),
-        lat,
-        lng,
-        dist,
-        isXtra,
-        online: i % 2 === 0,
-        verified: i % 3 !== 0,
-        tag: tagsList[idx % tagsList.length],
-        bio: `Around ${dist} km away. Looking for ${tagsList[idx % tagsList.length].toLowerCase()} and genuine people.`,
-        img: samplePhotos[idx % samplePhotos.length]
-      };
-    });
-
-    function recalculateProfileDistances() {
-      const center = window.userCoords && typeof window.userCoords.lat === "number"
-        ? window.userCoords
-        : BASE_CENTER;
-
-      profilesPool.forEach((p) => {
-        p.dist = computeDistanceKm(center.lat, center.lng, p.lat, p.lng);
-        p.bio = `Around ${p.dist} km away. Looking for ${p.tag.toLowerCase()} and genuine people.`;
-      });
-    }
-
-    function updateGpsBadge(text, isLive = false) {
-      const btn = document.getElementById("gpsStatusBtn");
-      if (!btn) return;
-      btn.innerText = text;
-      btn.style.color = isLive ? "#4ade80" : "#22d3ee";
-      btn.style.borderColor = isLive ? "rgba(74, 222, 128, 0.45)" : "rgba(34, 211, 238, 0.38)";
-    }
-
-    window.requestLiveGPS = function(showAlertOnFail = false) {
-      if (!navigator.geolocation) {
-        recalculateProfileDistances();
-        updateGpsBadge("📍 GPS: Default", false);
-        renderGrid();
-        return;
-      }
-
-      updateGpsBadge("📍 GPS: Locating...", false);
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          window.userCoords = {
-            lat: Number(pos.coords.latitude.toFixed(5)),
-            lng: Number(pos.coords.longitude.toFixed(5))
-          };
-          try { localStorage.setItem("dastak_coords_v1", JSON.stringify(window.userCoords)); } catch (e) {}
-          recalculateProfileDistances();
-          updateGpsBadge("📍 GPS: Live", true);
-          renderGrid();
-          if (typeof window.syncUserToCloud === "function") {
-            window.syncUserToCloud(window.userAccount);
-          }
-        },
-        () => {
-          recalculateProfileDistances();
-          updateGpsBadge("📍 GPS: Tap", false);
-          renderGrid();
-          if (showAlertOnFail) {
-            alert("Live GPS permission allow karein taaki asli km distance calculate ho sake.");
-          }
-        },
-        { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
-      );
-    };
-
-    const savedAcc = JSON.parse(localStorage.getItem("dastak_account_v1") || "{}");
-    const initialPlan = PLANS_CATALOG[savedAcc.planType]
-      ? savedAcc.planType
-      : (savedAcc.hasWeeklyPlan ? "xtra_1w" : "free");
-
-    window.userAccount = {
-      name: savedAcc.name || "Preet",
-      age: savedAcc.age || 34,
-      tag: savedAcc.tag || "Coffee & Drives",
-      idType: savedAcc.idType || "Aadhaar Card",
-      idNumber: savedAcc.idNumber || "",
-      selfiePhoto: savedAcc.selfiePhoto || "",
-      idPhoto: savedAcc.idPhoto || "",
-      verificationStatus: savedAcc.verificationStatus || "Pending",
-      viewedProfileIds: Array.isArray(savedAcc.viewedProfileIds) ? savedAcc.viewedProfileIds : [],
-      blockedIds: Array.isArray(savedAcc.blockedIds) ? savedAcc.blockedIds : [],
-      planType: initialPlan,
-      hasWeeklyPlan: initialPlan !== "free",
-      paymentMethod: savedAcc.paymentMethod || "UPI",
-      lastPaymentRef: savedAcc.lastPaymentRef || ""
-    };
-
-    window.chats = JSON.parse(localStorage.getItem("dastak_chats_v1") || "{}");
-    window.activeChatUser = null;
-    let pendingDeleteIndex = null;
-    let selectedPayMethod = "UPI";
-    let activeCheckoutTier = "xtra";
-    let activeCheckoutPlanKey = "xtra_1w";
-    let visibleXtraCount = 18;
-
-    let filters = {
-      quick: "all",
-      maxDist: 50,
-      minAge: 18,
-      maxAge: 50,
-      onlineOnly: false,
-      verifiedOnly: false,
-      tag: "all"
-    };
-
-    function getActivePlanInfo() {
-      const key = window.userAccount.planType || (window.userAccount.hasWeeklyPlan ? "xtra_1w" : "free");
-      return PLANS_CATALOG[key] || PLANS_CATALOG.free;
-    }
-
-    window.saveAccount = function(skipCloud = false) {
-      const key = window.userAccount.planType || (window.userAccount.hasWeeklyPlan ? "xtra_1w" : "free");
-      window.userAccount.planType = key;
-      window.userAccount.hasWeeklyPlan = key !== "free";
-      try { localStorage.setItem("dastak_account_v1", JSON.stringify(window.userAccount)); } catch (e) {}
-      updateTopUI();
-      if (!skipCloud && typeof window.syncUserToCloud === "function") {
-        window.syncUserToCloud(window.userAccount);
-      }
-    };
-
-    window.saveChats = function() {
-      try { localStorage.setItem("dastak_chats_v1", JSON.stringify(window.chats)); } catch (e) {}
-    };
-
-    function updateTopUI() {
-      const status = window.userAccount.verificationStatus;
-      const badgeClass = `status-pill ${status === "Verified" ? "verified" : status === "Rejected" ? "rejected" : ""}`;
-
-      ["headerStatusBadge", "profileStatusBadge"].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) {
-          el.className = badgeClass;
-          el.innerText = status;
-        }
-      });
-
-      const planInfo = getActivePlanInfo();
-      const limitLabel = planInfo.limit >= 9999 ? "∞" : String(planInfo.limit);
-      document.getElementById("freeCounter").innerText = `${(window.userAccount.viewedProfileIds || []).length} / ${limitLabel}`;
-      document.getElementById("rangeLabel").innerText = planInfo.id !== "free" ? `≤${filters.maxDist} km` : "≤10 km + Xtra";
-      document.getElementById("planStatusText").innerText = planInfo.label;
-      document.getElementById("headerXtraBtn").innerText = planInfo.shortBadge;
-
-      let activeFilterCount = 0;
-      if (filters.maxDist < 50) activeFilterCount++;
-      if (filters.minAge > 18 || filters.maxAge < 50) activeFilterCount++;
-      if (filters.onlineOnly) activeFilterCount++;
-      if (filters.verifiedOnly) activeFilterCount++;
-      if (filters.tag !== "all") activeFilterCount++;
-      document.getElementById("openFilterBtn").innerText = activeFilterCount > 0 ? `⚙ Filters (${activeFilterCount})` : "⚙ Filters";
-    }
-
-    function switchCheckoutTier(tier) {
-      activeCheckoutTier = tier;
-      const detail = TIER_DETAILS[tier] || TIER_DETAILS.xtra;
-      activeCheckoutPlanKey = detail.durations[0].key;
-      renderCheckoutModal();
-    }
-
-    function selectDurationKey(key) {
-      activeCheckoutPlanKey = key;
-      renderCheckoutModal();
-    }
-
-    function renderCheckoutModal() {
-      ["xtra", "unlimited", "edge"].forEach(t => {
-        const btn = document.getElementById(`tabTier-${t}`);
-        if (btn) btn.classList.toggle("active", t === activeCheckoutTier);
-      });
-
-      const detail = TIER_DETAILS[activeCheckoutTier] || TIER_DETAILS.xtra;
-      const grid = document.getElementById("durationOptionsGrid");
-      grid.innerHTML = "";
-
-      detail.durations.forEach(d => {
-        const box = document.createElement("div");
-        box.className = `duration-box ${d.key === activeCheckoutPlanKey ? "selected" : ""}`;
-        box.onclick = () => selectDurationKey(d.key);
-        box.innerHTML = `
-          <div class="d-title">${d.title}</div>
-          <div class="d-price">${d.price}</div>
-          <div class="d-sub">${d.sub}</div>
-        `;
-        grid.appendChild(box);
-      });
-
-      const featBox = document.getElementById("tierFeaturesBox");
-      featBox.innerHTML = `
-        <strong style="font-size:0.92rem;">${detail.heading}</strong>
-        <ul>${detail.bullets.map(b => `<li>${b}</li>`).join("")}</ul>
-      `;
-
-      const selectedPlan = PLANS_CATALOG[activeCheckoutPlanKey] || PLANS_CATALOG.xtra_1w;
-      const actionBtn = document.getElementById("payActionBtn");
-      actionBtn.className = `btn ${detail.btnClass}`;
-      actionBtn.style.width = "100%";
-      actionBtn.innerText = `Continue · ${selectedPlan.priceText} (${selectedPlan.label})`;
-    }
-
-    function finalizePlanActivation(selectedPlan, paymentRef) {
-      window.userAccount.planType = selectedPlan.id;
-      window.userAccount.hasWeeklyPlan = selectedPlan.id !== "free";
-      window.userAccount.paymentMethod = selectedPayMethod;
-      window.userAccount.lastPaymentRef = paymentRef;
-      window.saveAccount();
-      closeModal("payModal");
-      renderGrid();
-      window.renderMessages();
-      alert(`${selectedPlan.label} (${selectedPlan.priceText}) active ho gaya hai! Ref: ${paymentRef}`);
-    }
-
-    function startPaymentGateway() {
-      const selectedPlan = PLANS_CATALOG[activeCheckoutPlanKey] || PLANS_CATALOG.xtra_1w;
-      const detailVal = (document.getElementById("payDetailInput")?.value || "").trim();
-
-      if (RAZORPAY_KEY_ID && typeof window.Razorpay === "function") {
-        const options = {
-          key: RAZORPAY_KEY_ID,
-          amount: selectedPlan.amountInr * 100,
-          currency: "INR",
-          name: "Dastak",
-          description: selectedPlan.label,
-          prefill: {
-            name: window.userAccount.name || "Preet"
-          },
-          notes: {
-            planId: selectedPlan.id,
-            method: selectedPayMethod,
-            handle: detailVal
-          },
-          theme: { color: "#06b6d4" },
-          handler: function(response) {
-            const refId = response.razorpay_payment_id || ("rzp_" + Date.now());
-            finalizePlanActivation(selectedPlan, refId);
-          }
-        };
-        const rzp = new window.Razorpay(options);
-        rzp.on("payment.failed", function(resp) {
-          alert("Payment fail ho gaya: " + (resp.error?.description || "Try again"));
-        });
-        rzp.open();
-        return;
-      }
-
-      const demoRef = "TEST_PAY_" + Math.random().toString(36).slice(2, 8).toUpperCase();
-      finalizePlanActivation(selectedPlan, demoRef);
-    }
-
-    function renderGrid() {
-      const grid = document.getElementById("userGrid");
-      grid.innerHTML = "";
-
-      const planInfo = getActivePlanInfo();
-      const isUnlocked = planInfo.id !== "free";
-      const blocked = window.userAccount.blockedIds || [];
-
-      const matching = profilesPool.filter(u => {
-        if (blocked.includes(u.id)) return false;
-        if (u.age < filters.minAge || u.age > filters.maxAge) return false;
-        if (u.dist > filters.maxDist) return false;
-        if (filters.onlineOnly && !u.online) return false;
-        if (filters.verifiedOnly && !u.verified) return false;
-        if (filters.tag !== "all" && u.tag !== filters.tag) return false;
-
-        if (filters.quick === "online" && !u.online) return false;
-        if (filters.quick === "verified" && !u.verified) return false;
-        if (filters.quick === "under5" && u.dist > 5) return false;
-        if (filters.quick === "xtra" && !u.isXtra) return false;
-        return true;
-      });
-
-      const freeList = matching.filter(u => !u.isXtra);
-      const xtraList = matching.filter(u => u.isXtra);
-
-      if (freeList.length === 0 && xtraList.length === 0) {
-        grid.innerHTML = `<div class="grid-banner"><div><h4>Koi profile nahi mili</h4><p>Filters thode change karein ya Reset par tap karein.</p></div><button class="btn btn-primary" style="padding:8px 12px; font-size:0.78rem;" onclick="resetFilters()">Reset</button></div>`;
-        return;
-      }
-
-      freeList.forEach(user => grid.appendChild(createTile(user, false)));
-
-      if (xtraList.length > 0) {
-        const banner = document.createElement("div");
-        banner.className = "grid-banner";
-        if (!isUnlocked) {
-          banner.innerHTML = `
-            <div>
-              <h4>More Access · Xtra ₹250 · Unlimited ₹492 · Edge ₹7,800</h4>
-              <p>600+ local profiles, Unlimited mode, aur Edge pass unlock karne ke liye plan chunein.</p>
-            </div>
-            <button class="btn btn-xtra" style="padding:9px 13px; font-size:0.76rem; white-space:nowrap;" onclick="openPayModal()">Plans</button>
-          `;
-        } else {
-          banner.innerHTML = `
-            <div>
-              <h4>${planInfo.label} Active</h4>
-              <p>Unlocked access active hai (${planInfo.priceText}).</p>
-            </div>
-            <span class="status-pill verified">Active</span>
-          `;
-        }
-        grid.appendChild(banner);
-
-        const sliceCount = isUnlocked ? visibleXtraCount : 12;
-        xtraList.slice(0, sliceCount).forEach(user => {
-          grid.appendChild(createTile(user, !isUnlocked));
-        });
-
-        if (isUnlocked && xtraList.length > visibleXtraCount) {
-          const moreWrap = document.createElement("div");
-          moreWrap.className = "load-more-wrap";
-          moreWrap.innerHTML = `<button class="btn btn-secondary" style="padding:10px 22px; font-size:0.82rem;" onclick="loadMoreXtra()">Load More Profiles (${xtraList.length - visibleXtraCount} left)</button>`;
-          grid.appendChild(moreWrap);
-        }
-      }
-    }
-
-    function createTile(user, isLocked) {
-      const div = document.createElement("div");
-      div.className = `tile ${user.online ? "is-online" : ""} ${isLocked ? "is-locked" : ""}`;
-      div.onclick = () => isLocked ? openPayModal() : handleProfileClick(user);
-
-      div.innerHTML = `
-        <img src="${user.img}" alt="${user.name}" loading="lazy" />
-        ${isLocked
-          ? `<div class="tile-badge xtra-tag">Xtra</div>
-             <div class="lock-center">
-               <div class="lock-icon-circle">🔒</div>
-               <div class="lock-label">Unlock ₹250</div>
-             </div>`
-          : `${user.verified ? `<div class="tile-badge">✓ ID</div>` : ""}`
-        }
-        <div class="tile-overlay">
-          <div class="tile-name">
-            <span class="status-dot ${user.online ? 'online' : 'offline'}"></span>${isLocked ? "Locked Member" : `${user.name}, ${user.age}`}
-          </div>
-          <div class="tile-dist">${user.dist} km</div>
-        </div>
-      `;
-      return div;
-    }
-
-    function loadMoreXtra() { visibleXtraCount += 30; renderGrid(); }
-
-    function setQuickFilter(type, btn) {
-      filters.quick = type;
-      document.querySelectorAll(".chip").forEach(c => c.classList.remove("active"));
-      btn.classList.add("active");
-      renderGrid();
-    }
-
-    function openFilterModal() {
-      document.getElementById("filterDist").value = filters.maxDist;
-      document.getElementById("distValText").innerText = filters.maxDist + " km";
-      document.getElementById("filterMinAge").value = filters.minAge;
-      document.getElementById("minAgeText").innerText = filters.minAge + " yrs";
-      document.getElementById("filterMaxAge").value = filters.maxAge;
-      document.getElementById("maxAgeText").innerText = filters.maxAge + " yrs";
-      document.getElementById("filterOnlineOnly").checked = filters.onlineOnly;
-      document.getElementById("filterVerifiedOnly").checked = filters.verifiedOnly;
-      document.getElementById("filterTag").value = filters.tag;
-      document.getElementById("filterModal").classList.add("open");
-    }
-
-    function applyFilters() {
-      filters.maxDist = Number(document.getElementById("filterDist").value);
-      filters.minAge = Number(document.getElementById("filterMinAge").value);
-      filters.maxAge = Number(document.getElementById("filterMaxAge").value);
-      if (filters.minAge > filters.maxAge) {
-        const t = filters.minAge; filters.minAge = filters.maxAge; filters.maxAge = t;
-      }
-      filters.onlineOnly = document.getElementById("filterOnlineOnly").checked;
-      filters.verifiedOnly = document.getElementById("filterVerifiedOnly").checked;
-      filters.tag = document.getElementById("filterTag").value;
-      closeModal("filterModal");
-      updateTopUI();
-      renderGrid();
-    }
-
-    function resetFilters() {
-      filters = { quick: "all", maxDist: 50, minAge: 18, maxAge: 50, onlineOnly: false, verifiedOnly: false, tag: "all" };
-      document.querySelectorAll(".chip").forEach((c, idx) => c.classList.toggle("active", idx === 0));
-      closeModal("filterModal");
-      updateTopUI();
-      renderGrid();
-    }
-
-    function handleProfileClick(user) {
-      const planInfo = getActivePlanInfo();
-      const maxAllowed = planInfo.limit;
-      if (!window.userAccount.viewedProfileIds) window.userAccount.viewedProfileIds = [];
-      const alreadyViewed = window.userAccount.viewedProfileIds.includes(user.id);
-
-      if (!alreadyViewed && window.userAccount.viewedProfileIds.length >= maxAllowed) {
-        openPayModal();
-        return;
-      }
-
-      if (!alreadyViewed) {
-        window.userAccount.viewedProfileIds.push(user.id);
-        window.saveAccount(true);
-      }
-      openProfileModal(user);
-    }
-
-    function openProfileModal(user) {
-      document.getElementById("modalTitle").innerText = `${user.name}, ${user.age}`;
-      document.getElementById("profileContent").innerHTML = `
-        <img class="profile-hero" src="${user.img}" alt="${user.name}" />
-        <div>
-          <span class="badge">${user.online ? "● Online Now" : "Offline"}</span>
-          <span class="badge">📍 ${user.dist} km away</span>
-          <span class="badge">${user.tag}</span>
-          ${user.verified ? `<span class="badge" style="color:var(--online);">✓ ID Verified</span>` : ""}
-        </div>
-        <p style="margin-top: 8px; line-height: 1.55; color: #cbd5e1; font-size:0.92rem;">${user.bio}</p>
-        <div class="action-row">
-          <button class="btn btn-secondary" onclick="sendWave(${user.id}, '${user.name}')">👋 Dastak / Wave</button>
-          <button class="btn btn-primary" onclick="startChat(${user.id})">💬 Chat</button>
-        </div>
-        <button class="btn btn-danger" style="width:100%; margin-top:12px;" onclick="blockUser(${user.id}, '${user.name}')">
-          🚫 Block / Report User
-        </button>
-      `;
-      document.getElementById("profileModal").classList.add("open");
-    }
-
-    function commitChatChange(peerId) {
-      window.saveChats();
-      if (typeof window.syncChatThreadToCloud === "function") {
-        window.syncChatThreadToCloud(peerId, window.chats[peerId] || []);
-      }
-    }
-
-    window.markThreadAsSeen = function(peerId) {
-      const list = window.chats[peerId] || [];
-      let changed = false;
-      list.forEach(m => {
-        if (m.sender === "me" && m.receipt !== "seen") {
-          m.receipt = "seen";
-          changed = true;
-        }
-      });
-      if (changed) commitChatChange(peerId);
-    };
-
-    function scheduleOutgoingReceiptProgress(peerId, msgId) {
-      setTimeout(() => {
-        const list = window.chats[peerId] || [];
-        const item = list.find(m => m.msgId === msgId);
-        if (item && item.receipt === "sent") {
-          item.receipt = "delivered";
-          commitChatChange(peerId);
-          if (window.activeChatUser && window.activeChatUser.id === peerId) {
-            window.renderMessages();
-          }
-        }
-      }, 900);
-
-      setTimeout(() => {
-        const list = window.chats[peerId] || [];
-        const item = list.find(m => m.msgId === msgId);
-        if (item && item.receipt !== "seen") {
-          item.receipt = "seen";
-          commitChatChange(peerId);
-          if (window.activeChatUser && window.activeChatUser.id === peerId) {
-            window.renderMessages();
-          }
-        }
-      }, 2200);
-    }
-
-    function appendOutgoingMessage(peerId, payload) {
-      if (!window.chats[peerId]) window.chats[peerId] = [];
-      const msgId = "m_" + Date.now() + "_" + Math.random().toString(36).slice(2, 6);
-      window.chats[peerId].push({
-        sender: "me",
-        msgId,
-        receipt: "sent",
-        ...payload
-      });
-      commitChatChange(peerId);
-      window.renderMessages();
-      scheduleOutgoingReceiptProgress(peerId, msgId);
-    }
-
-    function sendWave(id, name) {
-      appendOutgoingMessage(id, { type: "text", text: "👋 Dastak! Sent a wave." });
-      alert(`${name} ko Dastak / Wave bhej diya gaya hai!`);
-    }
-
-    function blockUser(id, name) {
-      if (confirm(`Kya aap ${name} ko block aur report karna chahte hain?`)) {
-        if (!window.userAccount.blockedIds) window.userAccount.blockedIds = [];
-        window.userAccount.blockedIds.push(id);
-        window.saveAccount();
-        closeModal("profileModal");
-        renderGrid();
-      }
-    }
-
-    function startChat(userId) {
-      closeModal("profileModal");
-      closeAttachTray();
-      window.activeChatUser = profilesPool.find(u => u.id === userId);
-      document.getElementById("chatWithTitle").innerText = window.activeChatUser.name;
-      if (!window.chats[userId]) {
-        window.chats[userId] = [{ sender: "them", type: "text", text: `Hey! Main aas-paas hi hoon (${window.activeChatUser.dist} km).` }];
-        commitChatChange(userId);
-      } else {
-        window.markThreadAsSeen(userId);
-      }
-      if (typeof window.subscribeChatThread === "function") {
-        window.subscribeChatThread(userId);
-      }
-      window.renderMessages();
-      const canSend = window.userAccount.verificationStatus === "Verified";
-      document.getElementById("modalChatLock").style.display = canSend ? "none" : "block";
-      document.getElementById("chatModal").classList.add("open");
-    }
-
-    function closeChatModal() {
-      closeAttachTray();
-      closeDeleteSheet();
-      if (window.dastakCloud && window.dastakCloud.threadUnsub) {
-        window.dastakCloud.threadUnsub();
-        window.dastakCloud.threadUnsub = null;
-      }
-      window.activeChatUser = null;
-      closeModal("chatModal");
-    }
-
-    function checkVerifiedForSend() {
-      if (window.userAccount.verificationStatus !== "Verified") {
-        alert("Status abhi Pending hai. Owner approval ke baad hi aap message, photo, video ya location bhej sakenge.");
-        return false;
-      }
-      return true;
-    }
-
-    function toggleAttachTray() {
-      if (!checkVerifiedForSend()) return;
-      const tray = document.getElementById("attachTray");
-      const btn = document.getElementById("attachToggleBtn");
-      const willOpen = !tray.classList.contains("open");
-      tray.classList.toggle("open", willOpen);
-      btn.classList.toggle("active", willOpen);
-    }
-
-    function closeAttachTray() {
-      document.getElementById("attachTray").classList.remove("open");
-      document.getElementById("attachToggleBtn").classList.remove("active");
-    }
-
-    function triggerChatPhoto() {
-      if (!checkVerifiedForSend()) return;
-      closeAttachTray();
-      document.getElementById("chatPhotoInput").click();
-    }
-
-    function triggerChatVideo() {
-      if (!checkVerifiedForSend()) return;
-      closeAttachTray();
-      document.getElementById("chatVideoInput").click();
-    }
-
-    function handleChatPhoto(event) {
-      const file = event.target.files[0];
-      event.target.value = "";
-      if (!file || !window.activeChatUser) return;
-
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const img = new Image();
-        img.onload = function() {
-          const canvas = document.createElement("canvas");
-          const maxW = 480;
-          const scale = Math.min(1, maxW / img.width);
-          canvas.width = img.width * scale;
-          canvas.height = img.height * scale;
-          canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
-          const compressedData = canvas.toDataURL("image/jpeg", 0.68);
-
-          appendOutgoingMessage(window.activeChatUser.id, {
-            type: "image",
-            mediaUrl: compressedData,
-            text: "📷 Photo"
-          });
         };
         img.src = e.target.result;
       };
@@ -4803,12 +2229,16 @@
       if (!file || !window.activeChatUser) return;
 
       const videoUrl = URL.createObjectURL(file);
-      appendOutgoingMessage(window.activeChatUser.id, {
+      window.chats[window.activeChatUser.id].push({
+        senderUid: window.dastakCloud?.uid || "local",
+        sender: "me",
         type: "video",
         mediaUrl: videoUrl,
         fileName: file.name || "Video",
         text: "🎥 Video"
       });
+      commitChatChange(window.activeChatUser.id);
+      window.renderMessages();
     }
 
     function sendChatLocation() {
@@ -4836,13 +2266,17 @@
     }
 
     function pushLocationMessage(lat, lng, label) {
-      appendOutgoingMessage(window.activeChatUser.id, {
+      window.chats[window.activeChatUser.id].push({
+        senderUid: window.dastakCloud?.uid || "local",
+        sender: "me",
         type: "location",
         lat,
         lng,
         label,
         text: `📍 ${label}`
       });
+      commitChatChange(window.activeChatUser.id);
+      window.renderMessages();
     }
 
     function openLightbox(src) {
@@ -4856,17 +2290,6 @@
         return;
       }
       alert(`${type} calling feature WebRTC/Agora connect hone ke baad live hoga.`);
-    }
-
-    function getTickMarkup(msg) {
-      const r = msg.receipt || "seen";
-      if (r === "seen") {
-        return `<span class="msg-tick seen" title="Seen">✓✓ Seen</span>`;
-      }
-      if (r === "delivered") {
-        return `<span class="msg-tick delivered" title="Delivered">✓✓</span>`;
-      }
-      return `<span class="msg-tick" title="Sent">✓</span>`;
     }
 
     window.renderMessages = function() {
@@ -4913,20 +2336,12 @@
 
         wrap.appendChild(bubble);
 
-        if (m.sender === "me") {
-          const metaRow = document.createElement("div");
-          metaRow.className = "msg-meta-row";
-          metaRow.innerHTML = getTickMarkup(m);
-
-          if (!m.deletedForEveryone) {
-            const delBtn = document.createElement("button");
-            delBtn.className = `msg-del-btn ${canDelete ? "" : "locked"}`;
-            delBtn.innerText = canDelete ? "🗑️ Delete" : "🔒 Delete (Paid)";
-            delBtn.onclick = () => openDeleteOptions(idx);
-            metaRow.appendChild(delBtn);
-          }
-
-          wrap.appendChild(metaRow);
+        if (m.sender === "me" && !m.deletedForEveryone) {
+          const delBtn = document.createElement("button");
+          delBtn.className = `msg-del-btn ${canDelete ? "" : "locked"}`;
+          delBtn.innerText = canDelete ? "🗑️ Delete" : "🔒 Delete (Paid)";
+          delBtn.onclick = () => openDeleteOptions(idx);
+          wrap.appendChild(delBtn);
         }
 
         box.appendChild(wrap);
@@ -4983,8 +2398,17 @@
       const text = input.value.trim();
       if (!text || !window.activeChatUser) return;
 
+      const pid = window.activeChatUser.id;
+      if (!window.chats[pid]) window.chats[pid] = [];
+      window.chats[pid].push({
+        senderUid: window.dastakCloud?.uid || "local",
+        sender: "me",
+        type: "text",
+        text
+      });
       input.value = "";
-      appendOutgoingMessage(window.activeChatUser.id, { type: "text", text });
+      commitChatChange(pid);
+      window.renderMessages();
     }
 
     function renderInbox() {
@@ -4993,7 +2417,7 @@
 
       const list = document.getElementById("inboxList");
       list.innerHTML = "";
-      const ids = Object.keys(window.chats).map(Number).filter(id => !(window.userAccount.blockedIds || []).includes(id));
+      const ids = Object.keys(window.chats).filter(id => !(window.userAccount.blockedIds || []).includes(id));
 
       if (ids.length === 0) {
         list.innerHTML = `<div class="card-box" style="color:var(--muted); font-size:0.86rem;">Abhi koi chat nahi hai. Nearby tab mein kisi bhi profile par tap karein.</div>`;
@@ -5001,7 +2425,7 @@
       }
 
       ids.forEach(id => {
-        const u = profilesPool.find(x => x.id === id);
+        const u = profilesPool.find(x => String(x.id) === String(id));
         if (!u) return;
         const msgArr = (window.chats[id] || []).filter(m => !m.deletedForMe);
         const lastObj = msgArr.length ? msgArr[msgArr.length - 1] : null;
@@ -5197,9 +2621,8 @@
     document.getElementById("idType").value = window.userAccount.idType;
     document.getElementById("idNumber").value = window.userAccount.idNumber;
 
-    recalculateProfileDistances();
     updateTopUI();
-    renderGrid();
+    window.rebuildNearbyCatalog();
     window.requestLiveGPS(false);
   </script>
 </body>
