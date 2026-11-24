@@ -150,9 +150,7 @@
       background: rgba(13, 21, 38, 0.65);
     }
 
-    .quota-strip strong {
-      color: var(--text);
-    }
+    .quota-strip strong { color: var(--text); }
 
     .filters-bar {
       display: flex;
@@ -226,13 +224,8 @@
       border: 1px solid var(--border);
     }
 
-    .tile.is-online {
-      border-color: rgba(34, 211, 238, 0.35);
-    }
-
-    .tile.is-locked {
-      border-color: rgba(129, 140, 248, 0.4);
-    }
+    .tile.is-online { border-color: rgba(34, 211, 238, 0.35); }
+    .tile.is-locked { border-color: rgba(129, 140, 248, 0.4); }
 
     .tile img {
       width: 100%;
@@ -330,11 +323,7 @@
       text-overflow: ellipsis;
     }
 
-    .tile-dist {
-      font-size: 0.68rem;
-      color: #cbd5e1;
-      margin-top: 1px;
-    }
+    .tile-dist { font-size: 0.68rem; color: #cbd5e1; margin-top: 1px; }
 
     /* Full-width Banner inside Grid */
     .grid-banner {
@@ -350,23 +339,9 @@
       gap: 10px;
     }
 
-    .grid-banner h4 {
-      font-size: 0.92rem;
-      color: #e0f2fe;
-      margin-bottom: 3px;
-    }
-
-    .grid-banner p {
-      font-size: 0.76rem;
-      color: #cbd5e1;
-      line-height: 1.4;
-    }
-
-    .load-more-wrap {
-      grid-column: 1 / -1;
-      padding: 8px 0 12px;
-      text-align: center;
-    }
+    .grid-banner h4 { font-size: 0.92rem; color: #e0f2fe; margin-bottom: 3px; }
+    .grid-banner p { font-size: 0.76rem; color: #cbd5e1; line-height: 1.4; }
+    .load-more-wrap { grid-column: 1 / -1; padding: 8px 0 12px; text-align: center; }
 
     /* Floating Bottom Nav */
     nav {
@@ -401,28 +376,13 @@
       border-radius: 12px;
     }
 
-    .nav-btn svg {
-      width: 20px;
-      height: 20px;
-      stroke: currentColor;
-      fill: none;
-      stroke-width: 2;
-    }
-
-    .nav-btn.active {
-      color: var(--accent);
-      background: rgba(34, 211, 238, 0.12);
-    }
+    .nav-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .nav-btn.active { color: var(--accent); background: rgba(34, 211, 238, 0.12); }
 
     /* Sections & Cards */
     .section-view { display: none; padding: 16px; }
     .section-view.active { display: block; }
-
-    .section-title {
-      font-size: 1.15rem;
-      font-weight: 800;
-      margin-bottom: 12px;
-    }
+    .section-title { font-size: 1.15rem; font-weight: 800; margin-bottom: 12px; }
 
     .card-box {
       background: var(--surface);
@@ -453,9 +413,7 @@
       flex-direction: column;
     }
 
-    .modal.open {
-      display: flex;
-    }
+    .modal.open { display: flex; }
 
     .modal-header {
       padding: 14px 16px;
@@ -477,11 +435,7 @@
       cursor: pointer;
     }
 
-    .modal-body {
-      padding: 16px;
-      overflow-y: auto;
-      flex: 1;
-    }
+    .modal-body { padding: 16px; overflow-y: auto; flex: 1; }
 
     .profile-hero {
       width: 100%;
@@ -504,12 +458,7 @@
       font-weight: 600;
     }
 
-    .action-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
-      margin-top: 14px;
-    }
+    .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
 
     .btn {
       padding: 13px;
@@ -531,14 +480,7 @@
     }
 
     /* Filter Modal Controls */
-    .range-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 6px;
-      font-size: 0.84rem;
-    }
-
+    .range-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; font-size: 0.84rem; }
     .range-val { color: var(--accent); font-weight: 800; }
     input[type="range"] { width: 100%; accent-color: #22d3ee; margin-bottom: 14px; }
 
@@ -557,7 +499,7 @@
 
     .toggle-row input[type="checkbox"] { width: 20px; height: 20px; accent-color: #22d3ee; }
 
-    /* Chat & Paid Delete Controls */
+    /* Chat, Attachments & Media Bubbles */
     .chat-messages {
       flex: 1;
       padding: 14px;
@@ -567,17 +509,12 @@
       gap: 12px;
     }
 
-    .msg-wrap {
-      display: flex;
-      flex-direction: column;
-      max-width: 80%;
-    }
-
+    .msg-wrap { display: flex; flex-direction: column; max-width: 82%; }
     .msg-wrap.them { align-self: flex-start; align-items: flex-start; }
     .msg-wrap.me { align-self: flex-end; align-items: flex-end; }
 
     .msg {
-      padding: 11px 14px;
+      padding: 10px 13px;
       border-radius: 16px;
       font-size: 0.9rem;
       line-height: 1.45;
@@ -586,6 +523,67 @@
 
     .msg.them { background: var(--surface-2); border-bottom-left-radius: 4px; }
     .msg.me { background: var(--accent-grad); color: #04131c; font-weight: 600; border-bottom-right-radius: 4px; }
+
+    .msg.media-bubble {
+      padding: 6px;
+      background: var(--surface-2);
+      border: 1px solid rgba(34, 211, 238, 0.35);
+      color: var(--text);
+    }
+
+    .chat-media-img {
+      width: 220px;
+      max-width: 100%;
+      max-height: 260px;
+      object-fit: cover;
+      border-radius: 11px;
+      display: block;
+      cursor: pointer;
+    }
+
+    .chat-media-vid {
+      width: 230px;
+      max-width: 100%;
+      max-height: 260px;
+      border-radius: 11px;
+      display: block;
+      background: #000;
+    }
+
+    .loc-card {
+      width: 225px;
+      max-width: 100%;
+      background: #0b1426;
+      border-radius: 11px;
+      padding: 11px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .loc-title {
+      font-size: 0.85rem;
+      font-weight: 800;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .loc-coords { font-size: 0.72rem; color: var(--muted); }
+
+    .loc-open-link {
+      display: inline-block;
+      margin-top: 3px;
+      text-align: center;
+      background: var(--accent-grad);
+      color: #04131c;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: 0.78rem;
+      padding: 7px 10px;
+      border-radius: 8px;
+    }
 
     .msg-del-btn {
       margin-top: 4px;
@@ -598,16 +596,79 @@
       color: var(--danger);
     }
 
-    .msg-del-btn.locked {
-      color: var(--muted);
+    .msg-del-btn.locked { color: var(--muted); }
+
+    /* Attachment Popup Tray */
+    .attach-tray {
+      display: none;
+      background: var(--surface);
+      border-top: 1px solid rgba(34, 211, 238, 0.25);
+      padding: 12px 14px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
     }
+
+    .attach-tray.open { display: grid; }
+
+    .attach-item {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px 8px;
+      color: var(--text);
+      font-size: 0.78rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .attach-icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.15rem;
+    }
+
+    .ico-photo { background: rgba(56, 189, 248, 0.18); color: #38bdf8; }
+    .ico-video { background: rgba(167, 139, 250, 0.18); color: #a78bfa; }
+    .ico-loc { background: rgba(74, 222, 128, 0.18); color: #4ade80; }
 
     .chat-input-bar {
       display: flex;
+      align-items: center;
       gap: 8px;
-      padding: 11px 12px;
+      padding: 10px 12px;
       background: var(--surface);
       border-top: 1px solid var(--border);
+    }
+
+    .attach-toggle-btn {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: var(--surface-2);
+      border: 1px solid rgba(34, 211, 238, 0.4);
+      color: var(--accent);
+      font-size: 1.35rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 0.2s ease;
+    }
+
+    .attach-toggle-btn.active {
+      background: var(--accent-grad);
+      color: #04131c;
+      transform: rotate(45deg);
     }
 
     .chat-input-bar input {
@@ -615,11 +676,27 @@
       background: var(--surface-2);
       border: 1px solid var(--border);
       color: var(--text);
-      padding: 11px 15px;
+      padding: 10px 14px;
       border-radius: 999px;
       outline: none;
       font-size: 0.9rem;
+      min-width: 0;
     }
+
+    /* Full Photo Preview Overlay */
+    .photo-lightbox {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.95);
+      z-index: 80;
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+    }
+    .photo-lightbox.open { display: flex; }
+    .photo-lightbox img { max-width: 100%; max-height: 82vh; border-radius: 12px; }
 
     /* Forms */
     .form-group { margin-bottom: 13px; }
@@ -655,26 +732,10 @@
       cursor: pointer;
     }
 
-    .pay-option.selected {
-      border-color: var(--accent);
-      background: rgba(34, 211, 238, 0.08);
-    }
+    .pay-option.selected { border-color: var(--accent); background: rgba(34, 211, 238, 0.08); }
 
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 9px;
-      margin-bottom: 14px;
-    }
-
-    .stat-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 14px;
-      padding: 12px 8px;
-      text-align: center;
-    }
-
+    .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-bottom: 14px; }
+    .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 12px 8px; text-align: center; }
     .stat-num { font-size: 1.15rem; font-weight: 800; color: var(--accent); }
     .stat-label { font-size: 0.72rem; color: var(--muted); margin-top: 3px; }
 
@@ -738,7 +799,7 @@
   <div id="tab-chats" class="section-view">
     <div class="section-title">Messages</div>
     <div id="chatLockNotice" class="lock-banner" style="display:none;">
-      🔒 <strong>Messaging Locked (Status: Pending):</strong> Aap Dastak ke baaki sabhi features use kar sakte hain. Message bhejne ke liye Owner verification approve hona zaroori hai.
+      🔒 <strong>Messaging Locked (Status: Pending):</strong> Aap Dastak ke baaki sabhi features use kar sakte hain. Message, photo, video ya location bhejne ke liye Owner approval zaroori hai.
     </div>
     <div id="inboxList"></div>
   </div>
@@ -881,17 +942,44 @@
       <div style="display:flex; gap:8px;">
         <button class="close-btn" onclick="callNotice('Voice')">📞</button>
         <button class="close-btn" onclick="callNotice('Video')">🎥</button>
-        <button class="close-btn" onclick="closeModal('chatModal')">Back</button>
+        <button class="close-btn" onclick="closeChatModal()">Back</button>
       </div>
     </div>
-    <div class="chat-messages" id="chatMessages"></div>
+    <div class="chat-messages" id="chatMessages" onclick="closeAttachTray()"></div>
     <div id="modalChatLock" class="lock-banner" style="margin: 0 12px 10px; display:none;">
-      🔒 Status <strong>Pending</strong> hai — message bhejne ke liye Owner approval ka intezaar karein.
+      🔒 Status <strong>Pending</strong> hai — message, photo, video ya location bhejne ke liye Owner approval ka intezaar karein.
     </div>
+
+    <!-- ATTACHMENT TRAY (Photo, Video, Location) -->
+    <div class="attach-tray" id="attachTray">
+      <button class="attach-item" onclick="triggerChatPhoto()">
+        <span class="attach-icon ico-photo">📷</span>
+        <span>Photo</span>
+      </button>
+      <button class="attach-item" onclick="triggerChatVideo()">
+        <span class="attach-icon ico-video">🎥</span>
+        <span>Video</span>
+      </button>
+      <button class="attach-item" onclick="sendChatLocation()">
+        <span class="attach-icon ico-loc">📍</span>
+        <span>Location</span>
+      </button>
+    </div>
+
+    <input type="file" id="chatPhotoInput" accept="image/*" style="display:none;" onchange="handleChatPhoto(event)" />
+    <input type="file" id="chatVideoInput" accept="video/*" style="display:none;" onchange="handleChatVideo(event)" />
+
     <div class="chat-input-bar">
-      <input type="text" id="msgInput" placeholder="Write a message..." onkeypress="if(event.key==='Enter') sendMessage()" />
-      <button class="btn btn-primary" style="padding: 9px 18px; border-radius: 999px;" onclick="sendMessage()">Send</button>
+      <button class="attach-toggle-btn" id="attachToggleBtn" onclick="toggleAttachTray()" title="Attach Photo, Video or Location">+</button>
+      <input type="text" id="msgInput" placeholder="Write a message..." onfocus="closeAttachTray()" onkeypress="if(event.key==='Enter') sendMessage()" />
+      <button class="btn btn-primary" style="padding: 9px 16px; border-radius: 999px;" onclick="sendMessage()">Send</button>
     </div>
+  </div>
+
+  <!-- PHOTO FULLSCREEN VIEW -->
+  <div class="photo-lightbox" id="photoLightbox" onclick="this.classList.remove('open')">
+    <img id="lightboxImg" src="" alt="Preview" />
+    <button class="close-btn" style="margin-top:14px;">Close</button>
   </div>
 
   <!-- XTRA PAYMENT MODAL -->
@@ -906,7 +994,7 @@
         <div style="font-size:1.75rem; font-weight:900; margin:6px 0;">₹250 <span style="font-size:0.85rem; color:var(--muted); font-weight:600;">/ 1 Week</span></div>
         <ul style="font-size:0.82rem; color:#e2e8f0; line-height:1.65; padding-left:18px; margin-top:6px;">
           <li>10 km mein 40 free profiles ke baad <strong>600 XTRA Profiles</strong> unlock</li>
-          <li><strong>Sent Message Delete / Unsend:</strong> Bheje hue messages kabhi bhi delete karein</li>
+          <li><strong>Sent Message Delete / Unsend:</strong> Bheje hue text, photo, video ya location kabhi bhi delete karein</li>
           <li>50 km tak advanced distance aur full filters access</li>
         </ul>
       </div>
@@ -960,10 +1048,178 @@
         </div>
       </div>
 
-      <div class="card-box" id="ownerUserCard"></div>
+      <div id="ownerUsersContainer"></div>
     </div>
   </div>
 
+  <!-- FIREBASE SDK (FIRESTORE REALTIME SYNC) -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import {
+      getFirestore, doc, setDoc, getDoc, collection, onSnapshot, serverTimestamp
+    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyAm_D-wWy8dMqWxAHNC_aNjZfRRX42ghIc",
+      authDomain: "dastak-233e3.firebaseapp.com",
+      projectId: "dastak-233e3",
+      storageBucket: "dastak-233e3.firebasestorage.app",
+      messagingSenderId: "210382075917",
+      appId: "1:210382075917:web:fe7779abee78d4ec183d44",
+      measurementId: "G-SY9MY3LZCL"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+
+    window.dastakCloud = {
+      db,
+      doc,
+      setDoc,
+      getDoc,
+      collection,
+      onSnapshot,
+      serverTimestamp,
+      allUsers: [],
+      threadUnsub: null
+    };
+
+    // Unique device/user ID for Firestore document
+    let clientUid = localStorage.getItem("dastak_uid_v1");
+    if (!clientUid) {
+      clientUid = "user_" + Math.random().toString(36).slice(2, 10);
+      localStorage.setItem("dastak_uid_v1", clientUid);
+    }
+    window.dastakCloud.uid = clientUid;
+
+    // Listen to own user doc in Firestore (so Owner approval/plan updates sync live)
+    const myDocRef = doc(db, "dastak_users", clientUid);
+    onSnapshot(myDocRef, (snap) => {
+      if (snap.exists()) {
+        const remote = snap.data();
+        window.userAccount = {
+          ...window.userAccount,
+          name: remote.name ?? window.userAccount.name,
+          idType: remote.idType ?? window.userAccount.idType,
+          idNumber: remote.idNumber ?? window.userAccount.idNumber,
+          selfiePhoto: remote.selfiePhoto || window.userAccount.selfiePhoto,
+          idPhoto: remote.idPhoto || window.userAccount.idPhoto,
+          verificationStatus: remote.verificationStatus || window.userAccount.verificationStatus,
+          hasWeeklyPlan: Boolean(remote.hasWeeklyPlan),
+          paymentMethod: remote.paymentMethod || window.userAccount.paymentMethod
+        };
+        window.saveAccount(true);
+        if (window.activeChatUser) {
+          const canSend = window.userAccount.verificationStatus === "Verified";
+          document.getElementById("modalChatLock").style.display = canSend ? "none" : "block";
+          window.renderMessages();
+        }
+        if (document.getElementById("ownerModal").classList.contains("open")) {
+          window.renderOwnerPanel();
+        }
+      }
+    });
+
+    // Listen to all users in Firestore for Owner Panel
+    onSnapshot(collection(db, "dastak_users"), (querySnapshot) => {
+      const list = [];
+      querySnapshot.forEach((d) => {
+        list.push({ uid: d.id, ...d.data() });
+      });
+      window.dastakCloud.allUsers = list;
+      if (document.getElementById("ownerModal").classList.contains("open")) {
+        window.renderOwnerPanel();
+      }
+    });
+
+    window.syncUserToCloud = async function(accountObj) {
+      try {
+        await setDoc(doc(db, "dastak_users", clientUid), {
+          name: accountObj.name || "User",
+          idType: accountObj.idType || "Aadhaar Card",
+          idNumber: accountObj.idNumber || "",
+          selfiePhoto: accountObj.selfiePhoto || "",
+          idPhoto: accountObj.idPhoto || "",
+          verificationStatus: accountObj.verificationStatus || "Pending",
+          hasWeeklyPlan: Boolean(accountObj.hasWeeklyPlan),
+          paymentMethod: accountObj.paymentMethod || "UPI",
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+      } catch (err) {
+        console.warn("Firestore user sync skipped/offline:", err);
+      }
+    };
+
+    window.setCloudUserStatus = async function(targetUid, newStatus) {
+      try {
+        await setDoc(doc(db, "dastak_users", targetUid), {
+          verificationStatus: newStatus,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+      } catch (err) {
+        console.warn("Firestore status update error:", err);
+      }
+    };
+
+    window.setCloudUserPlan = async function(targetUid, isPaid) {
+      try {
+        await setDoc(doc(db, "dastak_users", targetUid), {
+          hasWeeklyPlan: Boolean(isPaid),
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+      } catch (err) {
+        console.warn("Firestore plan update error:", err);
+      }
+    };
+
+    window.subscribeChatThread = function(peerId) {
+      if (window.dastakCloud.threadUnsub) {
+        window.dastakCloud.threadUnsub();
+        window.dastakCloud.threadUnsub = null;
+      }
+      const threadId = `${clientUid}__peer_${peerId}`;
+      const threadRef = doc(db, "dastak_chats", threadId);
+
+      window.dastakCloud.threadUnsub = onSnapshot(threadRef, (snap) => {
+        if (snap.exists()) {
+          const data = snap.data();
+          if (Array.isArray(data.messages)) {
+            window.chats[peerId] = data.messages;
+            window.saveChats();
+            if (window.activeChatUser && window.activeChatUser.id === peerId) {
+              window.renderMessages();
+            }
+          }
+        }
+      });
+    };
+
+    window.syncChatThreadToCloud = async function(peerId, messagesArr) {
+      try {
+        const threadId = `${clientUid}__peer_${peerId}`;
+        // Store lightweight text/location/compressed image; skip huge raw video data URLs if any
+        const safeMessages = messagesArr.map(m => {
+          if (m.type === "video" && m.mediaUrl && m.mediaUrl.startsWith("blob:")) {
+            return { ...m, mediaUrl: "" };
+          }
+          return m;
+        });
+        await setDoc(doc(db, "dastak_chats", threadId), {
+          uid: clientUid,
+          peerId,
+          messages: safeMessages,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+      } catch (err) {
+        console.warn("Firestore chat sync error:", err);
+      }
+    };
+
+    // Initial cloud sync
+    window.syncUserToCloud(window.userAccount);
+  </script>
+
+  <!-- APP LOGIC -->
   <script>
     const OWNER_PIN = "1234";
 
@@ -1001,7 +1257,7 @@
       };
     });
 
-    let userAccount = JSON.parse(localStorage.getItem("dastak_account_v1") || JSON.stringify({
+    window.userAccount = JSON.parse(localStorage.getItem("dastak_account_v1") || JSON.stringify({
       name: "Preet",
       idType: "Aadhaar Card",
       idNumber: "",
@@ -1014,8 +1270,8 @@
       paymentMethod: "UPI"
     }));
 
-    let chats = JSON.parse(localStorage.getItem("dastak_chats_v1") || "{}");
-    let activeChatUser = null;
+    window.chats = JSON.parse(localStorage.getItem("dastak_chats_v1") || "{}");
+    window.activeChatUser = null;
     let selectedPayMethod = "UPI";
     let visibleXtraCount = 18;
 
@@ -1029,15 +1285,20 @@
       tag: "all"
     };
 
-    function saveAccount() {
-      try {
-        localStorage.setItem("dastak_account_v1", JSON.stringify(userAccount));
-      } catch (e) {}
+    window.saveAccount = function(skipCloud = false) {
+      try { localStorage.setItem("dastak_account_v1", JSON.stringify(window.userAccount)); } catch (e) {}
       updateTopUI();
-    }
+      if (!skipCloud && typeof window.syncUserToCloud === "function") {
+        window.syncUserToCloud(window.userAccount);
+      }
+    };
+
+    window.saveChats = function() {
+      try { localStorage.setItem("dastak_chats_v1", JSON.stringify(window.chats)); } catch (e) {}
+    };
 
     function updateTopUI() {
-      const status = userAccount.verificationStatus;
+      const status = window.userAccount.verificationStatus;
       const badgeClass = `status-pill ${status === "Verified" ? "verified" : status === "Rejected" ? "rejected" : ""}`;
 
       ["headerStatusBadge", "profileStatusBadge"].forEach(id => {
@@ -1048,12 +1309,12 @@
         }
       });
 
-      const maxAllowed = userAccount.hasWeeklyPlan ? 600 : 40;
-      document.getElementById("freeCounter").innerText = `${(userAccount.viewedProfileIds || []).length} / ${maxAllowed}`;
-      document.getElementById("rangeLabel").innerText = userAccount.hasWeeklyPlan ? `≤${filters.maxDist} km` : "≤10 km + XTRA";
-      document.getElementById("planStatusText").innerText = userAccount.hasWeeklyPlan ? "★ XTRA Active (600)" : "Free (40)";
-      document.getElementById("headerXtraBtn").innerText = userAccount.hasWeeklyPlan ? "★ XTRA ON" : "★ XTRA";
-      document.getElementById("payActionBtn").innerText = userAccount.hasWeeklyPlan
+      const maxAllowed = window.userAccount.hasWeeklyPlan ? 600 : 40;
+      document.getElementById("freeCounter").innerText = `${(window.userAccount.viewedProfileIds || []).length} / ${maxAllowed}`;
+      document.getElementById("rangeLabel").innerText = window.userAccount.hasWeeklyPlan ? `≤${filters.maxDist} km` : "≤10 km + XTRA";
+      document.getElementById("planStatusText").innerText = window.userAccount.hasWeeklyPlan ? "★ XTRA Active (600)" : "Free (40)";
+      document.getElementById("headerXtraBtn").innerText = window.userAccount.hasWeeklyPlan ? "★ XTRA ON" : "★ XTRA";
+      document.getElementById("payActionBtn").innerText = window.userAccount.hasWeeklyPlan
         ? "✓ XTRA Plan Already Active"
         : "Pay ₹250 & Unlock XTRA Features";
 
@@ -1070,7 +1331,7 @@
       const grid = document.getElementById("userGrid");
       grid.innerHTML = "";
 
-      const blocked = userAccount.blockedIds || [];
+      const blocked = window.userAccount.blockedIds || [];
       const matching = profilesPool.filter(u => {
         if (blocked.includes(u.id)) return false;
         if (u.age < filters.minAge || u.age > filters.maxAge) return false;
@@ -1099,7 +1360,7 @@
       if (xtraList.length > 0) {
         const banner = document.createElement("div");
         banner.className = "grid-banner";
-        if (!userAccount.hasWeeklyPlan) {
+        if (!window.userAccount.hasWeeklyPlan) {
           banner.innerHTML = `
             <div>
               <h4>★ XTRA Profiles (${xtraList.length}+ aur nearby)</h4>
@@ -1118,12 +1379,12 @@
         }
         grid.appendChild(banner);
 
-        const sliceCount = userAccount.hasWeeklyPlan ? visibleXtraCount : 12;
+        const sliceCount = window.userAccount.hasWeeklyPlan ? visibleXtraCount : 12;
         xtraList.slice(0, sliceCount).forEach(user => {
-          grid.appendChild(createTile(user, !userAccount.hasWeeklyPlan));
+          grid.appendChild(createTile(user, !window.userAccount.hasWeeklyPlan));
         });
 
-        if (userAccount.hasWeeklyPlan && xtraList.length > visibleXtraCount) {
+        if (window.userAccount.hasWeeklyPlan && xtraList.length > visibleXtraCount) {
           const moreWrap = document.createElement("div");
           moreWrap.className = "load-more-wrap";
           moreWrap.innerHTML = `<button class="btn btn-secondary" style="padding:10px 22px; font-size:0.82rem;" onclick="loadMoreXtra()">Load More XTRA Profiles (${xtraList.length - visibleXtraCount} left)</button>`;
@@ -1157,10 +1418,7 @@
       return div;
     }
 
-    function loadMoreXtra() {
-      visibleXtraCount += 30;
-      renderGrid();
-    }
+    function loadMoreXtra() { visibleXtraCount += 30; renderGrid(); }
 
     function setQuickFilter(type, btn) {
       filters.quick = type;
@@ -1206,18 +1464,18 @@
     }
 
     function handleProfileClick(user) {
-      const maxAllowed = userAccount.hasWeeklyPlan ? 600 : 40;
-      if (!userAccount.viewedProfileIds) userAccount.viewedProfileIds = [];
-      const alreadyViewed = userAccount.viewedProfileIds.includes(user.id);
+      const maxAllowed = window.userAccount.hasWeeklyPlan ? 600 : 40;
+      if (!window.userAccount.viewedProfileIds) window.userAccount.viewedProfileIds = [];
+      const alreadyViewed = window.userAccount.viewedProfileIds.includes(user.id);
 
-      if (!alreadyViewed && userAccount.viewedProfileIds.length >= maxAllowed) {
+      if (!alreadyViewed && window.userAccount.viewedProfileIds.length >= maxAllowed) {
         openPayModal();
         return;
       }
 
       if (!alreadyViewed) {
-        userAccount.viewedProfileIds.push(user.id);
-        saveAccount();
+        window.userAccount.viewedProfileIds.push(user.id);
+        window.saveAccount(true);
       }
       openProfileModal(user);
     }
@@ -1244,18 +1502,25 @@
       document.getElementById("profileModal").classList.add("open");
     }
 
+    function commitChatChange(peerId) {
+      window.saveChats();
+      if (typeof window.syncChatThreadToCloud === "function") {
+        window.syncChatThreadToCloud(peerId, window.chats[peerId] || []);
+      }
+    }
+
     function sendWave(id, name) {
-      if (!chats[id]) chats[id] = [];
-      chats[id].push({ sender: "me", text: "👋 Dastak! Sent a wave." });
-      localStorage.setItem("dastak_chats_v1", JSON.stringify(chats));
+      if (!window.chats[id]) window.chats[id] = [];
+      window.chats[id].push({ sender: "me", type: "text", text: "👋 Dastak! Sent a wave." });
+      commitChatChange(id);
       alert(`${name} ko Dastak / Wave bhej diya gaya hai!`);
     }
 
     function blockUser(id, name) {
       if (confirm(`Kya aap ${name} ko block aur report karna chahte hain?`)) {
-        if (!userAccount.blockedIds) userAccount.blockedIds = [];
-        userAccount.blockedIds.push(id);
-        saveAccount();
+        if (!window.userAccount.blockedIds) window.userAccount.blockedIds = [];
+        window.userAccount.blockedIds.push(id);
+        window.saveAccount();
         closeModal("profileModal");
         renderGrid();
       }
@@ -1263,46 +1528,206 @@
 
     function startChat(userId) {
       closeModal("profileModal");
-      activeChatUser = profilesPool.find(u => u.id === userId);
-      document.getElementById("chatWithTitle").innerText = activeChatUser.name;
-      if (!chats[userId]) {
-        chats[userId] = [{ sender: "them", text: `Hey! Main aas-paas hi hoon (${activeChatUser.dist} km).` }];
-        localStorage.setItem("dastak_chats_v1", JSON.stringify(chats));
+      closeAttachTray();
+      window.activeChatUser = profilesPool.find(u => u.id === userId);
+      document.getElementById("chatWithTitle").innerText = window.activeChatUser.name;
+      if (!window.chats[userId]) {
+        window.chats[userId] = [{ sender: "them", type: "text", text: `Hey! Main aas-paas hi hoon (${window.activeChatUser.dist} km).` }];
+        commitChatChange(userId);
       }
-      renderMessages();
-      const canSend = userAccount.verificationStatus === "Verified";
+      if (typeof window.subscribeChatThread === "function") {
+        window.subscribeChatThread(userId);
+      }
+      window.renderMessages();
+      const canSend = window.userAccount.verificationStatus === "Verified";
       document.getElementById("modalChatLock").style.display = canSend ? "none" : "block";
       document.getElementById("chatModal").classList.add("open");
     }
 
+    function closeChatModal() {
+      closeAttachTray();
+      if (window.dastakCloud && window.dastakCloud.threadUnsub) {
+        window.dastakCloud.threadUnsub();
+        window.dastakCloud.threadUnsub = null;
+      }
+      window.activeChatUser = null;
+      closeModal("chatModal");
+    }
+
+    function checkVerifiedForSend() {
+      if (window.userAccount.verificationStatus !== "Verified") {
+        alert("Status abhi Pending hai. Owner approval ke baad hi aap message, photo, video ya location bhej sakenge.");
+        return false;
+      }
+      return true;
+    }
+
+    function toggleAttachTray() {
+      if (!checkVerifiedForSend()) return;
+      const tray = document.getElementById("attachTray");
+      const btn = document.getElementById("attachToggleBtn");
+      const willOpen = !tray.classList.contains("open");
+      tray.classList.toggle("open", willOpen);
+      btn.classList.toggle("active", willOpen);
+    }
+
+    function closeAttachTray() {
+      document.getElementById("attachTray").classList.remove("open");
+      document.getElementById("attachToggleBtn").classList.remove("active");
+    }
+
+    function triggerChatPhoto() {
+      if (!checkVerifiedForSend()) return;
+      closeAttachTray();
+      document.getElementById("chatPhotoInput").click();
+    }
+
+    function triggerChatVideo() {
+      if (!checkVerifiedForSend()) return;
+      closeAttachTray();
+      document.getElementById("chatVideoInput").click();
+    }
+
+    function handleChatPhoto(event) {
+      const file = event.target.files[0];
+      event.target.value = "";
+      if (!file || !window.activeChatUser) return;
+
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const img = new Image();
+        img.onload = function() {
+          const canvas = document.createElement("canvas");
+          const maxW = 480;
+          const scale = Math.min(1, maxW / img.width);
+          canvas.width = img.width * scale;
+          canvas.height = img.height * scale;
+          canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
+          const compressedData = canvas.toDataURL("image/jpeg", 0.68);
+
+          window.chats[window.activeChatUser.id].push({
+            sender: "me",
+            type: "image",
+            mediaUrl: compressedData,
+            text: "📷 Photo"
+          });
+          commitChatChange(window.activeChatUser.id);
+          window.renderMessages();
+        };
+        img.src = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function handleChatVideo(event) {
+      const file = event.target.files[0];
+      event.target.value = "";
+      if (!file || !window.activeChatUser) return;
+
+      const videoUrl = URL.createObjectURL(file);
+      window.chats[window.activeChatUser.id].push({
+        sender: "me",
+        type: "video",
+        mediaUrl: videoUrl,
+        fileName: file.name || "Video",
+        text: "🎥 Video"
+      });
+      commitChatChange(window.activeChatUser.id);
+      window.renderMessages();
+    }
+
+    function sendChatLocation() {
+      if (!checkVerifiedForSend() || !window.activeChatUser) return;
+      closeAttachTray();
+
+      if (!navigator.geolocation) {
+        pushLocationMessage("30.89270", "75.79240", "Demo Location (Ludhiana)");
+        return;
+      }
+
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          const lat = pos.coords.latitude.toFixed(5);
+          const lng = pos.coords.longitude.toFixed(5);
+          pushLocationMessage(lat, lng, "My Live Location");
+        },
+        () => {
+          if (confirm("Phone ki GPS location permission nahi mili. Kya aap test ke liye Ludhiana ki demo location bhejna chahenge?")) {
+            pushLocationMessage("30.89270", "75.79240", "Demo Location (Ludhiana)");
+          }
+        },
+        { enableHighAccuracy: true, timeout: 8000 }
+      );
+    }
+
+    function pushLocationMessage(lat, lng, label) {
+      window.chats[window.activeChatUser.id].push({
+        sender: "me",
+        type: "location",
+        lat,
+        lng,
+        label,
+        text: `📍 ${label}`
+      });
+      commitChatChange(window.activeChatUser.id);
+      window.renderMessages();
+    }
+
+    function openLightbox(src) {
+      document.getElementById("lightboxImg").src = src;
+      document.getElementById("photoLightbox").classList.add("open");
+    }
+
     function callNotice(type) {
-      if (userAccount.verificationStatus !== "Verified") {
+      if (window.userAccount.verificationStatus !== "Verified") {
         alert(`${type} call start karne ke liye Owner verification approve hona zaroori hai.`);
         return;
       }
-      alert(`${type} calling feature Firebase + WebRTC/Agora connect hone ke baad live hoga.`);
+      alert(`${type} calling feature WebRTC/Agora connect hone ke baad live hoga.`);
     }
 
-    function renderMessages() {
-      if (!activeChatUser) return;
+    window.renderMessages = function() {
+      if (!window.activeChatUser) return;
       const box = document.getElementById("chatMessages");
       box.innerHTML = "";
-      const list = chats[activeChatUser.id] || [];
+      const list = window.chats[window.activeChatUser.id] || [];
 
       list.forEach((m, idx) => {
         const wrap = document.createElement("div");
         wrap.className = `msg-wrap ${m.sender}`;
 
         const bubble = document.createElement("div");
-        bubble.className = `msg ${m.sender}`;
-        bubble.innerText = m.text;
+        const msgType = m.type || "text";
+
+        if (msgType === "image" && m.mediaUrl) {
+          bubble.className = `msg ${m.sender} media-bubble`;
+          bubble.innerHTML = `<img class="chat-media-img" src="${m.mediaUrl}" alt="Photo" onclick="openLightbox('${m.mediaUrl}')" />`;
+        } else if (msgType === "video") {
+          bubble.className = `msg ${m.sender} media-bubble`;
+          bubble.innerHTML = m.mediaUrl
+            ? `<video class="chat-media-vid" controls playsinline src="${m.mediaUrl}"></video><div style="font-size:0.7rem; color:var(--muted); padding:4px 4px 1px;">🎥 ${m.fileName || "Video"}</div>`
+            : `<div style="padding:6px 8px; font-size:0.82rem;">🎥 ${m.fileName || "Video shared"}</div>`;
+        } else if (msgType === "location") {
+          const mapsLink = `https://www.google.com/maps?q=${m.lat},${m.lng}`;
+          bubble.className = `msg ${m.sender} media-bubble`;
+          bubble.innerHTML = `
+            <div class="loc-card">
+              <div class="loc-title">📍 ${m.label || "Shared Location"}</div>
+              <div class="loc-coords">Lat: ${m.lat}, Lng: ${m.lng}</div>
+              <a class="loc-open-link" href="${mapsLink}" target="_blank" rel="noopener noreferrer">Open in Google Maps ↗</a>
+            </div>
+          `;
+        } else {
+          bubble.className = `msg ${m.sender}`;
+          bubble.innerText = m.text;
+        }
+
         wrap.appendChild(bubble);
 
-        // Delete button ONLY on user's own sent messages
         if (m.sender === "me") {
           const delBtn = document.createElement("button");
-          delBtn.className = `msg-del-btn ${userAccount.hasWeeklyPlan ? "" : "locked"}`;
-          delBtn.innerText = userAccount.hasWeeklyPlan ? "🗑️ Delete" : "🔒 Delete (XTRA)";
+          delBtn.className = `msg-del-btn ${window.userAccount.hasWeeklyPlan ? "" : "locked"}`;
+          delBtn.innerText = window.userAccount.hasWeeklyPlan ? "🗑️ Delete" : "🔒 Delete (XTRA)";
           delBtn.onclick = () => deleteSentMessage(idx);
           wrap.appendChild(delBtn);
         }
@@ -1311,48 +1736,48 @@
       });
 
       box.scrollTop = box.scrollHeight;
-    }
+    };
 
     function deleteSentMessage(msgIndex) {
-      if (!activeChatUser) return;
+      if (!window.activeChatUser) return;
 
-      if (!userAccount.hasWeeklyPlan) {
+      if (!window.userAccount.hasWeeklyPlan) {
         if (confirm("Sent message delete karne ka option sirf Paid (★ XTRA ₹250/week) users ke liye hai. Kya aap XTRA unlock karna chahte hain?")) {
           openPayModal();
         }
         return;
       }
 
-      if (confirm("Kya aap is sent message ko delete karna chahte hain?")) {
-        chats[activeChatUser.id].splice(msgIndex, 1);
-        localStorage.setItem("dastak_chats_v1", JSON.stringify(chats));
-        renderMessages();
+      if (confirm("Kya aap is sent item ko delete karna chahte hain?")) {
+        const pid = window.activeChatUser.id;
+        window.chats[pid].splice(msgIndex, 1);
+        commitChatChange(pid);
+        window.renderMessages();
         renderInbox();
       }
     }
 
     function sendMessage() {
-      if (userAccount.verificationStatus !== "Verified") {
-        alert("Status abhi Pending hai. Owner approval ke baad hi aap message bhej sakenge.");
-        return;
-      }
+      if (!checkVerifiedForSend()) return;
       const input = document.getElementById("msgInput");
       const text = input.value.trim();
-      if (!text || !activeChatUser) return;
+      if (!text || !window.activeChatUser) return;
 
-      chats[activeChatUser.id].push({ sender: "me", text });
+      const pid = window.activeChatUser.id;
+      if (!window.chats[pid]) window.chats[pid] = [];
+      window.chats[pid].push({ sender: "me", type: "text", text });
       input.value = "";
-      localStorage.setItem("dastak_chats_v1", JSON.stringify(chats));
-      renderMessages();
+      commitChatChange(pid);
+      window.renderMessages();
     }
 
     function renderInbox() {
-      const canSend = userAccount.verificationStatus === "Verified";
+      const canSend = window.userAccount.verificationStatus === "Verified";
       document.getElementById("chatLockNotice").style.display = canSend ? "none" : "block";
 
       const list = document.getElementById("inboxList");
       list.innerHTML = "";
-      const ids = Object.keys(chats).map(Number).filter(id => !(userAccount.blockedIds || []).includes(id));
+      const ids = Object.keys(window.chats).map(Number).filter(id => !(window.userAccount.blockedIds || []).includes(id));
 
       if (ids.length === 0) {
         list.innerHTML = `<div class="card-box" style="color:var(--muted); font-size:0.86rem;">Abhi koi chat nahi hai. Nearby tab mein kisi bhi profile par tap karein.</div>`;
@@ -1362,8 +1787,9 @@
       ids.forEach(id => {
         const u = profilesPool.find(x => x.id === id);
         if (!u) return;
-        const msgArr = chats[id] || [];
-        const lastMsg = msgArr.length ? msgArr[msgArr.length - 1].text : "Message deleted";
+        const msgArr = window.chats[id] || [];
+        const lastObj = msgArr.length ? msgArr[msgArr.length - 1] : null;
+        const lastMsg = lastObj ? lastObj.text : "Message deleted";
         const row = document.createElement("div");
         row.className = "inbox-row";
         row.onclick = () => startChat(id);
@@ -1386,13 +1812,13 @@
         const img = new Image();
         img.onload = function() {
           const canvas = document.createElement("canvas");
-          const maxW = 320;
+          const maxW = 300;
           const scale = Math.min(1, maxW / img.width);
           canvas.width = img.width * scale;
           canvas.height = img.height * scale;
           canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
-          userAccount[fieldName] = canvas.toDataURL("image/jpeg", 0.65);
-          saveAccount();
+          window.userAccount[fieldName] = canvas.toDataURL("image/jpeg", 0.6);
+          window.saveAccount();
         };
         img.src = e.target.result;
       };
@@ -1400,12 +1826,12 @@
     }
 
     function submitVerification() {
-      userAccount.name = document.getElementById("myName").value.trim() || "User";
-      userAccount.idType = document.getElementById("idType").value;
-      userAccount.idNumber = document.getElementById("idNumber").value.trim();
-      userAccount.verificationStatus = "Pending";
-      saveAccount();
-      alert("Verification details submit ho gayi hain! Status Pending hai — Owner ke approve karte hi messaging unlock ho jayegi.");
+      window.userAccount.name = document.getElementById("myName").value.trim() || "User";
+      window.userAccount.idType = document.getElementById("idType").value;
+      window.userAccount.idNumber = document.getElementById("idNumber").value.trim();
+      window.userAccount.verificationStatus = "Pending";
+      window.saveAccount();
+      alert("Verification details Firestore mein submit ho gayi hain! Status Pending hai — Owner ke approve karte hi messaging unlock ho jayegi.");
     }
 
     function selectPayMethod(method) {
@@ -1419,18 +1845,16 @@
     }
 
     function activateWeeklyPlan() {
-      userAccount.hasWeeklyPlan = true;
-      userAccount.paymentMethod = selectedPayMethod;
-      saveAccount();
+      window.userAccount.hasWeeklyPlan = true;
+      window.userAccount.paymentMethod = selectedPayMethod;
+      window.saveAccount();
       closeModal("payModal");
       renderGrid();
-      renderMessages();
-      alert(`Dastak XTRA (₹250 / ${selectedPayMethod}) active ho gaya hai! Ab 600 profiles aur Sent Message Delete unlock hain.`);
+      window.renderMessages();
+      alert(`Dastak XTRA (₹250 / ${selectedPayMethod}) active ho gaya hai!`);
     }
 
-    function openPayModal() {
-      document.getElementById("payModal").classList.add("open");
-    }
+    function openPayModal() { document.getElementById("payModal").classList.add("open"); }
 
     function openOwnerLogin() {
       const pin = prompt("Owner PIN enter karein (Default: 1234):");
@@ -1438,66 +1862,89 @@
         alert("Galat PIN!");
         return;
       }
-      renderOwnerPanel();
+      window.renderOwnerPanel();
       document.getElementById("ownerModal").classList.add("open");
     }
 
-    function renderOwnerPanel() {
-      document.getElementById("statTotalUsers").innerText = "1";
-      document.getElementById("statStatus").innerText = userAccount.verificationStatus;
-      document.getElementById("statPaid").innerText = userAccount.hasWeeklyPlan ? "₹250" : "Free";
+    window.renderOwnerPanel = function() {
+      const cloudList = (window.dastakCloud && window.dastakCloud.allUsers && window.dastakCloud.allUsers.length > 0)
+        ? window.dastakCloud.allUsers
+        : [{ uid: window.dastakCloud?.uid || "local", ...window.userAccount }];
 
-      const selfieHtml = userAccount.selfiePhoto
-        ? `<img src="${userAccount.selfiePhoto}" alt="Selfie" />`
-        : `<div style="height:120px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.75rem;">No Selfie</div>`;
+      document.getElementById("statTotalUsers").innerText = String(cloudList.length);
+      document.getElementById("statStatus").innerText = window.userAccount.verificationStatus;
+      document.getElementById("statPaid").innerText = window.userAccount.hasWeeklyPlan ? "₹250" : "Free";
 
-      const idHtml = userAccount.idPhoto
-        ? `<img src="${userAccount.idPhoto}" alt="ID Doc" />`
-        : `<div style="height:120px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.75rem;">No ID Photo</div>`;
+      const container = document.getElementById("ownerUsersContainer");
+      container.innerHTML = "";
 
-      document.getElementById("ownerUserCard").innerHTML = `
-        <h4 style="margin-bottom:8px; color:var(--accent);">KYC Verification Request</h4>
-        <p style="font-size:0.84rem; line-height:1.55; color:#e2e8f0;">
-          <strong>Name:</strong> ${userAccount.name}<br/>
-          <strong>ID Type:</strong> ${userAccount.idType}<br/>
-          <strong>ID Ref:</strong> ${userAccount.idNumber || "Not entered"}<br/>
-          <strong>Status:</strong> ${userAccount.verificationStatus}<br/>
-          <strong>Plan:</strong> ${userAccount.hasWeeklyPlan ? "Paid (★ XTRA)" : "Free"}
-        </p>
-        <div class="kyc-preview-grid">
-          <div class="kyc-preview-box">
-            <div style="font-size:0.72rem; color:var(--muted);">Live Selfie</div>
-            ${selfieHtml}
+      cloudList.forEach((u) => {
+        const selfieHtml = u.selfiePhoto
+          ? `<img src="${u.selfiePhoto}" alt="Selfie" />`
+          : `<div style="height:120px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.75rem;">No Selfie</div>`;
+
+        const idHtml = u.idPhoto
+          ? `<img src="${u.idPhoto}" alt="ID Doc" />`
+          : `<div style="height:120px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.75rem;">No ID Photo</div>`;
+
+        const card = document.createElement("div");
+        card.className = "card-box";
+        card.innerHTML = `
+          <h4 style="margin-bottom:8px; color:var(--accent);">KYC Request · ${u.name || "User"}</h4>
+          <p style="font-size:0.82rem; line-height:1.55; color:#e2e8f0;">
+            <strong>User ID:</strong> ${u.uid || "local"}<br/>
+            <strong>ID Type:</strong> ${u.idType || "Aadhaar Card"}<br/>
+            <strong>ID Ref:</strong> ${u.idNumber || "Not entered"}<br/>
+            <strong>Status:</strong> ${u.verificationStatus || "Pending"}<br/>
+            <strong>Plan:</strong> ${u.hasWeeklyPlan ? "Paid (★ XTRA)" : "Free"}
+          </p>
+          <div class="kyc-preview-grid">
+            <div class="kyc-preview-box">
+              <div style="font-size:0.72rem; color:var(--muted);">Live Selfie</div>
+              ${selfieHtml}
+            </div>
+            <div class="kyc-preview-box">
+              <div style="font-size:0.72rem; color:var(--muted);">Indian ID</div>
+              ${idHtml}
+            </div>
           </div>
-          <div class="kyc-preview-box">
-            <div style="font-size:0.72rem; color:var(--muted);">Indian ID</div>
-            ${idHtml}
+          <div class="action-row">
+            <button class="btn btn-success" onclick="handleOwnerAction('${u.uid || "local"}', 'Verified')">✓ Approve</button>
+            <button class="btn btn-danger" onclick="handleOwnerAction('${u.uid || "local"}', 'Rejected')">✕ Reject</button>
           </div>
-        </div>
-        <div class="action-row">
-          <button class="btn btn-success" onclick="setOwnerApproval('Verified')">✓ Approve User</button>
-          <button class="btn btn-danger" onclick="setOwnerApproval('Rejected')">✕ Reject</button>
-        </div>
-        <button class="btn btn-secondary" style="width:100%; margin-top:10px;" onclick="togglePlanForTest()">
-          Switch Plan: ${userAccount.hasWeeklyPlan ? "Set to Free" : "Set to Paid (XTRA)"}
-        </button>
-      `;
-    }
+          <button class="btn btn-secondary" style="width:100%; margin-top:10px;" onclick="handleOwnerPlanToggle('${u.uid || "local"}', ${Boolean(u.hasWeeklyPlan)})">
+            Switch Plan: ${u.hasWeeklyPlan ? "Set to Free" : "Set to Paid (XTRA)"}
+          </button>
+        `;
+        container.appendChild(card);
+      });
+    };
 
-    function togglePlanForTest() {
-      userAccount.hasWeeklyPlan = !userAccount.hasWeeklyPlan;
-      saveAccount();
-      renderOwnerPanel();
+    window.handleOwnerAction = function(targetUid, newStatus) {
+      if (targetUid === (window.dastakCloud?.uid || "local")) {
+        window.userAccount.verificationStatus = newStatus;
+        window.saveAccount(true);
+      }
+      if (typeof window.setCloudUserStatus === "function" && targetUid !== "local") {
+        window.setCloudUserStatus(targetUid, newStatus);
+      }
+      window.renderOwnerPanel();
+      alert(`Status updated to ${newStatus}`);
+    };
+
+    window.handleOwnerPlanToggle = function(targetUid, currentPaid) {
+      const nextPaid = !currentPaid;
+      if (targetUid === (window.dastakCloud?.uid || "local")) {
+        window.userAccount.hasWeeklyPlan = nextPaid;
+        window.saveAccount(true);
+      }
+      if (typeof window.setCloudUserPlan === "function" && targetUid !== "local") {
+        window.setCloudUserPlan(targetUid, nextPaid);
+      }
       renderGrid();
-      renderMessages();
-    }
-
-    function setOwnerApproval(newStatus) {
-      userAccount.verificationStatus = newStatus;
-      saveAccount();
-      renderOwnerPanel();
-      alert(`User status update ho gaya: ${newStatus}`);
-    }
+      window.renderMessages();
+      window.renderOwnerPanel();
+    };
 
     function switchTab(tab, btn) {
       document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
@@ -1509,15 +1956,14 @@
       if (tab === "chats") renderInbox();
     }
 
-    function closeModal(id) {
-      document.getElementById(id).classList.remove("open");
-    }
+    function closeModal(id) { document.getElementById(id).classList.remove("open"); }
 
-    document.getElementById("myName").value = userAccount.name;
-    document.getElementById("idType").value = userAccount.idType;
-    document.getElementById("idNumber").value = userAccount.idNumber;
+    document.getElementById("myName").value = window.userAccount.name;
+    document.getElementById("idType").value = window.userAccount.idType;
+    document.getElementById("idNumber").value = window.userAccount.idNumber;
     updateTopUI();
     renderGrid();
   </script>
 </body>
 </html>
+
