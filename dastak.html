@@ -12,9 +12,9 @@
       --border: rgba(148, 163, 184, 0.16);
       --accent: #22d3ee;
       --accent-grad: linear-gradient(135deg, #38bdf8 0%, #06b6d4 52%, #14b8a6 100%);
-      --xtra-grad: linear-gradient(135deg, #818cf8 0%, #38bdf8 50%, #2dd4bf 100%);
-      --pulse-grad: linear-gradient(135deg, #fb923c 0%, #facc15 100%);
-      --circle-grad: linear-gradient(135deg, #c084fc 0%, #ec4899 55%, #38bdf8 100%);
+      --xtra-grad: linear-gradient(135deg, #facc15 0%, #eab308 100%);
+      --unlim-grad: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
+      --edge-grad: linear-gradient(135deg, #f59e0b 0%, #f43f5e 100%);
       --online: #4ade80;
       --danger: #fb7185;
       --warn: #fb923c;
@@ -92,7 +92,7 @@
 
     .xtra-pill-btn {
       background: var(--xtra-grad);
-      color: #04131c;
+      color: #090d16;
       border: none;
       padding: 5px 10px;
       border-radius: 999px;
@@ -100,7 +100,6 @@
       font-weight: 900;
       cursor: pointer;
       letter-spacing: 0.3px;
-      box-shadow: 0 2px 10px rgba(56, 189, 248, 0.3);
     }
 
     .status-pill {
@@ -146,9 +145,22 @@
       font-size: 0.74rem;
       color: var(--muted);
       background: rgba(13, 21, 38, 0.65);
+      gap: 8px;
     }
 
     .quota-strip strong { color: var(--text); }
+
+    .gps-pill-btn {
+      background: rgba(34, 211, 238, 0.14);
+      color: var(--accent);
+      border: 1px solid rgba(34, 211, 238, 0.38);
+      padding: 3px 8px;
+      border-radius: 999px;
+      font-size: 0.68rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
 
     .filters-bar {
       display: flex;
@@ -195,13 +207,13 @@
     }
 
     .chip.xtra-chip {
-      border-color: rgba(129, 140, 248, 0.45);
-      color: #a5b4fc;
+      border-color: rgba(250, 204, 21, 0.45);
+      color: #fde047;
     }
 
     .chip.xtra-chip.active {
       background: var(--xtra-grad);
-      color: #04131c;
+      color: #090d16;
     }
 
     .grid {
@@ -222,7 +234,7 @@
     }
 
     .tile.is-online { border-color: rgba(34, 211, 238, 0.35); }
-    .tile.is-locked { border-color: rgba(129, 140, 248, 0.4); }
+    .tile.is-locked { border-color: rgba(250, 204, 21, 0.35); }
 
     .tile img {
       width: 100%;
@@ -253,7 +265,7 @@
 
     .tile-badge.xtra-tag {
       background: var(--xtra-grad);
-      color: #04131c;
+      color: #090d16;
       border: none;
       font-weight: 900;
     }
@@ -275,8 +287,8 @@
       width: 34px;
       height: 34px;
       border-radius: 50%;
-      background: rgba(5, 9, 20, 0.8);
-      border: 1px solid rgba(56, 189, 248, 0.6);
+      background: rgba(5, 9, 20, 0.82);
+      border: 1px solid rgba(250, 204, 21, 0.65);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -286,7 +298,7 @@
     .lock-label {
       font-size: 0.66rem;
       font-weight: 800;
-      color: #e0f2fe;
+      color: #fef08a;
       text-shadow: 0 1px 4px rgba(0, 0, 0, 0.9);
     }
 
@@ -324,8 +336,8 @@
 
     .grid-banner {
       grid-column: 1 / -1;
-      background: linear-gradient(135deg, rgba(129, 140, 248, 0.18) 0%, rgba(6, 182, 212, 0.14) 100%);
-      border: 1px solid rgba(56, 189, 248, 0.45);
+      background: linear-gradient(135deg, rgba(250, 204, 21, 0.14) 0%, rgba(6, 182, 212, 0.12) 100%);
+      border: 1px solid rgba(250, 204, 21, 0.42);
       border-radius: 16px;
       padding: 15px;
       margin: 6px 0;
@@ -335,7 +347,7 @@
       gap: 10px;
     }
 
-    .grid-banner h4 { font-size: 0.92rem; color: #e0f2fe; margin-bottom: 3px; }
+    .grid-banner h4 { font-size: 0.92rem; color: #fef9c3; margin-bottom: 3px; }
     .grid-banner p { font-size: 0.76rem; color: #cbd5e1; line-height: 1.4; }
     .load-more-wrap { grid-column: 1 / -1; padding: 8px 0 12px; text-align: center; }
 
@@ -463,9 +475,9 @@
     }
 
     .btn-primary { background: var(--accent-grad); color: #04131c; }
-    .btn-xtra { background: var(--xtra-grad); color: #04131c; }
-    .btn-pulse { background: var(--pulse-grad); color: #1c1003; }
-    .btn-circle { background: var(--circle-grad); color: #090514; }
+    .btn-xtra { background: var(--xtra-grad); color: #090d16; }
+    .btn-unlim { background: var(--unlim-grad); color: #04131c; }
+    .btn-edge { background: var(--edge-grad); color: #16060b; }
     .btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
     .btn-success { background: var(--online); color: #052e16; }
     .btn-danger {
@@ -702,54 +714,81 @@
       outline: none;
     }
 
-    .plan-card {
+    .tier-tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-bottom: 14px;
+    }
+
+    .tier-tab-btn {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 18px;
-      padding: 16px;
-      margin-bottom: 14px;
+      color: var(--muted);
+      padding: 10px 8px;
+      border-radius: 12px;
+      font-size: 0.82rem;
+      font-weight: 800;
       cursor: pointer;
-      transition: border-color 0.2s ease, transform 0.15s ease;
     }
 
-    .plan-card.selected-plan {
-      border-color: var(--accent);
-      box-shadow: 0 0 0 1px rgba(34, 211, 238, 0.35);
+    .tier-tab-btn.active.t-xtra {
+      background: var(--xtra-grad);
+      color: #090d16;
+      border-color: transparent;
     }
 
-    .plan-card.xtra-card {
-      background: linear-gradient(135deg, rgba(129, 140, 248, 0.16) 0%, rgba(20, 184, 166, 0.12) 100%);
-      border-color: rgba(56, 189, 248, 0.45);
+    .tier-tab-btn.active.t-unlimited {
+      background: var(--unlim-grad);
+      color: #04131c;
+      border-color: transparent;
     }
 
-    .plan-card.pulse-card {
-      background: linear-gradient(135deg, rgba(251, 146, 60, 0.15) 0%, rgba(250, 204, 21, 0.08) 100%);
-      border-color: rgba(251, 146, 60, 0.42);
+    .tier-tab-btn.active.t-edge {
+      background: var(--edge-grad);
+      color: #16060b;
+      border-color: transparent;
     }
 
-    .plan-card.circle-card {
-      background: linear-gradient(135deg, rgba(192, 132, 252, 0.16) 0%, rgba(236, 72, 153, 0.1) 100%);
-      border-color: rgba(192, 132, 252, 0.45);
+    .duration-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
-    .plan-top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
+    .duration-box {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 12px;
+      cursor: pointer;
+      text-align: left;
     }
 
-    .plan-price {
-      font-size: 1.4rem;
-      font-weight: 900;
-      margin: 4px 0 6px;
+    .duration-box.selected {
+      border-color: #facc15;
+      background: rgba(250, 204, 21, 0.08);
     }
 
-    .plan-list {
-      font-size: 0.8rem;
+    .duration-box .d-title { font-size: 0.78rem; color: var(--muted); font-weight: 700; }
+    .duration-box .d-price { font-size: 1.15rem; font-weight: 900; margin: 3px 0; }
+    .duration-box .d-sub { font-size: 0.7rem; color: var(--accent); font-weight: 700; }
+
+    .plan-detail-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 15px;
+      margin-bottom: 14px;
+    }
+
+    .plan-detail-card ul {
+      padding-left: 18px;
+      font-size: 0.82rem;
+      line-height: 1.65;
       color: #e2e8f0;
-      line-height: 1.58;
-      padding-left: 16px;
+      margin-top: 8px;
     }
 
     .pay-option {
@@ -800,7 +839,7 @@
         <div class="brand-text">Dastak</div>
       </div>
       <div class="header-right">
-        <button class="xtra-pill-btn" id="headerXtraBtn" onclick="openPayModal()">★ PLANS</button>
+        <button class="xtra-pill-btn" id="headerXtraBtn" onclick="openPayModal()">Xtra</button>
         <span id="headerStatusBadge" class="status-pill">Pending</span>
         <button class="owner-btn" onclick="openOwnerLogin()">Owner</button>
       </div>
@@ -809,7 +848,10 @@
     <div class="subbar-wrap" id="nearbyStickyControls">
       <div class="quota-strip">
         <div>Viewed: <strong id="freeCounter">0 / 40</strong> · Range: <strong id="rangeLabel">≤10 km</strong></div>
-        <div id="planStatusText" style="color:var(--accent); font-weight:700;">Free Plan</div>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <button class="gps-pill-btn" id="gpsStatusBtn" onclick="requestLiveGPS(true)">📍 GPS: Syncing</button>
+          <span id="planStatusText" style="color:var(--accent); font-weight:700;">Free</span>
+        </div>
       </div>
       <div class="filters-bar">
         <button class="filter-open-btn" id="openFilterBtn" onclick="openFilterModal()">⚙ Filters</button>
@@ -817,7 +859,7 @@
         <button class="chip" onclick="setQuickFilter('online', this)">● Online</button>
         <button class="chip" onclick="setQuickFilter('verified', this)">✓ ID Verified</button>
         <button class="chip" onclick="setQuickFilter('under5', this)">≤ 5 km</button>
-        <button class="chip xtra-chip" onclick="setQuickFilter('xtra', this)">★ XTRA (1200)</button>
+        <button class="chip xtra-chip" onclick="setQuickFilter('xtra', this)">Xtra (600)</button>
       </div>
     </div>
   </div>
@@ -842,7 +884,7 @@
 
     <div class="card-box">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
-        <strong>Account Verification</strong>
+        <strong>Account Verification & Live GPS</strong>
         <span id="profileStatusBadge" class="status-pill">Pending</span>
       </div>
       <p style="font-size:0.82rem; color:var(--muted); line-height:1.5; margin-bottom:14px;">
@@ -852,6 +894,19 @@
       <div class="form-group">
         <label>Display Name</label>
         <input type="text" id="myName" value="Preet" />
+      </div>
+      <div class="form-group">
+        <label>Age</label>
+        <input type="number" id="myAge" min="18" max="75" value="34" />
+      </div>
+      <div class="form-group">
+        <label>Vibe / Looking For</label>
+        <select id="myTag">
+          <option value="Coffee & Drives">Coffee & Drives</option>
+          <option value="Hangout">Hangout</option>
+          <option value="Late Night Chat">Late Night Chat</option>
+          <option value="Friendship">Friendship</option>
+        </select>
       </div>
       <div class="form-group">
         <label>Indian ID Type</label>
@@ -911,9 +966,9 @@
       <div class="card-box">
         <div class="range-row">
           <span>Max Distance</span>
-          <span class="range-val" id="distValText">100 km</span>
+          <span class="range-val" id="distValText">50 km</span>
         </div>
-        <input type="range" id="filterDist" min="2" max="100" value="100" oninput="document.getElementById('distValText').innerText = this.value + ' km'" />
+        <input type="range" id="filterDist" min="2" max="50" value="50" oninput="document.getElementById('distValText').innerText = this.value + ' km'" />
 
         <div class="range-row">
           <span>Minimum Age</span>
@@ -1013,7 +1068,7 @@
     <button class="close-btn" style="margin-top:14px;">Close</button>
   </div>
 
-  <!-- MEMBERSHIP PLANS & PAYMENT MODAL -->
+  <!-- MEMBERSHIP PLANS MODAL (Xtra / Unlimited / Edge) -->
   <div class="modal" id="payModal">
     <div class="modal-header">
       <strong>Dastak Membership Plans</strong>
@@ -1021,47 +1076,15 @@
     </div>
     <div class="modal-body">
 
-      <!-- Plan 1: XTRA (2x Benefits at same ₹250) -->
-      <div class="plan-card xtra-card selected-plan" id="card-xtra" onclick="selectPlan('xtra')">
-        <div class="plan-top">
-          <span style="font-size:0.75rem; color:var(--accent); font-weight:900; letter-spacing:0.6px;">★ DASTAK XTRA (2X DOUBLE BENEFITS)</span>
-          <span class="badge" style="margin:0;">Popular</span>
-        </div>
-        <div class="plan-price">₹250 <span style="font-size:0.82rem; color:var(--muted); font-weight:600;">/ 1 Week</span></div>
-        <ul class="plan-list">
-          <li><strong>1,200 Profiles</strong> unlock (600 se double) + <strong>100 km</strong> range</li>
-          <li><strong>Sent Message Delete</strong> + instant undo & chat cleanup</li>
-          <li><strong>Double Filters</strong> (Online + Verified + Vibe combo)</li>
-        </ul>
+      <div class="tier-tabs">
+        <button class="tier-tab-btn t-xtra active" id="tabTier-xtra" onclick="switchCheckoutTier('xtra')">Xtra</button>
+        <button class="tier-tab-btn t-unlimited" id="tabTier-unlimited" onclick="switchCheckoutTier('unlimited')">Unlimited</button>
+        <button class="tier-tab-btn t-edge" id="tabTier-edge" onclick="switchCheckoutTier('edge')">Edge</button>
       </div>
 
-      <!-- Plan 2: Pulse (Short-term quick boost) -->
-      <div class="plan-card pulse-card" id="card-pulse" onclick="selectPlan('pulse')">
-        <div class="plan-top">
-          <span style="font-size:0.75rem; color:#fb923c; font-weight:900; letter-spacing:0.6px;">⚡ DASTAK PULSE (QUICK BOOST)</span>
-          <span class="badge" style="margin:0; color:#fb923c;">48 Hours</span>
-        </div>
-        <div class="plan-price">₹99 <span style="font-size:0.82rem; color:var(--muted); font-weight:600;">/ 2 Days</span></div>
-        <ul class="plan-list">
-          <li><strong>340 Total Profiles</strong> access (40 free + 300 boost)</li>
-          <li><strong>24 Priority Dastak Waves</strong> taaki log aapko jaldi notice karein</li>
-          <li><strong>Recent Visitors</strong> list dekhne ka quick pass</li>
-        </ul>
-      </div>
+      <div class="duration-grid" id="durationOptionsGrid"></div>
 
-      <!-- Plan 3: Circle (VIP & Privacy) -->
-      <div class="plan-card circle-card" id="card-circle" onclick="selectPlan('circle')">
-        <div class="plan-top">
-          <span style="font-size:0.75rem; color:#e879f9; font-weight:900; letter-spacing:0.6px;">👑 DASTAK CIRCLE (VIP & PRIVACY)</span>
-          <span class="badge" style="margin:0; color:#e879f9;">Monthly</span>
-        </div>
-        <div class="plan-price">₹599 <span style="font-size:0.82rem; color:var(--muted); font-weight:600;">/ 1 Month</span></div>
-        <ul class="plan-list">
-          <li><strong>Unlimited Nearby Profiles</strong> + full XTRA message delete controls</li>
-          <li><strong>Stealth Mode:</strong> Bina nearby grid mein dikhe profiles check karein</li>
-          <li><strong>City / Pin Check-In:</strong> Kisi bhi naye area ya city ke profiles dekhein</li>
-        </ul>
-      </div>
+      <div class="plan-detail-card" id="tierFeaturesBox"></div>
 
       <div class="pay-option selected" id="opt-upi" onclick="selectPayMethod('UPI')">
         <div>
@@ -1079,13 +1102,13 @@
         <span style="color:var(--muted); font-size:1.1rem;">○</span>
       </div>
 
-      <div class="form-group" style="margin-top:14px;">
+      <div class="form-group" style="margin-top:12px;">
         <label id="payInputLabel">Enter UPI ID</label>
         <input type="text" id="payDetailInput" placeholder="yourname@okaxis" />
       </div>
 
-      <button class="btn btn-xtra" style="width:100%;" id="payActionBtn" onclick="activateSelectedPlan()">
-        Activate ★ XTRA (₹250 / Week)
+      <button class="btn btn-xtra" style="width:100%;" id="payActionBtn" onclick="activateCheckoutPlan()">
+        Continue · ₹250 (1 Week)
       </button>
     </div>
   </div>
@@ -1159,10 +1182,12 @@
     onSnapshot(myDocRef, (snap) => {
       if (snap.exists()) {
         const remote = snap.data();
-        const plan = remote.planType || (remote.hasWeeklyPlan ? "xtra" : "free");
+        const plan = remote.planType || (remote.hasWeeklyPlan ? "xtra_1w" : "free");
         window.userAccount = {
           ...window.userAccount,
           name: remote.name ?? window.userAccount.name,
+          age: remote.age ?? window.userAccount.age,
+          tag: remote.tag ?? window.userAccount.tag,
           idType: remote.idType ?? window.userAccount.idType,
           idNumber: remote.idNumber ?? window.userAccount.idNumber,
           selfiePhoto: remote.selfiePhoto || window.userAccount.selfiePhoto,
@@ -1197,9 +1222,12 @@
 
     window.syncUserToCloud = async function(accountObj) {
       try {
-        const plan = accountObj.planType || (accountObj.hasWeeklyPlan ? "xtra" : "free");
+        const plan = accountObj.planType || (accountObj.hasWeeklyPlan ? "xtra_1w" : "free");
+        const coords = window.userCoords || {};
         await setDoc(doc(db, "dastak_users", clientUid), {
           name: accountObj.name || "User",
+          age: Number(accountObj.age) || 25,
+          tag: accountObj.tag || "Hangout",
           idType: accountObj.idType || "Aadhaar Card",
           idNumber: accountObj.idNumber || "",
           selfiePhoto: accountObj.selfiePhoto || "",
@@ -1208,6 +1236,9 @@
           planType: plan,
           hasWeeklyPlan: plan !== "free",
           paymentMethod: accountObj.paymentMethod || "UPI",
+          lat: typeof coords.lat === "number" ? coords.lat : null,
+          lng: typeof coords.lng === "number" ? coords.lng : null,
+          lastSeen: Date.now(),
           updatedAt: serverTimestamp()
         }, { merge: true });
       } catch (err) {
@@ -1287,42 +1318,140 @@
   <script>
     const OWNER_PIN = "1234";
 
-    const PLAN_CONFIG = {
+    const PLANS_CATALOG = {
       free: {
         id: "free",
-        label: "Free Plan",
-        shortBadge: "★ PLANS",
+        tier: "free",
+        label: "Free",
+        shortBadge: "Xtra",
         limit: 40,
-        canDeleteMsg: false,
+        canDeleteMsg: true,
         priceText: "Free",
-        nextOwnerPlan: "xtra"
+        nextOwnerPlan: "xtra_1w"
       },
-      pulse: {
-        id: "pulse",
-        label: "⚡ Pulse (48h)",
-        shortBadge: "⚡ PULSE",
-        limit: 340,
-        canDeleteMsg: false,
-        priceText: "₹99",
-        nextOwnerPlan: "xtra"
-      },
-      xtra: {
-        id: "xtra",
-        label: "★ XTRA 2X (1200)",
-        shortBadge: "★ XTRA 2X",
-        limit: 1200,
+      xtra_1w: {
+        id: "xtra_1w",
+        tier: "xtra",
+        label: "Xtra · 1 Week",
+        shortBadge: "Xtra",
+        limit: 600,
         canDeleteMsg: true,
         priceText: "₹250",
-        nextOwnerPlan: "circle"
+        nextOwnerPlan: "unlimited_1w"
       },
-      circle: {
-        id: "circle",
-        label: "👑 Circle VIP",
-        shortBadge: "👑 CIRCLE",
+      xtra_1m: {
+        id: "xtra_1m",
+        tier: "xtra",
+        label: "Xtra · 1 Month",
+        shortBadge: "Xtra",
+        limit: 600,
+        canDeleteMsg: true,
+        priceText: "₹365",
+        nextOwnerPlan: "unlimited_1w"
+      },
+      xtra_3m: {
+        id: "xtra_3m",
+        tier: "xtra",
+        label: "Xtra · 3 Months",
+        shortBadge: "Xtra",
+        limit: 600,
+        canDeleteMsg: true,
+        priceText: "₹730",
+        nextOwnerPlan: "unlimited_1w"
+      },
+      xtra_12m: {
+        id: "xtra_12m",
+        tier: "xtra",
+        label: "Xtra · 12 Months",
+        shortBadge: "Xtra",
+        limit: 600,
+        canDeleteMsg: true,
+        priceText: "₹1,825",
+        nextOwnerPlan: "unlimited_1w"
+      },
+      unlimited_1w: {
+        id: "unlimited_1w",
+        tier: "unlimited",
+        label: "Unlimited · 1 Week",
+        shortBadge: "Unlimited",
         limit: 9999,
         canDeleteMsg: true,
-        priceText: "₹599",
+        priceText: "₹492",
+        nextOwnerPlan: "edge_1w"
+      },
+      unlimited_1m: {
+        id: "unlimited_1m",
+        tier: "unlimited",
+        label: "Unlimited · 1 Month",
+        shortBadge: "Unlimited",
+        limit: 9999,
+        canDeleteMsg: true,
+        priceText: "₹820",
+        nextOwnerPlan: "edge_1w"
+      },
+      edge_1w: {
+        id: "edge_1w",
+        tier: "edge",
+        label: "Edge · 1 Week",
+        shortBadge: "Edge",
+        limit: 9999,
+        canDeleteMsg: true,
+        priceText: "₹7,800",
         nextOwnerPlan: "free"
+      },
+      edge_1m: {
+        id: "edge_1m",
+        tier: "edge",
+        label: "Edge · 1 Month",
+        shortBadge: "Edge",
+        limit: 9999,
+        canDeleteMsg: true,
+        priceText: "₹13,300",
+        nextOwnerPlan: "free"
+      }
+    };
+
+    const TIER_DETAILS = {
+      xtra: {
+        heading: "Xtra · Find More Faster",
+        btnClass: "btn-xtra",
+        durations: [
+          { key: "xtra_1w", title: "1 WEEK", price: "₹250", sub: "₹35.72 / day" },
+          { key: "xtra_1m", title: "1 MONTH", price: "₹365", sub: "Save 66%" },
+          { key: "xtra_3m", title: "3 MONTHS", price: "₹730", sub: "Save 77%" },
+          { key: "xtra_12m", title: "12 MONTHS", price: "₹1,825", sub: "Save 86%" }
+        ],
+        bullets: [
+          "Access up to <strong>600 local profiles</strong>",
+          "Share and view photos & albums",
+          "No 3rd party ads + instant message delete"
+        ]
+      },
+      unlimited: {
+        heading: "Unlimited · No More Boundaries",
+        btnClass: "btn-unlim",
+        durations: [
+          { key: "unlimited_1w", title: "1 WEEK", price: "₹492", sub: "₹70.29 / day" },
+          { key: "unlimited_1m", title: "1 MONTH", price: "₹820", sub: "Save 61%" }
+        ],
+        bullets: [
+          "<strong>Unlimited profiles</strong> unlocked in grid",
+          "See who's interested & viewed your profile",
+          "Incognito / discreet browsing mode"
+        ]
+      },
+      edge: {
+        heading: "Edge · More Action, Less Effort",
+        btnClass: "btn-edge",
+        durations: [
+          { key: "edge_1w", title: "1 WEEK", price: "₹7,800", sub: "Priority Edge Pass" },
+          { key: "edge_1m", title: "1 MONTH", price: "₹13,300", sub: "Save 60%" }
+        ],
+        bullets: [
+          "Priority visibility & faster nearby matching",
+          "Full <strong>Unlimited</strong> access + priority support",
+          "Complete chat & media controls"
+        ]
       }
     };
 
@@ -1340,16 +1469,39 @@
     const namesList = ["Aarav", "Kabir", "Rohan", "Dev", "Ishaan", "Vikram", "Arjun", "Reyansh", "Karan", "Vihaan", "Siddharth", "Yash", "Manav", "Nikhil", "Raghav"];
     const tagsList = ["Coffee & Drives", "Hangout", "Late Night Chat", "Friendship"];
 
-    const profilesPool = Array.from({ length: 1200 }, (_, idx) => {
+    const BASE_CENTER = { lat: 30.9010, lng: 75.8573 };
+    window.userCoords = JSON.parse(localStorage.getItem("dastak_coords_v1") || "null");
+
+    function computeDistanceKm(lat1, lon1, lat2, lon2) {
+      const toRad = (v) => (v * Math.PI) / 180;
+      const R = 6371;
+      const dLat = toRad(lat2 - lat1);
+      const dLon = toRad(lon2 - lon1);
+      const a =
+        Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+        Math.sin(dLon / 2) * Math.sin(dLon / 2);
+      const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+      return Number((R * c).toFixed(1));
+    }
+
+    const profilesPool = Array.from({ length: 600 }, (_, idx) => {
       const i = idx + 1;
       const isXtra = i > 40;
-      const dist = !isXtra
-        ? Number((0.3 + idx * 0.24).toFixed(1))
-        : Number((10.2 + (idx - 40) * 0.08).toFixed(1));
+      const radialKm = !isXtra ? 0.3 + idx * 0.23 : 10.2 + (idx - 40) * 0.07;
+      const angle = (idx * 2.39996) % (Math.PI * 2);
+      const latOffset = (radialKm / 111.32) * Math.cos(angle);
+      const lngOffset = (radialKm / (111.32 * Math.cos((BASE_CENTER.lat * Math.PI) / 180))) * Math.sin(angle);
+      const lat = Number((BASE_CENTER.lat + latOffset).toFixed(5));
+      const lng = Number((BASE_CENTER.lng + lngOffset).toFixed(5));
+      const dist = Number(radialKm.toFixed(1));
+
       return {
         id: i,
         name: namesList[idx % namesList.length],
         age: 19 + (i % 24),
+        lat,
+        lng,
         dist,
         isXtra,
         online: i % 2 === 0,
@@ -1360,11 +1512,69 @@
       };
     });
 
+    function recalculateProfileDistances() {
+      const center = window.userCoords && typeof window.userCoords.lat === "number"
+        ? window.userCoords
+        : BASE_CENTER;
+
+      profilesPool.forEach((p) => {
+        p.dist = computeDistanceKm(center.lat, center.lng, p.lat, p.lng);
+        p.bio = `Around ${p.dist} km away. Looking for ${p.tag.toLowerCase()} and genuine people.`;
+      });
+    }
+
+    function updateGpsBadge(text, isLive = false) {
+      const btn = document.getElementById("gpsStatusBtn");
+      if (!btn) return;
+      btn.innerText = text;
+      btn.style.color = isLive ? "#4ade80" : "#22d3ee";
+      btn.style.borderColor = isLive ? "rgba(74, 222, 128, 0.45)" : "rgba(34, 211, 238, 0.38)";
+    }
+
+    window.requestLiveGPS = function(showAlertOnFail = false) {
+      if (!navigator.geolocation) {
+        recalculateProfileDistances();
+        updateGpsBadge("📍 GPS: Default", false);
+        renderGrid();
+        return;
+      }
+
+      updateGpsBadge("📍 GPS: Locating...", false);
+      navigator.geolocation.getCurrentPosition(
+        (pos) => {
+          window.userCoords = {
+            lat: Number(pos.coords.latitude.toFixed(5)),
+            lng: Number(pos.coords.longitude.toFixed(5))
+          };
+          try { localStorage.setItem("dastak_coords_v1", JSON.stringify(window.userCoords)); } catch (e) {}
+          recalculateProfileDistances();
+          updateGpsBadge("📍 GPS: Live", true);
+          renderGrid();
+          if (typeof window.syncUserToCloud === "function") {
+            window.syncUserToCloud(window.userAccount);
+          }
+        },
+        () => {
+          recalculateProfileDistances();
+          updateGpsBadge("📍 GPS: Tap", false);
+          renderGrid();
+          if (showAlertOnFail) {
+            alert("Live GPS permission allow karein taaki asli km distance calculate ho sake.");
+          }
+        },
+        { enableHighAccuracy: true, timeout: 8000, maximumAge: 60000 }
+      );
+    };
+
     const savedAcc = JSON.parse(localStorage.getItem("dastak_account_v1") || "{}");
-    const initialPlan = savedAcc.planType || (savedAcc.hasWeeklyPlan ? "xtra" : "free");
+    const initialPlan = PLANS_CATALOG[savedAcc.planType]
+      ? savedAcc.planType
+      : (savedAcc.hasWeeklyPlan ? "xtra_1w" : "free");
 
     window.userAccount = {
       name: savedAcc.name || "Preet",
+      age: savedAcc.age || 34,
+      tag: savedAcc.tag || "Coffee & Drives",
       idType: savedAcc.idType || "Aadhaar Card",
       idNumber: savedAcc.idNumber || "",
       selfiePhoto: savedAcc.selfiePhoto || "",
@@ -1380,12 +1590,13 @@
     window.chats = JSON.parse(localStorage.getItem("dastak_chats_v1") || "{}");
     window.activeChatUser = null;
     let selectedPayMethod = "UPI";
-    let chosenCheckoutPlan = initialPlan === "free" ? "xtra" : initialPlan;
-    let visibleXtraCount = 24;
+    let activeCheckoutTier = "xtra";
+    let activeCheckoutPlanKey = "xtra_1w";
+    let visibleXtraCount = 18;
 
     let filters = {
       quick: "all",
-      maxDist: 100,
+      maxDist: 50,
       minAge: 18,
       maxAge: 50,
       onlineOnly: false,
@@ -1394,14 +1605,14 @@
     };
 
     function getActivePlanInfo() {
-      const p = window.userAccount.planType || (window.userAccount.hasWeeklyPlan ? "xtra" : "free");
-      return PLAN_CONFIG[p] || PLAN_CONFIG.free;
+      const key = window.userAccount.planType || (window.userAccount.hasWeeklyPlan ? "xtra_1w" : "free");
+      return PLANS_CATALOG[key] || PLANS_CATALOG.free;
     }
 
     window.saveAccount = function(skipCloud = false) {
-      const p = window.userAccount.planType || (window.userAccount.hasWeeklyPlan ? "xtra" : "free");
-      window.userAccount.planType = p;
-      window.userAccount.hasWeeklyPlan = p !== "free";
+      const key = window.userAccount.planType || (window.userAccount.hasWeeklyPlan ? "xtra_1w" : "free");
+      window.userAccount.planType = key;
+      window.userAccount.hasWeeklyPlan = key !== "free";
       try { localStorage.setItem("dastak_account_v1", JSON.stringify(window.userAccount)); } catch (e) {}
       updateTopUI();
       if (!skipCloud && typeof window.syncUserToCloud === "function") {
@@ -1428,53 +1639,76 @@
       const planInfo = getActivePlanInfo();
       const limitLabel = planInfo.limit >= 9999 ? "∞" : String(planInfo.limit);
       document.getElementById("freeCounter").innerText = `${(window.userAccount.viewedProfileIds || []).length} / ${limitLabel}`;
-      document.getElementById("rangeLabel").innerText = planInfo.id !== "free" ? `≤${filters.maxDist} km` : "≤10 km + XTRA";
+      document.getElementById("rangeLabel").innerText = planInfo.id !== "free" ? `≤${filters.maxDist} km` : "≤10 km + Xtra";
       document.getElementById("planStatusText").innerText = planInfo.label;
       document.getElementById("headerXtraBtn").innerText = planInfo.shortBadge;
 
       let activeFilterCount = 0;
-      if (filters.maxDist < 100) activeFilterCount++;
+      if (filters.maxDist < 50) activeFilterCount++;
       if (filters.minAge > 18 || filters.maxAge < 50) activeFilterCount++;
       if (filters.onlineOnly) activeFilterCount++;
       if (filters.verifiedOnly) activeFilterCount++;
       if (filters.tag !== "all") activeFilterCount++;
       document.getElementById("openFilterBtn").innerText = activeFilterCount > 0 ? `⚙ Filters (${activeFilterCount})` : "⚙ Filters";
-
-      refreshPayModalUI();
     }
 
-    function selectPlan(planKey) {
-      chosenCheckoutPlan = planKey;
-      refreshPayModalUI();
+    function switchCheckoutTier(tier) {
+      activeCheckoutTier = tier;
+      const detail = TIER_DETAILS[tier] || TIER_DETAILS.xtra;
+      activeCheckoutPlanKey = detail.durations[0].key;
+      renderCheckoutModal();
     }
 
-    function refreshPayModalUI() {
-      ["xtra", "pulse", "circle"].forEach(k => {
-        const el = document.getElementById(`card-${k}`);
-        if (el) el.classList.toggle("selected-plan", chosenCheckoutPlan === k);
+    function selectDurationKey(key) {
+      activeCheckoutPlanKey = key;
+      renderCheckoutModal();
+    }
+
+    function renderCheckoutModal() {
+      ["xtra", "unlimited", "edge"].forEach(t => {
+        const btn = document.getElementById(`tabTier-${t}`);
+        if (btn) btn.classList.toggle("active", t === activeCheckoutTier);
       });
 
-      const activeId = getActivePlanInfo().id;
-      const btn = document.getElementById("payActionBtn");
-      if (!btn) return;
+      const detail = TIER_DETAILS[activeCheckoutTier] || TIER_DETAILS.xtra;
+      const grid = document.getElementById("durationOptionsGrid");
+      grid.innerHTML = "";
 
-      if (activeId === chosenCheckoutPlan) {
-        btn.className = "btn btn-secondary";
-        btn.style.width = "100%";
-        btn.innerText = `✓ ${PLAN_CONFIG[chosenCheckoutPlan].label} Already Active`;
-      } else if (chosenCheckoutPlan === "pulse") {
-        btn.className = "btn btn-pulse";
-        btn.style.width = "100%";
-        btn.innerText = "Pay ₹99 & Activate Pulse (48h)";
-      } else if (chosenCheckoutPlan === "circle") {
-        btn.className = "btn btn-circle";
-        btn.style.width = "100%";
-        btn.innerText = "Pay ₹599 & Activate Circle VIP";
-      } else {
-        btn.className = "btn btn-xtra";
-        btn.style.width = "100%";
-        btn.innerText = "Pay ₹250 & Activate XTRA 2X (1200)";
-      }
+      detail.durations.forEach(d => {
+        const box = document.createElement("div");
+        box.className = `duration-box ${d.key === activeCheckoutPlanKey ? "selected" : ""}`;
+        box.onclick = () => selectDurationKey(d.key);
+        box.innerHTML = `
+          <div class="d-title">${d.title}</div>
+          <div class="d-price">${d.price}</div>
+          <div class="d-sub">${d.sub}</div>
+        `;
+        grid.appendChild(box);
+      });
+
+      const featBox = document.getElementById("tierFeaturesBox");
+      featBox.innerHTML = `
+        <strong style="font-size:0.92rem;">${detail.heading}</strong>
+        <ul>${detail.bullets.map(b => `<li>${b}</li>`).join("")}</ul>
+      `;
+
+      const selectedPlan = PLANS_CATALOG[activeCheckoutPlanKey] || PLANS_CATALOG.xtra_1w;
+      const actionBtn = document.getElementById("payActionBtn");
+      actionBtn.className = `btn ${detail.btnClass}`;
+      actionBtn.style.width = "100%";
+      actionBtn.innerText = `Continue · ${selectedPlan.priceText} (${selectedPlan.label})`;
+    }
+
+    function activateCheckoutPlan() {
+      const selectedPlan = PLANS_CATALOG[activeCheckoutPlanKey] || PLANS_CATALOG.xtra_1w;
+      window.userAccount.planType = selectedPlan.id;
+      window.userAccount.hasWeeklyPlan = selectedPlan.id !== "free";
+      window.userAccount.paymentMethod = selectedPayMethod;
+      window.saveAccount();
+      closeModal("payModal");
+      renderGrid();
+      window.renderMessages();
+      alert(`${selectedPlan.label} (${selectedPlan.priceText} via ${selectedPayMethod}) active ho gaya hai!`);
     }
 
     function renderGrid() {
@@ -1516,8 +1750,8 @@
         if (!isUnlocked) {
           banner.innerHTML = `
             <div>
-              <h4>★ XTRA 2X (${xtraList.length} profiles) · Pulse ₹99 · Circle ₹599</h4>
-              <p>XTRA ₹250 mein ab 1,200 profiles + double controls; ya Pulse ₹99 / Circle ₹599 chunein.</p>
+              <h4>More Access · Xtra ₹250 · Unlimited ₹492 · Edge ₹7,800</h4>
+              <p>600+ local profiles, Unlimited mode, aur Edge pass unlock karne ke liye plan chunein.</p>
             </div>
             <button class="btn btn-xtra" style="padding:9px 13px; font-size:0.76rem; white-space:nowrap;" onclick="openPayModal()">Plans</button>
           `;
@@ -1525,7 +1759,7 @@
           banner.innerHTML = `
             <div>
               <h4>${planInfo.label} Active</h4>
-              <p>${planInfo.canDeleteMsg ? "1,200+ profiles aur message delete/cleanup unlocked hai." : "Boosted profiles aur quick waves active hain."}</p>
+              <p>Unlocked access active hai (${planInfo.priceText}).</p>
             </div>
             <span class="status-pill verified">Active</span>
           `;
@@ -1554,7 +1788,7 @@
       div.innerHTML = `
         <img src="${user.img}" alt="${user.name}" loading="lazy" />
         ${isLocked
-          ? `<div class="tile-badge xtra-tag">★ XTRA</div>
+          ? `<div class="tile-badge xtra-tag">Xtra</div>
              <div class="lock-center">
                <div class="lock-icon-circle">🔒</div>
                <div class="lock-label">Unlock ₹250</div>
@@ -1563,7 +1797,7 @@
         }
         <div class="tile-overlay">
           <div class="tile-name">
-            <span class="status-dot ${user.online ? 'online' : 'offline'}"></span>${isLocked ? "XTRA Member" : `${user.name}, ${user.age}`}
+            <span class="status-dot ${user.online ? 'online' : 'offline'}"></span>${isLocked ? "Locked Member" : `${user.name}, ${user.age}`}
           </div>
           <div class="tile-dist">${user.dist} km</div>
         </div>
@@ -1571,7 +1805,7 @@
       return div;
     }
 
-    function loadMoreXtra() { visibleXtraCount += 36; renderGrid(); }
+    function loadMoreXtra() { visibleXtraCount += 30; renderGrid(); }
 
     function setQuickFilter(type, btn) {
       filters.quick = type;
@@ -1609,7 +1843,7 @@
     }
 
     function resetFilters() {
-      filters = { quick: "all", maxDist: 100, minAge: 18, maxAge: 50, onlineOnly: false, verifiedOnly: false, tag: "all" };
+      filters = { quick: "all", maxDist: 50, minAge: 18, maxAge: 50, onlineOnly: false, verifiedOnly: false, tag: "all" };
       document.querySelectorAll(".chip").forEach((c, idx) => c.classList.toggle("active", idx === 0));
       closeModal("filterModal");
       updateTopUI();
@@ -1882,7 +2116,7 @@
         if (m.sender === "me") {
           const delBtn = document.createElement("button");
           delBtn.className = `msg-del-btn ${canDelete ? "" : "locked"}`;
-          delBtn.innerText = canDelete ? "🗑️ Delete" : "🔒 Delete (XTRA/Circle)";
+          delBtn.innerText = canDelete ? "🗑️ Delete" : "🔒 Delete (Paid)";
           delBtn.onclick = () => deleteSentMessage(idx);
           wrap.appendChild(delBtn);
         }
@@ -1897,7 +2131,7 @@
       if (!window.activeChatUser) return;
 
       if (!getActivePlanInfo().canDeleteMsg) {
-        if (confirm("Sent message delete karne ka option XTRA (₹250/week) ya Circle (₹599/month) members ke liye hai. Kya aap plans dekhna chahte hain?")) {
+        if (confirm("Sent message delete karne ke liye paid plan chahiye. Kya aap plans dekhna chahte hain?")) {
           openPayModal();
         }
         return;
@@ -1982,11 +2216,13 @@
 
     function submitVerification() {
       window.userAccount.name = document.getElementById("myName").value.trim() || "User";
+      window.userAccount.age = Number(document.getElementById("myAge").value) || 25;
+      window.userAccount.tag = document.getElementById("myTag").value;
       window.userAccount.idType = document.getElementById("idType").value;
       window.userAccount.idNumber = document.getElementById("idNumber").value.trim();
       window.userAccount.verificationStatus = "Pending";
       window.saveAccount();
-      alert("Verification details Firestore mein submit ho gayi hain! Status Pending hai — Owner ke approve karte hi messaging unlock ho jayegi.");
+      alert("Verification aur profile details Firestore mein submit ho gayi hain! Status Pending hai — Owner ke approve karte hi messaging unlock ho jayegi.");
     }
 
     function selectPayMethod(method) {
@@ -1999,21 +2235,16 @@
       document.getElementById("payDetailInput").placeholder = method === "UPI" ? "yourname@okaxis" : "XXXX XXXX XXXX 4242";
     }
 
-    function activateSelectedPlan() {
-      const info = PLAN_CONFIG[chosenCheckoutPlan] || PLAN_CONFIG.xtra;
-      window.userAccount.planType = info.id;
-      window.userAccount.hasWeeklyPlan = info.id !== "free";
-      window.userAccount.paymentMethod = selectedPayMethod;
-      window.saveAccount();
-      closeModal("payModal");
-      renderGrid();
-      window.renderMessages();
-      alert(`${info.label} (${info.priceText} / ${selectedPayMethod}) active ho gaya hai!`);
-    }
-
     function openPayModal() {
-      if (getActivePlanInfo().id === "free") chosenCheckoutPlan = "xtra";
-      refreshPayModalUI();
+      const current = getActivePlanInfo();
+      if (current.tier && current.tier !== "free") {
+        activeCheckoutTier = current.tier;
+        activeCheckoutPlanKey = current.id;
+      } else {
+        activeCheckoutTier = "xtra";
+        activeCheckoutPlanKey = "xtra_1w";
+      }
+      renderCheckoutModal();
       document.getElementById("payModal").classList.add("open");
     }
 
@@ -2041,9 +2272,12 @@
       container.innerHTML = "";
 
       cloudList.forEach((u) => {
-        const uPlanKey = u.planType || (u.hasWeeklyPlan ? "xtra" : "free");
-        const uPlan = PLAN_CONFIG[uPlanKey] || PLAN_CONFIG.free;
-        const nextPlan = PLAN_CONFIG[uPlan.nextOwnerPlan] || PLAN_CONFIG.xtra;
+        const uPlanKey = PLANS_CATALOG[u.planType] ? u.planType : (u.hasWeeklyPlan ? "xtra_1w" : "free");
+        const uPlan = PLANS_CATALOG[uPlanKey] || PLANS_CATALOG.free;
+        const nextPlan = PLANS_CATALOG[uPlan.nextOwnerPlan] || PLANS_CATALOG.xtra_1w;
+        const gpsText = (typeof u.lat === "number" && typeof u.lng === "number")
+          ? `${u.lat}, ${u.lng}`
+          : "Not synced yet";
 
         const selfieHtml = u.selfiePhoto
           ? `<img src="${u.selfiePhoto}" alt="Selfie" />`
@@ -2059,6 +2293,8 @@
           <h4 style="margin-bottom:8px; color:var(--accent);">KYC Request · ${u.name || "User"}</h4>
           <p style="font-size:0.82rem; line-height:1.55; color:#e2e8f0;">
             <strong>User ID:</strong> ${u.uid || "local"}<br/>
+            <strong>Age / Vibe:</strong> ${u.age || "—"} yrs · ${u.tag || "—"}<br/>
+            <strong>GPS Coords:</strong> ${gpsText}<br/>
             <strong>ID Type:</strong> ${u.idType || "Aadhaar Card"}<br/>
             <strong>ID Ref:</strong> ${u.idNumber || "Not entered"}<br/>
             <strong>Status:</strong> ${u.verificationStatus || "Pending"}<br/>
@@ -2078,8 +2314,8 @@
             <button class="btn btn-success" onclick="handleOwnerAction('${u.uid || "local"}', 'Verified')">✓ Approve</button>
             <button class="btn btn-danger" onclick="handleOwnerAction('${u.uid || "local"}', 'Rejected')">✕ Reject</button>
           </div>
-          <button class="btn btn-secondary" style="width:100%; margin-top:10px;" onclick="handleOwnerPlanCycle('${u.uid || "local"}', '${uPlan.nextOwnerPlan}')">
-            Cycle Plan → ${nextPlan.label}
+          <button class="btn btn-secondary" style="width:100%; margin-top:10px;" onclick="handleOwnerPlanCycle('${u.uid || "local"}', '${nextPlan.id}')">
+            Cycle Plan → ${nextPlan.label} (${nextPlan.priceText})
           </button>
         `;
         container.appendChild(card);
@@ -2099,7 +2335,7 @@
     };
 
     window.handleOwnerPlanCycle = function(targetUid, nextPlanKey) {
-      const validPlan = PLAN_CONFIG[nextPlanKey] ? nextPlanKey : "free";
+      const validPlan = PLANS_CATALOG[nextPlanKey] ? nextPlanKey : "free";
       if (targetUid === (window.dastakCloud?.uid || "local")) {
         window.userAccount.planType = validPlan;
         window.userAccount.hasWeeklyPlan = validPlan !== "free";
@@ -2126,11 +2362,15 @@
     function closeModal(id) { document.getElementById(id).classList.remove("open"); }
 
     document.getElementById("myName").value = window.userAccount.name;
+    document.getElementById("myAge").value = window.userAccount.age;
+    document.getElementById("myTag").value = window.userAccount.tag;
     document.getElementById("idType").value = window.userAccount.idType;
     document.getElementById("idNumber").value = window.userAccount.idNumber;
+
+    recalculateProfileDistances();
     updateTopUI();
     renderGrid();
+    window.requestLiveGPS(false);
   </script>
 </body>
 </html>
-
