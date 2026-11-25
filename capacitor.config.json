@@ -1,0 +1,9 @@
+{
+  "appId": "com.dastak.app",
+  "appName": "Dastak",
+  "webDir": "www",
+  "server": {
+    "url": "https://ludhianawalle76000-create.github.io/musafir-aap/dastak.html",
+    "cleartext": false
+  }
+}
