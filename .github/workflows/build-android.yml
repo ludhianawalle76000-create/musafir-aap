@@ -38,7 +38,42 @@ jobs:
           echo "<html><body><script>window.location.replace('https://ludhianawalle76000-create.github.io/musafir-aap/dastak.html');</script></body></html>" > www/index.html
           npm init -y
           npm install @capacitor/core@6 @capacitor/cli@6 @capacitor/android@6
-          npx cap add android
+          npx cap add android --name "Dastak The Real Connections" --app-id "com.dastak.app" || npx cap add android
+
+      - name: Apply Dastak App Name and Icon
+        run: |
+          python3 -c '
+          from PIL import Image
+          import os, glob, xml.etree.ElementTree as ET
+
+          for strings_path in glob.glob("android/app/src/main/res/values*/strings.xml"):
+              tree = ET.parse(strings_path)
+              root = tree.getroot()
+              for elem in root.findall("string"):
+                  if elem.get("name") in ["app_name", "title_activity_main", "package_name", "custom_url_scheme"]:
+                      if elem.get("name") != "package_name":
+                          elem.text = "Dastak The Real Connections"
+              tree.write(strings_path, encoding="utf-8", xml_declaration=True)
+
+          icon_candidates = ["assets/dastak-icon.png", "1795639460501.png", "1003407090.png"]
+          src_path = next((p for p in icon_candidates if os.path.exists(p)), None)
+          if src_path:
+              src = Image.open(src_path).convert("RGBA")
+              sizes = {
+                  "mipmap-mdpi": 48,
+                  "mipmap-hdpi": 72,
+                  "mipmap-xhdpi": 96,
+                  "mipmap-xxhdpi": 144,
+                  "mipmap-xxxhdpi": 192,
+              }
+              res_root = "android/app/src/main/res"
+              for folder, px in sizes.items():
+                  out_dir = os.path.join(res_root, folder)
+                  os.makedirs(out_dir, exist_ok=True)
+                  resized = src.resize((px, px), Image.Resampling.LANCZOS)
+                  for fname in ["ic_launcher.png", "ic_launcher_round.png", "ic_launcher_foreground.png"]:
+                      resized.save(os.path.join(out_dir, fname))
+          '
 
       - name: Add FLAG_SECURE to MainActivity.java
         run: |
@@ -76,3 +111,4 @@ jobs:
         with:
           name: dastak-debug-apk
           path: android/app/build/outputs/apk/debug/app-debug.apk
+
