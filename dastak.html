@@ -10,12 +10,14 @@
       --bg: #050914;
       --surface: #0d1526;
       --surface-2: #162238;
+      --surface-3: #1e2d4a;
       --border: rgba(148, 163, 184, 0.16);
       --accent: #22d3ee;
       --accent-grad: linear-gradient(135deg, #38bdf8 0%, #06b6d4 52%, #14b8a6 100%);
       --xtra-grad: linear-gradient(135deg, #facc15 0%, #eab308 100%);
       --unlim-grad: linear-gradient(135deg, #38bdf8 0%, #818cf8 100%);
       --edge-grad: linear-gradient(135deg, #f59e0b 0%, #f43f5e 100%);
+      --vip-grad: linear-gradient(135deg, #a855f7 0%, #ec4899 55%, #f59e0b 100%);
       --online: #4ade80;
       --danger: #fb7185;
       --warn: #fb923c;
@@ -32,9 +34,12 @@
     }
 
     body {
-      background: radial-gradient(circle at top right, rgba(6, 182, 212, 0.1), transparent 40%), var(--bg);
+      background:
+        radial-gradient(circle at 12% 0%, rgba(34, 211, 238, 0.14), transparent 36%),
+        radial-gradient(circle at 88% 8%, rgba(168, 85, 247, 0.12), transparent 38%),
+        var(--bg);
       color: var(--text);
-      padding-bottom: 92px;
+      padding-bottom: 96px;
       min-height: 100vh;
     }
 
@@ -42,9 +47,9 @@
       position: sticky;
       top: 0;
       z-index: 25;
-      background: rgba(5, 9, 20, 0.92);
-      backdrop-filter: blur(14px);
-      -webkit-backdrop-filter: blur(14px);
+      background: rgba(5, 9, 20, 0.9);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-bottom: 1px solid var(--border);
     }
 
@@ -63,24 +68,24 @@
     }
 
     .brand-logo {
-      width: 30px;
-      height: 30px;
-      border-radius: 9px;
+      width: 32px;
+      height: 32px;
+      border-radius: 10px;
       background: var(--accent-grad);
       color: #04131c;
       display: flex;
       align-items: center;
       justify-content: center;
       font-weight: 900;
-      font-size: 1rem;
-      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.35);
+      font-size: 1.05rem;
+      box-shadow: 0 4px 16px rgba(6, 182, 212, 0.35);
     }
 
     .brand-text {
-      font-size: 1.18rem;
-      font-weight: 800;
+      font-size: 1.2rem;
+      font-weight: 900;
       letter-spacing: 0.4px;
-      background: linear-gradient(to right, #ffffff 30%, #67e8f9 100%);
+      background: linear-gradient(to right, #ffffff 25%, #67e8f9 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -89,6 +94,17 @@
       display: flex;
       align-items: center;
       gap: 6px;
+    }
+
+    .coin-pill-btn {
+      background: rgba(250, 204, 21, 0.14);
+      color: #fde047;
+      border: 1px solid rgba(250, 204, 21, 0.45);
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      cursor: pointer;
     }
 
     .xtra-pill-btn {
@@ -100,7 +116,6 @@
       font-size: 0.72rem;
       font-weight: 900;
       cursor: pointer;
-      letter-spacing: 0.3px;
     }
 
     .status-pill {
@@ -139,13 +154,13 @@
     .subbar-wrap { border-top: 1px solid rgba(148, 163, 184, 0.1); }
 
     .quota-strip {
-      padding: 6px 14px;
+      padding: 7px 14px;
       display: flex;
       justify-content: space-between;
       align-items: center;
       font-size: 0.74rem;
       color: var(--muted);
-      background: rgba(13, 21, 38, 0.65);
+      background: rgba(13, 21, 38, 0.72);
       gap: 8px;
     }
 
@@ -183,9 +198,6 @@
       font-weight: 800;
       cursor: pointer;
       white-space: nowrap;
-      display: flex;
-      align-items: center;
-      gap: 5px;
     }
 
     .chip {
@@ -217,26 +229,73 @@
       color: #090d16;
     }
 
+    /* MODERN NEARBY HERO STRIP */
+    .nearby-hero-strip {
+      margin: 10px 8px 4px;
+      padding: 13px 14px;
+      border-radius: 16px;
+      background: linear-gradient(125deg, rgba(168, 85, 247, 0.16) 0%, rgba(13, 21, 38, 0.94) 50%, rgba(34, 211, 238, 0.16) 100%);
+      border: 1px solid rgba(148, 163, 184, 0.22);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nearby-hero-strip h3 {
+      font-size: 0.94rem;
+      font-weight: 800;
+      color: #f8fafc;
+      margin-bottom: 2px;
+    }
+
+    .nearby-hero-strip p {
+      font-size: 0.73rem;
+      color: #cbd5e1;
+    }
+
+    .quick-action-pills {
+      display: flex;
+      gap: 7px;
+      padding: 8px 8px 2px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+    .quick-action-pills::-webkit-scrollbar { display: none; }
+
+    .qa-pill {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: #e2e8f0;
+      padding: 6px 11px;
+      border-radius: 11px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
     .grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 6px;
+      gap: 7px;
       padding: 8px 8px 12px;
     }
 
     .tile {
       position: relative;
-      aspect-ratio: 1 / 1.22;
+      aspect-ratio: 1 / 1.24;
       background: var(--surface);
-      border-radius: 13px;
+      border-radius: 15px;
       overflow: hidden;
       cursor: pointer;
       border: 1px solid var(--border);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
     }
 
-    .tile.is-online { border-color: rgba(34, 211, 238, 0.35); }
-    .tile.is-locked { border-color: rgba(250, 204, 21, 0.35); }
-    .tile.is-live-user { border-color: rgba(74, 222, 128, 0.55); }
+    .tile.is-online { border-color: rgba(34, 211, 238, 0.38); }
+    .tile.is-locked { border-color: rgba(250, 204, 21, 0.38); }
+    .tile.is-live-user { border-color: rgba(74, 222, 128, 0.6); }
 
     .tile img {
       width: 100%;
@@ -254,7 +313,7 @@
       position: absolute;
       top: 6px;
       right: 6px;
-      background: rgba(5, 9, 20, 0.78);
+      background: rgba(5, 9, 20, 0.8);
       backdrop-filter: blur(6px);
       color: var(--accent);
       font-size: 0.62rem;
@@ -266,9 +325,9 @@
     }
 
     .tile-badge.live-tag {
-      background: rgba(74, 222, 128, 0.18);
+      background: rgba(74, 222, 128, 0.2);
       color: #4ade80;
-      border-color: rgba(74, 222, 128, 0.5);
+      border-color: rgba(74, 222, 128, 0.55);
     }
 
     .tile-badge.xtra-tag {
@@ -313,7 +372,7 @@
     .tile-overlay {
       position: absolute;
       inset: 0;
-      background: linear-gradient(to top, rgba(5, 9, 20, 0.95) 8%, rgba(5, 9, 20, 0.2) 45%, transparent 65%);
+      background: linear-gradient(to top, rgba(5, 9, 20, 0.95) 10%, rgba(5, 9, 20, 0.22) 48%, transparent 68%);
       display: flex;
       flex-direction: column;
       justify-content: flex-end;
@@ -362,16 +421,16 @@
     nav {
       position: fixed;
       bottom: 12px;
-      left: 14px;
-      right: 14px;
-      background: rgba(13, 21, 38, 0.94);
+      left: 10px;
+      right: 10px;
+      background: rgba(13, 21, 38, 0.95);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
-      border: 1px solid rgba(34, 211, 238, 0.18);
+      border: 1px solid rgba(34, 211, 238, 0.2);
       border-radius: 20px;
       display: flex;
       justify-content: space-around;
-      padding: 8px 6px;
+      padding: 8px 4px;
       z-index: 30;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.65);
     }
@@ -380,18 +439,18 @@
       background: none;
       border: none;
       color: var(--muted);
-      font-size: 0.72rem;
+      font-size: 0.68rem;
       font-weight: 600;
       cursor: pointer;
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 4px;
-      padding: 4px 12px;
+      padding: 4px 8px;
       border-radius: 12px;
     }
 
-    .nav-btn svg { width: 20px; height: 20px; stroke: currentColor; fill: none; stroke-width: 2; }
+    .nav-btn svg { width: 19px; height: 19px; stroke: currentColor; fill: none; stroke-width: 2; }
     .nav-btn.active { color: var(--accent); background: rgba(34, 211, 238, 0.12); }
 
     .section-view { display: none; padding: 16px; }
@@ -415,6 +474,435 @@
       font-size: 0.83rem;
       line-height: 1.48;
       margin-bottom: 12px;
+    }
+
+    /* ROOMS & PARTY STYLES */
+    .rooms-paywall-card {
+      background: linear-gradient(145deg, rgba(250, 204, 21, 0.12) 0%, rgba(13, 21, 38, 0.96) 55%, rgba(6, 182, 212, 0.12) 100%);
+      border: 1px solid rgba(250, 204, 21, 0.45);
+      border-radius: 18px;
+      padding: 20px 16px;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+
+    .rooms-lock-badge {
+      display: inline-block;
+      background: var(--xtra-grad);
+      color: #090d16;
+      font-size: 0.72rem;
+      font-weight: 900;
+      padding: 4px 11px;
+      border-radius: 999px;
+      margin-bottom: 10px;
+    }
+
+    .room-subtabs {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 14px;
+    }
+
+    .room-subtab {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 9px 4px;
+      border-radius: 11px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .room-subtab.active {
+      background: var(--accent-grad);
+      color: #04131c;
+      border-color: transparent;
+    }
+
+    .room-item-card {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 12px;
+      margin-bottom: 9px;
+    }
+
+    .room-item-title { font-size: 0.9rem; font-weight: 800; color: var(--text); }
+    .room-item-meta { font-size: 0.74rem; color: var(--muted); margin-top: 2px; }
+
+    .room-inline-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      flex-wrap: wrap;
+    }
+
+    .room-inline-input {
+      flex: 1;
+      min-width: 130px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-size: 0.86rem;
+      outline: none;
+    }
+
+    .room-feed-box {
+      max-height: 220px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      padding: 11px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      margin: 10px 0;
+    }
+
+    .room-bubble {
+      padding: 8px 12px;
+      border-radius: 12px;
+      background: var(--surface-2);
+      font-size: 0.82rem;
+      line-height: 1.4;
+      max-width: 86%;
+      align-self: flex-start;
+    }
+
+    .room-bubble.mine {
+      background: var(--accent-grad);
+      color: #04131c;
+      font-weight: 600;
+      align-self: flex-end;
+    }
+
+    .room-sender-tag { font-size: 0.68rem; font-weight: 800; opacity: 0.82; margin-bottom: 2px; }
+
+    .audio-stage-grid, .video-stage-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      margin: 12px 0;
+    }
+
+    .audio-seat-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 14px 10px;
+      text-align: center;
+    }
+
+    .audio-seat-card.speaking {
+      border-color: var(--online);
+      box-shadow: 0 0 0 1px rgba(74, 222, 128, 0.35);
+    }
+
+    .video-tile-box {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      background: #070d1a;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .video-tile-box.live-cam { border-color: var(--online); }
+    .video-tile-box video { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+    .video-tile-label {
+      position: absolute;
+      bottom: 6px;
+      left: 6px;
+      background: rgba(5, 9, 20, 0.78);
+      color: #f8fafc;
+      font-size: 0.68rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+
+    .host-pick-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.74rem;
+      font-weight: 700;
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      color: var(--text);
+      margin: 3px 4px 3px 0;
+      cursor: pointer;
+    }
+
+    .host-pick-chip.selected {
+      background: rgba(74, 222, 128, 0.16);
+      border-color: var(--online);
+      color: var(--online);
+    }
+
+    /* SOCIAL / LIVE / PK / PARTY / GAMES / MEDALS / PROFILE HUB */
+    .social-top-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-bottom: 10px;
+    }
+    .social-top-tabs::-webkit-scrollbar { display: none; }
+
+    .st-tab {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--muted);
+      padding: 7px 12px;
+      border-radius: 999px;
+      font-size: 0.76rem;
+      font-weight: 800;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .st-tab.active {
+      background: var(--vip-grad);
+      color: #fff;
+      border-color: transparent;
+    }
+
+    .live-card-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 9px;
+      margin-bottom: 14px;
+    }
+
+    .live-stream-card {
+      position: relative;
+      border-radius: 15px;
+      overflow: hidden;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      cursor: pointer;
+    }
+
+    .live-stream-card img {
+      width: 100%;
+      height: 152px;
+      object-fit: cover;
+      display: block;
+    }
+
+    .live-card-body {
+      padding: 9px 10px;
+      background: linear-gradient(to top, rgba(5, 9, 20, 0.96), rgba(13, 21, 38, 0.88));
+    }
+
+    .live-pill-tag {
+      position: absolute;
+      top: 7px;
+      left: 7px;
+      background: rgba(168, 85, 247, 0.88);
+      color: #fff;
+      font-size: 0.64rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 6px;
+    }
+
+    .pk-banner-bar {
+      background: linear-gradient(90deg, #ef4444 0%, #f59e0b 50%, #3b82f6 100%);
+      border-radius: 10px;
+      padding: 6px 10px;
+      font-size: 0.74rem;
+      font-weight: 900;
+      color: #fff;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .gift-cat-tabs {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      scrollbar-width: none;
+      margin-bottom: 10px;
+    }
+    .gift-cat-tabs::-webkit-scrollbar { display: none; }
+
+    .gc-tab {
+      background: var(--surface-2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      padding: 5px 10px;
+      border-radius: 8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .gc-tab.active {
+      background: var(--accent-grad);
+      color: #04131c;
+      border-color: transparent;
+    }
+
+    .gift-items-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 7px;
+      margin-bottom: 10px;
+    }
+
+    .gift-item-tile {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      padding: 8px 4px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .gift-item-tile.selected {
+      border-color: #facc15;
+      background: rgba(250, 204, 21, 0.12);
+    }
+
+    .game-slots-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 10px 0;
+    }
+
+    .game-slot-box {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 10px 6px;
+      text-align: center;
+      cursor: pointer;
+    }
+
+    .game-slot-box.active {
+      border-color: var(--online);
+      background: rgba(74, 222, 128, 0.14);
+    }
+
+    .chips-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin: 8px 0;
+    }
+
+    .bet-chip {
+      background: var(--surface-2);
+      border: 1px solid rgba(250, 204, 21, 0.45);
+      color: #fde047;
+      padding: 6px 10px;
+      border-radius: 999px;
+      font-size: 0.72rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .bet-chip.selected {
+      background: var(--xtra-grad);
+      color: #090d16;
+    }
+
+    .medals-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+
+    .medal-card {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      padding: 10px 6px;
+      text-align: center;
+    }
+
+    .medal-card.unlocked {
+      border-color: #facc15;
+      background: rgba(250, 204, 21, 0.1);
+    }
+
+    .streak-30-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin: 10px 0 12px;
+    }
+
+    .streak-day-box {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 7px 4px;
+      text-align: center;
+    }
+
+    .streak-day-box.claimed {
+      border-color: var(--online);
+      background: rgba(74, 222, 128, 0.14);
+    }
+
+    .streak-day-box.today {
+      border-color: #facc15;
+      background: rgba(250, 204, 21, 0.16);
+    }
+
+    .hub-stats-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+      margin: 10px 0 12px;
+      text-align: center;
+    }
+
+    .hub-mini-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin: 10px 0;
+    }
+
+    .hub-tool-btn {
+      background: var(--surface-2);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 10px 4px;
+      color: var(--text);
+      font-size: 0.7rem;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
     }
 
     .modal {
@@ -474,11 +962,11 @@
     .action-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
 
     .btn {
-      padding: 13px;
+      padding: 12px;
       border: none;
       border-radius: 12px;
       font-weight: 800;
-      font-size: 0.9rem;
+      font-size: 0.86rem;
       cursor: pointer;
     }
 
@@ -486,6 +974,7 @@
     .btn-xtra { background: var(--xtra-grad); color: #090d16; }
     .btn-unlim { background: var(--unlim-grad); color: #04131c; }
     .btn-edge { background: var(--edge-grad); color: #16060b; }
+    .btn-vip { background: var(--vip-grad); color: #fff; }
     .btn-secondary { background: var(--surface-2); color: var(--text); border: 1px solid var(--border); }
     .btn-success { background: var(--online); color: #052e16; }
     .btn-danger {
@@ -791,23 +1280,9 @@
       cursor: pointer;
     }
 
-    .tier-tab-btn.active.t-xtra {
-      background: var(--xtra-grad);
-      color: #090d16;
-      border-color: transparent;
-    }
-
-    .tier-tab-btn.active.t-unlimited {
-      background: var(--unlim-grad);
-      color: #04131c;
-      border-color: transparent;
-    }
-
-    .tier-tab-btn.active.t-edge {
-      background: var(--edge-grad);
-      color: #16060b;
-      border-color: transparent;
-    }
+    .tier-tab-btn.active.t-xtra { background: var(--xtra-grad); color: #090d16; border-color: transparent; }
+    .tier-tab-btn.active.t-unlimited { background: var(--unlim-grad); color: #04131c; border-color: transparent; }
+    .tier-tab-btn.active.t-edge { background: var(--edge-grad); color: #16060b; border-color: transparent; }
 
     .duration-grid {
       display: grid;
@@ -825,11 +1300,7 @@
       text-align: left;
     }
 
-    .duration-box.selected {
-      border-color: #facc15;
-      background: rgba(250, 204, 21, 0.08);
-    }
-
+    .duration-box.selected { border-color: #facc15; background: rgba(250, 204, 21, 0.08); }
     .duration-box .d-title { font-size: 0.78rem; color: var(--muted); font-weight: 700; }
     .duration-box .d-price { font-size: 1.15rem; font-weight: 900; margin: 3px 0; }
     .duration-box .d-sub { font-size: 0.7rem; color: var(--accent); font-weight: 700; }
@@ -898,6 +1369,7 @@
         <div class="brand-text">Dastak</div>
       </div>
       <div class="header-right">
+        <button class="coin-pill-btn" id="headerCoinBtn" onclick="openDailyCheckInModal()">🪙 <span id="headerCoinVal">0</span></button>
         <button class="xtra-pill-btn" id="headerXtraBtn" onclick="openPayModal()">Xtra</button>
         <span id="headerStatusBadge" class="status-pill">Pending</span>
         <button class="owner-btn" onclick="openOwnerLogin()">Owner</button>
@@ -923,18 +1395,314 @@
     </div>
   </div>
 
-  <!-- NEARBY TAB -->
+  <!-- NEARBY TAB (MODERNIZED FIRST PAGE) -->
   <div id="tab-nearby">
+    <div class="nearby-hero-strip">
+      <div>
+        <h3>Dastak Live & Nearby Lounge</h3>
+        <p id="streakHeroSummary">Streak: Day 0 · Next Check-In: +10 Coins (Day 30 = 300 Coins)</p>
+      </div>
+      <button class="btn btn-xtra" style="padding:8px 12px; font-size:0.74rem; white-space:nowrap;" onclick="openDailyCheckInModal()">
+        🎁 Check-In
+      </button>
+    </div>
+
+    <div class="quick-action-pills">
+      <button class="qa-pill" onclick="openLiveStageModal('PK Battle', 'Priya', 'Riya')">⚔️ PK Live</button>
+      <button class="qa-pill" onclick="openLiveStageModal('Party Room', 'Ziyan', 'Sana')">🎉 Party Room</button>
+      <button class="qa-pill" onclick="openGuardianModal()">🛡️ Guardian VIP</button>
+      <button class="qa-pill" onclick="openMiniGameModal()">🎰 Mini Game</button>
+      <button class="qa-pill" onclick="openMedalsModal()">🏅 Medals</button>
+      <button class="qa-pill" onclick="openVipStoreModal()">💎 VIP Store</button>
+    </div>
+
     <div class="grid" id="userGrid"></div>
   </div>
 
-  <!-- CHATS TAB -->
-  <div id="tab-chats" class="section-view">
-    <div class="section-title">Messages</div>
-    <div id="chatLockNotice" class="lock-banner" style="display:none;">
-      🔒 <strong>Messaging Locked (Status: Pending):</strong> Aap Dastak ke baaki sabhi features use kar sakte hain. Message, photo, video ya location bhejne ke liye Owner approval zaroori hai.
+  <!-- PAID CHAT, AUDIO & VIDEO ROOMS TAB -->
+  <div id="tab-rooms" class="section-view">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px;">
+      <div class="section-title" style="margin-bottom:0;">Dastak Paid Rooms</div>
+      <span id="roomsAccessBadge" class="status-pill">🔒 Paid Only</span>
     </div>
-    <div id="inboxList"></div>
+
+    <!-- PAYWALL VIEW -->
+    <div id="roomsLockedView" class="rooms-paywall-card">
+      <div class="rooms-lock-badge">PAID ROOMS & LIVE VIDEO STAGES</div>
+      <h3 style="font-size:1.05rem; margin-bottom:6px; color:#fef9c3;">Group, Couple, Audio & Host-Controlled Video Rooms</h3>
+      <p style="font-size:0.8rem; color:#cbd5e1; line-height:1.5; margin-bottom:14px;">
+        Rooms sirf Paid Members ke liye hain. Group/Audio room create karne par <strong>₹199</strong> (max <strong>20 members</strong>, 7th+ member <strong>₹99/member</strong>) aur Video room create karne par <strong>₹299</strong> (host khud apne <strong>5 members</strong> select karega; 7th+ member <strong>₹179/member</strong>).
+      </p>
+      <div class="card-box" style="text-align:left; margin-bottom:14px;">
+        <div style="font-size:0.8rem; color:var(--accent); font-weight:800; margin-bottom:6px;">Room Pricing & Capacity Rules:</div>
+        <ul style="padding-left:18px; font-size:0.78rem; color:#e2e8f0; line-height:1.65;">
+          <li><strong>Group & Audio Room Create:</strong> <strong>₹199</strong> · Max <strong>20 members</strong> (7th+ member: <strong>₹99 per member</strong>)</li>
+          <li><strong>Video Room Create:</strong> <strong>₹299</strong> · Host ko khud <strong>5 members</strong> select/add karne ka access (7th+ member: <strong>₹179 per member</strong>, max 20)</li>
+          <li><strong>Private Couple Chat:</strong> Secret 6-digit code se couple room</li>
+        </ul>
+      </div>
+      <button class="btn btn-xtra" style="width:100%;" onclick="openPayModal()">
+        Unlock Paid Rooms · Starting ₹250
+      </button>
+    </div>
+
+    <!-- UNLOCKED ROOMS VIEW -->
+    <div id="roomsUnlockedView" style="display:none;">
+      <div class="room-subtabs">
+        <button class="room-subtab active" data-rsub="public" onclick="switchRoomSubTab('public')">Group</button>
+        <button class="room-subtab" data-rsub="couple" onclick="switchRoomSubTab('couple')">Couple</button>
+        <button class="room-subtab" data-rsub="audio" onclick="switchRoomSubTab('audio')">Audio</button>
+        <button class="room-subtab" data-rsub="video" onclick="switchRoomSubTab('video')">Video</button>
+      </div>
+
+      <!-- 1. GROUP ROOMS -->
+      <div id="rsub-public">
+        <div class="card-box">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.86rem;">Create Group / Audio Room</strong>
+            <span class="status-pill" id="creatorPassBadge">Create Fee: ₹199</span>
+          </div>
+          <div style="font-size:0.74rem; color:var(--muted); margin-top:4px;">
+            Room create karne ke liye ₹199 pay karein. Maximum 20 members allowed hain (7th+ member: ₹99/member).
+          </div>
+          <div class="room-inline-row">
+            <input type="text" id="newGroupRoomInput" class="room-inline-input" placeholder="Room name (e.g. Ludhiana VIP Adda)..." />
+            <button class="btn btn-xtra" style="padding:10px 13px; font-size:0.8rem;" id="createRoomActionBtn" onclick="createGroupRoomWithFee()">Pay ₹199 & Create</button>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+            <strong style="font-size:0.86rem;">Group Rooms (Max 20 · 7th+ ₹99)</strong>
+            <span style="font-size:0.72rem; color:var(--accent); font-weight:700;" id="extraSeatStatusText">7th+ Pass: ₹99/member</span>
+          </div>
+          <div id="groupRoomsList"></div>
+        </div>
+      </div>
+
+      <!-- 2. COUPLE CHAT -->
+      <div id="rsub-couple" style="display:none;">
+        <div class="card-box">
+          <div style="font-size:0.88rem; font-weight:800; margin-bottom:4px;">Private Couple Connect (Paid)</div>
+          <div style="font-size:0.78rem; color:var(--muted); line-height:1.45;">
+            6-digit secret code se private couple room connect karein.
+          </div>
+          <div class="room-inline-row">
+            <input type="text" id="coupleRoomCodeInput" class="room-inline-input" placeholder="Enter 6-digit Couple Code..." />
+            <button class="btn btn-secondary" style="padding:10px 12px; font-size:0.8rem;" onclick="generateCoupleRoomCode()">Generate</button>
+            <button class="btn btn-xtra" style="padding:10px 14px; font-size:0.8rem;" onclick="connectCoupleRoom()">Connect</button>
+          </div>
+          <div id="coupleRoomStatus" style="font-size:0.76rem; color:var(--accent); font-weight:700; margin-top:8px;">
+            Not connected to any couple room
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. AUDIO LOUNGE -->
+      <div id="rsub-audio" style="display:none;">
+        <div class="card-box">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.9rem;">Live Audio Room (Max 20 Members)</strong>
+            <span class="status-pill verified">● Audio Live</span>
+          </div>
+          <div class="audio-stage-grid">
+            <div class="audio-seat-card speaking">
+              <div style="font-size:1.5rem;">🎙️</div>
+              <div style="font-size:0.84rem; font-weight:800; margin-top:4px;">Room Host</div>
+              <div style="font-size:0.72rem; color:var(--online); margin-top:2px;">Speaking Live</div>
+            </div>
+            <div class="audio-seat-card" id="myAudioSeatCard">
+              <div style="font-size:1.5rem;">🎧</div>
+              <div style="font-size:0.84rem; font-weight:800; margin-top:4px;" id="myAudioSeatName">You</div>
+              <div style="font-size:0.72rem; color:var(--muted); margin-top:2px;" id="myAudioMicStatus">Mic Muted</div>
+            </div>
+          </div>
+          <div class="action-row" style="margin-top:8px;">
+            <button class="btn btn-primary" id="toggleRoomMicBtn" onclick="toggleRoomMic()">Unmute Mic</button>
+            <button class="btn btn-secondary" id="toggleRoomSpkBtn" onclick="toggleRoomSpeaker()">Speaker: ON</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. VIDEO LOUNGE -->
+      <div id="rsub-video" style="display:none;">
+        <div class="card-box">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.9rem;">Create / Host Video Room</strong>
+            <span class="status-pill" id="videoHostPassBadge">Create Fee: ₹299</span>
+          </div>
+          <div style="font-size:0.75rem; color:var(--muted); margin-top:4px; line-height:1.45;">
+            Video room create karne ke liye <strong>₹299</strong> pay karein. Jo ₹299 pay karega, sirf usi ke paas access hoga ki woh kaunse <strong>5 members</strong> ko add kare (7th+ member: <strong>₹179/member</strong>, max 20).
+          </div>
+          <div class="room-inline-row">
+            <input type="text" id="newVideoRoomInput" class="room-inline-input" placeholder="Video room name..." />
+            <button class="btn btn-xtra" style="padding:10px 13px; font-size:0.8rem;" id="createVideoRoomBtn" onclick="createVideoRoomWithHostControl()">Pay ₹299 & Create</button>
+          </div>
+
+          <div id="hostSelectedMembersPanel" style="display:none; margin-top:12px; padding-top:10px; border-top:1px solid var(--border);">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <strong style="font-size:0.8rem; color:var(--online);">👑 Host Access: Select Your 5 Members</strong>
+              <span style="font-size:0.74rem; color:var(--accent); font-weight:800;" id="hostPickedCountText">0 / 5 Selected</span>
+            </div>
+            <div id="hostCandidateChips"></div>
+          </div>
+        </div>
+
+        <div class="card-box">
+          <div style="font-size:0.86rem; font-weight:800; margin-bottom:8px;">Active Video Rooms (7th+ ₹179 · Max 20)</div>
+          <div id="videoRoomsList"></div>
+        </div>
+
+        <div class="card-box">
+          <div style="display:flex; justify-content:space-between; align-items:center;">
+            <strong style="font-size:0.9rem;">Live Video Stage</strong>
+            <span class="status-pill verified" id="videoRoomBadge">● Video Room</span>
+          </div>
+          <div class="video-stage-grid">
+            <div class="video-tile-box" id="myVideoTileBox">
+              <video id="localRoomVideo" autoplay playsinline muted style="display:none;"></video>
+              <div id="myCamPlaceholder" style="text-align:center; padding:8px;">
+                <div style="font-size:1.4rem;">📹</div>
+                <div style="font-size:0.72rem; color:var(--muted); margin-top:2px;">Camera Off</div>
+              </div>
+              <span class="video-tile-label">You</span>
+            </div>
+            <div class="video-tile-box">
+              <div style="font-size:1.4rem;">🎥</div>
+              <div style="font-size:0.76rem; font-weight:700; color:var(--accent);">Host Cam</div>
+              <div style="font-size:0.68rem; color:var(--muted);">Host Selected Access</div>
+              <span class="video-tile-label">Host</span>
+            </div>
+          </div>
+          <div class="action-row" style="margin-top:8px;">
+            <button class="btn btn-primary" id="toggleRoomCamBtn" onclick="toggleRoomCamera()">Turn Camera ON</button>
+            <button class="btn btn-secondary" id="toggleVidMicBtn" onclick="toggleRoomMic()">Toggle Mic</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- LIVE ROOM CHAT STREAM -->
+      <div class="card-box">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <strong style="font-size:0.88rem;" id="activeRoomHeaderTitle">Room: Dil Ki Baatein</strong>
+          <span style="font-size:0.72rem; color:var(--accent); font-weight:700;" id="activeRoomCapacityTag">4 / 20 Members</span>
+        </div>
+        <div class="room-feed-box" id="roomMessagesFeed"></div>
+        <div class="room-inline-row">
+          <input type="text" id="roomMsgInput" class="room-inline-input" placeholder="Room mein message likhein..." onkeypress="if(event.key==='Enter') sendRoomChatMessage()" />
+          <button class="btn btn-primary" style="padding:10px 16px; font-size:0.84rem;" onclick="sendRoomChatMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LIVE / PK / PARTY / COMMUNITY / HUB TAB (CHATS TAB) -->
+  <div id="tab-chats" class="section-view">
+    <div class="social-top-tabs">
+      <button class="st-tab active" data-stab="live" onclick="switchSocialTab('live')">Live & PK</button>
+      <button class="st-tab" data-stab="party" onclick="switchSocialTab('party')">Party Rooms</button>
+      <button class="st-tab" data-stab="games" onclick="switchSocialTab('games')">Community & Games</button>
+      <button class="st-tab" data-stab="dm" onclick="switchSocialTab('dm')">Messages</button>
+      <button class="st-tab" data-stab="hub" onclick="switchSocialTab('hub')">Profile Hub</button>
+    </div>
+
+    <!-- 1. LIVE & PK DISCOVERY -->
+    <div id="stab-live">
+      <div class="card-box" style="background:linear-gradient(135deg, rgba(168,85,247,0.18), rgba(6,182,212,0.14));">
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+          <div>
+            <strong style="font-size:0.92rem;">Dastak Live & PK Arena</strong>
+            <div style="font-size:0.75rem; color:var(--muted);">Popular · Celebrity · PK Battles · Rewards</div>
+          </div>
+          <button class="btn btn-vip" style="padding:8px 12px; font-size:0.76rem;" onclick="openLiveStageModal('PK Battle', 'Preet', 'Riya')">▶ Start Live</button>
+        </div>
+      </div>
+
+      <div class="live-card-grid" id="liveDiscoveryGrid"></div>
+    </div>
+
+    <!-- 2. PARTY ROOMS -->
+    <div id="stab-party" style="display:none;">
+      <div class="card-box" style="display:flex; justify-content:space-between; align-items:center;">
+        <div>
+          <strong style="font-size:0.92rem;">Party Lounges</strong>
+          <div style="font-size:0.74rem; color:var(--muted);">Singing · Make Friend · Chatting · Gaming</div>
+        </div>
+        <button class="btn btn-xtra" style="padding:8px 12px; font-size:0.76rem;" onclick="openLiveStageModal('Party Room', 'Ziyan', 'Meera')">🎉 Party</button>
+      </div>
+      <div class="live-card-grid" id="partyRoomsGrid"></div>
+    </div>
+
+    <!-- 3. COMMUNITY & MINI GAMES -->
+    <div id="stab-games" style="display:none;">
+      <div class="card-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <strong style="font-size:0.92rem;">Community Mini-Games</strong>
+          <span class="status-pill verified">Coins: <span id="gamesCoinBadge">0</span></span>
+        </div>
+        <div class="live-card-grid" id="miniGamesTilesGrid"></div>
+        <button class="btn btn-primary" style="width:100%;" onclick="openMiniGameModal()">Open Countdown 10 Table</button>
+      </div>
+    </div>
+
+    <!-- 4. 1-ON-1 MESSAGES -->
+    <div id="stab-dm" style="display:none;">
+      <div class="section-title">Direct Messages</div>
+      <div id="chatLockNotice" class="lock-banner" style="display:none;">
+        🔒 <strong>Messaging Locked (Status: Pending):</strong> Aap Dastak ke baaki sabhi features use kar sakte hain. Message, photo, video ya location bhejne ke liye Owner approval zaroori hai.
+      </div>
+      <div id="inboxList"></div>
+    </div>
+
+    <!-- 5. PROFILE HUB & WALLET -->
+    <div id="stab-hub" style="display:none;">
+      <div class="card-box">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <strong style="font-size:1rem;" id="hubUserName">Harvinder Singh</strong>
+            <div style="font-size:0.74rem; color:var(--muted);" id="hubUserIdText">ID: 86023179</div>
+          </div>
+          <button class="btn btn-xtra" style="padding:7px 11px; font-size:0.74rem;" onclick="openVipStoreModal()">VIP Store</button>
+        </div>
+
+        <div class="hub-stats-row">
+          <div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Friends</div></div>
+          <div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Following</div></div>
+          <div class="stat-card"><div class="stat-num">0</div><div class="stat-label">Followers</div></div>
+        </div>
+
+        <div class="action-row" style="margin-top:0; margin-bottom:10px;">
+          <button class="btn btn-secondary" style="font-size:0.78rem;" onclick="openVipStoreModal()">👑 SVIP · Join</button>
+          <button class="btn btn-secondary" style="font-size:0.78rem;" onclick="openGuardianModal()">💎 Aristocracy · Guard</button>
+        </div>
+
+        <div class="card-box" style="margin-bottom:10px; background:var(--surface-2);">
+          <div style="display:flex; justify-content:space-between; font-size:0.82rem;">
+            <span>🪙 Coins: <strong id="hubCoinsVal">0</strong></span>
+            <span style="color:var(--accent); font-weight:800; cursor:pointer;" onclick="openDailyCheckInModal()">Daily Check-In &gt;</span>
+          </div>
+          <div style="display:flex; justify-content:space-between; font-size:0.82rem; margin-top:6px;">
+            <span>💎 Diamond: <strong>0</strong></span>
+            <span style="color:var(--online); font-weight:700;">Income Ready</span>
+          </div>
+        </div>
+
+        <div class="hub-mini-grid">
+          <button class="hub-tool-btn" onclick="alert('Level LV.2 · 1.2M XP')"><span>📈</span><span>Level</span></button>
+          <button class="hub-tool-btn" onclick="openDailyCheckInModal()"><span>📅</span><span>Task Coins</span></button>
+          <button class="hub-tool-btn" onclick="openVipStoreModal()"><span>🏪</span><span>Store</span></button>
+          <button class="hub-tool-btn" onclick="openMiniGameModal()"><span>🎮</span><span>Game</span></button>
+          <button class="hub-tool-btn" onclick="openPayModal()"><span>👑</span><span>VIP</span></button>
+          <button class="hub-tool-btn" onclick="alert('Invite code: DASTAK-PREET')"><span>🎁</span><span>Invite</span></button>
+          <button class="hub-tool-btn" onclick="openMedalsModal()"><span>🏅</span><span>Medal</span></button>
+          <button class="hub-tool-btn" onclick="switchTabByName('rooms')"><span>👨‍👩‍👧</span><span>Family</span></button>
+        </div>
+
+        <button class="btn btn-xtra" style="width:100%; margin-top:6px;" onclick="openDailyCheckInModal()">
+          🎰 30-Day Streak (10 → 300 Coins) · Claim Now
+        </button>
+      </div>
+    </div>
   </div>
 
   <!-- VERIFY / PROFILE TAB -->
@@ -1005,15 +1773,218 @@
       <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
       Plans
     </button>
+    <button class="nav-btn" onclick="switchTab('rooms', this)">
+      <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Rooms
+    </button>
     <button class="nav-btn" onclick="switchTab('chats', this)">
       <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-      Chats
+      Live & Chat
     </button>
     <button class="nav-btn" onclick="switchTab('me', this)">
       <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
       Verify / Me
     </button>
   </nav>
+
+  <!-- DAILY CHECK-IN 30-DAY STREAK MODAL -->
+  <div class="modal" id="dailyCheckInModal">
+    <div class="modal-header">
+      <strong>Daily Check-In (Day 1 = 10 · Day 30 = 300)</strong>
+      <button class="close-btn" onclick="closeModal('dailyCheckInModal')">Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="card-box">
+        <div style="display:flex; justify-content:space-between; align-items:center;">
+          <div>
+            <div style="font-size:0.95rem; font-weight:900; color:#fde047;" id="streakStatusHeading">Current Streak: Day 0 / 30</div>
+            <div style="font-size:0.75rem; color:var(--muted); margin-top:2px;" id="streakRuleSubtitle">
+              Aaj ka reward: +10 Coins · Ek bhi din miss hua toh Day 1 (10 Coins) se start hoga!
+            </div>
+          </div>
+          <span class="status-pill verified">🪙 <span id="modalCoinBalance">0</span></span>
+        </div>
+
+        <div class="streak-30-grid" id="streak30DaysGrid"></div>
+
+        <label class="toggle-row" style="margin-top:8px;">
+          <span>Remind me daily for check-in</span>
+          <input type="checkbox" id="remindCheckInToggle" onchange="toggleCheckInReminder(this.checked)" />
+        </label>
+
+        <button class="btn btn-xtra" style="width:100%;" id="claimDailyRewardBtn" onclick="claimDailyCheckInReward()">
+          Claim Day 1 Reward (+10 Coins)
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PK / LIVE STREAM & GIFT TRAY MODAL -->
+  <div class="modal" id="liveStageModal">
+    <div class="modal-header">
+      <strong id="liveStageHeaderTitle">PK Battle Live</strong>
+      <button class="close-btn" onclick="closeModal('liveStageModal')">Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="pk-banner-bar">
+        <span id="pkScoreLeft">Left: 620</span>
+        <span>⚔️ PK <span id="pkTimerDisplay">03:15</span></span>
+        <span id="pkScoreRight">Right: 118</span>
+      </div>
+
+      <div class="video-stage-grid">
+        <div class="video-tile-box live-cam">
+          <img id="pkLeftImg" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&q=75" alt="Host 1" />
+          <span class="video-tile-label" id="pkLeftName">Priya</span>
+        </div>
+        <div class="video-tile-box live-cam">
+          <img id="pkRightImg" src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=400&q=75" alt="Host 2" />
+          <span class="video-tile-label" id="pkRightName">Riya</span>
+        </div>
+      </div>
+
+      <div class="card-box">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+          <strong style="font-size:0.84rem;">Send Gift to <span style="color:#f472b6;" id="giftTargetName">Priya</span></strong>
+          <span style="font-size:0.74rem; color:#fde047; font-weight:800;">🪙 <span id="giftModalCoins">0</span></span>
+        </div>
+
+        <div class="gift-cat-tabs" id="giftCategoryTabs"></div>
+        <div class="gift-items-grid" id="giftItemsGrid"></div>
+
+        <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:8px;">
+          <button class="btn btn-secondary" style="padding:8px 11px; font-size:0.74rem;" onclick="claimStageReward()">🎁 Reward</button>
+          <select id="giftQtySelect" class="room-inline-input" style="max-width:74px; padding:8px;">
+            <option value="1">1x</option>
+            <option value="10">10x</option>
+          </select>
+          <button class="btn btn-vip" style="flex:1; padding:9px 12px; font-size:0.8rem;" onclick="sendSelectedGift()">Send Gift</button>
+        </div>
+      </div>
+
+      <div class="card-box">
+        <strong style="font-size:0.84rem;">Live Room Feed</strong>
+        <div class="room-feed-box" id="liveStageChatFeed"></div>
+        <div class="room-inline-row">
+          <input type="text" id="liveStageMsgInput" class="room-inline-input" placeholder="Say something in live room..." onkeypress="if(event.key==='Enter') sendLiveStageMessage()" />
+          <button class="btn btn-primary" style="padding:9px 14px; font-size:0.8rem;" onclick="sendLiveStageMessage()">Send</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- GUARDIAN / VIP TIERS MODAL -->
+  <div class="modal" id="guardianModal">
+    <div class="modal-header">
+      <strong>My Guardians · VIP Guard</strong>
+      <button class="close-btn" onclick="closeModal('guardianModal')">Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="tier-tabs">
+        <button class="tier-tab-btn t-unlimited active" id="gTier-Silver" onclick="selectGuardianTier('Silver')">Silver</button>
+        <button class="tier-tab-btn t-xtra" id="gTier-Gold" onclick="selectGuardianTier('Gold')">Gold</button>
+        <button class="tier-tab-btn t-edge" id="gTier-Supreme" onclick="selectGuardianTier('Supreme')">Supreme</button>
+      </div>
+
+      <div class="duration-grid" id="guardianDurationGrid"></div>
+
+      <div class="plan-detail-card">
+        <strong style="font-size:0.88rem;">Guardian Privileges</strong>
+        <ul>
+          <li><strong>Guardian Badges:</strong> Exclusive guard badge on profile & chat</li>
+          <li><strong>Guardian Ride:</strong> Entry entrance banner in rooms</li>
+          <li><strong>Guardian Seat:</strong> Priority seat & Chat bubble + Notification</li>
+        </ul>
+      </div>
+
+      <button class="btn btn-vip" style="width:100%;" onclick="activateGuardianPass()">Activate Guard</button>
+    </div>
+  </div>
+
+  <!-- MINI GAME MODAL -->
+  <div class="modal" id="miniGameModal">
+    <div class="modal-header">
+      <strong>Room Mini-Game · Countdown <span id="gameCountdownSec">10</span>s</strong>
+      <button class="close-btn" onclick="closeModal('miniGameModal')">Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="card-box">
+        <div style="display:flex; justify-content:space-between; font-size:0.8rem; margin-bottom:6px;">
+          <span>🪙 Coins: <strong id="gameCoinsVal">0</strong></span>
+          <span>WIN: <strong style="color:var(--online);" id="gameLastWinVal">0</strong> · TODAY: <strong id="gameTodayWinVal">0</strong></span>
+        </div>
+
+        <div class="game-slots-grid">
+          <div class="game-slot-box active" id="gslot-Coffee" onclick="selectGameSlot('Coffee')">
+            <div style="font-size:1.5rem;">☕</div>
+            <div style="font-size:0.78rem; font-weight:800;">Coffee x3</div>
+            <div style="font-size:0.68rem; color:var(--muted);" id="slotBet-Coffee">You: 0</div>
+          </div>
+          <div class="game-slot-box" id="gslot-Tea" onclick="selectGameSlot('Tea')">
+            <div style="font-size:1.5rem;">🍵</div>
+            <div style="font-size:0.78rem; font-weight:800;">Tea x3</div>
+            <div style="font-size:0.68rem; color:var(--muted);" id="slotBet-Tea">You: 0</div>
+          </div>
+          <div class="game-slot-box" id="gslot-IceCream" onclick="selectGameSlot('IceCream')">
+            <div style="font-size:1.5rem;">🍨</div>
+            <div style="font-size:0.78rem; font-weight:800;">Ice Cream x3</div>
+            <div style="font-size:0.68rem; color:var(--muted);" id="slotBet-IceCream">You: 0</div>
+          </div>
+        </div>
+
+        <div class="chips-row">
+          <button class="bet-chip selected" onclick="selectChipAmount(10, this)">10</button>
+          <button class="bet-chip" onclick="selectChipAmount(40, this)">40</button>
+          <button class="bet-chip" onclick="selectChipAmount(100, this)">100</button>
+          <button class="bet-chip" onclick="selectChipAmount(400, this)">400</button>
+        </div>
+
+        <div class="action-row">
+          <button class="btn btn-secondary" onclick="placeGameChip()">Place Chip</button>
+          <button class="btn btn-primary" onclick="spinMiniGameRound()">Spin / Repeat</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MEDALS MODAL -->
+  <div class="modal" id="medalsModal">
+    <div class="modal-header">
+      <strong>Medals & Achievements</strong>
+      <button class="close-btn" onclick="closeModal('medalsModal')">Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="tier-tabs" style="grid-template-columns:1fr 1fr;">
+        <button class="tier-tab-btn t-unlimited active" id="mTab-ach" onclick="switchMedalTab('ach')">+ Achievement Medal +</button>
+        <button class="tier-tab-btn t-xtra" id="mTab-act" onclick="switchMedalTab('act')">Activity Medal</button>
+      </div>
+      <div class="medals-grid" id="medalsGridContainer"></div>
+    </div>
+  </div>
+
+  <!-- VIP STORE / SUBSCRIPTION MODAL -->
+  <div class="modal" id="vipStoreModal">
+    <div class="modal-header">
+      <strong>My Subscription · VIP Store</strong>
+      <button class="close-btn" onclick="closeModal('vipStoreModal')">Close</button>
+    </div>
+    <div class="modal-body">
+      <div class="card-box" style="text-align:center;">
+        <span class="rooms-lock-badge">VIP STORE</span>
+        <h3 style="font-size:1.1rem; margin:6px 0;">1 Month · ₹950.00</h3>
+        <p style="font-size:0.76rem; color:var(--accent); font-weight:700;">INR 237.50 / Week · Less than ₹32 / day</p>
+        <div class="plan-detail-card" style="text-align:left; margin-top:12px;">
+          <strong>VIP Privileges</strong>
+          <ul>
+            <li><strong>Get Plenty Coins:</strong> Instant bonus coins on activation</li>
+            <li><strong>Daily Extra Rewards:</strong> Extra streak boost & badges</li>
+            <li><strong>Private Chat:</strong> Smooth priority messaging & room access</li>
+          </ul>
+        </div>
+        <button class="btn btn-vip" style="width:100%;" onclick="activateVipStorePlan()">Activate VIP Store (₹950)</button>
+      </div>
+    </div>
+  </div>
 
   <!-- FULL FILTER MODAL -->
   <div class="modal" id="filterModal">
@@ -1214,7 +2185,7 @@
     </div>
   </div>
 
-  <!-- FIREBASE SDK (FIRESTORE REALTIME SYNC + TWO-WAY CHAT) -->
+  <!-- FIREBASE SDK -->
   <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
     import {
@@ -1243,7 +2214,8 @@
       onSnapshot,
       serverTimestamp,
       allUsers: [],
-      threadUnsub: null
+      threadUnsub: null,
+      roomUnsub: null
     };
 
     let clientUid = localStorage.getItem("dastak_uid_v1");
@@ -1278,6 +2250,7 @@
           lastPaymentRef: remote.lastPaymentRef || window.userAccount.lastPaymentRef || ""
         };
         window.saveAccount(true);
+        if (typeof window.renderRoomsTab === "function") window.renderRoomsTab();
         if (window.activeChatUser) {
           const canSend = window.userAccount.verificationStatus === "Verified";
           document.getElementById("modalChatLock").style.display = canSend ? "none" : "block";
@@ -1291,16 +2264,10 @@
 
     onSnapshot(collection(db, "dastak_users"), (querySnapshot) => {
       const list = [];
-      querySnapshot.forEach((d) => {
-        list.push({ uid: d.id, ...d.data() });
-      });
+      querySnapshot.forEach((d) => list.push({ uid: d.id, ...d.data() }));
       window.dastakCloud.allUsers = list;
-      if (typeof window.rebuildNearbyCatalog === "function") {
-        window.rebuildNearbyCatalog();
-      }
-      if (document.getElementById("ownerModal").classList.contains("open")) {
-        window.renderOwnerPanel();
-      }
+      if (typeof window.rebuildNearbyCatalog === "function") window.rebuildNearbyCatalog();
+      if (document.getElementById("ownerModal").classList.contains("open")) window.renderOwnerPanel();
     });
 
     window.syncUserToCloud = async function(accountObj) {
@@ -1391,17 +2358,9 @@
             deletedForEveryone: Boolean(m.deletedForEveryone),
             deletedForMe: Boolean(m.deletedForMe)
           };
-          if (m.type === "image" && m.mediaUrl && !m.deletedForEveryone) {
-            base.mediaUrl = m.mediaUrl;
-          }
-          if (m.type === "location") {
-            base.lat = m.lat;
-            base.lng = m.lng;
-            base.label = m.label || "Shared Location";
-          }
-          if (m.type === "video") {
-            base.fileName = m.fileName || "Video";
-          }
+          if (m.type === "image" && m.mediaUrl && !m.deletedForEveryone) base.mediaUrl = m.mediaUrl;
+          if (m.type === "location") { base.lat = m.lat; base.lng = m.lng; base.label = m.label || "Shared Location"; }
+          if (m.type === "video") base.fileName = m.fileName || "Video";
           return base;
         });
 
@@ -1415,7 +2374,47 @@
       }
     };
 
-    // Periodic heartbeat to keep online status accurate
+    window.subscribeDastakRoom = function(roomKey) {
+      if (window.dastakCloud.roomUnsub) {
+        window.dastakCloud.roomUnsub();
+        window.dastakCloud.roomUnsub = null;
+      }
+      const safeDocId = "room_" + String(roomKey).toLowerCase().replace(/[^a-z0-9_]+/g, "_");
+      const roomRef = doc(db, "dastak_group_rooms", safeDocId);
+
+      window.dastakCloud.roomUnsub = onSnapshot(roomRef, (snap) => {
+        if (snap.exists()) {
+          const data = snap.data();
+          if (Array.isArray(data.messages)) {
+            window.dastakRoomsState.messagesByKey[roomKey] = data.messages.map(m => ({
+              ...m,
+              mine: m.senderUid === clientUid
+            }));
+            if (typeof window.renderRoomMessages === "function") window.renderRoomMessages();
+          }
+        }
+      });
+    };
+
+    window.syncDastakRoomToCloud = async function(roomKey, messagesArr) {
+      try {
+        const safeDocId = "room_" + String(roomKey).toLowerCase().replace(/[^a-z0-9_]+/g, "_");
+        const cleanMsgs = (messagesArr || []).slice(-60).map(m => ({
+          senderUid: m.senderUid || clientUid,
+          senderName: m.senderName || window.userAccount.name || "Member",
+          text: m.text || "",
+          ts: m.ts || Date.now()
+        }));
+        await setDoc(doc(db, "dastak_group_rooms", safeDocId), {
+          roomKey,
+          messages: cleanMsgs,
+          updatedAt: serverTimestamp()
+        }, { merge: true });
+      } catch (err) {
+        console.warn("Room cloud sync error:", err);
+      }
+    };
+
     setInterval(() => {
       if (document.visibilityState === "visible" && typeof window.syncUserToCloud === "function") {
         window.syncUserToCloud(window.userAccount);
@@ -1430,106 +2429,26 @@
     const OWNER_PIN = "1234";
     const RAZORPAY_KEY_ID = "";
 
+    const MAX_TOTAL_ROOM_MEMBERS = 20;
+    const BASE_INCLUDED_SEATS = 6;
+    const HOST_VIDEO_PICK_LIMIT = 5;
+
+    const GROUP_ROOM_CREATE_FEE_INR = 199;
+    const GROUP_7TH_MEMBER_FEE_INR = 99;
+
+    const VIDEO_ROOM_CREATE_FEE_INR = 299;
+    const VIDEO_7TH_MEMBER_FEE_INR = 179;
+
     const PLANS_CATALOG = {
-      free: {
-        id: "free",
-        tier: "free",
-        label: "Free",
-        shortBadge: "Xtra",
-        limit: 40,
-        canDeleteMsg: true,
-        priceText: "Free",
-        amountInr: 0,
-        nextOwnerPlan: "xtra_1w"
-      },
-      xtra_1w: {
-        id: "xtra_1w",
-        tier: "xtra",
-        label: "Xtra · 1 Week",
-        shortBadge: "Xtra",
-        limit: 600,
-        canDeleteMsg: true,
-        priceText: "₹250",
-        amountInr: 250,
-        nextOwnerPlan: "unlimited_1w"
-      },
-      xtra_1m: {
-        id: "xtra_1m",
-        tier: "xtra",
-        label: "Xtra · 1 Month",
-        shortBadge: "Xtra",
-        limit: 600,
-        canDeleteMsg: true,
-        priceText: "₹365",
-        amountInr: 365,
-        nextOwnerPlan: "unlimited_1w"
-      },
-      xtra_3m: {
-        id: "xtra_3m",
-        tier: "xtra",
-        label: "Xtra · 3 Months",
-        shortBadge: "Xtra",
-        limit: 600,
-        canDeleteMsg: true,
-        priceText: "₹730",
-        amountInr: 730,
-        nextOwnerPlan: "unlimited_1w"
-      },
-      xtra_12m: {
-        id: "xtra_12m",
-        tier: "xtra",
-        label: "Xtra · 12 Months",
-        shortBadge: "Xtra",
-        limit: 600,
-        canDeleteMsg: true,
-        priceText: "₹1,825",
-        amountInr: 1825,
-        nextOwnerPlan: "unlimited_1w"
-      },
-      unlimited_1w: {
-        id: "unlimited_1w",
-        tier: "unlimited",
-        label: "Unlimited · 1 Week",
-        shortBadge: "Unlimited",
-        limit: 9999,
-        canDeleteMsg: true,
-        priceText: "₹492",
-        amountInr: 492,
-        nextOwnerPlan: "edge_1w"
-      },
-      unlimited_1m: {
-        id: "unlimited_1m",
-        tier: "unlimited",
-        label: "Unlimited · 1 Month",
-        shortBadge: "Unlimited",
-        limit: 9999,
-        canDeleteMsg: true,
-        priceText: "₹820",
-        amountInr: 820,
-        nextOwnerPlan: "edge_1w"
-      },
-      edge_1w: {
-        id: "edge_1w",
-        tier: "edge",
-        label: "Edge · 1 Week",
-        shortBadge: "Edge",
-        limit: 9999,
-        canDeleteMsg: true,
-        priceText: "₹7,800",
-        amountInr: 7800,
-        nextOwnerPlan: "free"
-      },
-      edge_1m: {
-        id: "edge_1m",
-        tier: "edge",
-        label: "Edge · 1 Month",
-        shortBadge: "Edge",
-        limit: 9999,
-        canDeleteMsg: true,
-        priceText: "₹13,300",
-        amountInr: 13300,
-        nextOwnerPlan: "free"
-      }
+      free: { id: "free", tier: "free", label: "Free", shortBadge: "Xtra", limit: 40, canDeleteMsg: true, canUseRooms: false, priceText: "Free", amountInr: 0, nextOwnerPlan: "xtra_1w" },
+      xtra_1w: { id: "xtra_1w", tier: "xtra", label: "Xtra · 1 Week", shortBadge: "Xtra", limit: 600, canDeleteMsg: true, canUseRooms: true, priceText: "₹250", amountInr: 250, nextOwnerPlan: "unlimited_1w" },
+      xtra_1m: { id: "xtra_1m", tier: "xtra", label: "Xtra · 1 Month", shortBadge: "Xtra", limit: 600, canDeleteMsg: true, canUseRooms: true, priceText: "₹365", amountInr: 365, nextOwnerPlan: "unlimited_1w" },
+      xtra_3m: { id: "xtra_3m", tier: "xtra", label: "Xtra · 3 Months", shortBadge: "Xtra", limit: 600, canDeleteMsg: true, canUseRooms: true, priceText: "₹730", amountInr: 730, nextOwnerPlan: "unlimited_1w" },
+      xtra_12m: { id: "xtra_12m", tier: "xtra", label: "Xtra · 12 Months", shortBadge: "Xtra", limit: 600, canDeleteMsg: true, canUseRooms: true, priceText: "₹1,825", amountInr: 1825, nextOwnerPlan: "unlimited_1w" },
+      unlimited_1w: { id: "unlimited_1w", tier: "unlimited", label: "Unlimited · 1 Week", shortBadge: "Unlimited", limit: 9999, canDeleteMsg: true, canUseRooms: true, priceText: "₹492", amountInr: 492, nextOwnerPlan: "edge_1w" },
+      unlimited_1m: { id: "unlimited_1m", tier: "unlimited", label: "Unlimited · 1 Month", shortBadge: "Unlimited", limit: 9999, canDeleteMsg: true, canUseRooms: true, priceText: "₹820", amountInr: 820, nextOwnerPlan: "edge_1w" },
+      edge_1w: { id: "edge_1w", tier: "edge", label: "Edge · 1 Week", shortBadge: "Edge", limit: 9999, canDeleteMsg: true, canUseRooms: true, priceText: "₹7,800", amountInr: 7800, nextOwnerPlan: "free" },
+      edge_1m: { id: "edge_1m", tier: "edge", label: "Edge · 1 Month", shortBadge: "Edge", limit: 9999, canDeleteMsg: true, canUseRooms: true, priceText: "₹13,300", amountInr: 13300, nextOwnerPlan: "free" }
     };
 
     const TIER_DETAILS = {
@@ -1544,8 +2463,8 @@
         ],
         bullets: [
           "Access up to <strong>600 local profiles</strong>",
-          "Share and view photos & albums",
-          "No 3rd party ads + delete for me & unsend"
+          "Unlock <strong>Group (₹199) & Video Rooms (₹299)</strong>",
+          "Share photos/albums + delete for me & unsend"
         ]
       },
       unlimited: {
@@ -1556,7 +2475,7 @@
           { key: "unlimited_1m", title: "1 MONTH", price: "₹820", sub: "Save 61%" }
         ],
         bullets: [
-          "<strong>Unlimited profiles</strong> unlocked in grid",
+          "<strong>Unlimited profiles</strong> + <strong>Audio & Video Rooms</strong>",
           "See who's interested & viewed your profile",
           "Incognito / discreet browsing mode"
         ]
@@ -1570,7 +2489,7 @@
         ],
         bullets: [
           "Priority visibility & faster nearby matching",
-          "Full <strong>Unlimited</strong> access + priority support",
+          "Full <strong>Unlimited</strong> + VIP <strong>Audio & Video Rooms</strong>",
           "Complete chat & media controls"
         ]
       }
@@ -1727,6 +2646,24 @@
       ? savedAcc.planType
       : (savedAcc.hasWeeklyPlan ? "xtra_1w" : "free");
 
+    // DAY 1 = 10 COINS -> DAY 30 = 300 COINS (STEP = +10 COINS PER DAY)
+    function getStreakCoinReward(dayNumber) {
+      const safeDay = Math.max(1, Math.min(30, Number(dayNumber) || 1));
+      return safeDay * 10;
+    }
+
+    function getDayKey(ts = Date.now()) {
+      const d = new Date(ts);
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function getDayNumberIndex(ts = Date.now()) {
+      return Math.floor(ts / 86400000);
+    }
+
     window.userAccount = {
       name: savedAcc.name || "Preet",
       age: savedAcc.age || 34,
@@ -1741,8 +2678,34 @@
       planType: initialPlan,
       hasWeeklyPlan: initialPlan !== "free",
       paymentMethod: savedAcc.paymentMethod || "UPI",
-      lastPaymentRef: savedAcc.lastPaymentRef || ""
+      lastPaymentRef: savedAcc.lastPaymentRef || "",
+      groupCreatorPassPaid: Boolean(savedAcc.groupCreatorPassPaid),
+      group7thMemberPassPaid: Boolean(savedAcc.group7thMemberPassPaid),
+      videoHostPassPaid: Boolean(savedAcc.videoHostPassPaid),
+      video7thMemberPassPaid: Boolean(savedAcc.video7thMemberPassPaid),
+      coins: typeof savedAcc.coins === "number" ? savedAcc.coins : 40,
+      streakCount: typeof savedAcc.streakCount === "number" ? savedAcc.streakCount : 0,
+      lastCheckInDayIdx: typeof savedAcc.lastCheckInDayIdx === "number" ? savedAcc.lastCheckInDayIdx : null,
+      remindCheckIn: Boolean(savedAcc.remindCheckIn),
+      todayGameWin: typeof savedAcc.todayGameWin === "number" ? savedAcc.todayGameWin : 0,
+      todayGameDate: savedAcc.todayGameDate || getDayKey()
     };
+
+    function syncStrictStreakState() {
+      const todayIdx = getDayNumberIndex(Date.now());
+      const lastIdx = window.userAccount.lastCheckInDayIdx;
+      if (typeof lastIdx === "number" && (todayIdx - lastIdx) > 1 && window.userAccount.streakCount > 0) {
+        // Missed a day -> reset back to start
+        window.userAccount.streakCount = 0;
+        window.saveAccount(true);
+      }
+      if (window.userAccount.todayGameDate !== getDayKey()) {
+        window.userAccount.todayGameWin = 0;
+        window.userAccount.todayGameDate = getDayKey();
+      }
+    }
+
+    syncStrictStreakState();
 
     window.chats = JSON.parse(localStorage.getItem("dastak_chats_v1") || "{}");
     window.activeChatUser = null;
@@ -1751,16 +2714,67 @@
     let activeCheckoutTier = "xtra";
     let activeCheckoutPlanKey = "xtra_1w";
     let visibleXtraCount = 18;
+    let localCameraStream = null;
 
-    let filters = {
-      quick: "all",
-      maxDist: 50,
-      minAge: 18,
-      maxAge: 50,
-      onlineOnly: false,
-      verifiedOnly: false,
-      tag: "all"
+    // ROOMS STATE
+    window.dastakRoomsState = {
+      subTab: "public",
+      activeRoomName: "Dil Ki Baatein",
+      activeRoomType: "group",
+      isCoupleMode: false,
+      coupleCode: "",
+      micOn: false,
+      speakerOn: true,
+      camOn: false,
+      hostSelectedMembers: [],
+      rooms: [
+        { name: "Dil Ki Baatein", members: 4, maxMembers: MAX_TOTAL_ROOM_MEMBERS, joinedByMe: false, topic: "Group & audio hangout" },
+        { name: "Late Night Adda", members: 7, maxMembers: MAX_TOTAL_ROOM_MEMBERS, joinedByMe: false, topic: "7th+ slot · ₹99/member" },
+        { name: "Punjab VIP Club", members: 20, maxMembers: MAX_TOTAL_ROOM_MEMBERS, joinedByMe: false, topic: "Full 20/20" }
+      ],
+      videoRooms: [
+        { name: "Live Video Lounge", hostName: "Aarav", members: 6, maxMembers: MAX_TOTAL_ROOM_MEMBERS, joinedByMe: false, hostApprovedMe: false, topic: "Host selected 5 · 7th+ ₹179" },
+        { name: "VIP Cam Club", hostName: "Kabir", members: 20, maxMembers: MAX_TOTAL_ROOM_MEMBERS, joinedByMe: false, hostApprovedMe: false, topic: "Full 20/20" }
+      ],
+      messagesByKey: {
+        "Dil Ki Baatein": [{ senderUid: "sys1", senderName: "Aarav", text: "Welcome to Dastak Group Room (Max 20 members)!", mine: false }],
+        "Late Night Adda": [{ senderUid: "sys3", senderName: "Rohan", text: "6 seats ke baad 7th–20th member ke liye ₹99/member pass lagta hai!", mine: false }],
+        "Live Video Lounge": [{ senderUid: "sys5", senderName: "Aarav (Host)", text: "Video room mein host ke 5 approved members free, 7th+ ₹179/member!", mine: false }]
+      }
     };
+
+    // SOCIAL / GIFTS / GUARDIAN / MINI GAME / MEDALS STATE
+    const GIFT_CATEGORIES = ["Gift", "Lucky", "Privilege", "Customized", "Country", "Backpack"];
+    const GIFT_CATALOG = [
+      { id: "hello", name: "Say Hello", icon: "👋", coins: 4, cat: "Gift" },
+      { id: "hug", name: "Hug You", icon: "🧸", coins: 50, cat: "Gift" },
+      { id: "hi", name: "HI", icon: "🎈", coins: 40, cat: "Gift" },
+      { id: "rose", name: "Rose", icon: "🌹", coins: 100, cat: "Gift" },
+      { id: "wand", name: "Lucky Wand", icon: "🪄", coins: 4, cat: "Lucky" },
+      { id: "diamond", name: "Heart Gem", icon: "💎", coins: 200, cat: "Lucky" },
+      { id: "crown", name: "Crown", icon: "👑", coins: 500, cat: "Privilege" },
+      { id: "lion", name: "Lion", icon: "🦁", coins: 800, cat: "Privilege" },
+      { id: "vip_badge", name: "VIP Star", icon: "🌟", coins: 300, cat: "Customized" },
+      { id: "india_flag", name: "India", icon: "🇮🇳", coins: 200, cat: "Country" },
+      { id: "nepal_flag", name: "Nepal", icon: "🇳🇵", coins: 200, cat: "Country" },
+      { id: "pack_rose", name: "Backpack Rose", icon: "🎒", coins: 0, cat: "Backpack" }
+    ];
+
+    let activeGiftCat = "Gift";
+    let selectedGiftId = "hello";
+    let selectedGuardianTier = "Silver";
+    let selectedGuardianDuration = "7 days";
+    let selectedGameSlot = "Coffee";
+    let selectedChipAmt = 10;
+    let lastGameWinAmt = 0;
+    let gameSlotBets = { Coffee: 0, Tea: 0, IceCream: 0 };
+    let activeMedalTab = "ach";
+    let liveStageMessages = [
+      { sender: "Priya", text: "PK battle shuru! Support karo!" },
+      { sender: "Riya", text: "Welcome everyone to live room!" }
+    ];
+
+    let filters = { quick: "all", maxDist: 50, minAge: 18, maxAge: 50, onlineOnly: false, verifiedOnly: false, tag: "all" };
 
     function getActivePlanInfo() {
       const key = window.userAccount.planType || (window.userAccount.hasWeeklyPlan ? "xtra_1w" : "free");
@@ -1783,6 +2797,7 @@
     };
 
     function updateTopUI() {
+      syncStrictStreakState();
       const status = window.userAccount.verificationStatus;
       const badgeClass = `status-pill ${status === "Verified" ? "verified" : status === "Rejected" ? "rejected" : ""}`;
 
@@ -1801,6 +2816,30 @@
       document.getElementById("planStatusText").innerText = planInfo.label;
       document.getElementById("headerXtraBtn").innerText = planInfo.shortBadge;
 
+      const coins = Number(window.userAccount.coins || 0);
+      const streak = Number(window.userAccount.streakCount || 0);
+      const alreadyClaimedToday = window.userAccount.lastCheckInDayIdx === getDayNumberIndex(Date.now());
+      const nextDayNum = alreadyClaimedToday ? streak : Math.min(30, streak + 1);
+      const nextCoins = getStreakCoinReward(nextDayNum);
+
+      const hCoin = document.getElementById("headerCoinVal");
+      if (hCoin) hCoin.innerText = String(coins);
+      const hubCoin = document.getElementById("hubCoinsVal");
+      if (hubCoin) hubCoin.innerText = String(coins);
+      const gCoin = document.getElementById("gamesCoinBadge");
+      if (gCoin) gCoin.innerText = String(coins);
+      const gmCoin = document.getElementById("gameCoinsVal");
+      if (gmCoin) gmCoin.innerText = String(coins);
+      const gfCoin = document.getElementById("giftModalCoins");
+      if (gfCoin) gfCoin.innerText = String(coins);
+
+      const heroSum = document.getElementById("streakHeroSummary");
+      if (heroSum) {
+        heroSum.innerText = alreadyClaimedToday
+          ? `Day ${streak}/30 Claimed Today · Tomorrow: +${getStreakCoinReward(Math.min(30, streak + 1))} Coins`
+          : `Streak: Day ${streak}/30 · Next Claim: +${nextCoins} Coins (Day 30 = 300)`;
+      }
+
       let activeFilterCount = 0;
       if (filters.maxDist < 50) activeFilterCount++;
       if (filters.minAge > 18 || filters.maxAge < 50) activeFilterCount++;
@@ -1810,6 +2849,859 @@
       document.getElementById("openFilterBtn").innerText = activeFilterCount > 0 ? `⚙ Filters (${activeFilterCount})` : "⚙ Filters";
     }
 
+    // 30-DAY DAILY CHECK-IN LOGIC (DAY 1 = 10 COINS -> DAY 30 = 300 COINS, MISS RESETS TO DAY 1)
+    function openDailyCheckInModal() {
+      syncStrictStreakState();
+      renderDailyCheckInModal();
+      document.getElementById("dailyCheckInModal").classList.add("open");
+    }
+
+    function renderDailyCheckInModal() {
+      const streak = Number(window.userAccount.streakCount || 0);
+      const todayIdx = getDayNumberIndex(Date.now());
+      const claimedToday = window.userAccount.lastCheckInDayIdx === todayIdx;
+      const targetDay = claimedToday ? streak : Math.min(30, streak + 1);
+      const rewardAmt = getStreakCoinReward(targetDay);
+
+      document.getElementById("modalCoinBalance").innerText = String(window.userAccount.coins || 0);
+      document.getElementById("streakStatusHeading").innerText = `Current Streak: Day ${streak} / 30`;
+      document.getElementById("streakRuleSubtitle").innerText = claimedToday
+        ? `Aaj ka Day ${streak} reward (+${getStreakCoinReward(streak)} coins) claim ho chuka hai. Kal aakar aage badhein!`
+        : `Day ${targetDay} reward: +${rewardAmt} Coins (Day 1 = 10, Day 30 = 300). Ek din miss hua toh Day 1 se reset!`;
+
+      const remToggle = document.getElementById("remindCheckInToggle");
+      if (remToggle) remToggle.checked = Boolean(window.userAccount.remindCheckIn);
+
+      const btn = document.getElementById("claimDailyRewardBtn");
+      if (claimedToday) {
+        btn.disabled = true;
+        btn.innerText = `✓ Claimed Today (Day ${streak} Streak)`;
+      } else {
+        btn.disabled = false;
+        btn.innerText = `Claim Day ${targetDay} Reward (+${rewardAmt} Coins)`;
+      }
+
+      const grid = document.getElementById("streak30DaysGrid");
+      grid.innerHTML = "";
+      for (let d = 1; d <= 30; d++) {
+        const box = document.createElement("div");
+        const isClaimed = d <= streak;
+        const isToday = !claimedToday && d === targetDay;
+        box.className = `streak-day-box ${isClaimed ? "claimed" : ""} ${isToday ? "today" : ""}`;
+        box.innerHTML = `
+          <div style="font-size:0.64rem; color:var(--muted); font-weight:700;">Day ${d}</div>
+          <div style="font-size:0.76rem; font-weight:900; color:${isClaimed ? "var(--online)" : "#fde047"};">+${getStreakCoinReward(d)}</div>
+        `;
+        grid.appendChild(box);
+      }
+    }
+
+    function claimDailyCheckInReward() {
+      syncStrictStreakState();
+      const todayIdx = getDayNumberIndex(Date.now());
+      if (window.userAccount.lastCheckInDayIdx === todayIdx) {
+        alert("Aaj ka daily check-in reward pehle hi claim ho chuka hai!");
+        return;
+      }
+
+      const nextDay = window.userAccount.streakCount >= 30 ? 1 : (window.userAccount.streakCount + 1);
+      const rewardCoins = getStreakCoinReward(nextDay);
+      window.userAccount.streakCount = nextDay;
+      window.userAccount.lastCheckInDayIdx = todayIdx;
+      window.userAccount.coins = Number(window.userAccount.coins || 0) + rewardCoins;
+      window.saveAccount();
+      renderDailyCheckInModal();
+      alert(`Day ${nextDay} Check-In complete! Aapko +${rewardCoins} coins mile hain.`);
+    }
+
+    function toggleCheckInReminder(checked) {
+      window.userAccount.remindCheckIn = Boolean(checked);
+      window.saveAccount(true);
+    }
+
+    // SOCIAL / LIVE / PK / PARTY / GAMES / MEDALS / VIP STORE
+    function switchSocialTab(tab) {
+      document.querySelectorAll(".st-tab").forEach(b => b.classList.toggle("active", b.getAttribute("data-stab") === tab));
+      ["live", "party", "games", "dm", "hub"].forEach(k => {
+        const el = document.getElementById(`stab-${k}`);
+        if (el) el.style.display = k === tab ? "block" : "none";
+      });
+      if (tab === "live") renderLiveDiscoveryGrid();
+      if (tab === "party") renderPartyRoomsGrid();
+      if (tab === "games") renderMiniGamesTiles();
+      if (tab === "dm") renderInbox();
+      if (tab === "hub") renderProfileHub();
+    }
+
+    function renderLiveDiscoveryGrid() {
+      const grid = document.getElementById("liveDiscoveryGrid");
+      if (!grid) return;
+      const items = [
+        { title: "PK · Target support me", host: "Princy", guest: "Baby Jena", heat: "2873", img: samplePhotos[7] },
+        { title: "Sharto por duniya", host: "Baby Jena", guest: "Zeba", heat: "2730", img: samplePhotos[6] },
+        { title: "Hy cuties live", host: "Miss Cher", guest: "Kristy", heat: "2659", img: samplePhotos[5] },
+        { title: "Let's talk vibes", host: "Zeba", guest: "Wani", heat: "2562", img: samplePhotos[4] }
+      ];
+      grid.innerHTML = items.map(it => `
+        <div class="live-stream-card" onclick="openLiveStageModal('${it.title}', '${it.host}', '${it.guest}')">
+          <span class="live-pill-tag">Celebrity · PK</span>
+          <img src="${it.img}" alt="${it.host}" />
+          <div class="live-card-body">
+            <div style="font-size:0.78rem; font-weight:800;">${it.title}</div>
+            <div style="font-size:0.68rem; color:var(--muted); margin-top:2px;">${it.host} · 🔥 ${it.heat}</div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderPartyRoomsGrid() {
+      const grid = document.getElementById("partyRoomsGrid");
+      if (!grid) return;
+      const items = [
+        { title: "ZIYAN ROOM", tag: "Singing", host: "Ziyan", guest: "Aarav", heat: "25000", img: samplePhotos[0] },
+        { title: "Darling Lounge", tag: "Chatting", host: "Kabir", guest: "Rohan", heat: "19002", img: samplePhotos[1] },
+        { title: "Hi Sms Club", tag: "Gaming", host: "Sana", guest: "Dev", heat: "15500", img: samplePhotos[2] },
+        { title: "Jiyo Or Jine Do", tag: "Make Friend", host: "Radhika", guest: "Simran", heat: "9000", img: samplePhotos[3] }
+      ];
+      grid.innerHTML = items.map(it => `
+        <div class="live-stream-card" onclick="openLiveStageModal('${it.title}', '${it.host}', '${it.guest}')">
+          <span class="live-pill-tag">${it.tag}</span>
+          <img src="${it.img}" alt="${it.host}" />
+          <div class="live-card-body">
+            <div style="font-size:0.78rem; font-weight:800;">${it.title}</div>
+            <div style="font-size:0.68rem; color:var(--muted); margin-top:2px;">${it.host} · 🔥 ${it.heat}</div>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderMiniGamesTiles() {
+      const grid = document.getElementById("miniGamesTilesGrid");
+      if (!grid) return;
+      const games = [
+        { name: "Teen Patti", icon: "🃏" },
+        { name: "Lucky Fishing", icon: "🦈" },
+        { name: "Fruit Fortune", icon: "🍉" },
+        { name: "Golden 777", icon: "🎰" },
+        { name: "Greedy Kitty", icon: "🐱" },
+        { name: "Gold of Olympus", icon: "⚡" },
+        { name: "Fortune Gems 3", icon: "💎" },
+        { name: "Countdown 10", icon: "☕" }
+      ];
+      grid.innerHTML = games.map(g => `
+        <div class="game-slot-box" onclick="openMiniGameModal()">
+          <div style="font-size:1.35rem;">${g.icon}</div>
+          <div style="font-size:0.72rem; font-weight:800; margin-top:3px;">${g.name}</div>
+        </div>
+      `).join("");
+    }
+
+    function openLiveStageModal(title, leftName, rightName) {
+      document.getElementById("liveStageHeaderTitle").innerText = title || "PK Battle Live";
+      document.getElementById("pkLeftName").innerText = leftName || "Host 1";
+      document.getElementById("pkRightName").innerText = rightName || "Host 2";
+      document.getElementById("giftTargetName").innerText = leftName || "Host 1";
+      document.getElementById("giftModalCoins").innerText = String(window.userAccount.coins || 0);
+      renderGiftTray();
+      renderLiveStageChat();
+      document.getElementById("liveStageModal").classList.add("open");
+    }
+
+    function renderGiftTray() {
+      const catBar = document.getElementById("giftCategoryTabs");
+      catBar.innerHTML = GIFT_CATEGORIES.map(c => `
+        <button class="gc-tab ${c === activeGiftCat ? "active" : ""}" onclick="selectGiftCategory('${c}')">${c}</button>
+      `).join("");
+
+      const filtered = GIFT_CATALOG.filter(g => g.cat === activeGiftCat);
+      const list = filtered.length ? filtered : GIFT_CATALOG.slice(0, 4);
+      const grid = document.getElementById("giftItemsGrid");
+      grid.innerHTML = list.map(g => `
+        <div class="gift-item-tile ${g.id === selectedGiftId ? "selected" : ""}" onclick="pickGiftItem('${g.id}')">
+          <div style="font-size:1.3rem;">${g.icon}</div>
+          <div style="font-size:0.68rem; font-weight:700; margin-top:2px;">${g.name}</div>
+          <div style="font-size:0.64rem; color:#fde047;">🪙 ${g.coins}</div>
+        </div>
+      `).join("");
+    }
+
+    function selectGiftCategory(cat) { activeGiftCat = cat; renderGiftTray(); }
+    function pickGiftItem(id) { selectedGiftId = id; renderGiftTray(); }
+
+    function claimStageReward() {
+      window.userAccount.coins = Number(window.userAccount.coins || 0) + 10;
+      window.saveAccount();
+      document.getElementById("giftModalCoins").innerText = String(window.userAccount.coins);
+      alert("Stage reward: +10 coins add ho gaye!");
+    }
+
+    function sendSelectedGift() {
+      const gift = GIFT_CATALOG.find(g => g.id === selectedGiftId) || GIFT_CATALOG[0];
+      const qty = Number(document.getElementById("giftQtySelect")?.value || 1);
+      const totalCost = gift.coins * qty;
+      const currentCoins = Number(window.userAccount.coins || 0);
+
+      if (currentCoins < totalCost) {
+        alert(`Coins kam hain (${currentCoins}/${totalCost}). Daily Check-In se coins claim karein!`);
+        return;
+      }
+
+      window.userAccount.coins = currentCoins - totalCost;
+      window.saveAccount();
+      document.getElementById("giftModalCoins").innerText = String(window.userAccount.coins);
+
+      const leftScoreEl = document.getElementById("pkScoreLeft");
+      const curScore = Number((leftScoreEl.innerText.split(":")[1] || "620").trim());
+      leftScoreEl.innerText = `Left: ${curScore + totalCost}`;
+
+      liveStageMessages.push({
+        sender: window.userAccount.name || "Preet",
+        text: `Sent ${gift.icon} ${gift.name} x${qty} (${totalCost} coins)!`
+      });
+      renderLiveStageChat();
+    }
+
+    function renderLiveStageChat() {
+      const feed = document.getElementById("liveStageChatFeed");
+      if (!feed) return;
+      feed.innerHTML = liveStageMessages.map(m => `
+        <div class="room-bubble">
+          <div class="room-sender-tag">${m.sender}</div>
+          <div>${m.text}</div>
+        </div>
+      `).join("");
+      feed.scrollTop = feed.scrollHeight;
+    }
+
+    function sendLiveStageMessage() {
+      const inp = document.getElementById("liveStageMsgInput");
+      const txt = (inp?.value || "").trim();
+      if (!txt) return;
+      liveStageMessages.push({ sender: window.userAccount.name || "Preet", text: txt });
+      inp.value = "";
+      renderLiveStageChat();
+    }
+
+    // GUARDIAN MODAL
+    function openGuardianModal() {
+      renderGuardianModal();
+      document.getElementById("guardianModal").classList.add("open");
+    }
+
+    function selectGuardianTier(tier) {
+      selectedGuardianTier = tier;
+      renderGuardianModal();
+    }
+
+    function renderGuardianModal() {
+      ["Silver", "Gold", "Supreme"].forEach(t => {
+        const btn = document.getElementById(`gTier-${t}`);
+        if (btn) btn.classList.toggle("active", t === selectedGuardianTier);
+      });
+      const durations = [
+        { label: "1 day", price: "₹49" },
+        { label: "7 days", price: "₹199" },
+        { label: "30 days", price: "₹599" },
+        { label: "90 days", price: "₹1,499" }
+      ];
+      const grid = document.getElementById("guardianDurationGrid");
+      grid.innerHTML = durations.map(d => `
+        <div class="duration-box ${d.label === selectedGuardianDuration ? "selected" : ""}" onclick="selectedGuardianDuration='${d.label}'; renderGuardianModal();">
+          <div class="d-title">${d.label.toUpperCase()}</div>
+          <div class="d-price">${d.price}</div>
+          <div class="d-sub">${selectedGuardianTier} Guard</div>
+        </div>
+      `).join("");
+    }
+
+    function activateGuardianPass() {
+      alert(`${selectedGuardianTier} Guardian (${selectedGuardianDuration}) activate ho gaya hai!`);
+      closeModal("guardianModal");
+    }
+
+    // MINI GAME MODAL
+    function openMiniGameModal() {
+      document.getElementById("gameCoinsVal").innerText = String(window.userAccount.coins || 0);
+      document.getElementById("gameLastWinVal").innerText = String(lastGameWinAmt);
+      document.getElementById("gameTodayWinVal").innerText = String(window.userAccount.todayGameWin || 0);
+      ["Coffee", "Tea", "IceCream"].forEach(k => {
+        document.getElementById(`slotBet-${k}`).innerText = `You: ${gameSlotBets[k] || 0}`;
+      });
+      document.getElementById("miniGameModal").classList.add("open");
+    }
+
+    function selectGameSlot(slot) {
+      selectedGameSlot = slot;
+      ["Coffee", "Tea", "IceCream"].forEach(k => {
+        document.getElementById(`gslot-${k}`).classList.toggle("active", k === slot);
+      });
+    }
+
+    function selectChipAmount(amt, btn) {
+      selectedChipAmt = amt;
+      document.querySelectorAll(".bet-chip").forEach(b => b.classList.remove("selected"));
+      if (btn) btn.classList.add("selected");
+    }
+
+    function placeGameChip() {
+      const cur = Number(window.userAccount.coins || 0);
+      if (cur < selectedChipAmt) {
+        alert("Coins kam hain! Daily Check-In se coins claim karein.");
+        return;
+      }
+      window.userAccount.coins = cur - selectedChipAmt;
+      gameSlotBets[selectedGameSlot] = (gameSlotBets[selectedGameSlot] || 0) + selectedChipAmt;
+      window.saveAccount();
+      openMiniGameModal();
+    }
+
+    function spinMiniGameRound() {
+      const slots = ["Coffee", "Tea", "IceCream"];
+      const winner = slots[Math.floor(Math.random() * slots.length)];
+      const won = (gameSlotBets[winner] || 0) * 3;
+      lastGameWinAmt = won;
+      window.userAccount.todayGameWin = Number(window.userAccount.todayGameWin || 0) + won;
+      if (won > 0) {
+        window.userAccount.coins = Number(window.userAccount.coins || 0) + won;
+      }
+      gameSlotBets = { Coffee: 0, Tea: 0, IceCream: 0 };
+      window.saveAccount();
+      openMiniGameModal();
+      alert(won > 0 ? `Result: ${winner} x3! Aapne ${won} coins jeete!` : `Result: ${winner} x3. Agli round try karein!`);
+    }
+
+    // MEDALS MODAL
+    function openMedalsModal() {
+      switchMedalTab(activeMedalTab);
+      document.getElementById("medalsModal").classList.add("open");
+    }
+
+    function switchMedalTab(tab) {
+      activeMedalTab = tab;
+      document.getElementById("mTab-ach").classList.toggle("active", tab === "ach");
+      document.getElementById("mTab-act").classList.toggle("active", tab === "act");
+      const list = tab === "ach"
+        ? ["Check-in StarI", "Check-in StarII", "Check-in StarIII", "Check-in StarIV", "Check-in StarV", "Check-in StarVI"]
+        : ["First recharge", "Wealthy start", "Wealthy startII"];
+      document.getElementById("medalsGridContainer").innerHTML = list.map((m, i) => `
+        <div class="medal-card ${i === 0 ? "unlocked" : ""}">
+          <div style="font-size:1.4rem;">🏅</div>
+          <div style="font-size:0.72rem; font-weight:800; margin-top:4px;">${m}</div>
+          <div style="font-size:0.62rem; color:var(--muted); margin-top:2px;">${i === 0 ? "Active" : "Locked"}</div>
+        </div>
+      `).join("");
+    }
+
+    // VIP STORE MODAL
+    function openVipStoreModal() {
+      document.getElementById("vipStoreModal").classList.add("open");
+    }
+
+    function activateVipStorePlan() {
+      window.userAccount.planType = "unlimited_1m";
+      window.userAccount.hasWeeklyPlan = true;
+      window.userAccount.coins = Number(window.userAccount.coins || 0) + 120;
+      window.saveAccount();
+      closeModal("vipStoreModal");
+      alert("VIP Store (₹950) activate ho gaya hai + 120 bonus coins mile hain!");
+    }
+
+    function renderProfileHub() {
+      document.getElementById("hubUserName").innerText = window.userAccount.name || "Harvinder Singh";
+      document.getElementById("hubUserIdText").innerText = `ID: ${window.dastakCloud?.uid || "86023179"}`;
+      document.getElementById("hubCoinsVal").innerText = String(window.userAccount.coins || 0);
+    }
+
+    // PAID ROOMS FUNCTIONS
+    function triggerMicroPayment(title, amountInr, onSuccess) {
+      if (RAZORPAY_KEY_ID && typeof window.Razorpay === "function") {
+        const options = {
+          key: RAZORPAY_KEY_ID,
+          amount: amountInr * 100,
+          currency: "INR",
+          name: "Dastak",
+          description: title,
+          prefill: { name: window.userAccount.name || "Preet" },
+          theme: { color: "#06b6d4" },
+          handler: function(response) {
+            onSuccess(response.razorpay_payment_id || ("RZP_" + Date.now()));
+          }
+        };
+        const rzp = new window.Razorpay(options);
+        rzp.on("payment.failed", function(resp) {
+          alert("Payment fail ho gaya: " + (resp.error?.description || "Try again"));
+        });
+        rzp.open();
+        return;
+      }
+
+      const refId = "PASS_" + Math.random().toString(36).slice(2, 7).toUpperCase();
+      if (confirm(`${title} ke liye ₹${amountInr} pay karein? (Ref: ${refId})`)) {
+        onSuccess(refId);
+      }
+    }
+
+    window.renderRoomsTab = function() {
+      const planInfo = getActivePlanInfo();
+      const isPaid = Boolean(planInfo.canUseRooms);
+      const badge = document.getElementById("roomsAccessBadge");
+      const lockedView = document.getElementById("roomsLockedView");
+      const unlockedView = document.getElementById("roomsUnlockedView");
+
+      if (!badge || !lockedView || !unlockedView) return;
+
+      if (!isPaid) {
+        badge.className = "status-pill";
+        badge.innerText = "🔒 Paid Only";
+        lockedView.style.display = "block";
+        unlockedView.style.display = "none";
+        return;
+      }
+
+      badge.className = "status-pill verified";
+      badge.innerText = `✓ ${planInfo.shortBadge} Unlocked`;
+      lockedView.style.display = "none";
+      unlockedView.style.display = "block";
+
+      const seatName = document.getElementById("myAudioSeatName");
+      if (seatName) seatName.innerText = window.userAccount.name || "You";
+
+      const creatorBadge = document.getElementById("creatorPassBadge");
+      const createBtn = document.getElementById("createRoomActionBtn");
+      if (creatorBadge && createBtn) {
+        if (window.userAccount.groupCreatorPassPaid) {
+          creatorBadge.className = "status-pill verified";
+          creatorBadge.innerText = "✓ ₹199 Pass Active";
+          createBtn.innerText = "+ Create Room";
+        } else {
+          creatorBadge.className = "status-pill";
+          creatorBadge.innerText = `Create Fee: ₹${GROUP_ROOM_CREATE_FEE_INR}`;
+          createBtn.innerText = `Pay ₹${GROUP_ROOM_CREATE_FEE_INR} & Create`;
+        }
+      }
+
+      const vidBadge = document.getElementById("videoHostPassBadge");
+      const vidCreateBtn = document.getElementById("createVideoRoomBtn");
+      const hostPanel = document.getElementById("hostSelectedMembersPanel");
+      if (vidBadge && vidCreateBtn && hostPanel) {
+        if (window.userAccount.videoHostPassPaid) {
+          vidBadge.className = "status-pill verified";
+          vidBadge.innerText = "👑 Host Pass Active (₹299)";
+          vidCreateBtn.innerText = "+ Create Video Room";
+          hostPanel.style.display = "block";
+          renderHostMemberPicker();
+        } else {
+          vidBadge.className = "status-pill";
+          vidBadge.innerText = `Create Fee: ₹${VIDEO_ROOM_CREATE_FEE_INR}`;
+          vidCreateBtn.innerText = `Pay ₹${VIDEO_ROOM_CREATE_FEE_INR} & Create`;
+          hostPanel.style.display = "none";
+        }
+      }
+
+      const extraSeatText = document.getElementById("extraSeatStatusText");
+      if (extraSeatText) {
+        extraSeatText.innerText = window.userAccount.group7thMemberPassPaid
+          ? "7th+ Pass: Paid (₹99)"
+          : `7th+ Pass: ₹${GROUP_7TH_MEMBER_FEE_INR}/member`;
+      }
+
+      renderGroupRoomsList();
+      renderVideoRoomsList();
+
+      const currentKey = window.dastakRoomsState.isCoupleMode
+        ? `COUPLE_${window.dastakRoomsState.coupleCode}`
+        : window.dastakRoomsState.activeRoomName;
+      if (typeof window.subscribeDastakRoom === "function") {
+        window.subscribeDastakRoom(currentKey);
+      }
+      window.renderRoomMessages();
+    };
+
+    function switchRoomSubTab(tab) {
+      window.dastakRoomsState.subTab = tab;
+      document.querySelectorAll(".room-subtab").forEach(btn => {
+        btn.classList.toggle("active", btn.getAttribute("data-rsub") === tab);
+      });
+      document.getElementById("rsub-public").style.display = tab === "public" ? "block" : "none";
+      document.getElementById("rsub-couple").style.display = tab === "couple" ? "block" : "none";
+      document.getElementById("rsub-audio").style.display = tab === "audio" ? "block" : "none";
+      document.getElementById("rsub-video").style.display = tab === "video" ? "block" : "none";
+    }
+
+    function renderGroupRoomsList() {
+      const container = document.getElementById("groupRoomsList");
+      if (!container) return;
+      container.innerHTML = "";
+      window.dastakRoomsState.rooms.forEach(room => {
+        const cap = room.maxMembers || MAX_TOTAL_ROOM_MEMBERS;
+        const isAtHardMax = room.members >= cap && !room.joinedByMe;
+        const needs7thFee = !isAtHardMax && room.members >= BASE_INCLUDED_SEATS && !room.joinedByMe && !window.userAccount.group7thMemberPassPaid;
+        const isJoined = !window.dastakRoomsState.isCoupleMode && window.dastakRoomsState.activeRoomName === room.name;
+
+        let btnLabel = "Join";
+        let btnClass = "btn-primary";
+        if (isJoined) { btnLabel = "Joined"; btnClass = "btn-secondary"; }
+        else if (isAtHardMax) { btnLabel = "Full (20/20)"; btnClass = "btn-danger"; }
+        else if (needs7thFee) { btnLabel = `Pay ₹${GROUP_7TH_MEMBER_FEE_INR} (7th+)`; btnClass = "btn-xtra"; }
+
+        const row = document.createElement("div");
+        row.className = "room-item-card";
+        row.innerHTML = `
+          <div>
+            <div class="room-item-title">${room.name}</div>
+            <div class="room-item-meta">${room.topic} · <strong>${room.members} / ${cap} members</strong></div>
+          </div>
+          <button class="btn ${btnClass}" style="padding:8px 12px; font-size:0.75rem; white-space:nowrap;" onclick="joinGroupRoomWithLimit('${room.name.replace(/'/g, "\\'")}')">
+            ${btnLabel}
+          </button>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function enterSelectedGroupRoom(room) {
+      const cap = room.maxMembers || MAX_TOTAL_ROOM_MEMBERS;
+      if (!room.joinedByMe && room.members < cap) {
+        room.members += 1;
+        room.joinedByMe = true;
+      }
+      window.dastakRoomsState.isCoupleMode = false;
+      window.dastakRoomsState.activeRoomType = "group";
+      window.dastakRoomsState.activeRoomName = room.name;
+      if (!window.dastakRoomsState.messagesByKey[room.name]) window.dastakRoomsState.messagesByKey[room.name] = [];
+      renderGroupRoomsList();
+      if (typeof window.subscribeDastakRoom === "function") window.subscribeDastakRoom(room.name);
+      window.renderRoomMessages();
+    }
+
+    function joinGroupRoomWithLimit(roomName) {
+      const planInfo = getActivePlanInfo();
+      if (!planInfo.canUseRooms) { openPayModal(); return; }
+      const room = window.dastakRoomsState.rooms.find(r => r.name === roomName);
+      if (!room) return;
+      const cap = room.maxMembers || MAX_TOTAL_ROOM_MEMBERS;
+      if (!room.joinedByMe && room.members >= cap) {
+        alert(`Is room mein maximum ${cap} members ki limit poori ho chuki hai.`);
+        return;
+      }
+      if (!room.joinedByMe && room.members >= BASE_INCLUDED_SEATS && !window.userAccount.group7thMemberPassPaid) {
+        triggerMicroPayment(`7th+ Member Entry (${room.name})`, GROUP_7TH_MEMBER_FEE_INR, function() {
+          window.userAccount.group7thMemberPassPaid = true;
+          window.saveAccount(true);
+          enterSelectedGroupRoom(room);
+          window.renderRoomsTab();
+          alert(`₹${GROUP_7TH_MEMBER_FEE_INR} payment complete! Aap "${room.name}" (${room.members}/${cap}) mein join ho gaye hain.`);
+        });
+        return;
+      }
+      enterSelectedGroupRoom(room);
+    }
+
+    function finishGroupRoomCreation(name) {
+      const exists = window.dastakRoomsState.rooms.some(r => r.name.toLowerCase() === name.toLowerCase());
+      if (!exists) {
+        window.dastakRoomsState.rooms.unshift({
+          name,
+          members: 1,
+          maxMembers: MAX_TOTAL_ROOM_MEMBERS,
+          joinedByMe: true,
+          topic: `Host: ${window.userAccount.name || "Member"} (Max 20)`
+        });
+        window.dastakRoomsState.messagesByKey[name] = [{
+          senderUid: window.dastakCloud?.uid || "local",
+          senderName: "System",
+          text: `"${name}" room create ho gaya hai (Max 20 members, 7th+ ₹99/member).`,
+          mine: false
+        }];
+        if (typeof window.syncDastakRoomToCloud === "function") {
+          window.syncDastakRoomToCloud(name, window.dastakRoomsState.messagesByKey[name]);
+        }
+      }
+      const input = document.getElementById("newGroupRoomInput");
+      if (input) input.value = "";
+      window.renderRoomsTab();
+      joinGroupRoomWithLimit(name);
+    }
+
+    function createGroupRoomWithFee() {
+      const planInfo = getActivePlanInfo();
+      if (!planInfo.canUseRooms) { openPayModal(); return; }
+      const input = document.getElementById("newGroupRoomInput");
+      const name = (input?.value || "").trim();
+      if (!name) { alert("Pehle room ka naam likhein."); return; }
+      if (window.userAccount.groupCreatorPassPaid) { finishGroupRoomCreation(name); return; }
+      triggerMicroPayment(`Create Group Room ("${name}")`, GROUP_ROOM_CREATE_FEE_INR, function() {
+        window.userAccount.groupCreatorPassPaid = true;
+        window.saveAccount(true);
+        finishGroupRoomCreation(name);
+        alert(`₹${GROUP_ROOM_CREATE_FEE_INR} payment complete! Room "${name}" create ho gaya hai.`);
+      });
+    }
+
+    function renderHostMemberPicker() {
+      const wrap = document.getElementById("hostCandidateChips");
+      const countEl = document.getElementById("hostPickedCountText");
+      if (!wrap || !countEl) return;
+      const selected = window.dastakRoomsState.hostSelectedMembers;
+      countEl.innerText = `${selected.length} / ${HOST_VIDEO_PICK_LIMIT} Selected`;
+      wrap.innerHTML = profilesPool.slice(0, 10).map(p => {
+        const isPicked = selected.includes(p.id);
+        return `<button type="button" class="host-pick-chip ${isPicked ? "selected" : ""}" onclick="toggleHostSelectedMember('${p.id}')">${isPicked ? "✓" : "+"} ${p.name}</button>`;
+      }).join("");
+    }
+
+    function toggleHostSelectedMember(memberId) {
+      if (!window.userAccount.videoHostPassPaid) {
+        alert("Sirf ₹299 pay karne wale host ke paas 5 members select karne ka access hai.");
+        return;
+      }
+      const list = window.dastakRoomsState.hostSelectedMembers;
+      const idx = list.indexOf(memberId);
+      if (idx >= 0) {
+        list.splice(idx, 1);
+      } else {
+        if (list.length >= HOST_VIDEO_PICK_LIMIT) {
+          alert(`Host sirf apne ${HOST_VIDEO_PICK_LIMIT} members hi select kar sakta hai!`);
+          return;
+        }
+        list.push(memberId);
+      }
+      renderHostMemberPicker();
+    }
+
+    function renderVideoRoomsList() {
+      const container = document.getElementById("videoRoomsList");
+      if (!container) return;
+      container.innerHTML = "";
+      window.dastakRoomsState.videoRooms.forEach(vRoom => {
+        const cap = vRoom.maxMembers || MAX_TOTAL_ROOM_MEMBERS;
+        const isAtHardMax = vRoom.members >= cap && !vRoom.joinedByMe;
+        const isHost = vRoom.hostName === (window.userAccount.name || "Preet");
+        const needs7thVideoFee = !isAtHardMax && !isHost && !vRoom.hostApprovedMe && vRoom.members >= BASE_INCLUDED_SEATS && !vRoom.joinedByMe && !window.userAccount.video7thMemberPassPaid;
+        const isJoined = !window.dastakRoomsState.isCoupleMode && window.dastakRoomsState.activeRoomName === vRoom.name;
+
+        let btnLabel = "Join Video";
+        let btnClass = "btn-primary";
+        if (isJoined) { btnLabel = "In Room"; btnClass = "btn-secondary"; }
+        else if (isAtHardMax) { btnLabel = "Full (20/20)"; btnClass = "btn-danger"; }
+        else if (needs7thVideoFee) { btnLabel = `Pay ₹${VIDEO_7TH_MEMBER_FEE_INR} (7th+)`; btnClass = "btn-xtra"; }
+
+        const row = document.createElement("div");
+        row.className = "room-item-card";
+        row.innerHTML = `
+          <div>
+            <div class="room-item-title">🎥 ${vRoom.name}</div>
+            <div class="room-item-meta">Host: ${vRoom.hostName} · <strong>${vRoom.members} / ${cap} members</strong></div>
+          </div>
+          <button class="btn ${btnClass}" style="padding:8px 12px; font-size:0.75rem; white-space:nowrap;" onclick="joinVideoRoomWithRules('${vRoom.name.replace(/'/g, "\\'")}')">
+            ${btnLabel}
+          </button>
+        `;
+        container.appendChild(row);
+      });
+    }
+
+    function enterVideoRoom(vRoom) {
+      const cap = vRoom.maxMembers || MAX_TOTAL_ROOM_MEMBERS;
+      if (!vRoom.joinedByMe && vRoom.members < cap) {
+        vRoom.members += 1;
+        vRoom.joinedByMe = true;
+      }
+      window.dastakRoomsState.isCoupleMode = false;
+      window.dastakRoomsState.activeRoomType = "video";
+      window.dastakRoomsState.activeRoomName = vRoom.name;
+      if (!window.dastakRoomsState.messagesByKey[vRoom.name]) window.dastakRoomsState.messagesByKey[vRoom.name] = [];
+      renderVideoRoomsList();
+      if (typeof window.subscribeDastakRoom === "function") window.subscribeDastakRoom(vRoom.name);
+      window.renderRoomMessages();
+    }
+
+    function joinVideoRoomWithRules(roomName) {
+      const planInfo = getActivePlanInfo();
+      if (!planInfo.canUseRooms) { openPayModal(); return; }
+      const vRoom = window.dastakRoomsState.videoRooms.find(r => r.name === roomName);
+      if (!vRoom) return;
+      const cap = vRoom.maxMembers || MAX_TOTAL_ROOM_MEMBERS;
+      const isHost = vRoom.hostName === (window.userAccount.name || "Preet");
+
+      if (!vRoom.joinedByMe && vRoom.members >= cap) {
+        alert(`Is video room mein maximum ${cap} members ki limit poori ho chuki hai.`);
+        return;
+      }
+      if (!vRoom.joinedByMe && !isHost && !vRoom.hostApprovedMe && vRoom.members >= BASE_INCLUDED_SEATS && !window.userAccount.video7thMemberPassPaid) {
+        triggerMicroPayment(`Video Room 7th+ Entry (${vRoom.name})`, VIDEO_7TH_MEMBER_FEE_INR, function() {
+          window.userAccount.video7thMemberPassPaid = true;
+          window.saveAccount(true);
+          enterVideoRoom(vRoom);
+          window.renderRoomsTab();
+          alert(`₹${VIDEO_7TH_MEMBER_FEE_INR} payment complete! Aap "${vRoom.name}" video room mein add ho gaye hain.`);
+        });
+        return;
+      }
+      enterVideoRoom(vRoom);
+    }
+
+    function finishVideoRoomCreation(name) {
+      const hostName = window.userAccount.name || "Preet";
+      const exists = window.dastakRoomsState.videoRooms.some(r => r.name.toLowerCase() === name.toLowerCase());
+      if (!exists) {
+        window.dastakRoomsState.videoRooms.unshift({
+          name,
+          hostName,
+          members: 1,
+          maxMembers: MAX_TOTAL_ROOM_MEMBERS,
+          joinedByMe: true,
+          hostApprovedMe: true,
+          topic: "Host picks 5 members · 7th+ ₹179"
+        });
+        window.dastakRoomsState.messagesByKey[name] = [{
+          senderUid: window.dastakCloud?.uid || "local",
+          senderName: "System",
+          text: `Video Room "${name}" create ho gaya hai! Host (${hostName}) ke paas apne 5 members select karne ka access hai (7th+ ₹179/member, max 20).`,
+          mine: false
+        }];
+        if (typeof window.syncDastakRoomToCloud === "function") {
+          window.syncDastakRoomToCloud(name, window.dastakRoomsState.messagesByKey[name]);
+        }
+      }
+      const input = document.getElementById("newVideoRoomInput");
+      if (input) input.value = "";
+      window.renderRoomsTab();
+      joinVideoRoomWithRules(name);
+    }
+
+    function createVideoRoomWithHostControl() {
+      const planInfo = getActivePlanInfo();
+      if (!planInfo.canUseRooms) { openPayModal(); return; }
+      const input = document.getElementById("newVideoRoomInput");
+      const name = (input?.value || "").trim();
+      if (!name) { alert("Pehle video room ka naam likhein."); return; }
+      if (window.userAccount.videoHostPassPaid) { finishVideoRoomCreation(name); return; }
+      triggerMicroPayment(`Create Video Room & Host 5-Member Control ("${name}")`, VIDEO_ROOM_CREATE_FEE_INR, function() {
+        window.userAccount.videoHostPassPaid = true;
+        window.saveAccount(true);
+        finishVideoRoomCreation(name);
+        alert(`₹${VIDEO_ROOM_CREATE_FEE_INR} payment complete! Ab aapke paas is video room ke 5 members select karne ka poora access hai.`);
+      });
+    }
+
+    function generateCoupleRoomCode() {
+      const code = String(Math.floor(100000 + Math.random() * 900000));
+      const input = document.getElementById("coupleRoomCodeInput");
+      if (input) input.value = code;
+    }
+
+    function connectCoupleRoom() {
+      const input = document.getElementById("coupleRoomCodeInput");
+      const code = (input?.value || "").trim();
+      const statusEl = document.getElementById("coupleRoomStatus");
+      if (!code) {
+        if (statusEl) statusEl.innerText = "Pehle 6-digit couple code daalein ya Generate karein.";
+        return;
+      }
+      window.dastakRoomsState.isCoupleMode = true;
+      window.dastakRoomsState.activeRoomType = "couple";
+      window.dastakRoomsState.coupleCode = code;
+      const roomKey = `COUPLE_${code}`;
+      if (!window.dastakRoomsState.messagesByKey[roomKey]) {
+        window.dastakRoomsState.messagesByKey[roomKey] = [{ senderUid: window.dastakCloud?.uid || "local", senderName: "Dastak", text: `Private Couple Room #${code} connected.`, mine: false }];
+      }
+      if (statusEl) statusEl.innerText = `✓ Connected to Private Couple Room #${code}`;
+      renderGroupRoomsList();
+      renderVideoRoomsList();
+      if (typeof window.subscribeDastakRoom === "function") window.subscribeDastakRoom(roomKey);
+      window.renderRoomMessages();
+    }
+
+    function toggleRoomMic() {
+      window.dastakRoomsState.micOn = !window.dastakRoomsState.micOn;
+      const card = document.getElementById("myAudioSeatCard");
+      const status = document.getElementById("myAudioMicStatus");
+      const btn = document.getElementById("toggleRoomMicBtn");
+      if (card) card.classList.toggle("speaking", window.dastakRoomsState.micOn);
+      if (status) {
+        status.innerText = window.dastakRoomsState.micOn ? "Mic Live (Speaking)" : "Mic Muted";
+        status.style.color = window.dastakRoomsState.micOn ? "var(--online)" : "var(--muted)";
+      }
+      if (btn) btn.innerText = window.dastakRoomsState.micOn ? "Mute Mic" : "Unmute Mic";
+    }
+
+    function toggleRoomSpeaker() {
+      window.dastakRoomsState.speakerOn = !window.dastakRoomsState.speakerOn;
+      const btn = document.getElementById("toggleRoomSpkBtn");
+      if (btn) btn.innerText = window.dastakRoomsState.speakerOn ? "Speaker: ON" : "Speaker: OFF";
+    }
+
+    async function toggleRoomCamera() {
+      const videoEl = document.getElementById("localRoomVideo");
+      const placeholder = document.getElementById("myCamPlaceholder");
+      const tileBox = document.getElementById("myVideoTileBox");
+      const camBtn = document.getElementById("toggleRoomCamBtn");
+
+      if (!window.dastakRoomsState.camOn) {
+        try {
+          if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+            localCameraStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "user" }, audio: false });
+            if (videoEl) { videoEl.srcObject = localCameraStream; videoEl.style.display = "block"; }
+          }
+        } catch (err) { console.warn("Camera preview fallback:", err); }
+        window.dastakRoomsState.camOn = true;
+        if (placeholder) placeholder.style.display = "none";
+        if (tileBox) tileBox.classList.add("live-cam");
+        if (camBtn) camBtn.innerText = "Turn Camera OFF";
+      } else {
+        if (localCameraStream) { localCameraStream.getTracks().forEach(t => t.stop()); localCameraStream = null; }
+        if (videoEl) { videoEl.srcObject = null; videoEl.style.display = "none"; }
+        window.dastakRoomsState.camOn = false;
+        if (placeholder) placeholder.style.display = "block";
+        if (tileBox) tileBox.classList.remove("live-cam");
+        if (camBtn) camBtn.innerText = "Turn Camera ON";
+      }
+    }
+
+    window.renderRoomMessages = function() {
+      const feed = document.getElementById("roomMessagesFeed");
+      const header = document.getElementById("activeRoomHeaderTitle");
+      const capTag = document.getElementById("activeRoomCapacityTag");
+      if (!feed) return;
+
+      const isCouple = window.dastakRoomsState.isCoupleMode;
+      const key = isCouple ? `COUPLE_${window.dastakRoomsState.coupleCode}` : window.dastakRoomsState.activeRoomName;
+
+      if (header) header.innerText = isCouple ? `Couple Room #${window.dastakRoomsState.coupleCode}` : `Room: ${window.dastakRoomsState.activeRoomName}`;
+      if (capTag) {
+        if (isCouple) capTag.innerText = "2 / 2 Couple";
+        else if (window.dastakRoomsState.activeRoomType === "video") {
+          const vObj = window.dastakRoomsState.videoRooms.find(r => r.name === window.dastakRoomsState.activeRoomName);
+          capTag.innerText = `${vObj ? vObj.members : 6} / ${MAX_TOTAL_ROOM_MEMBERS} Video`;
+        } else {
+          const rObj = window.dastakRoomsState.rooms.find(r => r.name === window.dastakRoomsState.activeRoomName);
+          capTag.innerText = `${rObj ? rObj.members : 4} / ${MAX_TOTAL_ROOM_MEMBERS} Members`;
+        }
+      }
+
+      const list = window.dastakRoomsState.messagesByKey[key] || [];
+      feed.innerHTML = list.length === 0
+        ? `<div style="font-size:0.78rem; color:var(--muted);">Abhi koi message nahi hai. Pehla message bhejein!</div>`
+        : list.map(m => `<div class="room-bubble ${m.mine ? "mine" : ""}"><div class="room-sender-tag">${m.mine ? "You" : (m.senderName || "Member")}</div><div>${m.text}</div></div>`).join("");
+      feed.scrollTop = feed.scrollHeight;
+    };
+
+    function sendRoomChatMessage() {
+      const planInfo = getActivePlanInfo();
+      if (!planInfo.canUseRooms) { openPayModal(); return; }
+      const input = document.getElementById("roomMsgInput");
+      const text = (input?.value || "").trim();
+      if (!text) return;
+      const key = window.dastakRoomsState.isCoupleMode ? `COUPLE_${window.dastakRoomsState.coupleCode}` : window.dastakRoomsState.activeRoomName;
+      if (!window.dastakRoomsState.messagesByKey[key]) window.dastakRoomsState.messagesByKey[key] = [];
+      window.dastakRoomsState.messagesByKey[key].push({ senderUid: window.dastakCloud?.uid || "local", senderName: window.userAccount.name || "Preet", text, mine: true, ts: Date.now() });
+      input.value = "";
+      window.renderRoomMessages();
+      if (typeof window.syncDastakRoomToCloud === "function") window.syncDastakRoomToCloud(key, window.dastakRoomsState.messagesByKey[key]);
+    }
+
+    // CHECKOUT / PLANS
     function switchCheckoutTier(tier) {
       activeCheckoutTier = tier;
       const detail = TIER_DETAILS[tier] || TIER_DETAILS.xtra;
@@ -1817,39 +3709,24 @@
       renderCheckoutModal();
     }
 
-    function selectDurationKey(key) {
-      activeCheckoutPlanKey = key;
-      renderCheckoutModal();
-    }
+    function selectDurationKey(key) { activeCheckoutPlanKey = key; renderCheckoutModal(); }
 
     function renderCheckoutModal() {
       ["xtra", "unlimited", "edge"].forEach(t => {
         const btn = document.getElementById(`tabTier-${t}`);
         if (btn) btn.classList.toggle("active", t === activeCheckoutTier);
       });
-
       const detail = TIER_DETAILS[activeCheckoutTier] || TIER_DETAILS.xtra;
       const grid = document.getElementById("durationOptionsGrid");
       grid.innerHTML = "";
-
       detail.durations.forEach(d => {
         const box = document.createElement("div");
         box.className = `duration-box ${d.key === activeCheckoutPlanKey ? "selected" : ""}`;
         box.onclick = () => selectDurationKey(d.key);
-        box.innerHTML = `
-          <div class="d-title">${d.title}</div>
-          <div class="d-price">${d.price}</div>
-          <div class="d-sub">${d.sub}</div>
-        `;
+        box.innerHTML = `<div class="d-title">${d.title}</div><div class="d-price">${d.price}</div><div class="d-sub">${d.sub}</div>`;
         grid.appendChild(box);
       });
-
-      const featBox = document.getElementById("tierFeaturesBox");
-      featBox.innerHTML = `
-        <strong style="font-size:0.92rem;">${detail.heading}</strong>
-        <ul>${detail.bullets.map(b => `<li>${b}</li>`).join("")}</ul>
-      `;
-
+      document.getElementById("tierFeaturesBox").innerHTML = `<strong style="font-size:0.92rem;">${detail.heading}</strong><ul>${detail.bullets.map(b => `<li>${b}</li>`).join("")}</ul>`;
       const selectedPlan = PLANS_CATALOG[activeCheckoutPlanKey] || PLANS_CATALOG.xtra_1w;
       const actionBtn = document.getElementById("payActionBtn");
       actionBtn.className = `btn ${detail.btnClass}`;
@@ -1865,6 +3742,7 @@
       window.saveAccount();
       closeModal("payModal");
       renderGrid();
+      window.renderRoomsTab();
       window.renderMessages();
       alert(`${selectedPlan.label} (${selectedPlan.priceText}) active ho gaya hai! Ref: ${paymentRef}`);
     }
@@ -1872,7 +3750,6 @@
     function startPaymentGateway() {
       const selectedPlan = PLANS_CATALOG[activeCheckoutPlanKey] || PLANS_CATALOG.xtra_1w;
       const detailVal = (document.getElementById("payDetailInput")?.value || "").trim();
-
       if (RAZORPAY_KEY_ID && typeof window.Razorpay === "function") {
         const options = {
           key: RAZORPAY_KEY_ID,
@@ -1880,36 +3757,23 @@
           currency: "INR",
           name: "Dastak",
           description: selectedPlan.label,
-          prefill: {
-            name: window.userAccount.name || "Preet"
-          },
-          notes: {
-            planId: selectedPlan.id,
-            method: selectedPayMethod,
-            handle: detailVal
-          },
+          prefill: { name: window.userAccount.name || "Preet" },
+          notes: { planId: selectedPlan.id, method: selectedPayMethod, handle: detailVal },
           theme: { color: "#06b6d4" },
-          handler: function(response) {
-            const refId = response.razorpay_payment_id || ("rzp_" + Date.now());
-            finalizePlanActivation(selectedPlan, refId);
-          }
+          handler: function(response) { finalizePlanActivation(selectedPlan, response.razorpay_payment_id || ("rzp_" + Date.now())); }
         };
         const rzp = new window.Razorpay(options);
-        rzp.on("payment.failed", function(resp) {
-          alert("Payment fail ho gaya: " + (resp.error?.description || "Try again"));
-        });
+        rzp.on("payment.failed", function(resp) { alert("Payment fail ho gaya: " + (resp.error?.description || "Try again")); });
         rzp.open();
         return;
       }
-
-      const demoRef = "TEST_PAY_" + Math.random().toString(36).slice(2, 8).toUpperCase();
-      finalizePlanActivation(selectedPlan, demoRef);
+      finalizePlanActivation(selectedPlan, "TEST_PAY_" + Math.random().toString(36).slice(2, 8).toUpperCase());
     }
 
+    // NEARBY GRID
     function renderGrid() {
       const grid = document.getElementById("userGrid");
       grid.innerHTML = "";
-
       const planInfo = getActivePlanInfo();
       const isUnlocked = planInfo.id !== "free";
       const blocked = window.userAccount.blockedIds || [];
@@ -1921,7 +3785,6 @@
         if (filters.onlineOnly && !u.online) return false;
         if (filters.verifiedOnly && !u.verified) return false;
         if (filters.tag !== "all" && u.tag !== filters.tag) return false;
-
         if (filters.quick === "online" && !u.online) return false;
         if (filters.quick === "verified" && !u.verified) return false;
         if (filters.quick === "under5" && u.dist > 5) return false;
@@ -1946,7 +3809,7 @@
           banner.innerHTML = `
             <div>
               <h4>More Access · Xtra ₹250 · Unlimited ₹492 · Edge ₹7,800</h4>
-              <p>600+ local profiles, Unlimited mode, aur Edge pass unlock karne ke liye plan chunein.</p>
+              <p>600+ local profiles + Group (₹199) & Video Rooms (₹299) unlock karne ke liye plan chunein.</p>
             </div>
             <button class="btn btn-xtra" style="padding:9px 13px; font-size:0.76rem; white-space:nowrap;" onclick="openPayModal()">Plans</button>
           `;
@@ -1954,7 +3817,7 @@
           banner.innerHTML = `
             <div>
               <h4>${planInfo.label} Active</h4>
-              <p>Unlocked access active hai (${planInfo.priceText}).</p>
+              <p>Unlocked access & Paid Rooms active hain (${planInfo.priceText}).</p>
             </div>
             <span class="status-pill verified">Active</span>
           `;
@@ -1962,9 +3825,7 @@
         grid.appendChild(banner);
 
         const sliceCount = isUnlocked ? visibleXtraCount : 12;
-        xtraList.slice(0, sliceCount).forEach(user => {
-          grid.appendChild(createTile(user, !isUnlocked));
-        });
+        xtraList.slice(0, sliceCount).forEach(user => grid.appendChild(createTile(user, !isUnlocked)));
 
         if (isUnlocked && xtraList.length > visibleXtraCount) {
           const moreWrap = document.createElement("div");
@@ -1979,27 +3840,15 @@
       const div = document.createElement("div");
       div.className = `tile ${user.online ? "is-online" : ""} ${isLocked ? "is-locked" : ""} ${user.isLiveUser ? "is-live-user" : ""}`;
       div.onclick = () => isLocked ? openPayModal() : handleProfileClick(user);
-
       const topBadge = isLocked
         ? `<div class="tile-badge xtra-tag">Xtra</div>`
-        : (user.isLiveUser
-            ? `<div class="tile-badge live-tag">● LIVE</div>`
-            : (user.verified ? `<div class="tile-badge">✓ ID</div>` : ""));
-
+        : (user.isLiveUser ? `<div class="tile-badge live-tag">● LIVE</div>` : (user.verified ? `<div class="tile-badge">✓ ID</div>` : ""));
       div.innerHTML = `
         <img src="${user.img}" alt="${user.name}" loading="lazy" />
         ${topBadge}
-        ${isLocked
-          ? `<div class="lock-center">
-               <div class="lock-icon-circle">🔒</div>
-               <div class="lock-label">Unlock ₹250</div>
-             </div>`
-          : ""
-        }
+        ${isLocked ? `<div class="lock-center"><div class="lock-icon-circle">🔒</div><div class="lock-label">Unlock ₹250</div></div>` : ""}
         <div class="tile-overlay">
-          <div class="tile-name">
-            <span class="status-dot ${user.online ? 'online' : 'offline'}"></span>${isLocked ? "Locked Member" : `${user.name}, ${user.age}`}
-          </div>
+          <div class="tile-name"><span class="status-dot ${user.online ? 'online' : 'offline'}"></span>${isLocked ? "Locked Member" : `${user.name}, ${user.age}`}</div>
           <div class="tile-dist">${user.dist} km</div>
         </div>
       `;
@@ -2032,9 +3881,7 @@
       filters.maxDist = Number(document.getElementById("filterDist").value);
       filters.minAge = Number(document.getElementById("filterMinAge").value);
       filters.maxAge = Number(document.getElementById("filterMaxAge").value);
-      if (filters.minAge > filters.maxAge) {
-        const t = filters.minAge; filters.minAge = filters.maxAge; filters.maxAge = t;
-      }
+      if (filters.minAge > filters.maxAge) { const t = filters.minAge; filters.minAge = filters.maxAge; filters.maxAge = t; }
       filters.onlineOnly = document.getElementById("filterOnlineOnly").checked;
       filters.verifiedOnly = document.getElementById("filterVerifiedOnly").checked;
       filters.tag = document.getElementById("filterTag").value;
@@ -2053,15 +3900,12 @@
 
     function handleProfileClick(user) {
       const planInfo = getActivePlanInfo();
-      const maxAllowed = planInfo.limit;
       if (!window.userAccount.viewedProfileIds) window.userAccount.viewedProfileIds = [];
       const alreadyViewed = window.userAccount.viewedProfileIds.includes(user.id);
-
-      if (!alreadyViewed && window.userAccount.viewedProfileIds.length >= maxAllowed) {
+      if (!alreadyViewed && window.userAccount.viewedProfileIds.length >= planInfo.limit) {
         openPayModal();
         return;
       }
-
       if (!alreadyViewed) {
         window.userAccount.viewedProfileIds.push(user.id);
         window.saveAccount(true);
@@ -2094,19 +3938,12 @@
 
     function commitChatChange(peerId) {
       window.saveChats();
-      if (typeof window.syncChatThreadToCloud === "function") {
-        window.syncChatThreadToCloud(peerId, window.chats[peerId] || []);
-      }
+      if (typeof window.syncChatThreadToCloud === "function") window.syncChatThreadToCloud(peerId, window.chats[peerId] || []);
     }
 
     function sendWave(id, name) {
       if (!window.chats[id]) window.chats[id] = [];
-      window.chats[id].push({
-        senderUid: window.dastakCloud?.uid || "local",
-        sender: "me",
-        type: "text",
-        text: "👋 Dastak! Sent a wave."
-      });
+      window.chats[id].push({ senderUid: window.dastakCloud?.uid || "local", sender: "me", type: "text", text: "👋 Dastak! Sent a wave." });
       commitChatChange(id);
       alert(`${name} ko Dastak / Wave bhej diya gaya hai!`);
     }
@@ -2126,20 +3963,12 @@
       closeAttachTray();
       window.activeChatUser = profilesPool.find(u => String(u.id) === String(userId));
       if (!window.activeChatUser) return;
-
       document.getElementById("chatWithTitle").innerText = window.activeChatUser.name;
       if (!window.chats[userId]) {
-        window.chats[userId] = [{
-          senderUid: String(userId),
-          sender: "them",
-          type: "text",
-          text: `Hey! Main aas-paas hi hoon (${window.activeChatUser.dist} km).`
-        }];
+        window.chats[userId] = [{ senderUid: String(userId), sender: "them", type: "text", text: `Hey! Main aas-paas hi hoon (${window.activeChatUser.dist} km).` }];
         commitChatChange(userId);
       }
-      if (typeof window.subscribeChatThread === "function") {
-        window.subscribeChatThread(userId);
-      }
+      if (typeof window.subscribeChatThread === "function") window.subscribeChatThread(userId);
       window.renderMessages();
       const canSend = window.userAccount.verificationStatus === "Verified";
       document.getElementById("modalChatLock").style.display = canSend ? "none" : "block";
@@ -2149,10 +3978,7 @@
     function closeChatModal() {
       closeAttachTray();
       closeDeleteSheet();
-      if (window.dastakCloud && window.dastakCloud.threadUnsub) {
-        window.dastakCloud.threadUnsub();
-        window.dastakCloud.threadUnsub = null;
-      }
+      if (window.dastakCloud && window.dastakCloud.threadUnsub) { window.dastakCloud.threadUnsub(); window.dastakCloud.threadUnsub = null; }
       window.activeChatUser = null;
       closeModal("chatModal");
     }
@@ -2179,42 +4005,23 @@
       document.getElementById("attachToggleBtn").classList.remove("active");
     }
 
-    function triggerChatPhoto() {
-      if (!checkVerifiedForSend()) return;
-      closeAttachTray();
-      document.getElementById("chatPhotoInput").click();
-    }
-
-    function triggerChatVideo() {
-      if (!checkVerifiedForSend()) return;
-      closeAttachTray();
-      document.getElementById("chatVideoInput").click();
-    }
+    function triggerChatPhoto() { if (checkVerifiedForSend()) { closeAttachTray(); document.getElementById("chatPhotoInput").click(); } }
+    function triggerChatVideo() { if (checkVerifiedForSend()) { closeAttachTray(); document.getElementById("chatVideoInput").click(); } }
 
     function handleChatPhoto(event) {
       const file = event.target.files[0];
       event.target.value = "";
       if (!file || !window.activeChatUser) return;
-
       const reader = new FileReader();
       reader.onload = function(e) {
         const img = new Image();
         img.onload = function() {
           const canvas = document.createElement("canvas");
-          const maxW = 480;
-          const scale = Math.min(1, maxW / img.width);
+          const scale = Math.min(1, 480 / img.width);
           canvas.width = img.width * scale;
           canvas.height = img.height * scale;
           canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
-          const compressedData = canvas.toDataURL("image/jpeg", 0.68);
-
-          window.chats[window.activeChatUser.id].push({
-            senderUid: window.dastakCloud?.uid || "local",
-            sender: "me",
-            type: "image",
-            mediaUrl: compressedData,
-            text: "📷 Photo"
-          });
+          window.chats[window.activeChatUser.id].push({ senderUid: window.dastakCloud?.uid || "local", sender: "me", type: "image", mediaUrl: canvas.toDataURL("image/jpeg", 0.68), text: "📷 Photo" });
           commitChatChange(window.activeChatUser.id);
           window.renderMessages();
         };
@@ -2227,16 +4034,7 @@
       const file = event.target.files[0];
       event.target.value = "";
       if (!file || !window.activeChatUser) return;
-
-      const videoUrl = URL.createObjectURL(file);
-      window.chats[window.activeChatUser.id].push({
-        senderUid: window.dastakCloud?.uid || "local",
-        sender: "me",
-        type: "video",
-        mediaUrl: videoUrl,
-        fileName: file.name || "Video",
-        text: "🎥 Video"
-      });
+      window.chats[window.activeChatUser.id].push({ senderUid: window.dastakCloud?.uid || "local", sender: "me", type: "video", mediaUrl: URL.createObjectURL(file), fileName: file.name || "Video", text: "🎥 Video" });
       commitChatChange(window.activeChatUser.id);
       window.renderMessages();
     }
@@ -2244,51 +4042,24 @@
     function sendChatLocation() {
       if (!checkVerifiedForSend() || !window.activeChatUser) return;
       closeAttachTray();
-
-      if (!navigator.geolocation) {
-        pushLocationMessage("30.89270", "75.79240", "Demo Location (Ludhiana)");
-        return;
-      }
-
+      if (!navigator.geolocation) { pushLocationMessage("30.89270", "75.79240", "Demo Location (Ludhiana)"); return; }
       navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const lat = pos.coords.latitude.toFixed(5);
-          const lng = pos.coords.longitude.toFixed(5);
-          pushLocationMessage(lat, lng, "My Live Location");
-        },
-        () => {
-          if (confirm("Phone ki GPS location permission nahi mili. Kya aap test ke liye Ludhiana ki demo location bhejna chahenge?")) {
-            pushLocationMessage("30.89270", "75.79240", "Demo Location (Ludhiana)");
-          }
-        },
+        (pos) => pushLocationMessage(pos.coords.latitude.toFixed(5), pos.coords.longitude.toFixed(5), "My Live Location"),
+        () => { if (confirm("GPS permission nahi mili. Demo location bhejein?")) pushLocationMessage("30.89270", "75.79240", "Demo Location (Ludhiana)"); },
         { enableHighAccuracy: true, timeout: 8000 }
       );
     }
 
     function pushLocationMessage(lat, lng, label) {
-      window.chats[window.activeChatUser.id].push({
-        senderUid: window.dastakCloud?.uid || "local",
-        sender: "me",
-        type: "location",
-        lat,
-        lng,
-        label,
-        text: `📍 ${label}`
-      });
+      window.chats[window.activeChatUser.id].push({ senderUid: window.dastakCloud?.uid || "local", sender: "me", type: "location", lat, lng, label, text: `📍 ${label}` });
       commitChatChange(window.activeChatUser.id);
       window.renderMessages();
     }
 
-    function openLightbox(src) {
-      document.getElementById("lightboxImg").src = src;
-      document.getElementById("photoLightbox").classList.add("open");
-    }
+    function openLightbox(src) { document.getElementById("lightboxImg").src = src; document.getElementById("photoLightbox").classList.add("open"); }
 
     function callNotice(type) {
-      if (window.userAccount.verificationStatus !== "Verified") {
-        alert(`${type} call start karne ke liye Owner verification approve hona zaroori hai.`);
-        return;
-      }
+      if (window.userAccount.verificationStatus !== "Verified") { alert(`${type} call ke liye Owner approval zaroori hai.`); return; }
       alert(`${type} calling feature WebRTC/Agora connect hone ke baad live hoga.`);
     }
 
@@ -2301,10 +4072,8 @@
 
       list.forEach((m, idx) => {
         if (m.deletedForMe) return;
-
         const wrap = document.createElement("div");
         wrap.className = `msg-wrap ${m.sender}`;
-
         const bubble = document.createElement("div");
         const msgType = m.type || "text";
 
@@ -2316,24 +4085,14 @@
           bubble.innerHTML = `<img class="chat-media-img" src="${m.mediaUrl}" alt="Photo" onclick="openLightbox('${m.mediaUrl}')" />`;
         } else if (msgType === "video") {
           bubble.className = `msg ${m.sender} media-bubble`;
-          bubble.innerHTML = m.mediaUrl
-            ? `<video class="chat-media-vid" controls playsinline src="${m.mediaUrl}"></video><div style="font-size:0.7rem; color:var(--muted); padding:4px 4px 1px;">🎥 ${m.fileName || "Video"}</div>`
-            : `<div style="padding:6px 8px; font-size:0.82rem;">🎥 ${m.fileName || "Video shared"}</div>`;
+          bubble.innerHTML = m.mediaUrl ? `<video class="chat-media-vid" controls playsinline src="${m.mediaUrl}"></video>` : `🎥 ${m.fileName || "Video"}`;
         } else if (msgType === "location") {
-          const mapsLink = `https://www.google.com/maps?q=${m.lat},${m.lng}`;
           bubble.className = `msg ${m.sender} media-bubble`;
-          bubble.innerHTML = `
-            <div class="loc-card">
-              <div class="loc-title">📍 ${m.label || "Shared Location"}</div>
-              <div class="loc-coords">Lat: ${m.lat}, Lng: ${m.lng}</div>
-              <a class="loc-open-link" href="${mapsLink}" target="_blank" rel="noopener noreferrer">Open in Google Maps ↗</a>
-            </div>
-          `;
+          bubble.innerHTML = `<div class="loc-card"><div class="loc-title">📍 ${m.label}</div><div class="loc-coords">${m.lat}, ${m.lng}</div><a class="loc-open-link" href="https://www.google.com/maps?q=${m.lat},${m.lng}" target="_blank" rel="noopener noreferrer">Open Maps ↗</a></div>`;
         } else {
           bubble.className = `msg ${m.sender}`;
           bubble.innerText = m.text;
         }
-
         wrap.appendChild(bubble);
 
         if (m.sender === "me" && !m.deletedForEveryone) {
@@ -2343,50 +4102,27 @@
           delBtn.onclick = () => openDeleteOptions(idx);
           wrap.appendChild(delBtn);
         }
-
         box.appendChild(wrap);
       });
-
       box.scrollTop = box.scrollHeight;
     };
 
     function openDeleteOptions(msgIndex) {
       if (!window.activeChatUser) return;
-
-      if (!getActivePlanInfo().canDeleteMsg) {
-        if (confirm("Sent message delete karne ke liye paid plan chahiye. Kya aap plans dekhna chahte hain?")) {
-          openPayModal();
-        }
-        return;
-      }
-
       pendingDeleteIndex = msgIndex;
       document.getElementById("deleteSheet").classList.add("open");
     }
 
-    function closeDeleteSheet() {
-      pendingDeleteIndex = null;
-      document.getElementById("deleteSheet").classList.remove("open");
-    }
+    function closeDeleteSheet() { pendingDeleteIndex = null; document.getElementById("deleteSheet").classList.remove("open"); }
 
     function executeDeleteAction(mode) {
       if (!window.activeChatUser || pendingDeleteIndex === null) return;
       const pid = window.activeChatUser.id;
-      const idx = pendingDeleteIndex;
-      const arr = window.chats[pid] || [];
-      const targetMsg = arr[idx];
+      const targetMsg = (window.chats[pid] || [])[pendingDeleteIndex];
       closeDeleteSheet();
-
       if (!targetMsg) return;
-
-      if (mode === "me") {
-        targetMsg.deletedForMe = true;
-      } else if (mode === "both") {
-        targetMsg.deletedForEveryone = true;
-        targetMsg.text = "🚫 This message was unsent";
-        targetMsg.mediaUrl = "";
-      }
-
+      if (mode === "me") targetMsg.deletedForMe = true;
+      else if (mode === "both") { targetMsg.deletedForEveryone = true; targetMsg.text = "🚫 This message was unsent"; targetMsg.mediaUrl = ""; }
       commitChatChange(pid);
       window.renderMessages();
       renderInbox();
@@ -2397,15 +4133,9 @@
       const input = document.getElementById("msgInput");
       const text = input.value.trim();
       if (!text || !window.activeChatUser) return;
-
       const pid = window.activeChatUser.id;
       if (!window.chats[pid]) window.chats[pid] = [];
-      window.chats[pid].push({
-        senderUid: window.dastakCloud?.uid || "local",
-        sender: "me",
-        type: "text",
-        text
-      });
+      window.chats[pid].push({ senderUid: window.dastakCloud?.uid || "local", sender: "me", type: "text", text });
       input.value = "";
       commitChatChange(pid);
       window.renderMessages();
@@ -2414,34 +4144,23 @@
     function renderInbox() {
       const canSend = window.userAccount.verificationStatus === "Verified";
       document.getElementById("chatLockNotice").style.display = canSend ? "none" : "block";
-
       const list = document.getElementById("inboxList");
       list.innerHTML = "";
       const ids = Object.keys(window.chats).filter(id => !(window.userAccount.blockedIds || []).includes(id));
-
       if (ids.length === 0) {
-        list.innerHTML = `<div class="card-box" style="color:var(--muted); font-size:0.86rem;">Abhi koi chat nahi hai. Nearby tab mein kisi bhi profile par tap karein.</div>`;
+        list.innerHTML = `<div class="card-box" style="color:var(--muted); font-size:0.86rem;">Abhi koi chat nahi hai. Nearby tab mein kisi profile par tap karein.</div>`;
         return;
       }
-
       ids.forEach(id => {
         const u = profilesPool.find(x => String(x.id) === String(id));
         if (!u) return;
         const msgArr = (window.chats[id] || []).filter(m => !m.deletedForMe);
         const lastObj = msgArr.length ? msgArr[msgArr.length - 1] : null;
-        const lastMsg = lastObj
-          ? (lastObj.deletedForEveryone ? "🚫 This message was unsent" : lastObj.text)
-          : "No messages";
+        const lastMsg = lastObj ? (lastObj.deletedForEveryone ? "🚫 This message was unsent" : lastObj.text) : "No messages";
         const row = document.createElement("div");
         row.className = "inbox-row";
         row.onclick = () => startChat(id);
-        row.innerHTML = `
-          <img src="${u.img}" alt="${u.name}" />
-          <div>
-            <strong>${u.name}</strong>
-            <div style="font-size:0.8rem; color:var(--muted); margin-top:3px;">${lastMsg}</div>
-          </div>
-        `;
+        row.innerHTML = `<img src="${u.img}" alt="${u.name}" /><div><strong>${u.name}</strong><div style="font-size:0.8rem; color:var(--muted); margin-top:3px;">${lastMsg}</div></div>`;
         list.appendChild(row);
       });
     }
@@ -2454,8 +4173,7 @@
         const img = new Image();
         img.onload = function() {
           const canvas = document.createElement("canvas");
-          const maxW = 300;
-          const scale = Math.min(1, maxW / img.width);
+          const scale = Math.min(1, 300 / img.width);
           canvas.width = img.width * scale;
           canvas.height = img.height * scale;
           canvas.getContext("2d").drawImage(img, 0, 0, canvas.width, canvas.height);
@@ -2475,7 +4193,7 @@
       window.userAccount.idNumber = document.getElementById("idNumber").value.trim();
       window.userAccount.verificationStatus = "Pending";
       window.saveAccount();
-      alert("Verification aur profile details Firestore mein submit ho gayi hain! Status Pending hai — Owner ke approve karte hi messaging unlock ho jayegi.");
+      alert("Verification aur profile details submit ho gayi hain!");
     }
 
     function selectPayMethod(method) {
@@ -2490,23 +4208,15 @@
 
     function openPayModal() {
       const current = getActivePlanInfo();
-      if (current.tier && current.tier !== "free") {
-        activeCheckoutTier = current.tier;
-        activeCheckoutPlanKey = current.id;
-      } else {
-        activeCheckoutTier = "xtra";
-        activeCheckoutPlanKey = "xtra_1w";
-      }
+      if (current.tier && current.tier !== "free") { activeCheckoutTier = current.tier; activeCheckoutPlanKey = current.id; }
+      else { activeCheckoutTier = "xtra"; activeCheckoutPlanKey = "xtra_1w"; }
       renderCheckoutModal();
       document.getElementById("payModal").classList.add("open");
     }
 
     function openOwnerLogin() {
       const pin = prompt("Owner PIN enter karein (Default: 1234):");
-      if (pin !== OWNER_PIN) {
-        alert("Galat PIN!");
-        return;
-      }
+      if (pin !== OWNER_PIN) { alert("Galat PIN!"); return; }
       window.renderOwnerPanel();
       document.getElementById("ownerModal").classList.add("open");
     }
@@ -2515,31 +4225,16 @@
       const cloudList = (window.dastakCloud && window.dastakCloud.allUsers && window.dastakCloud.allUsers.length > 0)
         ? window.dastakCloud.allUsers
         : [{ uid: window.dastakCloud?.uid || "local", ...window.userAccount }];
-
       const activePlan = getActivePlanInfo();
       document.getElementById("statTotalUsers").innerText = String(cloudList.length);
       document.getElementById("statStatus").innerText = window.userAccount.verificationStatus;
       document.getElementById("statPaid").innerText = activePlan.priceText;
-
       const container = document.getElementById("ownerUsersContainer");
       container.innerHTML = "";
-
       cloudList.forEach((u) => {
         const uPlanKey = PLANS_CATALOG[u.planType] ? u.planType : (u.hasWeeklyPlan ? "xtra_1w" : "free");
         const uPlan = PLANS_CATALOG[uPlanKey] || PLANS_CATALOG.free;
         const nextPlan = PLANS_CATALOG[uPlan.nextOwnerPlan] || PLANS_CATALOG.xtra_1w;
-        const gpsText = (typeof u.lat === "number" && typeof u.lng === "number")
-          ? `${u.lat}, ${u.lng}`
-          : "Not synced yet";
-
-        const selfieHtml = u.selfiePhoto
-          ? `<img src="${u.selfiePhoto}" alt="Selfie" />`
-          : `<div style="height:120px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.75rem;">No Selfie</div>`;
-
-        const idHtml = u.idPhoto
-          ? `<img src="${u.idPhoto}" alt="ID Doc" />`
-          : `<div style="height:120px; display:flex; align-items:center; justify-content:center; color:var(--muted); font-size:0.75rem;">No ID Photo</div>`;
-
         const card = document.createElement("div");
         card.className = "card-box";
         card.innerHTML = `
@@ -2547,23 +4242,9 @@
           <p style="font-size:0.82rem; line-height:1.55; color:#e2e8f0;">
             <strong>User ID:</strong> ${u.uid || "local"}<br/>
             <strong>Age / Vibe:</strong> ${u.age || "—"} yrs · ${u.tag || "—"}<br/>
-            <strong>GPS Coords:</strong> ${gpsText}<br/>
-            <strong>Payment Ref:</strong> ${u.lastPaymentRef || "None"}<br/>
-            <strong>ID Type:</strong> ${u.idType || "Aadhaar Card"}<br/>
-            <strong>ID Ref:</strong> ${u.idNumber || "Not entered"}<br/>
             <strong>Status:</strong> ${u.verificationStatus || "Pending"}<br/>
             <strong>Plan:</strong> ${uPlan.label} (${uPlan.priceText})
           </p>
-          <div class="kyc-preview-grid">
-            <div class="kyc-preview-box">
-              <div style="font-size:0.72rem; color:var(--muted);">Live Selfie</div>
-              ${selfieHtml}
-            </div>
-            <div class="kyc-preview-box">
-              <div style="font-size:0.72rem; color:var(--muted);">Indian ID</div>
-              ${idHtml}
-            </div>
-          </div>
           <div class="action-row">
             <button class="btn btn-success" onclick="handleOwnerAction('${u.uid || "local"}', 'Verified')">✓ Approve</button>
             <button class="btn btn-danger" onclick="handleOwnerAction('${u.uid || "local"}', 'Rejected')">✕ Reject</button>
@@ -2577,40 +4258,38 @@
     };
 
     window.handleOwnerAction = function(targetUid, newStatus) {
-      if (targetUid === (window.dastakCloud?.uid || "local")) {
-        window.userAccount.verificationStatus = newStatus;
-        window.saveAccount(true);
-      }
-      if (typeof window.setCloudUserStatus === "function" && targetUid !== "local") {
-        window.setCloudUserStatus(targetUid, newStatus);
-      }
+      if (targetUid === (window.dastakCloud?.uid || "local")) { window.userAccount.verificationStatus = newStatus; window.saveAccount(true); }
+      if (typeof window.setCloudUserStatus === "function" && targetUid !== "local") window.setCloudUserStatus(targetUid, newStatus);
       window.renderOwnerPanel();
       alert(`Status updated to ${newStatus}`);
     };
 
     window.handleOwnerPlanCycle = function(targetUid, nextPlanKey) {
       const validPlan = PLANS_CATALOG[nextPlanKey] ? nextPlanKey : "free";
-      if (targetUid === (window.dastakCloud?.uid || "local")) {
-        window.userAccount.planType = validPlan;
-        window.userAccount.hasWeeklyPlan = validPlan !== "free";
-        window.saveAccount(true);
-      }
-      if (typeof window.setCloudUserPlan === "function" && targetUid !== "local") {
-        window.setCloudUserPlan(targetUid, validPlan);
-      }
+      if (targetUid === (window.dastakCloud?.uid || "local")) { window.userAccount.planType = validPlan; window.userAccount.hasWeeklyPlan = validPlan !== "free"; window.saveAccount(true); }
+      if (typeof window.setCloudUserPlan === "function" && targetUid !== "local") window.setCloudUserPlan(targetUid, validPlan);
       renderGrid();
+      window.renderRoomsTab();
       window.renderMessages();
       window.renderOwnerPanel();
     };
 
+    function switchTabByName(tabName) {
+      const idxMap = { nearby: 0, rooms: 2, chats: 3, me: 4 };
+      const btns = document.querySelectorAll(".nav-btn");
+      switchTab(tabName, btns[idxMap[tabName] ?? 0]);
+    }
+
     function switchTab(tab, btn) {
       document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("active"));
-      btn.classList.add("active");
+      if (btn) btn.classList.add("active");
       document.getElementById("tab-nearby").style.display = tab === "nearby" ? "block" : "none";
       document.getElementById("nearbyStickyControls").style.display = tab === "nearby" ? "block" : "none";
+      document.getElementById("tab-rooms").classList.toggle("active", tab === "rooms");
       document.getElementById("tab-chats").classList.toggle("active", tab === "chats");
       document.getElementById("tab-me").classList.toggle("active", tab === "me");
-      if (tab === "chats") renderInbox();
+      if (tab === "rooms") window.renderRoomsTab();
+      if (tab === "chats") switchSocialTab("live");
     }
 
     function closeModal(id) { document.getElementById(id).classList.remove("open"); }
@@ -2623,7 +4302,9 @@
 
     updateTopUI();
     window.rebuildNearbyCatalog();
+    window.renderRoomsTab();
     window.requestLiveGPS(false);
   </script>
 </body>
 </html>
+
