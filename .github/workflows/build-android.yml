@@ -43,6 +43,7 @@ jobs:
 
       - name: Apply Dastak App Name and Icon
         run: |
+          pip install Pillow
           python3 -c '
           from PIL import Image
           import os, glob, xml.etree.ElementTree as ET
